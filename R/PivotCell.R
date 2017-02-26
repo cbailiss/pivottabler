@@ -95,7 +95,7 @@ PivotCell <- R6::R6Class("PivotCell",
     p_calculationFilters = NULL,      # an object ref (unique to this cell)
     p_rowLeafGroup = NULL,            # an object ref (shared across this row)
     p_columnLeafGroup = NULL,         # an object ref (shared across this column)
-    p_rawValue = NULL ,                # a value (unique to this cell)
+    p_rawValue = NULL ,               # a value (unique to this cell)
     p_formattedValue = NULL           # a value (unique to this cell)
   )
 )

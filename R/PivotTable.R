@@ -446,7 +446,7 @@ p { font: 0.9em arial; }
       # pivottabler(self, width=width, height=height, includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
       #                 includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
       settings <- list() # may need this in the future
-      x <- list(
+      widgetData <- list(
         tableHtml = as.character(pt$getHtml(includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
                                             includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)),
         settings = settings
@@ -457,7 +457,7 @@ p { font: 0.9em arial; }
         viewer.padding=10, viewer.fill=FALSE, viewer.suppress=FALSE,
         browser.padding=10, browser.fill=FALSE
       )
-      w <- htmlwidgets::createWidget("pivottabler", x, width=width, height=height, sizingPolicy=sp)
+      w <- htmlwidgets::createWidget("pivottabler", widgetData, width=width, height=height, sizingPolicy=sp)
       self$message("PivotTable$renderPivot", "Rendered htmlwidget.")
       return(w)
     },

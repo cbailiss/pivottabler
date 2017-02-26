@@ -4,10 +4,12 @@ Title: Create Pivot Tables natively in R
 Version: 0.1.0
 Authors@R: person("Christopher", "Bailiss", email = "cbailiss@gmail.com",
   role = c("aut", "cre"))
-Description: pivottabler enables regular pivot tables to be 
-    created in just a few lines of R.  More complex pivot tables can 
+Description: pivottabler enables regular pivot tables to be easily 
+    created with just a few lines of R.  More complex pivot tables can 
     also be created, e.g. with irregular layouts, multiple calculations 
-    and/or derived calculations based on multiple data frames. 
+    and/or derived calculations based on multiple data frames.  
+    This provides the R language with capabilities comparable to many 
+    off-the-shelf/commercial reporting and data analysis applications.
 Depends: R (>= 3.2.0)
 Imports:
     R6 (>= 2.2.0),

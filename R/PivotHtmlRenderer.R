@@ -1,8 +1,3 @@
-# todo:  ensure each of these cases works
-# no row groups (only the default 1) and no column groups (only the default one): render a four cell table (i.e. one data cell)
-# only one row/column group and multiple groups on other axis: render a placeholder cell with no caption (or maybe use the calculation name?)
-# multiple row and multiple column groups: render as normal
-
 PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
   public = list(
    initialize = function(parentPivot) {

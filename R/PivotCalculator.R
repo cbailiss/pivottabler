@@ -23,8 +23,6 @@
 # this class is designed to be a helper class for users to interact with when running calculations, especially
 # inside custom functions
 
-# todo: add checks for the wrong execution order (e.g. if a calc of type "calc" is referring to a calc of type "summary" with a higher execution order)
-
 PivotCalculator <- R6::R6Class("PivotCalculator",
   public = list(
    initialize = function(parentPivot=NULL) {
