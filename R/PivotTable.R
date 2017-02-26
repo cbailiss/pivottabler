@@ -434,6 +434,33 @@ p { font: 0.9em arial; }
       self$message("PivotTable$saveHtml", "Saved HTML.")
       return(invisible())
     },
+    renderPivot = function(width=NULL, height=NULL, includeRCFilters=FALSE, includeCalculationFilters=FALSE,
+                      includeCalculationNames=FALSE, includeRawValue=FALSE) {
+      checkArgument("PivotTable", "renderPivot", width, missing(width), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+      checkArgument("PivotTable", "renderPivot", height, missing(height), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+      checkArgument("PivotTable", "renderPivot", includeRCFilters, missing(includeRCFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "renderPivot", includeCalculationFilters, missing(includeCalculationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "renderPivot", includeCalculationNames, missing(includeCalculationNames), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "renderPivot", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      self$message("PivotTable$renderPivot", "Rendering htmlwidget...", list(width=width, height=height))
+      # pivottabler(self, width=width, height=height, includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
+      #                 includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
+      settings <- list() # may need this in the future
+      x <- list(
+        tableHtml = as.character(pt$getHtml(includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
+                                            includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)),
+        settings = settings
+      )
+      # viewer.fill=TRUE and browser.fill=TRUE sound like they would be good things, but they seem to prevent
+      # any scroll bars being shown when the HTML tables are larger than the RStudio Viewer or the web browser window size
+      sp = htmlwidgets::sizingPolicy(
+        viewer.padding=10, viewer.fill=FALSE, viewer.suppress=FALSE,
+        browser.padding=10, browser.fill=FALSE
+      )
+      w <- htmlwidgets::createWidget("pivottabler", x, width=width, height=height, sizingPolicy=sp)
+      self$message("PivotTable$renderPivot", "Rendered htmlwidget.")
+      return(w)
+    },
     message = function(methodName, desc, detailList=NULL) {
       if(!private$p_messages) return()
       stackdepth <- length(sys.calls())
@@ -474,8 +501,8 @@ p { font: 0.9em arial; }
     viewJSON = function() {
       if (!requireNamespace("listviewer", quietly = TRUE)) {
         stop("PivotTable$asJSON():  The listviewer package is needed to view the internal structure of the PivotTable as JSON.  Please install it.", call. = FALSE)
+      }
       listviewer::jsonedit(self$asList(), mode="code")
-  }
     },
     finalize = function() {
       if(!is.null(private$p_messageFile)) close(private$p_messageFile)

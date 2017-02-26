@@ -164,6 +164,15 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      # todo: escaping below
      summaryCmd <- paste0("data <- dplyr::summarise(dataFrame, ", summaryName, " = ", summariseExpression, ")")
      eval(parse(text=summaryCmd))
+     if((nrow(data)>1)|(ncol(data)>1))
+       stop(paste0("PivotCalculator$getSummaryValue(): Summary expression '", summaryName, "' has resulted in '", nrow(data),
+                   " row(s) and ", ncol(data), " columns.  There must be a maximum of 1 row and 1 column in the result."))
+     data <- dplyr::collect(data)
+     if("tbl_df" %in% class(data)) data <- as.data.frame(data) # workaround of a possible bug in dplyr? collect seems to still sometimes return a tbl_df
+     if("tbl_df" %in% class(data)) {
+       stop(paste0("PivotCalculator$getSummaryValue(): Unable to coerce the tbl_df back to a data.frame for summary epxression '", summaryName, "'.",
+                   "  This has resulted in a value of data type [", class(data), "] with ", nrow(data), " row(s) and ", ncol(data), " columns."))
+     }
      value <- data[1, 1]
      private$p_parentPivot$message("PivotCalculator$getSummaryValue", "Got summary value.")
      return(value)

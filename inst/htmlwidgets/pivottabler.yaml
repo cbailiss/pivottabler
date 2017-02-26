@@ -1,0 +1,6 @@
+dependencies:
+  - name: pivottabler
+    version: 0.1.0
+    src: htmlwidgets/lib/pivottabler-0.1.0
+    stylesheet:
+      - themes.css

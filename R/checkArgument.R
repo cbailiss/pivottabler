@@ -9,7 +9,7 @@ checkArgument <- function(className, methodName, argumentValue, isMissing, # no 
     if(length(intersect(allowedClasses, class(argumentValue))) == 0) {
       if(length(allowedClasses) > 0) {
         stop(paste0(className, "$", methodName, "():  ", argumentName, " must be one of the following types: [",
-                    paste(allowedClasses, collapse = ", "), "]"), call. = FALSE)
+                    paste(allowedClasses, collapse = ", "), "].  Type encountered: [", paste(class(argumentValue), collapse=", "), "]"), call. = FALSE)
       }
       else {
         stop(paste0(className, "$", methodName, "():  ", argumentName, " must be of type ", allowedClasses), call. = FALSE)
