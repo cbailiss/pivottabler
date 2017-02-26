@@ -1,0 +1,72 @@
+libs
+todo:  get all of this working without the library references as packages should not contain library references
+e.g. change R6Class(...) to R6::R6Class(...)
+library(R6)
+library(jsonlite)
+library(listviewer) - removed to avoid the extra dependency
+library(dplyr)
+library(htmltools)
+
+writing an R package
+https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/
+https://support.rstudio.com/hc/en-us/articles/200486488-Developing-Packages-with-RStudio
+http://tinyheero.github.io/jekyll/update/2015/07/26/making-your-first-R-package.html
+http://web.mit.edu/insong/www/pdf/rpackage_instructions.pdf
+http://stackoverflow.com/questions/35581343/create-and-document-a-package-with-r6-classes
+
+todo:  htmlwidget:
+http://www.htmlwidgets.org/develop_intro.html
+http://deanattali.com/blog/htmlwidgets-tips/
+
+CRAN
+https://datavu.blogspot.co.uk/2015/01/how-to-create-and-publish-r-package-on.html
+
+pivottable classes...
+
+todo: fix code so can render a Pivot before specifying calculations (i.e. to just render the row and/or column headings alone)
+
+todo: maybe add a latex renderer, for small example, see:
+http://tex.stackexchange.com/questions/228453/how-to-render-this-table
+
+todo: CSS support.  Add a PivotCSS class:  properties:  cssClassName, cssStyle, plus maybe some helper methods.
+Add properties on the PivotTable (each an instance of the class):  PivotCSS,  RootCSS (for the top left empty cell), ColumnHeadingCSS, RowHeadingCSS, CellCSS
+Add helper methods on the PivotTable:  setPivotCSS, setRootCSS, setColumnHeadingCSS(), setRowHeadingCSS(), setHeadingCSS (which sets Root, ColHeading and RowHeading), setCellCSS
+
+# todo: sort out the formatting, so can render either via the format() function or sprintf or a combination of the two
+# todo: ability to sort the data after the cell values have been calculated
+# todo: ability to find rows, columns or cells based on a variable name and value.  For the rows/columns, can easily get all cells and/or set css styling.
+# todo: support a few different themes (implemented as different sets of built in CSS).
+
+
+
+stages of building a pivot table
+[not supported:  global filters: created a derived data frame before creating the pivot]
+specify the axes (i.e. the data groups on each)
+specify the measures/calculations
+normalise the rows and columns
+generate the body structure, i.e. generates the cell specifications,
+  for each cell: a combination of (rowDataGroup, colDataGroup, measureGroup)
+allow the user to manually change any part of the body structure, e.g. link
+  in a new measure definition
+calculate the values for the cells
+
+groupType: one of:  top, filter, text
+parentGroup:  the parent data group
+variableName:  for groupType=filter, the name of the variable
+value:  for groupType=filter, either "*" (for all), a single value or a vector of values
+text:  for groupType=text (and also any other groupType), the text to display
+
+todo: addLeafDataGroup():  where the data values to add are derived from the dataFrame, need to handle the case when there
+      after the dataFrame is filtered based on the filters from the parent data groups, there are no rows/values left.
+      In this case, simply insert a placeholder group with no criteria.
+      Also, how to handle null values, since a filter with values=NULL means match everything
+
+
+
+
+
+
+
+
+
+

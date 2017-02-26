@@ -1,0 +1,23 @@
+Package: pivottabler
+Type: Package
+Title: Create Pivot Tables natively in R
+Version: 0.1.0
+Authors@R: person("Christopher", "Bailiss", email = "cbailiss@gmail.com",
+  role = c("aut", "cre"))
+Description: pivottabler enables regular pivot tables to be 
+    created in just a few lines of R.  More complex pivot tables can 
+    also be created, e.g. with irregular layouts, multiple calculations 
+    and/or derived calculations based on multiple data frames. 
+Depends: R (>= 3.2.0)
+Imports:
+    R6 (>= 2.2.0),
+    dplyr (>= 0.5.0),
+    jsonlite (>= 1.1),
+    htmltools(>= 0.3.5)
+Suggests:
+    listviewer (>= 1.4.0)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+URL: http://tbc.com/tbc/
+BugReports: https://github.com/tbc/tbc/issues
