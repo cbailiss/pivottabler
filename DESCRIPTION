@@ -20,5 +20,5 @@ Suggests:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-URL: http://tbc.com/tbc/
-BugReports: https://github.com/tbc/tbc/issues
+URL: https://github.com/cbailiss/pivottabler
+BugReports: https://github.com/cbailiss/pivottabler/issues
