@@ -112,21 +112,24 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      # implement the same optimisation inside addLeafDataGroup function - change that code to call this function
      if (filters$count > 0)
      {
+       filterCmd <- NULL
        for(j in 1:length(filters$filters)) {
          filter <- filters$filters[[j]]
          if(is.null(filter$variableName)) stop("PivotCalculator$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
          if(is.null(filter$values)) next
          if(length(filter$values)==0) next
+         if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
          if(length(filter$values)==1) {
-           filterCmd <- paste0("data <- dplyr::filter(data, ", filter$variableName, "== filter$values)")
+           filterCmd <- paste0(filterCmd, "(", filter$variableName, " == filters$filters[[", j, "]]$values)")
          }
          else if(length(filter$values)>1) {
-           filterCmd <- paste0("data <- dplyr::filter(data, ", filter$variableName, "%in% filter$values)")
+           filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% filters$filters[[", j, "]]$values)")
          }
          # using eval repeatedly with the command above is not very efficient
          # but it avoids issues with values as strings, escaping, using stringi::stri_escape_unicode, etc
-         eval(parse(text=filterCmd))
        }
+       filterCmd <- paste0("data <- dplyr::filter(data,", filterCmd, ")")
+       eval(parse(text=filterCmd))
      }
      private$p_parentPivot$message("PivotCalculator$getFilteredDataFrame", "Got filtered data frame.")
      return(data)
@@ -166,10 +169,12 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        stop(paste0("PivotCalculator$getSummaryValue(): Summary expression '", summaryName, "' has resulted in '", nrow(data),
                    " row(s) and ", ncol(data), " columns.  There must be a maximum of 1 row and 1 column in the result."))
      data <- dplyr::collect(data)
-     if("tbl_df" %in% class(data)) data <- as.data.frame(data) # workaround of a possible bug in dplyr? collect seems to still sometimes return a tbl_df
      if("tbl_df" %in% class(data)) {
-       stop(paste0("PivotCalculator$getSummaryValue(): Unable to coerce the tbl_df back to a data.frame for summary epxression '", summaryName, "'.",
+       data <- as.data.frame(data) # workaround of a possible bug in dplyr? collect seems to still sometimes return a tbl_df
+       if("tbl_df" %in% class(data)) {
+         stop(paste0("PivotCalculator$getSummaryValue(): Unable to coerce the tbl_df back to a data.frame for summary epxression '", summaryName, "'.",
                    "  This has resulted in a value of data type [", class(data), "] with ", nrow(data), " row(s) and ", ncol(data), " columns."))
+       }
      }
      value <- data[1, 1]
      private$p_parentPivot$message("PivotCalculator$getSummaryValue", "Got summary value.")
