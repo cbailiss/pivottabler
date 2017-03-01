@@ -74,6 +74,7 @@ PivotCell <- R6::R6Class("PivotCell",
    },
    rowLeafGroup = function(value) { return(private$p_rowLeafGroup) },
    columnLeafGroup = function(value) { return(private$p_columnLeafGroup) },
+   isTotal = function(Value) { return(private$p_rowLeafGroup$isTotal|private$p_columnLeafGroup$isTotal)},
    rawValue = function(value) {
      if(missing(value)) return(private$p_rawValue)
      else private$p_rawValue <- value

@@ -114,8 +114,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_parentPivot$message("DataGroup$addChildGroup", "Adding child group...",
                                    list(caption=caption, isTotal=isTotal, variableName=variableName, values=values,
                                    calculationGroupName=calculationGroupName, calculationName=calculationName))
+     total <- isTotal | self$isTotal
      grp <- PivotDataGroup$new(parentGroup=self, parentPivot=private$p_parentPivot,
-                          rowOrColumn=private$p_rowOrColumn, caption=caption, isTotal=isTotal,
+                          rowOrColumn=private$p_rowOrColumn, caption=caption, isTotal=total,
                           variableName=variableName, values=values,
                           calculationGroupName=calculationGroupName, calculationName=calculationName)
      index <- length(private$p_groups) + 1
@@ -265,7 +266,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            newLeafGroups[[index]] <- newGrp
          }
          for(j in 1:length(distinctValues)) {
-           newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[[j]], calculationGroupName=calculationGroupName)
+           newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[[j]], calculationGroupName=calculationGroupName, isTotal=self$isTotal)
            index <- length(newLeafGroups) + 1
            newLeafGroups[[index]] <- newGrp
          }
@@ -282,7 +283,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            newLeafGroups[[index]] <- newGrp
          }
          for(j in 1:length(distinctValues)) {
-           newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[j], calculationGroupName=calculationGroupName)
+           newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[j], calculationGroupName=calculationGroupName, isTotal=self$isTotal)
            index <- length(newLeafGroups) + 1
            newLeafGroups[[index]] <- newGrp
          }
@@ -350,7 +351,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          for(j in 1:length(calculations)) {
            calc <- calculations[[j]]
            newGroup <- grp$addChildGroup(caption=calc$caption,
-                                         calculationGroupName=calculationGroupName, calculationName=calc$calculationName)
+                                         calculationGroupName=calculationGroupName, calculationName=calc$calculationName, isTotal=self$isTotal)
            index <- length(newLeafGroups) + 1
            newLeafGroups[[index]] <- newGroup
          }
@@ -393,7 +394,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if(ancsCount < maxParents) {
          dg <- leafGroups[[i]]
          for(j in 1:(maxParents-ancsCount)) {
-           dg <- dg$addChildGroup()
+           dg <- dg$addChildGroup(isTotal=self$isTotal)
            groupsAdded <- groupsAdded + 1
          }
        }
