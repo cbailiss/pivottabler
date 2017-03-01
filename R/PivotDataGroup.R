@@ -223,22 +223,24 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          # todo: checking the escaping of the variable names and values below
          if (rowColFilters$count > 0)
          {
+           filterCmd <- NULL
            for(j in 1:length(rowColFilters$filters)) {
              filter <- rowColFilters$filters[[j]]
-             if(is.null(filter$variableName)) stop("DataGroup$addLeafDataGroup(): filter$variableName must not be null", call. = FALSE)
+             if(is.null(filter$variableName)) stop("PivotCalculator$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
              if(is.null(filter$values)) next
              if(length(filter$values)==0) next
+             if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
              if(length(filter$values)==1) {
-               filterCmd <- paste0("data <- dplyr::filter(data, ", filter$variableName, "== filter$values)")
+               filterCmd <- paste0(filterCmd, "(", filter$variableName, " == rowColFilters$filters[[", j, "]]$values)")
              }
              else if(length(filter$values)>1) {
-               filterCmd <- paste0("data <- dplyr::filter(data, ", filter$variableName, "%in% filter$values)")
+               filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% rowColFilters$filters[[", j, "]]$values)")
              }
              # using eval repeatedly with the command above is not very efficient
              # but it avoids issues with values as strings, escaping, using stringi::stri_escape_unicode, etc
-             # another instance of this 50 or so lines up
-             eval(parse(text=filterCmd))
            }
+           filterCmd <- paste0("data <- dplyr::filter(data,", filterCmd, ")")
+           eval(parse(text=filterCmd))
          }
          # get the distinct values for the current variable
          eval(parse(text=paste0("data <- dplyr::select(data, ", variableName, ")")))
