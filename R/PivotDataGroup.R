@@ -114,6 +114,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_parentPivot$message("DataGroup$addChildGroup", "Adding child group...",
                                    list(caption=caption, isTotal=isTotal, variableName=variableName, values=values,
                                    calculationGroupName=calculationGroupName, calculationName=calculationName))
+     private$p_parentPivot$resetCells()
      total <- isTotal | self$isTotal
      grp <- PivotDataGroup$new(parentGroup=self, parentPivot=private$p_parentPivot,
                           rowOrColumn=private$p_rowOrColumn, caption=caption, isTotal=total,
@@ -150,6 +151,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                         leafLevelPermutations=leafLevelPermutations, explicitListOfValues=explicitListOfValues,
                                         expandExistingTotals=expandExistingTotals, addTotal=addTotal, visualTotals=visualTotals,
                                         totalPosition=totalPosition, totalCaption=totalCaption))
+     private$p_parentPivot$resetCells()
      if(missing(variableName)|is.null(variableName)) stop("DataGroup$addLeafDataGroup(): variableName must be specified", call. = FALSE)
      if(addTotal==TRUE){ private$p_visualTotals <- visualTotals }
      df <- NULL
@@ -309,6 +311,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    addLeafCalculationGroup = function(calculationGroupName=NULL) {
      checkArgument("PivotDataGroup", "addLeafCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      private$p_parentPivot$message("DataGroup$addLeafCalculationGroup", "Adding leaf calculation group...")
+     private$p_parentPivot$resetCells()
      private$p_parentPivot$calculationsPosition <- private$p_rowOrColumn # will throw an error if trying to add calcs to one axis when already present on the other axis
      if(missing(calculationGroupName)) stop("DataGroup$addLeafCalculationGroup():  calculationGroupName must be specified.", call. = FALSE)
      if(is.null(calculationGroupName)) stop("DataGroup$addLeafCalculationGroup():  calculationGroupName cannot be null.", call. = FALSE)
@@ -377,6 +380,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    },
    normaliseDataGroup = function() {
      private$p_parentPivot$message("DataGroup$normaliseDataGroup", "Normalising data group...")
+     private$p_parentPivot$resetCells()
      # get the leaf level groups
      leafGroups <- self$getLeafGroups()
      # get the maximum number of parents of each group

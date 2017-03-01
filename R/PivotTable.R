@@ -44,6 +44,7 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument("PivotTable", "addTopColumnGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       self$message("PivotTable$addTopColumnGroup", "Adding top level column group...",
                    list(variableName=variableName, values=values, caption=caption))
+      self$resetCells()
       grps <- private$p_columnGroup$addChildGroup(variableName=variableName, values=values, caption=caption)
       self$message("PivotTable$addTopColumnGroup", "Added top level column group.")
       return(invisible(grps))
@@ -68,6 +69,7 @@ PivotTable <- R6::R6Class("PivotTable",
                         leafLevelPermutations=leafLevelPermutations, explicitListOfValues=explicitListOfValues,
                         calculationGroupName=calculationGroupName, expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                         visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption))
+      self$resetCells()
       grp <- private$p_columnGroup$addLeafDataGroup(variableName=variableName, dataName=dataName, fromData=fromData,
                                                 leafLevelPermutations=leafLevelPermutations, explicitListOfValues=explicitListOfValues,
                                                 calculationGroupName=calculationGroupName,
@@ -78,6 +80,7 @@ PivotTable <- R6::R6Class("PivotTable",
     },
     normaliseColumnGroups = function() {
       self$message("PivotTable$normaliseColumnGroups", "Normalising column groups...")
+      self$resetCells()
       groupsAdded <- private$p_columnGroup$normaliseDataGroup()
       self$message("PivotTable$normaliseColumnGroups", "Normalised column groups.", list(groupsAdded = groupsAdded))
       return(invisible())
@@ -99,6 +102,7 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument("PivotTable", "addTopRowGroup", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       checkArgument("PivotTable", "addTopRowGroup", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
       checkArgument("PivotTable", "addTopRowGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      self$resetCells()
       self$message("PivotTable$addTopRowGroup", "Adding top level row group...",
                    list(variableName=variableName, values=values, caption=caption))
       grp <- private$p_rowGroup$addChildGroup(variableName=variableName, values=values, caption=caption)
@@ -125,6 +129,7 @@ PivotTable <- R6::R6Class("PivotTable",
                         leafLevelPermutations=leafLevelPermutations, explicitListOfValues=explicitListOfValues,
                         calculationGroupName=calculationGroupName, expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                         visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption))
+      self$resetCells()
       grps <- private$p_rowGroup$addLeafDataGroup(variableName=variableName, dataName=dataName, fromData=fromData,
                                                 leafLevelPermutations=leafLevelPermutations, explicitListOfValues=explicitListOfValues,
                                                 calculationGroupName=calculationGroupName,
@@ -135,14 +140,15 @@ PivotTable <- R6::R6Class("PivotTable",
     },
     normaliseRowGroups = function() {
       self$message("PivotTable$normaliseRowGroups", "Normalising row groups...")
+      self$resetCells()
       groupsAdded <- private$p_rowGroup$normaliseDataGroup()
       self$message("PivotTable$normaliseRowGroups", "Normalised row groups.", list(groupsAdded = groupsAdded))
       return(invisible())
     },
     addCalculationGroup = function(calculationGroupName=NULL) {
       checkArgument("PivotTable", "addCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      self$message("PivotTable$addCalculationGroup", "Adding calculation group...",
-                   list(calculationGroupName=calculationGroupName))
+      self$message("PivotTable$addCalculationGroup", "Adding calculation group...", list(calculationGroupName=calculationGroupName))
+      self$resetCells()
       calculationGroup <- private$p_calculationGroups$addCalculationGroup(calculationGroupName)
       self$message("PivotTable$addCalculationGroup", "Added calculation group.")
       return(invisible(calculationGroup))
@@ -172,6 +178,7 @@ PivotTable <- R6::R6Class("PivotTable",
                         visible=visible, displayOrder=displayOrder, filters=fstr, format=format, dataName=dataName,
                         type=type, valueName=valueName, summariseExpression=summariseExpression,
                         calculationExpression=calculationExpression, calculationFunction=calculationFunction))
+      self$resetCells()
       calculationGroupExists <- private$p_calculationGroups$isExistingCalculationGroup(calculationGroupName)
       if(calculationGroupExists) {
         calculationGroup <- private$p_calculationGroups$getCalculationGroup(calculationGroupName)
@@ -190,6 +197,7 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument("PivotTable", "addLeafColumnCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
       self$message("PivotTable$addLeafColumnCalculationGroup", "Adding leaf level column calculation group...",
                    list(calculationGroupName=calculationGroupName))
+      self$resetCells()
       grps <- private$p_columnGroup$addLeafCalculationGroup(calculationGroupName=calculationGroupName)
       self$message("PivotTable$addLeafColumnCalculationGroup", "Added leaf level column calculation group.")
       return(invisible(grps))
@@ -198,6 +206,7 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument("PivotTable", "addLeafRowCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
       self$message("PivotTable$addLeafRowCalculationGroup", "Adding leaf level row calculation group...",
                    list(calculationGroupName=calculationGroupName))
+      self$resetCells()
       grps <- private$p_rowGroup$addLeafCalculationGroup(calculationGroupName=calculationGroupName)
       self$message("PivotTable$addLeafRowCalculationGroup", "Added leaf level row calculation group.")
       return(invisible(grps))
@@ -353,6 +362,14 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$generateCellStructure", "Generated cell structure.")
       return(invisible(private$cells))
     },
+    resetCells = function() {
+      self$message("PivotTable$resetCells", "Resetting cells...")
+      if(private$p_evaluated==TRUE){
+        p_cells <- NULL
+        private$p_evaluated <- FALSE
+      }
+      self$message("PivotTable$resetCells", "Reset cells.")
+    },
     evaluateCells = function() {
       self$message("PivotTable$evaluateCells", "Evaluating cell values...")
       if(is.null(private$p_cells)) stop("PivotTable$evaluateCells():  No cells exist to calculate.", call. = FALSE)
@@ -365,6 +382,7 @@ PivotTable <- R6::R6Class("PivotTable",
           calculator$evaluateCell(cell)
         }
       }
+      private$p_evaluated <- TRUE
       self$message("PivotTable$evaluateCells", "Evaluated cell values.")
       return(invisible())
     },
@@ -383,6 +401,7 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument("PivotTable", "getHtml", includeCalculationNames, missing(includeCalculationNames), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "getHtml", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       self$message("PivotTable$getHtml", "Getting HTML...")
+      if(!private$p_evaluated) stop("PivotTable$getHtml():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       # todo: enable rendering before cells are calculated so the structure of the pivot can be checked as it is being developed
       if(is.null(private$p_cells)) stop("PivotTable$getHtml():  No cells exist to render.", call. = FALSE)
       htmlTable <- private$p_renderer$getTableHtml(includeRCFilters=includeRCFilters,
@@ -400,6 +419,7 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument("PivotTable", "saveHtml", includeCalculationNames, missing(includeCalculationNames), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "saveHtml", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       self$message("PivotTable$saveHtml", "Saving HTML...", list(filePath=filePath, fullPageHTML=fullPageHTML))
+      if(!private$p_evaluated) stop("PivotTable$getHtml():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       # todo: enable rendering before cells are calculated so the structure of the pivot can be checked as it is being developed
       if(is.null(private$p_cells)) stop("PivotTable$saveHtml():  No cells exist to render.", call. = FALSE)
       htmlTable <- private$p_renderer$getTableHtml(includeRCFilters=includeRCFilters,
@@ -444,6 +464,7 @@ p { font: 0.9em arial; }
       checkArgument("PivotTable", "renderPivot", includeCalculationNames, missing(includeCalculationNames), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "renderPivot", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       self$message("PivotTable$renderPivot", "Rendering htmlwidget...", list(width=width, height=height))
+      if(!private$p_evaluated) stop("PivotTable$getHtml():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       # pivottabler(self, width=width, height=height, includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
       #                 includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
       settings <- list() # may need this in the future
@@ -542,6 +563,7 @@ p { font: 0.9em arial; }
     p_columnGroup = NULL,
     p_calculationsPosition = NULL,
     p_calculationGroups = NULL,
+    p_evaluated = FALSE,
     p_cells = NULL,
     p_renderer = NULL,
     p_messages = FALSE,
