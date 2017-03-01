@@ -33,9 +33,14 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      # ...cells:
      rowCount <- private$p_parentPivot$cells$rowCount
      columnCount <- private$p_parentPivot$cells$columnCount
+     # special case of no rows and no columns, return a blank empty table
+     if((rowGroupCount==0)&(columnGroupCount==0)) {
+       tbl <- htmltools::tags$table(htmltools::tags$tr(htmltools::tags$td(htmltools::HTML("(no data)"))))
+       return(tbl)
+     }
      # there must always be at least one row and one column
-     insertDummyRowHeading <- (rowGroupCount==0)
-     insertDummyColumnHeading <- (columnGroupCount==0)
+     insertDummyRowHeading <- (rowGroupCount==0) & (columnGroupCount > 0)
+     insertDummyColumnHeading <- (columnGroupCount==0) & (rowGroupCount > 0)
      # build the table up row by row
      trows <- list()
      # render the column headings, with a large blank cell at the start over the row headings
@@ -65,7 +70,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        trow <- list()
        # render the row headings
        if(insertDummyRowHeading) {
-         trow[[1]] <- htmltools::tags$th()
+         trow[[1]] <- htmltools::tags$th(htmltools::HTML("&nbsp;"))
        }
        else {
          # get the leaf row group, then render any parent data groups that haven't yet been rendered

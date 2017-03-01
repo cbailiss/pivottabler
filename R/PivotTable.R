@@ -330,33 +330,42 @@ PivotTable <- R6::R6Class("PivotTable",
         stop("PivotTable$generateCellStructure(): calculationsPosition must be either row or column", call. = FALSE)
       # create and size the new PivotCells
       private$p_cells <- PivotCells$new(self, rowGroups=rowGrps, columnGroups=columnGrps)
-      for(r in 1:rowCount) {
-        for(c in 1:columnCount) {
-          # calculate the net filters
-          if(is.null(rowFilters[[r]])) {
-            if(!is.null(columnFilters[[c]])) { rowColFilters <- columnFilters[[c]]$getCopy() }
+      if(rowCount>0) {
+        for(r in 1:rowCount) {
+          if(columnCount>0) {
+            for(c in 1:columnCount) {
+              # calculate the net filters
+              if(is.null(rowFilters[[r]])) {
+                if(!is.null(columnFilters[[c]])) { rowColFilters <- columnFilters[[c]]$getCopy() }
+              }
+              else {
+                rowColFilters <- rowFilters[[r]]$getCopy()
+                if (!is.null(columnFilters[[c]])) { rowColFilters$setFilters(columnFilters[[c]]) } # column filters override row filters
+              }
+              # find the calculation
+              calcGrpNme <- NULL
+              calcNme <- NULL
+              if(calculationsPosition=="row") {
+                if(r <= length(rowCalculationGroupNames)) calcGrpNme <- rowCalculationGroupNames[[r]]
+                else calcGrpNme <- NULL
+                if(r <= length(rowCalculationNames)) calcNme <- rowCalculationNames[[r]]
+                else calcNme<- NULL
+              }
+              else if(calculationsPosition=="column") {
+                if(c <= length(columnCalculationGroupNames)) calcGrpNme <- columnCalculationGroupNames[[c]]
+                else calcGrpNme<- NULL
+                if(c <= length(columnCalculationNames))
+                calcNme <- columnCalculationNames[[c]]
+                else calcNme<- NULL
+              }
+              # create the cell
+              cell <- PivotCell$new(self, rowNumber=as.integer(r), columnNumber=as.integer(c),
+                                    calculationName=calcNme, calculationGroupName=calcGrpNme,
+                                    rowColFilters=rowColFilters, rowFilters=rowFilters[[r]], columnFilters=columnFilters[[c]],
+                                    rowLeafGroup=rowGrps[[r]], columnLeafGroup=columnGrps[[c]])
+              private$p_cells$setCell(r=r, c=c, cell=cell)
+            }
           }
-          else {
-            rowColFilters <- rowFilters[[r]]$getCopy()
-            if (!is.null(columnFilters[[c]])) { rowColFilters$setFilters(columnFilters[[c]]) } # column filters override row filters
-          }
-          # find the calculation
-          calcGrpNme <- NULL
-          calcNme <- NULL
-          if(calculationsPosition=="row") {
-            calcGrpNme <- rowCalculationGroupNames[[r]]
-            calcNme <- rowCalculationNames[[r]]
-          }
-          else if(calculationsPosition=="column") {
-            calcGrpNme <- columnCalculationGroupNames[[c]]
-            calcNme <- columnCalculationNames[[c]]
-          }
-          # create the cell
-          cell <- PivotCell$new(self, rowNumber=as.integer(r), columnNumber=as.integer(c),
-                                calculationName=calcNme, calculationGroupName=calcGrpNme,
-                                rowColFilters=rowColFilters, rowFilters=rowFilters[[r]], columnFilters=columnFilters[[c]],
-                                rowLeafGroup=rowGrps[[r]], columnLeafGroup=columnGrps[[c]])
-          private$p_cells$setCell(r=r, c=c, cell=cell)
         }
       }
       self$message("PivotTable$generateCellStructure", "Generated cell structure.")
