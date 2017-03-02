@@ -33,6 +33,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
    },
    getDataFrame = function(dataName=NULL) {
      checkArgument("PivotCalculator", "getDataFrame", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     private$p_parentPivot$message("PivotCalculator$getDataFrame", "Getting data frame...")
      df <- private$p_parentPivot$data$getData(dataName)
      private$p_parentPivot$message("PivotCalculator$getDataFrame", "Got data frame.")
      return(df)
@@ -280,26 +281,55 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      private$p_parentPivot$message("PivotCalculator$evaluateSCalculationExpression", "Evaluated summary expression.")
      return(value)
    },
-   evaluateCalculationGroup = function(calculationGroupName=NULL, rowColFilters=NULL, isTotalCell=NULL) {
+   evaluateCalculateFunction = function(rowColFilters=NULL, calcFilters=NULL,
+                                        calculationFunction=NULL, format=NULL, baseValues=NULL, cell=NULL) {
+     checkArgument("PivotCalculator", "evaluateCalculateFunction", rowColFilters, missing(rowColFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
+     checkArgument("PivotCalculator", "evaluateCalculateFunction", calcFilters, missing(calcFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
+     checkArgument("PivotCalculator", "evaluateCalculateFunction", calculationFunction, missing(calculationFunction), allowMissing=FALSE, allowNull=FALSE, allowedClasses="function")
+     checkArgument("PivotCalculator", "evaluateCalculateFunction", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotCalculator", "evaluateCalculateFunction", baseValues, missing(baseValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
+     checkArgument("PivotCalculator", "evaluateCalculateFunction", cell, missing(cell), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotCell")
+     private$p_parentPivot$message("PivotCalculator$evaluateCalculateFunction", "Evaluating calculation function...")
+     # get the final filter context for this calculation (calcFilters override row/col filters)
+     filters <- NULL
+     value <- list()
+     if(is.null(rowColFilters)) {
+       if(!isnull(calcFilters)) filters <- calcFilters$getCopy()
+     }
+     else {
+       filters <- rowColFilters$getCopy()
+       if(!is.null(calcFilters)) { filters <- filters$setFilters(filters=calcFilters) }
+     }
+     # calculate the value by calling the calculation function
+     rv <- calculationFunction(pivotCalculator=self, netFilters=filters, format=format, baseValues=baseValues, cell=cell)
+     value$rawValue <- rv$rawValue
+     value$formattedValue <- rv$formattedValue
+     private$p_parentPivot$message("PivotCalculator$evaluateCalculateFunction", "Evaluated calculation function.")
+     return(value)
+   },
+   evaluateCalculationGroup = function(calculationName=NULL, basedOn=NULL, calculationGroupName=NULL, rowColFilters=NULL, cell=NULL) {
+     checkArgument("PivotCalculator", "evaluateCalculationGroup", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      checkArgument("PivotCalculator", "evaluateCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotCalculator", "evaluateCalculationGroup", rowColFilters, missing(rowColFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
-     checkArgument("PivotCalculator", "evaluateCalculationGroup", isTotalCell, missing(isTotalCell), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+     checkArgument("PivotCalculator", "evaluateCalculationGroup", cell, missing(cell), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotCell")
      private$p_parentPivot$message("PivotCalculator$evaluateCalculationGroup", "Evaluating calculation group...")
-     # get the calculation group
+     # get the calculation and calculation group
      calcGrp <- self$getCalculationGroup(calculationGroupName)
      calcs <- calcGrp$calculations
-     # build a list of the calculations to be computed, in the order of evaluation
-     sorter <- function(calc) { return(calc$executionOrder) }
-     execOrder <- calcs[order(unlist(lapply(calcs, sorter)))]
+     # execution order
+     execOrder <- NULL
+     basedOn <- calcs[[calculationName]]$basedOn
+     if(!is.null(basedOn)) execOrder <- rep(basedOn)
+     execOrder[length(execOrder)+1] <- calculationName
      # execute the calculations
      results <- list() # each item in the list is a list of three items (rawValue, formattedValue, filters)
      for(i in 1:length(execOrder)) {
-       calc <- execOrder[[i]]
+       calc <- calcs[[execOrder[i]]]
        if(calc$type=="value") {
          df <- self$getDataFrame(calc$dataName)
-         if(missing(isTotalCell)|is.null(isTotalCell))
-           stop("PivotCalculator$evaluateCalculationGroup():  For type=value, isTotalCell must be specified.", call. = FALSE)
-         if(isTotalCell==TRUE) {
+         if(missing(cell)|is.null(cell))
+           stop("PivotCalculator$evaluateCalculationGroup():  For type=value, cell must be specified.", call. = FALSE)
+         if(cell$isTotal==TRUE) {
            if(is.null(calc$summariseExpression)) { value <- private$getNullValue() }
            else {
              value <- self$evaluateSummariseExpression(dataFrame=df, rowColFilters=rowColFilters, calcFilters=calc$filters,
@@ -322,14 +352,24 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        }
        else if(calc$type=="calculation") {
          values <- list()
-         for(j in 1:(i-1)) {
-           values[[names(results)[[j]]]] <- results[[j]]$rawValue
+         if(i>1) {
+           for(j in 1:(i-1)) {
+             values[[names(results)[[j]]]] <- results[[j]]$rawValue
+           }
          }
          value <- self$evaluateCalculationExpression(values=values, calculationExpression=calc$calculationExpression, format=calc$format)
          results[[calc$calculationName]] <- value
        }
        else if(calc$type=="function") {
-         stop("PivotCalculator$evaluateCalculationGroup():  todo: support type='function'", call. = FALSE)
+         values <- list()
+         if(i>1) {
+           for(j in 1:(i-1)) {
+             values[[names(results)[[j]]]] <- results[[j]]$rawValue
+           }
+         }
+         value <- self$evaluateCalculateFunction(rowColFilters=rowColFilters, calcFilters=calc$filters,
+                                            calculationFunction=calc$calculationFunction, format=calc$format, baseValues=values, cell=cell)
+         results[[calc$calculationName]] <- value
        }
        else stop(paste0("PivotCalculator$evaluateCalculationGroup():  Unknown calculation type encountered '", calc$type,
                         "' for calculaton name ", calc$calculationName, "' in calculation group '", calculationGroupName, "'"), call. = FALSE)
@@ -348,7 +388,8 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      rowColFilters <- cell$rowColFilters
      if(is.null(calculationGroupName)) return()
      if(is.null(calculationName)) return()
-     results <- self$evaluateCalculationGroup(calculationGroupName=calculationGroupName, rowColFilters=rowColFilters, isTotalCell=cell$isTotal)
+     results <- self$evaluateCalculationGroup(calculationName=calculationName, calculationGroupName=calculationGroupName,
+                                              rowColFilters=rowColFilters, cell=cell)
      if(!(calculationName %in% names(results)))
        stop(paste0("PivotCalculator$evaluateCell():  calculation result for '", calculationName,
                    "' not found in cell r=", rowNumber, ", c=", columnNumber), call. = FALSE)

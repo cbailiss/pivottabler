@@ -3,8 +3,8 @@ checkArgument <- function(className, methodName, argumentValue, isMissing, # no 
                           allowMissing=FALSE, allowNull=FALSE, allowedClasses=NULL, mustBeAtomic=FALSE, allowedListElementClasses=NULL, listElementsMustBeAtomic=FALSE,
                           allowedValues=NULL, minValue=NULL, maxValue=NULL, maxLength=NULL) {
   argumentName <- substitute(argumentValue)
-  if(isMissing&(!allowMissing)) stop(paste0(className, "$", methodName, "():  ", argumentName, " must be specified", call. = FALSE))
-  if(is.null(argumentValue)&(!allowNull)) stop(paste0(className, "$", methodName, "():  ", argumentName, " must not be null", call. = FALSE))
+  if(isMissing&(!allowMissing)) stop(paste0(className, "$", methodName, "():  ", argumentName, " must be specified"), call. = FALSE)
+  if(is.null(argumentValue)&(!allowNull)) stop(paste0(className, "$", methodName, "():  ", argumentName, " must not be null"), call. = FALSE)
   if((!is.null(argumentValue))&(!is.null(allowedClasses))) {
     if(length(intersect(allowedClasses, class(argumentValue))) == 0) {
       if(length(allowedClasses) > 0) {
