@@ -3,9 +3,7 @@
 ClassName <- R6::R6Class("ClassName",
   public = list(
    initialize = function(parentPivot, data) {
-     if(missing(parentPivot)) stop("ClassName$new():  parentPivot must be specified")
-     if(is.null(parentPivot)) stop("ClassName$new():  parentPivot must not be null")
-     if(!("PivotTable" %in% class(parentPivot))) stop("ClassName$new():  parentPivot must be a PivotTable")
+     checkArgument("ClassName", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
      private$p_parentPivot <- parentPivot
      private$p_parentPivot$message("ClassName$new", "Creating new ClassName...", list())
      private$p_data <- data

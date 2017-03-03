@@ -1,6 +1,8 @@
 PivotTable <- R6::R6Class("PivotTable",
   public = list(
-    initialize = function(messages=FALSE, messageFile=NULL) {
+    initialize = function(themeName="default", allowExternalStyles=FALSE, messages=FALSE, messageFile=NULL) {
+      checkArgument("PivotTable", "initialize", themeName, missing(themeName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "initialize", allowExternalStyles, missing(allowExternalStyles), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
       checkArgument("PivotTable", "initialize", messages, missing(messages), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "initialize", messageFile, missing(messageFile), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       private$p_messages <- messages
@@ -9,6 +11,8 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       self$message("PivotTable$new", "Creating new Pivot Table...")
       private$p_data <- PivotData$new(parentPivot=self)
+      if(is.null(themeName)) private$p_styles <- PivotStyles$new(parentPivot=self, themeName=NULL, allowExternalStyles=allowExternalStyles)
+      else private$p_styles <- getTheme(parentPivot=self, themeName=themeName)
       private$p_rowGroup <- PivotDataGroup$new(parentPivot=self, parentGroup=NULL, rowOrColumn="row")
       private$p_columnGroup <- PivotDataGroup$new(parentPivot=self, parentGroup=NULL, rowOrColumn="column")
       private$p_calculationsPosition <- NULL
@@ -405,6 +409,19 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$evaluatePivot", "Evaluated pivot table.")
       return(invisible())
     },
+    getStyles = function() {
+      self$message("PivotTable$getStyles", "Getting Styles...")
+      if(is.null(private$p_styles)) return("")
+      if(length(private$p_styles$styles)==0) return("")
+      styles <- ""
+      for(s in 1:length(private$p_styles$styles)) {
+        style <- private$p_styles$styles[[s]]
+        if(is.null(style)) next
+        styles <- paste0(styles, style$asNamedCSSStyle(), "\r\n")
+      }
+      self$message("PivotTable$getStyles", "Got Styles.")
+      return(styles)
+    },
     getHtml = function(includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE) {
       checkArgument("PivotTable", "getHtml", includeRCFilters, missing(includeRCFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "getHtml", includeCalculationFilters, missing(includeCalculationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -412,7 +429,6 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument("PivotTable", "getHtml", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       self$message("PivotTable$getHtml", "Getting HTML...")
       if(!private$p_evaluated) stop("PivotTable$getHtml():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
-      # todo: enable rendering before cells are calculated so the structure of the pivot can be checked as it is being developed
       if(is.null(private$p_cells)) stop("PivotTable$getHtml():  No cells exist to render.", call. = FALSE)
       htmlTable <- private$p_renderer$getTableHtml(includeRCFilters=includeRCFilters,
                                                    includeCalculationFilters=includeCalculationFilters,
@@ -479,6 +495,7 @@ p { font: 0.9em arial; }
       #                 includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
       settings <- list() # may need this in the future
       widgetData <- list(
+        tableCss = pt$getStyles(),
         tableHtml = as.character(pt$getHtml(includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
                                             includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)),
         settings = settings
@@ -542,6 +559,7 @@ p { font: 0.9em arial; }
   ),
   active = list(
     data = function(value) { return(private$p_data) },
+    styles = function(value) { return(private$p_styles) },
     rowGroup = function(value) { return(private$p_rowGroup )},
     columnGroup = function(value) { return(private$p_columnGroup )},
     calculationGroups = function(value) { return(private$p_calculationGroups) },
@@ -569,6 +587,7 @@ p { font: 0.9em arial; }
   ),
   private = list(
     p_data = NULL,
+    p_styles = NULL,
     p_rowGroup = NULL,
     p_columnGroup = NULL,
     p_calculationsPosition = NULL,

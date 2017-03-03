@@ -21,6 +21,14 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeCalculationNames, missing(includeCalculationNames), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeRawValue, missing(includeRawValue), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
      private$p_parentPivot$message("PivotHtmlRenderer$getTableHtml", "Getting table HTML...")
+     # get the style names
+     styles <- names(private$p_parentPivot$styles$styles)
+     defaultTableStyle = private$p_parentPivot$styles$tableStyle
+     defaultRootStyle = private$p_parentPivot$styles$rootStyle
+     defaultRowHeaderStyle = private$p_parentPivot$styles$rowHeaderStyle
+     defaultColHeaderStyle = private$p_parentPivot$styles$colHeaderStyle
+     defaultCellStyle = private$p_parentPivot$styles$cellStyle
+     defaultTotalStyle = private$p_parentPivot$styles$totalStyle
      # get the data groups:  these are the leaf level groups
      rowGroups <- private$p_parentPivot$cells$rowGroups
      columnGroups <- private$p_parentPivot$cells$columnGroups
@@ -35,7 +43,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      columnCount <- private$p_parentPivot$cells$columnCount
      # special case of no rows and no columns, return a blank empty table
      if((rowGroupCount==0)&(columnGroupCount==0)) {
-       tbl <- htmltools::tags$table(htmltools::tags$tr(htmltools::tags$td(htmltools::HTML("(no data)"))))
+       tbl <- htmltools::tags$table(class=defaultTableStyle, htmltools::tags$tr(htmltools::tags$td(class=defaultCellStyle, htmltools::HTML("(no data)"))))
        return(tbl)
      }
      # there must always be at least one row and one column
@@ -46,21 +54,21 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      # render the column headings, with a large blank cell at the start over the row headings
      if(insertDummyColumnHeading) {
        trow <- list()
-       trow[[1]] <- htmltools::tags$th(rowspan=columnGroupCount, colspan=rowGroupCount, htmltools::HTML("&nbsp;"))
-       trow[[2]] <- htmltools::tags$th()
+       trow[[1]] <- htmltools::tags$th(class=defaultRootStyle, rowspan=columnGroupCount, colspan=rowGroupCount, htmltools::HTML("&nbsp;"))
+       trow[[2]] <- htmltools::tags$th(class=defaultColHeaderStyle)
        trows[[1]] <- htmltools::tags$tr(trow)
      }
      else {
        for(r in 1:columnGroupCount) {
          trow <- list()
          if(r==1) { # generate the large top-left blank cell
-           trow[[1]] <- htmltools::tags$th(rowspan=columnGroupCount, colspan=rowGroupCount, htmltools::HTML("&nbsp;"))
+           trow[[1]] <- htmltools::tags$th(class=defaultRootStyle, rowspan=columnGroupCount, colspan=rowGroupCount, htmltools::HTML("&nbsp;"))
          }
          # get the groups at this level
          grps <- private$p_parentPivot$columnGroup$getLevelGroups(level=r+1)
          for(c in 1:length(grps)) {
            grp <- grps[[c]]
-           trow[[length(trow)+1]] <- htmltools::tags$th(colspan=length(grp$leafGroups), grp$caption) # todo: check escaping
+           trow[[length(trow)+1]] <- htmltools::tags$th(class=defaultColHeaderStyle, colspan=length(grp$leafGroups), grp$caption) # todo: check escaping
          }
          trows[[length(trows)+1]] <- htmltools::tags$tr(trow)
        }
@@ -70,7 +78,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        trow <- list()
        # render the row headings
        if(insertDummyRowHeading) {
-         trow[[1]] <- htmltools::tags$th(htmltools::HTML("&nbsp;"))
+         trow[[1]] <- htmltools::tags$th(class=defaultRowHeaderStyle, htmltools::HTML("&nbsp;"))
        }
        else {
          # get the leaf row group, then render any parent data groups that haven't yet been rendered
@@ -79,7 +87,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
          for(c in (length(ancrgs)-1):1) { # 2 (not 1) since the top ancestor is parentPivot private$rowGroup, which is just a container
            ancg <- ancrgs[[c]]
            if(ancg$isRendered==FALSE) {
-             trow[[length(trow)+1]] <- htmltools::tags$th(rowspan=length(ancg$leafGroups), ancg$caption) # todo: check escaping
+             trow[[length(trow)+1]] <- htmltools::tags$th(class=defaultRowHeaderStyle, rowspan=length(ancg$leafGroups), ancg$caption) # todo: check escaping
              ancg$isRendered <- TRUE
            }
          }
@@ -87,6 +95,8 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        # render the cell values
        for(c in 1:columnCount) {
          cell <- private$p_parentPivot$cells$getCell(r, c)
+         if(cell$isTotal) cssCell <- defaultTotalStyle
+         else cssCell <- defaultCellStyle
          detail <- list()
          if(includeRCFilters|includeCalculationFilters|includeCalculationNames|includeRawValue)
          {
@@ -125,14 +135,14 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
              cstr <- paste0("Calc: ",  cell$calculationGroupName, ": ", cell$calculationName)
              detail[[length(detail)+1]] <- list(htmltools::tags$p(style="font-size: 75%;", cstr))
            }
-           trow[[length(trow)+1]] <- htmltools::tags$td(htmltools::tags$p(cell$formattedValue), detail) # todo: check escaping
+           trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, htmltools::tags$p(cell$formattedValue), detail) # todo: check escaping
          }
-         else { trow[[length(trow)+1]] <- htmltools::tags$td(cell$formattedValue) } # todo: check escaping
+         else { trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, cell$formattedValue) } # todo: check escaping
        }
        # finished this row
        trows[[length(trows)+1]] <- htmltools::tags$tr(trow)
      }
-     tbl <- htmltools::tags$table(trows)
+     tbl <- htmltools::tags$table(class=defaultTableStyle, trows)
      private$p_parentPivot$message("PivotHtmlRenderer$getTableHtml", "Got table HTML.")
      return(tbl)
    }

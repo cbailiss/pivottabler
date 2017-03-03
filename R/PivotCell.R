@@ -82,6 +82,20 @@ PivotCell <- R6::R6Class("PivotCell",
    formattedValue = function(value) {
      if(missing(value)) return(private$p_formattedValue)
      else private$p_formattedValue <- value
+   },
+   baseStyleName = function(value) {
+     if(missing(value)) { return(private$p_baseStyleName) }
+     else {
+       checkArgument("PivotDataGroup", "baseStyleName", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+       private$p_baseStyleName <- value
+     }
+   },
+   style = function(value) {
+     if(missing(value)) { return(private$p_style) }
+     else {
+       checkArgument("PivotDataGroup", "style", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotStyle")
+       private$p_style <- value
+     }
    }
   ),
   private = list(
@@ -97,6 +111,8 @@ PivotCell <- R6::R6Class("PivotCell",
     p_rowLeafGroup = NULL,            # an object ref (shared across this row)
     p_columnLeafGroup = NULL,         # an object ref (shared across this column)
     p_rawValue = NULL ,               # a value (unique to this cell)
-    p_formattedValue = NULL           # a value (unique to this cell)
+    p_formattedValue = NULL,          # a value (unique to this cell)
+    p_baseStyleName = NULL,
+    p_style = NULL
   )
 )

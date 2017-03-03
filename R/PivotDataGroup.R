@@ -474,6 +474,20 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        private$p_rowColumnNumber <- value
      }
    },
+   baseStyleName = function(value) {
+     if(missing(value)) { return(private$p_baseStyleName) }
+     else {
+       checkArgument("PivotDataGroup", "baseStyleName", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+       private$p_baseStyleName <- value
+     }
+   },
+   style = function(value) {
+     if(missing(value)) { return(private$p_style) }
+     else {
+       checkArgument("PivotDataGroup", "style", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotStyle")
+       private$p_style <- value
+     }
+   },
    isRendered = function(value) {
      if(missing(value)) { return(private$p_isRendered) }
      else {
@@ -494,6 +508,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    p_calculationGroupName = NULL,
    p_calculationName = NULL,
    p_rowColumnNumber = NULL,
+   p_baseStyleName = NULL,
+   p_style = NULL,
    p_isRendered = FALSE # helper flag to keep track of which data groups have already been rendered
   )
 )
