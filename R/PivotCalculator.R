@@ -36,14 +36,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      private$p_parentPivot$message("PivotCalculator$getDataFrame", "Getting data frame...")
      df <- private$p_parentPivot$data$getData(dataName)
      private$p_parentPivot$message("PivotCalculator$getDataFrame", "Got data frame.")
-     return(df)
+     return(invisible(df))
    },
    getCalculationGroup = function(calculationGroupName=NULL) {
      checkArgument("PivotCalculator", "getCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      private$p_parentPivot$message("PivotCalculator$getCalculationGroup", "Getting calculation group...")
      cg <- private$p_parentPivot$calculationGroups$getCalculationGroup(calculationGroupName)
      private$p_parentPivot$message("PivotCalculator$getCalculationGroup", "Got calculation group.")
-     return(cg)
+     return(invisible(cg))
    },
    getCalculation = function(calculationGroupName=NULL, calculationName=NULL) {
      checkArgument("PivotCalculator", "getCalculation", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -52,7 +52,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      cg <- private$p_parentPivot$calculationGroups$getCalculationGroup(calculationGroupName)
      cn <- cg$getCalculation(calculationName)
      private$p_parentPivot$message("PivotCalculator$getCalculation", "Got calculation.")
-     return(cg)
+     return(invisible(cg))
    },
    newFilter = function(variableName=NULL, values=NULL) {
      checkArgument("PivotCalculator", "newFilter", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -60,7 +60,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      private$p_parentPivot$message("PivotCalculator$newFilter", "Creating filter...")
      filter <- PivotFilter$new(private$p_parentPivot, variableName=variableName, values=values)
      private$p_parentPivot$message("PivotCalculator$newFilter", "Created filter.")
-     return(filter)
+     return(invisible(filter))
    },
    newFilters = function(variableName=NULL, values=NULL) {
      checkArgument("PivotCalculator", "newFilters", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -68,7 +68,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      private$p_parentPivot$message("PivotCalculator$newFilters", "Creating filters...")
      filters <- PivotFilters$new(private$p_parentPivot, variableName=variableName, values=values)
      private$p_parentPivot$message("PivotCalculator$newFilters", "Created filters.")
-     return(filters)
+     return(invisible(filters))
    },
    setFilters = function(filters1=NULL, filters2=NULL, action="replace") { # filters2 overrides filters1
      checkArgument("PivotCalculator", "setFilters", filters1, missing(filters1), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
@@ -79,7 +79,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      copy <- filters1$getCopy() # always copy, to avoid inadvertant bugs of a change to one filter affecting multiple cells in the Pivot Table
      copy$setFilters(filters=filters2, action=action)
      private$p_parentPivot$message("PivotCalculator$setFilters", "Set filters.")
-     return(copy)
+     return(invisible(copy))
    },
    setFilter = function(filters=NULL, filter=NULL, action="replace") {
      checkArgument("PivotCalculator", "setFilter", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
@@ -88,7 +88,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      copy <- filters$getCopy() # always copy, to avoid inadvertant bugs of changing one filter affecting multiple cells
      copy$setFilter(filter=filter, action=action)
      private$p_parentPivot$message("PivotCalculator$setFilter", "Set filter.")
-     return(copy)
+     return(invisible(copy))
    },
    setFilterValues = function(filters=NULL, variableName=NULL, values=NULL, action="replace") {
      checkArgument("PivotCalculator", "setFilterValues", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
@@ -98,7 +98,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      copy <- filters$getCopy() # always copy, to avoid inadvertant bugs of changing one filter affecting multiple cells
      copy$setFilterValues(variableName=variableName, values=values, action=action)
      private$p_parentPivot$message("PivotCalculator$setFilterValues", "Set filter values.")
-     return(copy)
+     return(invisible(copy))
    },
    getFilteredDataFrame = function(dataFrame=NULL, filters=NULL) {
      checkArgument("PivotCalculator", "getFilteredDataFrame", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
@@ -133,7 +133,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        eval(parse(text=filterCmd))
      }
      private$p_parentPivot$message("PivotCalculator$getFilteredDataFrame", "Got filtered data frame.")
-     return(data)
+     return(invisible(data))
    },
    getDistinctValues = function(dataFrame=NULL, variableName=NULL) {
      checkArgument("PivotCalculator", "getDistinctValues", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
@@ -146,18 +146,18 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
      distinctValues <- dplyr::collect(data)[[variableName]]
      private$p_parentPivot$message("PivotCalculator$getDistinctValues", "Got filtered data frame.")
-     return(distinctValues)
+     return(invisible(distinctValues))
    },
    formatValue = function(value=NULL, format=NULL) {
      checkArgument("PivotCalculator", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
      checkArgument("PivotCalculator", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","function"))
      private$p_parentPivot$message("PivotCalculator$formatValue", "Formatting value...")
-     if(is.null(value)) return(NULL)
+     if(is.null(value)) return(invisible(NULL))
      if(is.null(format)) return(value)
      if("character" %in% class(format)) value <- sprintf(format, value)
      else if ("function" %in% class(format)) value <- format(value)
      private$p_parentPivot$message("PivotCalculator$formatValue", "Formated value.")
-     return(value)
+     return(invisible(value))
    },
    getSingleValue = function(dataFrame=NULL, valueName=NULL) {
      checkArgument("PivotCalculator", "getSingleValue", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
@@ -167,7 +167,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(nrow(data)>1)
        stop(paste0("PivotCalculator$getSingleValue(): Value '", valueName, "' has resulted in '", nrow(data),
                    " row(s).  There must be a maximum of 1 row for the value after the filters have been applied."))
-     if(nrow(data)==0) return(NULL)
+     if(nrow(data)==0) return(invisible(NULL))
      data <- dplyr::collect(data)
      if("tbl_df" %in% class(data)) {
        data <- as.data.frame(data) # workaround of a possible bug in dplyr? collect seems to still sometimes return a tbl_df
@@ -178,7 +178,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      value <- data[1, valueName]
      private$p_parentPivot$message("PivotCalculator$getSingleValue", "Got single value.")
-     return(value)
+     return(invisible(value))
    },
    getSummaryValue = function(dataFrame=NULL, summaryName=NULL, summariseExpression=NULL) {
      checkArgument("PivotCalculator", "getSummaryValue", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
@@ -201,7 +201,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      value <- data[1, 1]
      private$p_parentPivot$message("PivotCalculator$getSummaryValue", "Got summary value.")
-     return(value)
+     return(invisible(value))
    },
    evaluateSingleValue = function(dataFrame=NULL, rowColFilters=NULL, calcFilters=NULL,
                                   valueName=NULL, format=NULL) {
@@ -234,7 +234,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      value$rawValue <- rv
      value$formattedValue <- self$formatValue(rv, format=format)
      private$p_parentPivot$message("PivotCalculator$evaluateSingleValue", "Evaluated single value.")
-     return(value)
+     return(invisible(value))
    },
    evaluateSummariseExpression = function(dataFrame=NULL, rowColFilters=NULL, calcFilters=NULL,
                                           summaryName=NULL, summariseExpression=NULL, format=NULL) {
@@ -268,7 +268,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      value$rawValue <- rv
      value$formattedValue <- self$formatValue(rv, format=format)
      private$p_parentPivot$message("PivotCalculator$evaluateSummariseExpression", "Evaluated summary expression.")
-     return(value)
+     return(invisible(value))
    },
    evaluateCalculationExpression = function(values=NULL, calculationExpression=NULL, format=NULL) {
      checkArgument("PivotCalculator", "evaluateCalculationExpression", values, missing(values), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
@@ -280,7 +280,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      value$rawValue <- rv
      value$formattedValue <- self$formatValue(rv, format=format)
      private$p_parentPivot$message("PivotCalculator$evaluateSCalculationExpression", "Evaluated summary expression.")
-     return(value)
+     return(invisible(value))
    },
    evaluateCalculateFunction = function(rowColFilters=NULL, calcFilters=NULL,
                                         calculationFunction=NULL, format=NULL, baseValues=NULL, cell=NULL) {
@@ -306,7 +306,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      value$rawValue <- rv$rawValue
      value$formattedValue <- rv$formattedValue
      private$p_parentPivot$message("PivotCalculator$evaluateCalculateFunction", "Evaluated calculation function.")
-     return(value)
+     return(invisible(value))
    },
    evaluateCalculationGroup = function(calculationName=NULL, basedOn=NULL, calculationGroupName=NULL, rowColFilters=NULL, cell=NULL) {
      checkArgument("PivotCalculator", "evaluateCalculationGroup", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -377,7 +377,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      # returns a list of named results
      private$p_parentPivot$message("PivotCalculator$evaluateCalculationGroup", "Evaluated calculation group.")
-     return(results)
+     return(invisible(results))
    },
    evaluateCell = function(cell) {
      checkArgument("PivotCalculator", "evaluateCell", cell, missing(cell), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotCell")
@@ -387,8 +387,8 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      calculationGroupName <- cell$calculationGroupName
      calculationName <- cell$calculationName
      rowColFilters <- cell$rowColFilters
-     if(is.null(calculationGroupName)) return()
-     if(is.null(calculationName)) return()
+     if(is.null(calculationGroupName)) return(invisible())
+     if(is.null(calculationName)) return(invisible())
      results <- self$evaluateCalculationGroup(calculationName=calculationName, calculationGroupName=calculationGroupName,
                                               rowColFilters=rowColFilters, cell=cell)
      if(!(calculationName %in% names(results)))

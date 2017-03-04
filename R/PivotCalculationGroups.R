@@ -13,7 +13,7 @@ PivotCalculationGroups <- R6::R6Class("PivotCalculationGroups",
                                     list(calculationGroupName=calculationGroupName))
       calcGroupExists <- calculationGroupName %in% names(private$p_groups)
       private$p_parentPivot$message("PivotCalculationGroups$isExistingCalculationGroup", "Checked calculation group exists.")
-      return(calcGroupExists)
+      return(invisible(calcGroupExists))
     },
     getCalculationGroup = function(calculationGroupName=NULL) {
       checkArgument("PivotCalculationGroups", "getCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -25,7 +25,7 @@ PivotCalculationGroups <- R6::R6Class("PivotCalculationGroups",
                     calculationGroupName, "'"), call. = FALSE)
       }
       private$p_parentPivot$message("PivotCalculationGroups$getCalculationGroup", "Got calculation group.")
-      return(calculationGroup)
+      return(invisible(calculationGroup))
     },
     addCalculationGroup = function(calculationGroupName=NULL) {
       checkArgument("PivotCalculationGroups", "addCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -39,7 +39,7 @@ PivotCalculationGroups <- R6::R6Class("PivotCalculationGroups",
       private$p_groups[[calculationGroupName]] <- calculationGroup
       if(is.null(private$p_defaultGroup)) private$p_defaultGroup <- calculationGroup
       private$p_parentPivot$message("PivotCalculationGroups$addCalculationGroup", "Added calculation group.")
-      return(calculationGroup)
+      return(invisible(calculationGroup))
     },
     asList = function() {
       lst <- list()
@@ -50,7 +50,7 @@ PivotCalculationGroups <- R6::R6Class("PivotCalculationGroups",
           lst[[groupName]] = private$p_groups[[groupName]]$asList()
         }
       }
-      return(lst)
+      return(invisible(lst))
     },
     asJSON = function() { return(jsonlite::toJSON(self$asList())) },
     asString = function(seperator=", ") {
@@ -68,9 +68,9 @@ PivotCalculationGroups <- R6::R6Class("PivotCalculationGroups",
     }
   ),
   active = list(
-    count = function(value) { return(length(private$p_groups)) },
-    groups = function(value) { return(private$p_groups) },
-    defaultGroup = function(value) { return(private$p_defaultGroup)}
+    count = function(value) { return(invisible(length(private$p_groups))) },
+    groups = function(value) { return(invisible(private$p_groups)) },
+    defaultGroup = function(value) { return(invisible(private$p_defaultGroup)) }
   ),
   private = list(
     p_parentPivot = NULL,

@@ -82,12 +82,14 @@ PivotStyle <- R6::R6Class("PivotStyle",
      private$p_parentPivot$message("PivotStyle$setPropertyValue", "Setting property value...", list(property=property, value=value))
      private$p_declarations[[property]] <- value
      private$p_parentPivot$message("PivotStyle$setPropertyValue", "Set property value.")
+     return(invisible())
    },
    getPropertyValue = function(property=NULL) {
      checkArgument("PivotStyle", "getPropertyValue", property, missing(property), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      private$p_parentPivot$message("PivotStyle$getPropertyValue", "Getting property value...", list(property=property))
-     return(private$p_declarations[[property]])
+     val <- private$p_declarations[[property]]
      private$p_parentPivot$message("PivotStyle$getPropertyValue", "Got property value.")
+     return(invisible(val))
    },
    asCSSRule = function(selector=NULL) {
      checkArgument("PivotStyle", "asCSSRule", selector, missing(selector), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -101,7 +103,7 @@ PivotStyle <- R6::R6Class("PivotStyle",
      }
      if(!is.null(selector)) cssRule <- paste0(cssRule, "}")
      private$p_parentPivot$message("PivotStyle$asCSSRule", "Got CSS rule.")
-     return(cssRule)
+     return(invisible(cssRule))
    },
    asNamedCSSStyle = function(stylePrefix=NULL) {
      checkArgument("PivotStyle", "asNamedCSSStyle", stylePrefix, missing(stylePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -110,22 +112,22 @@ PivotStyle <- R6::R6Class("PivotStyle",
      else { selector <- paste0(".", stylePrefix, private$p_name) }
      cssRule <- self$asCSSRule(selector=selector)
      private$p_parentPivot$message("PivotStyle$asNamedCSSStyle", "Got named CSS rule.")
-     return(cssRule)
+     return(invisible(cssRule))
    },
    getCopy = function() {
      copy <- list()
-     return(copy)
+     return(invisible(copy))
    },
    asList = function() {
      lst <- list(
        declarations = private$p_declarations
      )
-     return(lst)
+     return(invisible(lst))
    },
    asJSON = function() { return(jsonlite::toJSON(asList())) }
   ),
   active = list(
-    name = function(value) { return(private$p_name) }
+    name = function(value) { return(invisible(private$p_name)) }
   ),
   private = list(
     p_parentPivot = NULL,

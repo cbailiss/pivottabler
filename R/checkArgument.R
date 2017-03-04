@@ -69,4 +69,5 @@ checkArgument <- function(className, methodName, argumentValue, isMissing, # no 
       }
     }
   }
+  return(invisible())
 }

@@ -45,7 +45,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        acs <- private$p_parentGroup$getAncestorGroups(acs)
      }
      private$p_parentPivot$message("DataGroup$getAncestorGroups", "Got ancestors.", list(count=length(acs)))
-     return(acs) # note the top-most parent will be at the bottom of the return list
+     return(invisible(acs)) # note the top-most parent will be at the bottom of the return list
    },
    getDescendantGroups = function(descendants=NULL, includeCurrentGroup=FALSE) {
      checkArgument("PivotDataGroup", "getDescendantGroups", descendants, missing(descendants), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
@@ -62,7 +62,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        }
      }
      private$p_parentPivot$message("DataGroup$getDescendantGroups", "Got descendant groups", list(count=length(dgs)))
-     return(dgs)
+     return(invisible(dgs))
    },
    getLeafGroups = function(leafGroups=NULL) {
      checkArgument("PivotDataGroup", "getLeafGroups", leafGroups, missing(leafGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
@@ -80,7 +80,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        lgs[[index]] <- self
      }
      private$p_parentPivot$message("DataGroup$getLeafGroups", "Got leaf groups", list(count=length(lgs)))
-     return(lgs)
+     return(invisible(lgs))
    },
    getLevelGroups = function(levelGroups=NULL, level=NULL) { #level=1 is the current data group
      checkArgument("PivotDataGroup", "getLevelGroups", levelGroups, missing(levelGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
@@ -100,7 +100,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        }
      }
      private$p_parentPivot$message("DataGroup$getLevelGroups", "Got level groups", list(count=length(lgs)))
-     return(lgs)
+     return(invisible(lgs))
    },
    addChildGroup = function(variableName=NULL, values=NULL,
                             caption=NULL, isTotal=FALSE,
@@ -123,7 +123,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      index <- length(private$p_groups) + 1
      private$p_groups[[index]] <- grp
      private$p_parentPivot$message("DataGroup$addChildGroup", "Added child group.")
-     return(grp)
+     return(invisible(grp))
    },
    # permutations:
    # dataName="...", fromData=TRUE, leafLevelPermutations=TRUE >> generate the list (from the data at leaf level), 1 value per group
@@ -306,7 +306,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        }
      }
      private$p_parentPivot$message("DataGroup$addLeafDataGroup", "Added leaf groups.", list(count=length(newLeafGroups)))
-     return(newLeafGroups)
+     return(invisible(newLeafGroups))
    },
    addLeafCalculationGroup = function(calculationGroupName=NULL) {
      checkArgument("PivotDataGroup", "addLeafCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -361,7 +361,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        }
      }
      private$p_parentPivot$message("DataGroup$addLeafCalculationGroup", "Added leaf calculation group.", list(count=length(newLeafGroups)))
-     return(newLeafGroups)
+     return(invisible(newLeafGroups))
    },
    getLevelCount = function(includeCurrentLevel=FALSE) {
      checkArgument("PivotDataGroup", "getLevelCount", includeCurrentLevel, missing(includeCurrentLevel), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -376,7 +376,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        maxParents <- max(maxParents, length(ancestors))
      }
      private$p_parentPivot$message("DataGroup$levelCount", "Counted levels.")
-     return(maxParents)
+     return(invisible(maxParents))
    },
    normaliseDataGroup = function() {
      private$p_parentPivot$message("DataGroup$normaliseDataGroup", "Normalising data group...")
@@ -404,6 +404,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        }
      }
      private$p_parentPivot$message("DataGroup$normaliseDataGroup", "Normalised data group.")
+     return(invisible())
    },
    asList = function() {
      grps <- list()
@@ -423,27 +424,28 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        groups = grps
      )
      lst <- lst[order(names(lst))]
-     return(lst)
+     return(invisible(lst))
    },
    asJSON = function() { return(jsonlite::toJSON(self$asList())) }
   ),
   active = list(
-   parentGroup = function(value) { return(private$p_parentGroup) },
-   childGroups = function(value) { return(private$p_groups) },
-   leafGroups = function(value) { return(self$getLeafGroups()) },
-   filters = function(value) { return(private$p_filters) },
+   parentGroup = function(value) { return(invisible(private$p_parentGroup)) },
+   childGroups = function(value) { return(invisible(private$p_groups)) },
+   leafGroups = function(value) { return(invisible(self$getLeafGroups())) },
+   filters = function(value) { return(invisible(private$p_filters)) },
    calculationGroupName = function(value) {
-     if(missing(value)) { return(private$p_calculationGroupName) }
+     if(missing(value)) { return(invisible(private$p_calculationGroupName)) }
      else {
        checkArgument("PivotDataGroup", "calculationGroupName", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        if(!(private$p_parentPivot$calculationGroups$isExistingCalculationGroup(value))) {
          stop(paste0("DataGroup$calculationGroupName(): The Calculation Group '", value, "' does not exist in the Pivot Table."), call. = FALSE)
        }
        private$p_calculationGroupName <- value
+       return(invisible())
      }
    },
    calculationName = function(value) {
-     if(missing(value)) { return(private$p_calculationName) }
+     if(missing(value)) { return(invisible(private$p_calculationName)) }
      else {
        checkArgument("PivotDataGroup", "calculationName", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        if(is.null(private$p_calculationGroupName))
@@ -454,45 +456,50 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                      "' does not exist in the Calculation Group '", private$p_calculationGroupName, "'"), call. = FALSE)
        }
        private$p_calculationName <- value
+       return(invisible())
      }
    },
-   isTotal = function(value) { return(private$p_isTotal) },
+   isTotal = function(value) { return(invisible(private$p_isTotal)) },
    caption = function(value) {
      if(is.null(private$p_caption)) {
-       if(is.null(private$p_filters)) return("")
-       else return(private$p_filters$asString(includeVariableName=FALSE))
+       if(is.null(private$p_filters)) return(invisible(""))
+       else return(invisible(private$p_filters$asString(includeVariableName=FALSE)))
      }
-     else return(private$p_caption)
+     else return(invisible(private$p_caption))
    },
    rowColumnNumber = function(value) {
-     if(missing(value)) { return(private$p_rowColumnNumber) }
+     if(missing(value)) { return(invisible(private$p_rowColumnNumber)) }
      else {
        checkArgument("PivotDataGroup", "rowColumnNumber", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "number"))
        if(!is.null(value)) {
          if(!is.integer(value)) stop("DataGroup$rowColumnNumber(): rowColumnNumber must be an integer", call. = FALSE)
        }
        private$p_rowColumnNumber <- value
+       return(invisible())
      }
    },
    baseStyleName = function(value) {
-     if(missing(value)) { return(private$p_baseStyleName) }
+     if(missing(value)) { return(invisible(private$p_baseStyleName)) }
      else {
        checkArgument("PivotDataGroup", "baseStyleName", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        private$p_baseStyleName <- value
+       return(invisible())
      }
    },
    style = function(value) {
-     if(missing(value)) { return(private$p_style) }
+     if(missing(value)) { return(invisible(private$p_style)) }
      else {
        checkArgument("PivotDataGroup", "style", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotStyle")
        private$p_style <- value
+       return(invisible())
      }
    },
    isRendered = function(value) {
-     if(missing(value)) { return(private$p_isRendered) }
+     if(missing(value)) { return(invisible(private$p_isRendered)) }
      else {
        checkArgument("PivotDataGroup", "isRendered", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
        private$p_isRendered <- value
+       return(invisible())
      }
    }
   ),

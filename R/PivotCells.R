@@ -22,13 +22,14 @@ PivotCells <- R6::R6Class("PivotCells",
    getCell = function(r=NULL, c=NULL) {
      checkArgument("PivotCells", "getCell", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_rowGroups))
      checkArgument("PivotCells", "getCell", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_columnGroups))
-     return(private$p_rows[[r]][[c]])
+     return(invisible(private$p_rows[[r]][[c]]))
    },
    setCell = function(r, c, cell) {
      checkArgument("PivotCells", "setCell", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_rowGroups))
      checkArgument("PivotCells", "setCell", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_columnGroups))
      checkArgument("PivotCells", "setCell", cell, missing(cell), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotCell")
      private$p_rows[[r]][[c]] <- cell
+     return(invisible())
    },
    asList = function() {
      lst <- list()
@@ -43,15 +44,15 @@ PivotCells <- R6::R6Class("PivotCells",
          lst[[r]] <- rlst
        }
      }
-     return(lst)
+     return(invisible(lst))
    },
    asJSON = function() { return(jsonlite::toJSON(asList())) }
   ),
   active = list(
-   rowCount = function(value) { return(length(private$p_rowGroups)) },
-   columnCount = function(value) { return(length(private$p_columnGroups)) },
-   rowGroups = function(value) { return(private$p_rowGroups) },
-   columnGroups = function(value) { return(private$p_columnGroups) }
+   rowCount = function(value) { return(invisible(length(private$p_rowGroups))) },
+   columnCount = function(value) { return(invisible(length(private$p_columnGroups))) },
+   rowGroups = function(value) { return(invisible(private$p_rowGroups)) },
+   columnGroups = function(value) { return(invisible(private$p_columnGroups)) }
   ),
   private = list(
     p_parentPivot = NULL,

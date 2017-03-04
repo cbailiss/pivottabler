@@ -84,7 +84,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
        calculationFunction = private$p_calculationFunction,
        basedOn = private$p_basedOn
      )
-     return(lst)
+     return(invisible(lst))
    },
    asJSON = function() { return(jsonlite::toJSON(self$asList())) },
    asString = function() {
@@ -99,19 +99,19 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
    }
   ),
   active = list(
-    calculationName = function(value) { return(private$p_name) },
-    caption = function(value) { return(private$p_caption) },
-    visible = function(value) { return(private$p_visible) },
-    displayOrder = function(value) { return(private$p_displayOrder) },
-    filters = function(value) { return(private$p_filters) },
-    format = function(value) { return(private$p_format) },
-    dataName = function(value) { return(private$p_dataName) },
-    type = function(value) { return(private$p_type) },
-    valueName = function(value) { return(private$p_valueName) },
-    summariseExpression = function(value) { return(private$p_summariseExpression) },
-    calculationExpression = function(value) { return(private$p_calculationExpression) },
-    calculationFunction = function(value) { return(private$p_calculationFunction) },
-    basedOn = function(value) { return(private$p_basedOn) }
+    calculationName = function(value) { return(invisible(private$p_name)) },
+    caption = function(value) { return(invisible(private$p_caption)) },
+    visible = function(value) { return(invisible(private$p_visible)) },
+    displayOrder = function(value) { return(invisible(private$p_displayOrder)) },
+    filters = function(value) { return(invisible(private$p_filters)) },
+    format = function(value) { return(invisible(private$p_format)) },
+    dataName = function(value) { return(invisible(private$p_dataName)) },
+    type = function(value) { return(invisible(private$p_type)) },
+    valueName = function(value) { return(invisible(private$p_valueName)) },
+    summariseExpression = function(value) { return(invisible(private$p_summariseExpression)) },
+    calculationExpression = function(value) { return(invisible(private$p_calculationExpression)) },
+    calculationFunction = function(value) { return(invisible(private$p_calculationFunction)) },
+    basedOn = function(value) { return(invisible(private$p_basedOn)) }
   ),
   private = list(
     p_parentPivot = NULL,

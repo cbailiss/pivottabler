@@ -16,7 +16,7 @@ PivotStyles <- R6::R6Class("PivotStyles",
       private$p_parentPivot$message("PivotStyles$isExistingStyle", "Checking style exists...", list(styleName=styleName))
       styleExists <- styleName %in% names(private$p_styles)
       private$p_parentPivot$message("PivotStyles$isExistingStyle", "Checked style exists.")
-      return(styleExists)
+      return(invisible(styleExists))
     },
     getStyle = function(styleName=NULL) {
       checkArgument("PivotStyles", "getStyle", styleName, missing(styleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -26,7 +26,7 @@ PivotStyles <- R6::R6Class("PivotStyles",
         stop(paste0("PivotStyles$getStyle(): No style exists with the name '", styleName, "'"), call. = FALSE)
       }
       private$p_parentPivot$message("PivotStyles$getStyle", "Got style.")
-      return(style)
+      return(invisible(style))
     },
     addStyle = function(styleName=NULL, declarations= NULL) {
       checkArgument("PivotStyles", "addStyle", styleName, missing(styleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -39,7 +39,7 @@ PivotStyles <- R6::R6Class("PivotStyles",
       style <- PivotStyle$new(private$p_parentPivot, styleName, declarations)
       private$p_styles[[styleName]] <- style
       private$p_parentPivot$message("PivotStyles$addStyle", "Added style.")
-      return(style)
+      return(invisible(style))
     },
     asCSSRule = function(styleName=NULL, selector=NULL) {
       checkArgument("PivotStyles", "asCSSRule", styleName, missing(styleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -48,7 +48,7 @@ PivotStyles <- R6::R6Class("PivotStyles",
       style <- self$getStyle(styleName)
       cssRule <- style$asCSSRule(selector=selector)
       private$p_parentPivot$message("PivotStyles$asCSSRule", "Got style as CSS rule.")
-      return(cssRule)
+      return(invisible(cssRule))
     },
     asNamedCSSStyle = function(styleName=NULL, stylePrefix=NULL) {
       checkArgument("PivotStyles", "asNamedCSSStyle", styleName, missing(styleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -57,7 +57,7 @@ PivotStyles <- R6::R6Class("PivotStyles",
       style <- self$getStyle(styleName)
       cssRule <- style$asNamedCSSStyle(stylePrefix=stylePrefix)
       private$p_parentPivot$message("PivotStyles$asNamedCSSStyle", "Got style as named CSS rule.")
-      return(cssRule)
+      return(invisible(cssRule))
     },
     asList = function() {
       lst <- list()
@@ -68,7 +68,7 @@ PivotStyles <- R6::R6Class("PivotStyles",
           lst[[groupName]] = private$p_styles[[groupName]]$asList()
         }
       }
-      return(lst)
+      return(invisible(lst))
     },
     asJSON = function() { return(jsonlite::toJSON(self$asList())) },
     asString = function(seperator=", ") {
@@ -86,74 +86,81 @@ PivotStyles <- R6::R6Class("PivotStyles",
     }
   ),
   active = list(
-    count = function(value) { return(length(private$p_styles)) },
-    theme = function(value) { return(private$p_theme) },
-    styles = function(value) { return(private$p_styles) },
+    count = function(value) { return(invisible(length(private$p_styles))) },
+    theme = function(value) { return(invisible(private$p_theme)) },
+    styles = function(value) { return(invisible(private$p_styles)) },
     allowExternalStyles = function(value) {
-      if(missing(value)) return(private$p_allowExternalStyles)
+      if(missing(value)) return(invisible(private$p_allowExternalStyles))
       else {
         checkArgument("PivotStyles", "allowExternalStyles", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
         private$p_allowExternalStyles <- value
+        return(invisible())
       }
     },
     tableStyle = function(value) {
-      if(missing(value)) return(private$p_tableStyle)
+      if(missing(value)) return(invisible(private$p_tableStyle))
       else {
         checkArgument("PivotStyles", "tableStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         if(private$p_allowExternalStyles==FALSE) {
           if(!(value %in% names(private$p_styles))) stop(paste0("PivotStyles$tableStyle: '", value, "' style not found in styles list."))
         }
         private$p_tableStyle <- value
+        return(invisible())
       }
     },
     rootStyle = function(value) {
-      if(missing(value)) return(private$p_rootStyle)
+      if(missing(value)) return(invisible(private$p_rootStyle))
       else {
         checkArgument("PivotStyles", "rootStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         if(private$p_allowExternalStyles==FALSE) {
           if(!(value %in% names(private$p_styles))) stop(paste0("PivotStyles$rootStyle: '", value, "' style not found in styles list."))
         }
         private$p_rootStyle <- value
+        return(invisible())
       }
     },
     rowHeaderStyle = function(value) {
-      if(missing(value)) return(private$p_rowHeaderStyle)
+      if(missing(value)) return(invisible(private$p_rowHeaderStyle))
       else {
         checkArgument("PivotStyles", "rowHeaderStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         if(private$p_allowExternalStyles==FALSE) {
           if(!(value %in% names(private$p_styles))) stop(paste0("PivotStyles$rowHeaderStyle: '", value, "' style not found in styles list."))
         }
         private$p_rowHeaderStyle <- value
+        return(invisible())
       }
     },
     colHeaderStyle = function(value) {
-      if(missing(value)) return(private$p_colHeaderStyle)
+      if(missing(value)) return(invisible(private$p_colHeaderStyle))
       else {
         checkArgument("PivotStyles", "colHeaderStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         if(private$p_allowExternalStyles==FALSE) {
           if(!(value %in% names(private$p_styles))) stop(paste0("PivotStyles$colHeaderStyle: '", value, "' style not found in styles list."))
         }
         private$p_colHeaderStyle <- value
+        return(invisible())
       }
     },
     cellStyle = function(value) {
-      if(missing(value)) return(private$p_cellStyle)
+      if(missing(value)) return(invisible(private$p_cellStyle))
       else {
         checkArgument("PivotStyles", "cellStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         if(private$p_allowExternalStyles==FALSE) {
           if(!(value %in% names(private$p_styles))) stop(paste0("PivotStyles$cellStyle: '", value, "' style not found in styles list."))
         }
         private$p_cellStyle <- value
+        return(invisible())
       }
     },
     totalStyle = function(value) {
-      if(missing(value)) return(private$p_totalStyle)
+      if(missing(value)) return(invisible(private$p_totalStyle))
       else {
         checkArgument("PivotStyles", "totalStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         if(private$p_allowExternalStyles==FALSE) {
           if(!(value %in% names(private$p_styles))) stop(paste0("PivotStyles$totalStyle: '", value, "' style not found in styles list."))
         }
         private$p_totalStyle <- value
+        return(invisible())
       }
     }
   ),

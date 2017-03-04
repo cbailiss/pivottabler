@@ -380,6 +380,7 @@ PivotTable <- R6::R6Class("PivotTable",
         private$p_evaluated <- FALSE
       }
       self$message("PivotTable$resetCells", "Reset cells.")
+      return(invisible())
     },
     evaluateCells = function() {
       self$message("PivotTable$evaluateCells", "Evaluating cell values...")
@@ -417,7 +418,7 @@ PivotTable <- R6::R6Class("PivotTable",
         styles <- paste0(styles, style$asNamedCSSStyle(), "\r\n")
       }
       self$message("PivotTable$getStyles", "Got Styles.")
-      return(styles)
+      return(invisible(styles))
     },
     getHtml = function(includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE) {
       checkArgument("PivotTable", "getHtml", includeRCFilters, missing(includeRCFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -558,36 +559,39 @@ p { font: 0.9em arial; }
     data = function(value) { return(private$p_data) },
     theme = function(value) {
       if(missing(value)) {
-        if(is.null(private$p_styles)) return(NULL)
-        else return(private$p_styles$theme)
+        if(is.null(private$p_styles)) return(invisible(NULL))
+        else return(invisible(private$p_styles$theme))
       }
       else {
         checkArgument("PivotTable", "theme", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         private$p_styles <- getTheme(parentPivot=self, themeName=value)
+        return(invisible())
       }
     },
     styles = function(value) {
-      if(missing(value)) return(private$p_styles)
+      if(missing(value)) return(invisible(private$p_styles))
       else {
         checkArgument("PivotTable", "styles", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotStyles")
         private$p_styles <- value
+        return(invisible())
       }
     },
     allowExternalStyles = function(value) {
       if(missing(value)) {
-        if(is.null(private$p_styles)) return(NULL)
+        if(is.null(private$p_styles)) return(invisible(NULL))
         else return(private$p_styles$allowExternalStyles)
       }
       else {
         checkArgument("PivotTable", "allowExternalStyles", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
         private$p_styles$allowExternalStyles <- value
+        return(invisible())
       }
     },
-    rowGroup = function(value) { return(private$p_rowGroup )},
-    columnGroup = function(value) { return(private$p_columnGroup )},
-    calculationGroups = function(value) { return(private$p_calculationGroups) },
+    rowGroup = function(value) { return(invisible(private$p_rowGroup ))},
+    columnGroup = function(value) { return(invisible(private$p_columnGroup ))},
+    calculationGroups = function(value) { return(invisible(private$p_calculationGroups)) },
     calculationsPosition = function(value) {
-      if(missing(value)) { return(private$p_calculationsPosition) }
+      if(missing(value)) { return(invisible(private$p_calculationsPosition)) }
       else {
         if(is.null(private$p_calculationsPosition)) { private$p_calculationsPosition <- value }
         else {
@@ -596,15 +600,17 @@ p { font: 0.9em arial; }
           if(private$p_calculationsPosition != value)
             stop(paste0("PivotTable$calculationsPosition():  Calculations position already set to be '",
                         private$p_calculationsPosition, "' and cannot be changed."), call. = FALSE)
+          return(invisible())
         }
       }
     },
-    cells = function(value) { return(private$p_cells )},
+    cells = function(value) { return(invisible(private$p_cells ))},
     messages = function(value) {
-      if(missing(value)) return(private$p_messages)
+      if(missing(value)) return(invisible(private$p_messages))
       else {
         if(is.logical(value)) private$p_messages <- value
         else stop("PivotTable$messages: value must be logical (TRUE, FALSE, T, F)", call. = FALSE)
+        return(invisible())
       }
     }
   ),

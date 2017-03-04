@@ -15,6 +15,7 @@ PivotData <- R6::R6Class("PivotData",
      if(is.null(private$p_defaultData)) private$p_defaultData <- df
      private$p_data[[dataName]] <- df
      private$p_parentPivot$message("PivotData$addData", "Added data.")
+     return(invisible())
    },
    getData = function(dataName) {
      checkArgument("PivotData", "getData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -22,14 +23,14 @@ PivotData <- R6::R6Class("PivotData",
      if (!(dataName %in% names(private$p_data))) stop(paste0("PivotData$getData(): dataName '", dataName, "' not found."), call. = FALSE)
      data <- private$p_data[[dataName]]
      private$p_parentPivot$message("PivotData$addData", "Got data.")
-     return(data)
+     return(invisible(data))
    },
    isKnownData = function(dataName) {
      checkArgument("PivotData", "isKnownData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      private$p_parentPivot$message("PivotData$isKnownData", "Checking dataName...", list(dataName=dataName))
-     if (!(dataName %in% names(private$p_data))) return(FALSE)
+     if (!(dataName %in% names(private$p_data))) return(invisible(FALSE))
      private$p_parentPivot$message("PivotData$isKnownData", "Checked dataName.")
-     return(TRUE)
+     return(invisible(TRUE))
    },
    asList = function() {
      lst <- list()
@@ -42,13 +43,13 @@ PivotData <- R6::R6Class("PivotData",
        }
        lst <- lst[order(names(lst))]
      }
-     return(lst)
+     return(invisible(lst))
    },
    asJSON = function() { return(jsonlite::toJSON(self$asList())) }
   ),
   active = list(
-    count = function(value) { return(length(private$p_data)) },
-    defaultData = function(value) { return(private$p_defaultData) }
+    count = function(value) { return(invisible(length(private$p_data))) },
+    defaultData = function(value) { return(invisible(private$p_defaultData)) }
   ),
   private = list(
     getDfDesc = function(df) {

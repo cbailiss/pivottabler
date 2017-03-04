@@ -34,6 +34,6 @@ getDefaultTheme <- function(parentPivot=NULL, themeName="default") {
   pivotStyles$colHeaderStyle <- "Header"
   pivotStyles$cellStyle <- "Cell"
   pivotStyles$totalStyle <- "Cell"
-  return(pivotStyles)
+  return(invisible(pivotStyles))
 }
 

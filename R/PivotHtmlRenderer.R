@@ -14,6 +14,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      columnGroups <- private$p_parentPivot$columnGroup$getDescendantGroups(includeCurrentGroup=TRUE)
      lapply(columnGroups, clearFlags)
      private$p_parentPivot$message("PivotHtmlRenderer$clearIsRenderedFlags", "Cleared isRendered flags...")
+     return(invisible())
    },
    getTableHtml = function(includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE) {
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeRCFilters, missing(includeRCFilters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
@@ -144,7 +145,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      }
      tbl <- htmltools::tags$table(class=defaultTableStyle, trows)
      private$p_parentPivot$message("PivotHtmlRenderer$getTableHtml", "Got table HTML.")
-     return(tbl)
+     return(invisible(tbl))
    }
   ),
   private = list(

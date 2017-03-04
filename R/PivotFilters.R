@@ -24,6 +24,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
         }
       }
       private$p_parentPivot$message("PivotFilters$setFilters", "Set filters.")
+      return(invisible())
     },
     setFilter = function(filter, action="replace") {
       checkArgument("PivotFilters", "setFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
@@ -31,6 +32,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
       private$p_parentPivot$message("PivotFilters$setFilters", "Setting filter...", list(action=action, filter=filter$asString()))
       self$setFilterValues(filter$variableName, filter$values, action)
       private$p_parentPivot$message("PivotFilters$setFilter", "Set filter.")
+      return(invisible())
     },
     setFilterValues = function(variableName=NULL, values=NULL, action="replace") {
       checkArgument("PivotFilters", "setFilterValues", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -56,6 +58,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
         stop(paste0("PivotFilters$setFilterValues():  action must be one of union, intersect, replace.  Unknown action: ", action), call. = FALSE)
       }
       private$p_parentPivot$message("PivotFilters$setFilterValues", "Set filter values.")
+      return(invisible())
     },
     addFilter = function(filter) {
       checkArgument("PivotFilters", "addFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
@@ -64,6 +67,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
       index <- length(private$p_filters) + 1
       private$p_filters[[index]] <- filter
       private$p_parentPivot$message("PivotFilters$addFilter", "Added filter.")
+      return(invisible())
     },
     getCopy = function() {
       copy <- PivotFilters$new(private$p_parentPivot)
@@ -72,7 +76,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
           copy$addFilter(private$p_filters[[i]]$getCopy())
         }
       }
-      return(copy)
+      return(invisible(copy))
     },
     asList = function() {
       lst <- list()
@@ -81,7 +85,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
           lst[[i]] = private$p_filters[[i]]$asList()
         }
       }
-      return(lst)
+      return(invisible(lst))
     },
     asJSON = function() { return(jsonlite::toJSON(self$asList())) },
     asString = function(includeVariableName=TRUE, seperator=", ") {
@@ -100,8 +104,8 @@ PivotFilters <- R6::R6Class("PivotFilters",
     }
   ),
   active = list(
-    count = function(Value) { return(length(private$p_filters)) },
-    filters = function(value) { return(private$p_filters) }
+    count = function(Value) { return(invisible(length(private$p_filters))) },
+    filters = function(value) { return(invisible(private$p_filters)) }
   ),
   private = list(
     p_parentPivot = NULL,

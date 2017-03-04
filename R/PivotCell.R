@@ -32,7 +32,7 @@ PivotCell <- R6::R6Class("PivotCell",
    },
    getCopy = function() {
      copy <- list()
-     return(copy)
+     return(invisible(copy))
    },
    asList = function() {
      fstr1 <- NULL
@@ -53,48 +53,59 @@ PivotCell <- R6::R6Class("PivotCell",
        columnLeafCaption=private$p_columnLeafGroup$caption,
        formattedValue=self$formattedValue
      )
-     return(lst)
+     return(invisible(lst))
    },
    asJSON = function() { return(jsonlite::toJSON(asList())) }
   ),
   active = list(
-   rowNumber = function(value) { return(private$p_rowNumber) },
-   columnNumber = function(value) { return(private$p_columnNumber) },
-   calculationName = function(value) { return(private$p_calculationName) },
-   calculationGroupName = function(value) { return(private$p_calculationGroupName) },
-   rowFilters = function(value) { return(private$p_rowFilters) },
-   columnFilters = function(value) { return(private$p_columnFilters) },
-   rowColFilters = function(value) { return(private$p_rowColFilters) },
+   rowNumber = function(value) { return(invisible(private$p_rowNumber)) },
+   columnNumber = function(value) { return(invisible(private$p_columnNumber)) },
+   calculationName = function(value) { return(invisible(private$p_calculationName)) },
+   calculationGroupName = function(value) { return(invisible(private$p_calculationGroupName)) },
+   rowFilters = function(value) { return(invisible(private$p_rowFilters)) },
+   columnFilters = function(value) { return(invisible(private$p_columnFilters)) },
+   rowColFilters = function(value) { return(invisible(private$p_rowColFilters)) },
    calculationFilters = function(value) {
-     if(missing(value)) { return(private$p_calculationFilters) }
+     if(missing(value)) { return(invisible(private$p_calculationFilters)) }
      else {
        checkArgument("PivotCell", "calculationFilters", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
        private$p_calculationFilters <- value
+       return(invisible())
      }
    },
-   rowLeafGroup = function(value) { return(private$p_rowLeafGroup) },
-   columnLeafGroup = function(value) { return(private$p_columnLeafGroup) },
-   isTotal = function(Value) { return(private$p_rowLeafGroup$isTotal|private$p_columnLeafGroup$isTotal)},
+   rowLeafGroup = function(value) { return(invisible(private$p_rowLeafGroup)) },
+   columnLeafGroup = function(value) { return(invisible(private$p_columnLeafGroup)) },
+   isTotal = function(Value) { return(invisible(private$p_rowLeafGroup$isTotal|private$p_columnLeafGroup$isTotal)) },
    rawValue = function(value) {
-     if(missing(value)) return(private$p_rawValue)
-     else private$p_rawValue <- value
+     if(missing(value)) return(invisible(private$p_rawValue))
+     else {
+       checkArgument("PivotCell", "rawValue", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+       private$p_rawValue <- value
+       return(invisible())
+     }
    },
    formattedValue = function(value) {
-     if(missing(value)) return(private$p_formattedValue)
-     else private$p_formattedValue <- value
+     if(missing(value)) return(invisible(private$p_formattedValue))
+     else {
+       checkArgument("PivotCell", "formattedValue", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric", "character"))
+       private$p_formattedValue <- value
+       return(invisible())
+     }
    },
    baseStyleName = function(value) {
-     if(missing(value)) { return(private$p_baseStyleName) }
+     if(missing(value)) { return(invisible(private$p_baseStyleName)) }
      else {
-       checkArgument("PivotDataGroup", "baseStyleName", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+       checkArgument("PivotCell", "baseStyleName", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        private$p_baseStyleName <- value
+       return(invisible())
      }
    },
    style = function(value) {
-     if(missing(value)) { return(private$p_style) }
+     if(missing(value)) { return(invisible(private$p_style)) }
      else {
-       checkArgument("PivotDataGroup", "style", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotStyle")
+       checkArgument("PivotCell", "style", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotStyle")
        private$p_style <- value
+       return(invisible())
      }
    }
   ),

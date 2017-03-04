@@ -22,6 +22,7 @@ PivotFilter <- R6::R6Class("PivotFilter",
                    "Expected: ", private$p_variableName, " Encountered: ", filter$variableName), call. = FALSE)
      private$p_values <- union(private$p_values, filter$values)
      private$p_parentPivot$message("PivotFilter$union", "Unioned filter.")
+     return(invisible())
    },
    intersect = function(filter) {
      checkArgument("PivotFilter", "intersect", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
@@ -32,6 +33,7 @@ PivotFilter <- R6::R6Class("PivotFilter",
                    "Expected: ", private$p_variableName, " Encountered: ", filter$variableName), call. = FALSE)
      private$p_values <- intersect(private$p_values, filter$values)
      private$p_parentPivot$message("PivotFilter$union", "Intersected filter.")
+     return(invisible())
    },
    replace = function(filter) {
      checkArgument("PivotFilter", "replace", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
@@ -42,17 +44,18 @@ PivotFilter <- R6::R6Class("PivotFilter",
                    "Expected: ", private$p_variableName, " Encountered: ", filter$variableName), call. = FALSE)
      private$p_values <- values
      private$p_parentPivot$message("PivotFilter$union", "Replaced filter.")
+     return(invisible())
    },
    getCopy = function() {
      copy <- PivotFilter$new(private$p_parentPivot, rep(private$p_variableName), rep(private$p_values))
-     return(copy)
+     return(invisible(copy))
    },
    asList = function() {
      lst <- list(
        variableName = private$p_variableName,
        values = private$p_values
      )
-     return(lst)
+     return(invisible(lst))
    },
    asJSON = function() { return(jsonlite::toJSON(self$asList())) },
    asString = function(includeVariableName=TRUE, seperator=" ") {
@@ -65,8 +68,8 @@ PivotFilter <- R6::R6Class("PivotFilter",
    }
   ),
   active = list(
-    variableName = function(value) { return(private$p_variableName) },
-    values = function(value) { return(private$p_values) }
+    variableName = function(value) { return(invisible(private$p_variableName)) },
+    values = function(value) { return(invisible(private$p_values)) }
   ),
   private = list(
     p_parentPivot = NULL,
