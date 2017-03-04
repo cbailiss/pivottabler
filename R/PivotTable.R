@@ -458,15 +458,10 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
       # basic css
-      cssStr <- "
-<style>
-h1 { font: 2.5em arial; font-weight: bold; }
-table { border-collapse: collapse; }
-table th, table td { font: 0.9em arial; padding: 4px; min-width: 100px; border: 1px solid lightgray; }
-table th { font-weight: bold; text-align: left; }
-p { font: 0.9em arial; }
-</style>"
-      pgHtml <- htmltools::tags$html(htmltools::tags$head(htmltools::tags$title('R Pivot Table')), htmltools::HTML(cssStr),
+      cssStr1 <- "<style>h1 { font: 2.5em arial; font-weight: bold; } p { font: 0.9em arial; }</style>"
+      cssStr2 <- paste0("<style>", self$getStyles(), "</style>")
+      #pgHtml <- htmltools::tags$html(htmltools::tags$head(htmltools::tags$title('R Pivot Table')), htmltools::HTML(cssStr),
+      pgHtml <- htmltools::tags$html(htmltools::HTML("<head>"), htmltools::tags$title('R Pivot Table'), htmltools::HTML(cssStr1), htmltools::HTML(cssStr2), htmltools::HTML("</head>"),
                  htmltools::tags$body(
                    htmltools::h1("R Pivot Table"),
                    htmlTable,
