@@ -41,6 +41,15 @@ PivotStyles <- R6::R6Class("PivotStyles",
       private$p_parentPivot$message("PivotStyles$addStyle", "Added style.")
       return(invisible(style))
     },
+    copyStyle = function(styleName=NULL, newStyleName=NULL) {
+      checkArgument("PivotStyles", "copyStyle", styleName, missing(styleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      checkArgument("PivotStyles", "copyStyle", newStyleName, missing(newStyleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      private$p_parentPivot$message("PivotStyles$copyStyle", "Copying style...", list(styleName=styleName, newStyleName=newStyleName))
+      style <- self$getStyle(styleName=styleName)
+      newStyle <- self$addStyle(styleName=newStyleName, declarations=style$declarations)
+      private$p_parentPivot$message("PivotStyles$copyStyle", "Copied style.")
+      return(invisible(newStyle))
+   },
     asCSSRule = function(styleName=NULL, selector=NULL) {
       checkArgument("PivotStyles", "asCSSRule", styleName, missing(styleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       checkArgument("PivotStyles", "asCSSRule", selector, missing(selector), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -50,12 +59,12 @@ PivotStyles <- R6::R6Class("PivotStyles",
       private$p_parentPivot$message("PivotStyles$asCSSRule", "Got style as CSS rule.")
       return(invisible(cssRule))
     },
-    asNamedCSSStyle = function(styleName=NULL, stylePrefix=NULL) {
+    asNamedCSSStyle = function(styleName=NULL, styleNamePrefix=NULL) {
       checkArgument("PivotStyles", "asNamedCSSStyle", styleName, missing(styleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotStyles", "asNamedCSSStyle", stylePrefix, missing(stylePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-      private$p_parentPivot$message("PivotStyles$asNamedCSSStyle", "Getting style as named CSS rule...", list(styleName=styleName))
+      checkArgument("PivotStyles", "asNamedCSSStyle", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      private$p_parentPivot$message("PivotStyles$asNamedCSSStyle", "Getting style as named CSS rule...", list(styleName=styleName, styleNamePrefix=styleNamePrefix))
       style <- self$getStyle(styleName)
-      cssRule <- style$asNamedCSSStyle(stylePrefix=stylePrefix)
+      cssRule <- style$asNamedCSSStyle(styleNamePrefix=styleNamePrefix)
       private$p_parentPivot$message("PivotStyles$asNamedCSSStyle", "Got style as named CSS rule.")
       return(invisible(cssRule))
     },

@@ -52,7 +52,8 @@ PivotCells <- R6::R6Class("PivotCells",
    rowCount = function(value) { return(invisible(length(private$p_rowGroups))) },
    columnCount = function(value) { return(invisible(length(private$p_columnGroups))) },
    rowGroups = function(value) { return(invisible(private$p_rowGroups)) },
-   columnGroups = function(value) { return(invisible(private$p_columnGroups)) }
+   columnGroups = function(value) { return(invisible(private$p_columnGroups)) },
+   rows = function(value) { return(invisible(private$p_rows)) }
   ),
   private = list(
     p_parentPivot = NULL,

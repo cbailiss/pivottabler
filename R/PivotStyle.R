@@ -84,6 +84,20 @@ PivotStyle <- R6::R6Class("PivotStyle",
      private$p_parentPivot$message("PivotStyle$setPropertyValue", "Set property value.")
      return(invisible())
    },
+   setPropertyValues = function(declarations=NULL) {
+     checkArgument("PivotStyle", "initialize", declarations, missing(declarations), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="character")
+     private$p_parentPivot$message("PivotStyle$setPropertyValues", "Setting property values...")
+     nms <- names(declarations)
+     if(length(nms)==0) return(invisible())
+     for(i in 1:length(nms)) {
+       property <- nms[i]
+       if(is.null(property)) stop("PivotStyle$setPropertyValues():  NULL style property encountered.")
+       value <- declarations[[i]]
+       private$p_declarations[[property]] <- value
+     }
+     private$p_parentPivot$message("PivotStyle$setPropertyValues", "Set property values.")
+     return(invisible())
+   },
    getPropertyValue = function(property=NULL) {
      checkArgument("PivotStyle", "getPropertyValue", property, missing(property), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      private$p_parentPivot$message("PivotStyle$getPropertyValue", "Getting property value...", list(property=property))
@@ -105,21 +119,23 @@ PivotStyle <- R6::R6Class("PivotStyle",
      private$p_parentPivot$message("PivotStyle$asCSSRule", "Got CSS rule.")
      return(invisible(cssRule))
    },
-   asNamedCSSStyle = function(stylePrefix=NULL) {
-     checkArgument("PivotStyle", "asNamedCSSStyle", stylePrefix, missing(stylePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+   asNamedCSSStyle = function(styleNamePrefix=NULL) {
+     checkArgument("PivotStyle", "asNamedCSSStyle", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      private$p_parentPivot$message("PivotStyle$asCSSRule", "Getting named CSS rule...")
-     if(is.null(stylePrefix)) { selector <- paste0(".", private$p_name) }
-     else { selector <- paste0(".", stylePrefix, private$p_name) }
+     if(is.null(styleNamePrefix)) { selector <- paste0(".", private$p_name) }
+     else { selector <- paste0(".", styleNamePrefix, private$p_name) }
      cssRule <- self$asCSSRule(selector=selector)
      private$p_parentPivot$message("PivotStyle$asNamedCSSStyle", "Got named CSS rule.")
      return(invisible(cssRule))
    },
-   getCopy = function() {
-     copy <- list()
+   getCopy = function(newStyleName=NULL) {
+     checkArgument("PivotStyle", "getCopy", newStyleName, missing(newStyleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     copy <- PivotStyle$new(parentPivot=private$p_parentPivot, styleName=newStyleName, declarations=private$p_declarations)
      return(invisible(copy))
    },
    asList = function() {
      lst <- list(
+       name = private$p_name,
        declarations = private$p_declarations
      )
      return(invisible(lst))
@@ -127,7 +143,8 @@ PivotStyle <- R6::R6Class("PivotStyle",
    asJSON = function() { return(jsonlite::toJSON(asList())) }
   ),
   active = list(
-    name = function(value) { return(invisible(private$p_name)) }
+    name = function(value) { return(invisible(private$p_name)) },
+    declarations = function(value) { return(invisible(private$p_declarations)) }
   ),
   private = list(
     p_parentPivot = NULL,
