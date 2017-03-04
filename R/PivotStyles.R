@@ -87,7 +87,15 @@ PivotStyles <- R6::R6Class("PivotStyles",
   ),
   active = list(
     count = function(value) { return(length(private$p_styles)) },
+    theme = function(value) { return(private$p_theme) },
     styles = function(value) { return(private$p_styles) },
+    allowExternalStyles = function(value) {
+      if(missing(value)) return(private$p_allowExternalStyles)
+      else {
+        checkArgument("PivotStyles", "allowExternalStyles", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
+        private$p_allowExternalStyles <- value
+      }
+    },
     tableStyle = function(value) {
       if(missing(value)) return(private$p_tableStyle)
       else {

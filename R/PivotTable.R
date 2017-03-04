@@ -1,8 +1,6 @@
 PivotTable <- R6::R6Class("PivotTable",
   public = list(
-    initialize = function(themeName="default", allowExternalStyles=FALSE, messages=FALSE, messageFile=NULL) {
-      checkArgument("PivotTable", "initialize", themeName, missing(themeName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-      checkArgument("PivotTable", "initialize", allowExternalStyles, missing(allowExternalStyles), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+    initialize = function(messages=FALSE, messageFile=NULL) {
       checkArgument("PivotTable", "initialize", messages, missing(messages), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "initialize", messageFile, missing(messageFile), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       private$p_messages <- messages
@@ -11,8 +9,7 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       self$message("PivotTable$new", "Creating new Pivot Table...")
       private$p_data <- PivotData$new(parentPivot=self)
-      if(is.null(themeName)) private$p_styles <- PivotStyles$new(parentPivot=self, themeName=NULL, allowExternalStyles=allowExternalStyles)
-      else private$p_styles <- getTheme(parentPivot=self, themeName=themeName)
+      private$p_styles <- getTheme(parentPivot=self, themeName="default")
       private$p_rowGroup <- PivotDataGroup$new(parentPivot=self, parentGroup=NULL, rowOrColumn="row")
       private$p_columnGroup <- PivotDataGroup$new(parentPivot=self, parentGroup=NULL, rowOrColumn="column")
       private$p_calculationsPosition <- NULL
@@ -559,7 +556,33 @@ p { font: 0.9em arial; }
   ),
   active = list(
     data = function(value) { return(private$p_data) },
-    styles = function(value) { return(private$p_styles) },
+    theme = function(value) {
+      if(missing(value)) {
+        if(is.null(private$p_styles)) return(NULL)
+        else return(private$p_styles$theme)
+      }
+      else {
+        checkArgument("PivotTable", "theme", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        private$p_styles <- getTheme(parentPivot=self, themeName=value)
+      }
+    },
+    styles = function(value) {
+      if(missing(value)) return(private$p_styles)
+      else {
+        checkArgument("PivotTable", "styles", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotStyles")
+        private$p_styles <- value
+      }
+    },
+    allowExternalStyles = function(value) {
+      if(missing(value)) {
+        if(is.null(private$p_styles)) return(NULL)
+        else return(private$p_styles$allowExternalStyles)
+      }
+      else {
+        checkArgument("PivotTable", "allowExternalStyles", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
+        private$p_styles$allowExternalStyles <- value
+      }
+    },
     rowGroup = function(value) { return(private$p_rowGroup )},
     columnGroup = function(value) { return(private$p_columnGroup )},
     calculationGroups = function(value) { return(private$p_calculationGroups) },

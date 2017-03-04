@@ -5,9 +5,10 @@ getTheme <- function(parentPivot=NULL, themeName=NULL) {
   else stop(paste0("getTheme(): Theme '", themeName, "' is not a recognised theme."))
 }
 
-getDefaultTheme <- function(parentPivot=NULL) {
+getDefaultTheme <- function(parentPivot=NULL, themeName="default") {
   checkArgument("", "getPlainTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-  pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName="plain")
+  checkArgument("", "getPlainTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
       "border-collapse"="collapse"
     ))
