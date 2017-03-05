@@ -15,7 +15,7 @@ getDefaultTheme <- function(parentPivot=NULL, themeName="default") {
       "border-collapse"="collapse"
     ))
   pivotStyles$addStyle(styleName="Header", list(
-      font="0.875em arial",
+      font="0.75em arial",
       padding="2px 8px 2px 2px",
       border="1px solid lightgray",
       "vertical-align"="middle",
@@ -24,7 +24,7 @@ getDefaultTheme <- function(parentPivot=NULL, themeName="default") {
       "background-color"="#F2F2F2"
     ))
   pivotStyles$addStyle(styleName="Cell", list(
-      font="0.875em arial",
+      font="0.75em arial",
       padding="2px 2px 2px 8px",
       border="1px solid lightgray",
       "text-align"="right"
