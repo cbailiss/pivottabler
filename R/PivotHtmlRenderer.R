@@ -8,7 +8,13 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
    },
    clearIsRenderedFlags = function() {
      private$p_parentPivot$message("PivotHtmlRenderer$clearIsRenderedFlags", "Clearing isRendered flags...")
-     clearFlags <- function(dg) { dg$isRendered <- FALSE }
+     clearFlags <- function(dg) {
+       grp <- dg
+       while(!is.null(grp)) {
+         grp$isRendered <- FALSE
+         grp <- grp$parentGroup
+       }
+     }
      rowGroups <- private$p_parentPivot$rowGroup$getDescendantGroups(includeCurrentGroup=TRUE)
      lapply(rowGroups, clearFlags)
      columnGroups <- private$p_parentPivot$columnGroup$getDescendantGroups(includeCurrentGroup=TRUE)
