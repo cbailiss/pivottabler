@@ -18,9 +18,12 @@ Imports:
     htmltools(>= 0.3.5),
     htmlwidgets (>= 0.8)
 Suggests:
-    listviewer (>= 1.4.0)
+    listviewer (>= 1.4.0),
+    knitr,
+    rmarkdown
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/cbailiss/pivottabler
 BugReports: https://github.com/cbailiss/pivottabler/issues
+VignetteBuilder: knitr

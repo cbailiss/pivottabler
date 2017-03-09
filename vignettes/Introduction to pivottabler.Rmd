@@ -1,0 +1,238 @@
+---
+title: "Introduction to pivottabler"
+author: "Chris Bailiss"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to pivottabler}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Pivot Tables
+
+### Defintion
+
+Pivot tables are a common technique for summarising large tables of data into smaller and more easily understood summary tables to answer specific questions.  
+
+Starting from a specific question that requires answering, the variables relevant to the question are identified.  The distinct values of the fixed variables^[The terms "fixed variables" and "measured variables" are used here as in [Wickham 2014](http://vita.had.co.nz/papers/tidy-data.html)] are rendered as a mixture of row and column headings in the summary table.  One or more aggregations of the (numerical) measured variables are added into the body of the table.  The summary table should then yield a concise answer to the original question.
+
+### In reality
+
+The above definition is probably more difficult to understand than just looking at some examples - several are presented in this vignette.  An extended definition is also provided by [Wikipedia](https://en.wikipedia.org/wiki/Pivot_table).  
+
+Pivot tables can be found in everyday use within many commercial and non-commercial organisations.  Pivot tables feature prominently in applications such as Microsoft Excel, Open Office, etc.  More advanced forms are found in Business Intelligence (BI) and Online Analytical Processing (OLAP) tools.  
+
+The pivottabler package:
+
+- enables pivot tables to be constructed natively in R, via a series of R commands that gradually build a pivot table to meet your needs.  
+- provides a simple framework for specifying and aggregating data, based on the dplyr package.  
+- provides hooks for custom calculation/aggregations for more complex scenarios.
+
+Since pivot tables are primarily visualisation tools, the pivottabler package offers several custom styling options as well as conditional/custom formatting capabilities.  
+
+Output is rendered as HTML via the htmlwidgets framework.  The generated HTML can also be easily retrieved, e.g. to be used outside of R.
+
+## Data: Train Data
+
+To build a series of example pivot tables, we will use the `bhmtrains` data frame.  This contains all 84,745 trains that arrived into and/or departed from [Birmingham New Street railway station](https://en.wikipedia.org/wiki/Birmingham_New_Street_station) between 1st December 2016 and 28th February 2017. As an example, the following are four trains that arrived into Birmingham New Street at the very start of this time period - note the data has been transposed (otherwise the table would be very wide).
+
+```{r, echo=FALSE}
+library(pivottabler)
+renderBasicTable(t(bhmtrains[1:4,]),rowNamesAsHeader=TRUE)
+```
+
+GbttArrival and GbttDeparture are the scheduled arrival and departure times of the trains at Birmingham New Street, as advertised in the Great Britain Train Timetable (GBTT).  Also given are the actual arrival and departure times of the trains at Birmingham New Street.  Note that all four of the trains above terminated at New Street, hence they have arrival times but no departure times.  The origin and destination stations of each of the trains is also included, in the form of three letter station codes, e.g. BHM = Birmingham New Street.  The `trainstations` data frame (used later in this vignette) includes a lookup from the code to the full station name for all stations.
+
+The first train above:
+
+- has an identifier of 33960725^[This is the identifier assigned by the [Recent Train Times](http://www.recenttraintimes.co.uk) website, the source of this sample data].
+- was operated by the London Midland train operating company.
+- was an express passenger train (=fewer stops).
+- was scheduled to be operated by an "Electric Multiple Unit".
+- had a scheduled maximum speed of 100mph.
+- originated at London Euston station.
+- was scheduled to leave Euston at 21:49 on 30th November 2016.
+- left on-time (i.e. at 21:49).
+- was scheduled to arrive at Birmingham New Street at 00:04 on 1st December 2016.
+- arrived on-time at New Street.
+- terminated at New Street (so no departure details and the destination was Birmingham New Street).
+
+## Basic Pivot Table
+
+Suppose we want to answer the question:  How many ordinary/express passenger trains did each train operating company (TOC) operate in the three month period?
+
+The following code will generate the relevant pivot table:
+
+<!-- Warning=FALSE since the above renderBasicTable seems to cause a random warning in the code below:
+## Warning in combine_vars(vars, ind_list): '.Random.seed' is not an integer
+## vector but of type 'NULL', so ignored
+i.e. disable the renderBasicTable() call and the warning disappears - very odd.
+--> 
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroup("TrainCategory")
+pt$addLeafRowDataGroup("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+Each line above works as follows:
+
+1. Load the namespace of the pivottabler library.
+2. Create a new pivot table instance^[pivottabler is implemented in [R6 Classes](https://cran.r-project.org/web/packages/R6/vignettes/Introduction.html) so pt here is an instance of the R6 PivotTable class.].
+3. Specify the data frame that contains the data for the pivot table.
+4. Add the distinct values from the TrainCategory column in the data frame as columns in the pivot table.
+5. Add the distinct values from the TOC column in the data frame as rows in the pivot table.
+6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function^[See the [dplyr cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) for other sumamry functions.].
+7. Generate the pivot table.
+
+## TODO:  Change the themes so that column headers are centre aligned.
+
+Adding 2nd level
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroup("TrainCategory")
+pt$addLeafColumnDataGroup("PowerType")    #    << CODE CHANGE <<
+pt$addLeafRowDataGroup("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+Expanding the totals
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroup("TrainCategory")
+pt$addLeafColumnDataGroup("PowerType", expandExistingTotals=TRUE)    #    << CODE CHANGE <<
+pt$addLeafRowDataGroup("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+Adding to rows
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroup("TrainCategory")
+pt$addLeafRowDataGroup("TOC")
+pt$addLeafRowDataGroup("PowerType")    #    << CODE CHANGE <<
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+Can keep adding row and column headers indefinitely, e.g.
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroup("TrainCategory")
+pt$addLeafRowDataGroup("TOC")
+pt$addLeafRowDataGroup("PowerType")
+pt$addLeafRowDataGroup("SchedSpeedMPH")    #    << CODE CHANGE <<
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+NULL equality in the filtering isn't working (look at Cross Country HST, 734+0<>741)
+
+- Go back to a simpler pivot from above, add in a second measure:  the number of trains more than 5 late.
+- Calculate a percentage in the pivot of number of trains more than 5 late.
+- Custom sort the data groups by filter value (asc/desc)
+- Custom sort the data groups by aggregate values (specify the level and a calc function to sort by, plus asc/desc)
+- Keep only topX and/or bottomX items of a given data group/level (filter by number of aggregate value)
+- Subsets of the data, visual totals
+- formatting values (string or custom function)
+- styling with themes
+- custom styling
+
+Advanced:  Other calculation types
+ 
+- value
+- custom calculation function
+
+Advanced:  Context
+
+- switching on the advanced mode, i.e. to display the context in each cell.
+- viewing the pivot as JSON
+
+Advanced:  Custom layouts
+
+- e.g. having multiple measures on columns that are sliced by different attributes on the same level.
+
+Advanced:  Manipulating individual cells
+
+- retrieving headers
+- retrieving cells
+- iterating
+- styling
+
+Advanced:  Retrieving data from the pivot
+
+- As a matrix
+- As a dataframe
+- Drillthrough
+- As HTML
+- Save HTML
+
+...
+
+...
+
+...
+
+...
+
+...
+
+## Vignette Info
+
+Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+
+## Styles
+
+The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+
+    output: 
+      rmarkdown::html_vignette:
+        css: mystyles.css
+
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))
