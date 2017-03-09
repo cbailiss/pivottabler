@@ -155,6 +155,9 @@ NULL equality in the filtering isn't working (look at Cross Country HST, 734+0<>
 - formatting values (string or custom function)
 - styling with themes
 - custom styling
+- conditional formatting, i.e. pivot of delay minutes by time of day, highlighting the worst times.
+- also show the above as a graph, state depends if need to see the exact numbers as to whether chart vs. table.
+- on example of highlighting a specific cell, referred to by row and column.  Then refer to advanced vignette for more.
 
 Advanced:  Other calculation types
  
