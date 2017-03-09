@@ -18,11 +18,11 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$new", "Created new Pivot Table.")
       return(invisible())
     },
-    addData = function(name, df) {
-      checkArgument("PivotTable", "addData", name, missing(name), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+    addData = function(df=NULL, dataName=NULL) {
       checkArgument("PivotTable", "addData", df, missing(df), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+      checkArgument("PivotTable", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       self$message("PivotTable$addData", "Adding data to Pivot Table...")
-      private$p_data$addData(name, df)
+      private$p_data$addData(df, dataName=dataName)
       self$message("PivotTable$addData", "Added data to Pivot Table.")
       return(invisible(private$p_data))
     },
@@ -512,6 +512,7 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$renderPivot", "Rendering htmlwidget...", list(width=width, height=height, styleNamePrefix=styleNamePrefix,
                                                                              includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
                                                                              includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue))
+      if(!private$p_evaluated) self$evaluatePivot()
       if(!private$p_evaluated) stop("PivotTable$getHtml():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       # pivottabler(self, width=width, height=height, includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
       #                 includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
@@ -527,7 +528,8 @@ PivotTable <- R6::R6Class("PivotTable",
       # any scroll bars being shown when the HTML tables are larger than the RStudio Viewer or the web browser window size
       sp = htmlwidgets::sizingPolicy(
         viewer.padding=10, viewer.fill=FALSE, viewer.suppress=FALSE,
-        browser.padding=10, browser.fill=FALSE
+        browser.padding=10, browser.fill=FALSE,
+        knitr.defaultWidth="auto", knitr.defaultHeight="auto", knitr.figure = FALSE
       )
       w <- htmlwidgets::createWidget("pivottabler", widgetData, width=width, height=height, sizingPolicy=sp)
       self$message("PivotTable$renderPivot", "Rendered htmlwidget.")

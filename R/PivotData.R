@@ -8,12 +8,19 @@ PivotData <- R6::R6Class("PivotData",
      private$p_defaultData <- NULL
      private$p_parentPivot$message("PivotData$new", "Created new Pivot Data.")
    },
-   addData = function(dataName, df) {
-     checkArgument("PivotData", "addData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+   addData = function(df, dataName) {
      checkArgument("PivotData", "addData", df, missing(df), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+     checkArgument("PivotData", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      private$p_parentPivot$message("PivotData$addData", "Adding data...", list(dataName=dataName, df=private$getDfStr(df)))
-     if(is.null(private$p_defaultData)) private$p_defaultData <- df
-     private$p_data[[dataName]] <- df
+     dn <- dataName
+     if(is.null(dn)) dn <- deparse(substitute(df))
+     if(is.null(dn)) stop("PivotData$addData(): Please specify a name for the data frame.")
+     if(length(dn)==0) stop("PivotData$addData(): Please specify a name for the data frame.")
+     if(is.null(private$p_defaultData)) {
+       private$p_defaultData <- df
+       private$p_defaultName <- dn
+     }
+     private$p_data[[dn]] <- df
      private$p_parentPivot$message("PivotData$addData", "Added data.")
      return(invisible())
    },
@@ -49,7 +56,8 @@ PivotData <- R6::R6Class("PivotData",
   ),
   active = list(
     count = function(value) { return(invisible(length(private$p_data))) },
-    defaultData = function(value) { return(invisible(private$p_defaultData)) }
+    defaultData = function(value) { return(invisible(private$p_defaultData)) },
+    defaultName = function(value) { return(invisible(private$p_defaultName)) }
   ),
   private = list(
     getDfDesc = function(df) {
@@ -69,6 +77,7 @@ PivotData <- R6::R6Class("PivotData",
     },
     p_parentPivot = NULL,
     p_defaultData = NULL,
+    p_defaultName = NULL,
     p_data = NULL
   )
 )
