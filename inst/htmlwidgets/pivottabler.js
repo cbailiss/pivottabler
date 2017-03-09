@@ -13,10 +13,12 @@ HTMLWidgets.widget({
       renderValue: function(widgetData) {
 
         if(!initialised) {
-          docHead = document.head || document.getElementsByTagName("head")[0];
-          var styles = document.createElement("style");
-          styles.innerHTML = widgetData.tableCss;
-          docHead.appendChild(styles);
+          if(widgetData.tableCss !== null) {
+            docHead = document.head || document.getElementsByTagName("head")[0];
+            var styles = document.createElement("style");
+            styles.innerHTML = widgetData.tableCss;
+            docHead.appendChild(styles);
+          }
           initialised = true;
         }
         pivotElement.innerHTML = widgetData.tableHtml;
