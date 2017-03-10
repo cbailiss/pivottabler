@@ -1,11 +1,13 @@
 #' @import htmlwidgets
 #' @export
-pivottabler <- function(pt, width=NULL, height=NULL,
+pivottabler <- function(pt, width=NULL, height=NULL, styleNamePrefix=NULL,
                    includeRCFilters=FALSE, includeCalculationFilters=FALSE,
                    includeCalculationNames=FALSE, includeRawValue=FALSE) {
   settings <- list() # may need this in the future
   widgetData <- list(
-    tableHtml = as.character(pt$getHtml(includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
+    tableCss = pt$getCss(styleNamePrefix=styleNamePrefix),
+    tableHtml = as.character(pt$getHtml(styleNamePrefix=styleNamePrefix,
+                                        includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
                                         includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)),
     settings = settings
   )
