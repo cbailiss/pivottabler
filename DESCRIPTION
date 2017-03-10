@@ -19,8 +19,10 @@ Imports:
     htmlwidgets (>= 0.8)
 Suggests:
     listviewer (>= 1.4.0),
+    digest (>= 0.6.9),
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
