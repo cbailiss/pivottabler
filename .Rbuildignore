@@ -1,2 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^Notes\.txt$
+^R\Notes\.txt$
+^Template\.R$
+^\Template\.R$
