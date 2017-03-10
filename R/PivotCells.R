@@ -31,6 +31,22 @@ PivotCells <- R6::R6Class("PivotCells",
      private$p_rows[[r]][[c]] <- cell
      return(invisible())
    },
+   asMatrix = function(rawValue=TRUE) {
+     checkArgument("PivotCells", "asMatrix", rawValue, missing(rawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     if((self$rowCount==0)||(self$columnCount==0)) return(matrix())
+     m <- matrix(data=NA, nrow=self$rowCount, ncol=self$columnCount)
+     for(r in 1:self$rowCount) {
+       for(c in 1:self$columnCount) {
+         if(rawValue==TRUE) {
+           v <- private$p_rows[[r]][[c]]$rawValue
+           if(!(("integer" %in% class(v))||("numeric" %in% class(v)))) v <- NA
+         }
+         else v <- private$p_rows[[r]][[c]]$formattedValue
+         m[r, c] <- v
+       }
+     }
+     return(m)
+   },
    asList = function() {
      lst <- list()
      if(length(private$p_rows) > 0) {
