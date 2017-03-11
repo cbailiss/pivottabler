@@ -131,13 +131,14 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    # fromData=FALSE, explicitListOfValues=TRUE, simply generates the groups from the values passed in
    # explicitListOfValues should be a LIST of values, each element in the list can be single value or a vector of values (to allow a
    # single pivot table row/column to represent multiple values)
-   addLeafDataGroup = function(variableName=NULL, dataName=NULL, fromData=TRUE,
+   addLeafDataGroup = function(variableName=NULL, dataName=NULL, fromData=TRUE, dataSortOrder="asc",
                            leafLevelPermutations=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                            expandExistingTotals=FALSE,
                            addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total") {
      checkArgument("DataGroup", "addLeafDataGroup", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      checkArgument("DataGroup", "addLeafDataGroup", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("DataGroup", "addLeafDataGroup", fromData, missing(fromData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("DataGroup", "addLeafDataGroup", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "none"))
      checkArgument("DataGroup", "addLeafDataGroup", leafLevelPermutations, missing(leafLevelPermutations), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("DataGroup", "addLeafDataGroup", explicitListOfValues, missing(explicitListOfValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
      checkArgument("DataGroup", "addLeafDataGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -183,7 +184,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        data <- df
        eval(parse(text=paste0("data <- dplyr::select(data, ", variableName, ")")))
        data <- dplyr::distinct(data)
-       eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
+       if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
+       else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", variableName, "))")))
        topLevelDisinctValues <- dplyr::collect(data)[[variableName]]
        if("factor" %in% class(topLevelDisinctValues)) { topLevelDisinctValues <- as.character(distinctValues) }
        topLevelFilter <- PivotFilter$new(parentPivot=private$p_parentPivot, variableName=variableName, values=topLevelDisinctValues)
@@ -248,7 +250,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          # get the distinct values for the current variable
          eval(parse(text=paste0("data <- dplyr::select(data, ", variableName, ")")))
          data <- dplyr::distinct(data)
-         eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
+         if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
+         else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", variableName, "))")))
          distinctValues <- dplyr::collect(data)[[variableName]]
          if("factor" %in% class(distinctValues)) { distinctValues <- as.character(distinctValues) }
          topLevelFilter$union(PivotFilter$new(parentPivot=private$p_parentPivot, variableName=variableName, values=distinctValues))
