@@ -21,14 +21,16 @@ renderBasicTable <- function(matrix=NULL, stylePrefix=NULL, rowNamesAsHeader=FAL
   else m <- matrix
   row <- list()
   for(c in 1:columnCount) {
-    row[[length(row)+1]] <- htmltools::tags$th(class=paste0(stylePrefix, "Header"), m[1,c])
+    if(c==1) styleName <- "RowHeader"
+    else styleName <- "ColumnHeader"
+    row[[length(row)+1]] <- htmltools::tags$th(class=paste0(stylePrefix, styleName), m[1,c])
   }
   trows[[length(trows)+1]] <- htmltools::tags$tr(row)
   if(rowCount>1) {
     for(r in 2:rowCount) {
       row <- list()
       for(c in 1:columnCount) {
-        if((c==1)&(rowNamesAsHeader==TRUE)) style <- paste0(stylePrefix, "Header")
+        if((c==1)&(rowNamesAsHeader==TRUE)) style <- paste0(stylePrefix, "RowHeader")
         else style <- paste0(stylePrefix, "Cell")
         row[[length(row)+1]] <- htmltools::tags$td(class=style, m[r,c])
       }

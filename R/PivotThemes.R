@@ -14,7 +14,16 @@ getDefaultTheme <- function(parentPivot=NULL, themeName="default") {
   pivotStyles$addStyle(styleName="Table", list(
       "border-collapse"="collapse"
     ))
-  pivotStyles$addStyle(styleName="Header", list(
+  pivotStyles$addStyle(styleName="ColumnHeader", list(
+      font="0.75em arial",
+      padding="2px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "text-align"="center",
+      "font-weight"="bold",
+      "background-color"="#F2F2F2"
+    ))
+  pivotStyles$addStyle(styleName="RowHeader", list(
       font="0.75em arial",
       padding="2px 8px 2px 2px",
       border="1px solid lightgray",
@@ -30,9 +39,9 @@ getDefaultTheme <- function(parentPivot=NULL, themeName="default") {
       "text-align"="right"
     ))
   pivotStyles$tableStyle <- "Table"
-  pivotStyles$rootStyle <- "Header"
-  pivotStyles$rowHeaderStyle <- "Header"
-  pivotStyles$colHeaderStyle <- "Header"
+  pivotStyles$rootStyle <- "RowHeader"
+  pivotStyles$rowHeaderStyle <- "RowHeader"
+  pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
   pivotStyles$totalStyle <- "Cell"
   return(invisible(pivotStyles))
@@ -45,7 +54,16 @@ getLargePlainTheme <- function(parentPivot=NULL, themeName="largeplain") {
   pivotStyles$addStyle(styleName="Table", list(
       "border-collapse"="collapse"
     ))
-  pivotStyles$addStyle(styleName="Header", list(
+  pivotStyles$addStyle(styleName="ColumnHeader", list(
+      font="0.875em arial",
+      padding="4px",
+      "min-width"="100px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "text-align"="center",
+      "font-weight"="bold"
+    ))
+  pivotStyles$addStyle(styleName="RowHeader", list(
       font="0.875em arial",
       padding="4px",
       "min-width"="100px",
@@ -62,9 +80,9 @@ getLargePlainTheme <- function(parentPivot=NULL, themeName="largeplain") {
       "text-align"="right"
     ))
   pivotStyles$tableStyle <- "Table"
-  pivotStyles$rootStyle <- "Header"
-  pivotStyles$rowHeaderStyle <- "Header"
-  pivotStyles$colHeaderStyle <- "Header"
+  pivotStyles$rootStyle <- "RowHeader"
+  pivotStyles$rowHeaderStyle <- "RowHeader"
+  pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
   pivotStyles$totalStyle <- "Cell"
   return(invisible(pivotStyles))
@@ -77,7 +95,16 @@ getCompactTheme <- function(parentPivot=NULL, themeName="compact") {
   pivotStyles$addStyle(styleName="Table", list(
       "border-collapse"="collapse"
     ))
-  pivotStyles$addStyle(styleName="Header", list(
+  pivotStyles$addStyle(styleName="ColumnHeader", list(
+      font="0.625em arial",
+      padding="2px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "text-align"="center",
+      "font-weight"="bold",
+      "background-color"="#F2F2F2"
+    ))
+  pivotStyles$addStyle(styleName="RowHeader", list(
       font="0.625em arial",
       padding="2px 4px 2px 2px",
       border="1px solid lightgray",
@@ -93,9 +120,9 @@ getCompactTheme <- function(parentPivot=NULL, themeName="compact") {
       "text-align"="right"
     ))
   pivotStyles$tableStyle <- "Table"
-  pivotStyles$rootStyle <- "Header"
-  pivotStyles$rowHeaderStyle <- "Header"
-  pivotStyles$colHeaderStyle <- "Header"
+  pivotStyles$rootStyle <- "RowHeader"
+  pivotStyles$rowHeaderStyle <- "RowHeader"
+  pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
   pivotStyles$totalStyle <- "Cell"
   return(invisible(pivotStyles))
