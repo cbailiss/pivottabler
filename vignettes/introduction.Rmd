@@ -1,10 +1,10 @@
 ---
-title: "Introduction to pivottabler"
+title: "01. Introduction to pivottabler"
 author: "Chris Bailiss"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to pivottabler}
+  %\VignetteIndexEntry{01. Introduction to pivottabler}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,9 +19,9 @@ Starting from a specific question that requires answering, the variables relevan
 
 ### In reality
 
-The above definition is probably more difficult to understand than just looking at some examples - several are presented in this vignette.  An extended definition is also provided by [Wikipedia](https://en.wikipedia.org/wiki/Pivot_table).  
+The definition above is probably more difficult to understand than just looking at some examples - several are presented in this vignette.  An extended definition is also provided by [Wikipedia](https://en.wikipedia.org/wiki/Pivot_table).  
 
-Pivot tables can be found in everyday use within many commercial and non-commercial organisations.  Pivot tables feature prominently in applications such as Microsoft Excel, Open Office, etc.  More advanced forms are found in Business Intelligence (BI) and Online Analytical Processing (OLAP) tools.  
+Pivot tables can be found in everyday use within many commercial and non-commercial organisations.  Pivot tables feature prominently in applications such as Microsoft Excel, Open Office, etc.  More advanced forms are found in Business Intelligence (BI) and Online Analytical Processing (OLAP) tools.
 
 The pivottabler package:
 
@@ -89,35 +89,37 @@ Each line above works as follows:
 6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function^[See the [dplyr cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) for other sumamry functions.].
 7. Generate the pivot table.
 
-## TODO:  Change the themes so that column headers are centre aligned.
+## Extending the basic Pivot Table
 
-Adding 2nd level
+There follows below a progressive series of changes to the basic pivot table shown above.  Each change is made by adding or changing one line of code.  To improve readability, each code change is highlighted.
 
-```{r, warning=FALSE}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addLeafColumnDataGroup("TrainCategory")
-pt$addLeafColumnDataGroup("PowerType")    #    << CODE CHANGE <<
-pt$addLeafRowDataGroup("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-pt$renderPivot()
-```
-
-Expanding the totals
+First, adding an additional column data group to sub-divide each "TrainCategory" by "PowerType":
 
 ```{r, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addLeafColumnDataGroup("TrainCategory")
-pt$addLeafColumnDataGroup("PowerType", expandExistingTotals=TRUE)    #    << CODE CHANGE <<
+pt$addLeafColumnDataGroup("PowerType")    #    << **** CODE CHANGE **** <<
 pt$addLeafRowDataGroup("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-Adding to rows
+By default, the new data group does not expand the existing "TrainCategory" total.  However, an additional argument allows the total column to also be expanded:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroup("TrainCategory")
+pt$addLeafColumnDataGroup("PowerType", expandExistingTotals=TRUE)    #    << **** CODE CHANGE **** <<
+pt$addLeafRowDataGroup("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+Instead of adding "PowerType" as columns, it can also be added as rows:
 
 ```{r, warning=FALSE}
 library(pivottabler)
@@ -125,12 +127,12 @@ pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addLeafColumnDataGroup("TrainCategory")
 pt$addLeafRowDataGroup("TOC")
-pt$addLeafRowDataGroup("PowerType")    #    << CODE CHANGE <<
+pt$addLeafRowDataGroup("PowerType")    #    << **** CODE CHANGE **** <<
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-Can keep adding row and column headers indefinitely, e.g.
+It is possible to continue adding additional data groups.  The pivottabler enforces no maximum depth of data groups.  For example, adding the maximum scheduled speed to the rows:
 
 ```{r, warning=FALSE}
 library(pivottabler)
@@ -139,48 +141,85 @@ pt$addData(bhmtrains)
 pt$addLeafColumnDataGroup("TrainCategory")
 pt$addLeafRowDataGroup("TOC")
 pt$addLeafRowDataGroup("PowerType")
-pt$addLeafRowDataGroup("SchedSpeedMPH")    #    << CODE CHANGE <<
+pt$addLeafRowDataGroup("SchedSpeedMPH")    #    << **** CODE CHANGE **** <<
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-NULL equality in the filtering isn't working (look at Cross Country HST, 734+0<>741)
+As more data groups are added, the pivot table can seem overwhelmed with totals.  It is possible to selectively shpw/hide totals using the addTotal argument.  Similarly, totals can be renamed using the totalCaption argument.  Both of these options are demonstrated below.
 
-- Go back to a simpler pivot from above, add in a second measure:  the number of trains more than 5 late.
-- Calculate a percentage in the pivot of number of trains more than 5 late.
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroup("TrainCategory")
+pt$addLeafRowDataGroup("TOC", totalCaption="Grand Total")    #    << **** CODE CHANGE **** <<
+pt$addLeafRowDataGroup("PowerType")
+pt$addLeafRowDataGroup("SchedSpeedMPH", addTotal=FALSE)      #    << **** CODE CHANGE **** <<
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+## Further Reading
+
+The pivottabler package supports many more capabilities not described here.  More details can be found in the other vignettes.  The full set of vignettes is:
+
+1. [Introduction](introduction.html)
+2. [Data Groups](datagroups.html)
+3. [Calculations](calculations.html)
+4. [Formatting and Styling](formattingandstyling.html)
+5. [Cell Context](cellcontext.html)
+6. [Custom Layouts](customlayouts.html)
+7. [Retrieving Data](retrievingdata.html)
+8. [Manipulating Individual Cells](cellmanipulation.html)
+
+## TODO
+
+1. NULL/NA equality in the filtering isn't working (look at Cross Country HST, 734+0<>741)**
+
+2. Data Groups
+
+- Adding data groups based on the distinct values of a variable.
+- Specifying values manually.  Visual totals.
+- e.g. grouping data so that multiple values in one data group (e.g. have Virgin Trains and "Other TOC" where "Other TOC" is a list of the other three - dead easy to implement since each data group can take a vector of values, not just a single value)
 - Custom sort the data groups by filter value (asc/desc)
 - Custom sort the data groups by aggregate values (specify the level and a calc function to sort by, plus asc/desc)
-- Keep only topX and/or bottomX items of a given data group/level (filter by number of aggregate value)
-- Subsets of the data, visual totals
+- Keep only topX and/or bottomX items of a given data group/level (filter by number of aggregate value).  Use the most popular origins/destinations for this.
+
+3. Calculations
+ 
+- Basics: using dplyr summarise expressions 
+- Go back to a simpler pivot from above, add in a second measure:  the number of trains more than 5 late.
+- Calculate a percentage in the pivot of number of trains more than 5 late.
+- value
+- custom calculation function
+- performance considerations - i.e. pivottabler is executed for each cell.  This allows pivottabler to offer flexible layout options.  
+    - Note that for large data frames, better to do some aggregation before generating the pivot table, to come to the same grain as the pivot table.
+    - Do an example where scale up the volume (by replicating the bhmtrains data 10 or 100 times).  Time generating a pivot from that.
+    - Then aggregate that large dataset up to the grain of the pivot.  And time again.
+
+4. Formatting and Styling
+
 - formatting values (string or custom function)
 - styling with themes
 - custom styling
 - conditional formatting, i.e. pivot of delay minutes by time of day, highlighting the worst times.
-- also show the above as a graph, state depends if need to see the exact numbers as to whether chart vs. table.
 - on example of highlighting a specific cell, referred to by row and column.  Then refer to advanced vignette for more.
+- using styles defined in a website (i.e. a stylename in the pivot table but not definition of that name)
 
-Advanced:  Other calculation types
- 
-- value
-- custom calculation function
+5. Cell Context
 
-Advanced:  Context
-
+- a description of how filering works.
+- build up a pivot table from simple and show how filtering context builds up.
+    - use the same examples as shown in the introduction vignette. 
 - switching on the advanced mode, i.e. to display the context in each cell.
 - viewing the pivot as JSON
 
-Advanced:  Custom layouts
+6. Custom layouts
 
 - e.g. having multiple measures on columns that are sliced by different attributes on the same level.
 
-Advanced:  Manipulating individual cells
-
-- retrieving headers
-- retrieving cells
-- iterating
-- styling
-
-Advanced:  Retrieving data from the pivot
+7. Retrieving data from the pivot
 
 - As a matrix
 - As a dataframe
@@ -188,54 +227,9 @@ Advanced:  Retrieving data from the pivot
 - As HTML
 - Save HTML
 
-...
+8. Manipulating individual cells
 
-...
-
-...
-
-...
-
-...
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+- retrieving headers
+- retrieving cells
+- iterating
+- styling
