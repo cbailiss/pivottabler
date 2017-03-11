@@ -55,6 +55,6 @@ test_that("bhmtrains basic pivot html", {
   pt$evaluatePivot()
   pt$cells$asMatrix()
 
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "0056b2f67598d2f1c9bb0c401d14eee2")
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "6dfbc0e41701d6f3d7f0e6aa0fba9851")
 })
 
