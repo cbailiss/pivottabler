@@ -55,6 +55,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
                                           dataName=dataName, type=type, valueName=valueName, summariseExpression=summariseExpression,
                                           calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn)
       private$p_calculations[[calculationName]] <- calculation
+      if(is.null(private$p_defaultCalculation)) private$p_defaultCalculation <- calculationName
       private$p_parentPivot$message("PivotCalculationGroup$defineCalculation", "Defined calculation.")
       return(invisible(calculation))
     },
@@ -86,6 +87,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
   ),
   active = list(
     calculationGroupName = function(value) { return(invisible(private$p_name)) },
+    defaultCalculationName = function(value) { return(private$p_defaultCalculation) },
     count = function(value) { return(invisible(length(private$p_calculations))) },
     calculations = function(value) { return(invisible(private$p_calculations)) },
     visibleCount = function(value) {
@@ -109,6 +111,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
   private = list(
     p_parentPivot = NULL,
     p_name = NULL,
-    p_calculations = NULL
+    p_calculations = NULL,
+    p_defaultCalculation = NULL
   )
 )
