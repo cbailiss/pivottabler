@@ -308,12 +308,12 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      private$p_parentPivot$message("PivotCalculator$evaluateCalculateFunction", "Evaluated calculation function.")
      return(invisible(value))
    },
-   evaluateCalculationGroup = function(calculationName=NULL, basedOn=NULL, calculationGroupName=NULL, rowColFilters=NULL, cell=NULL) {
-     checkArgument("PivotCalculator", "evaluateCalculationGroup", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-     checkArgument("PivotCalculator", "evaluateCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-     checkArgument("PivotCalculator", "evaluateCalculationGroup", rowColFilters, missing(rowColFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
-     checkArgument("PivotCalculator", "evaluateCalculationGroup", cell, missing(cell), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotCell")
-     private$p_parentPivot$message("PivotCalculator$evaluateCalculationGroup", "Evaluating calculation group...")
+   evaluateNamedCalculation = function(calculationName=NULL, calculationGroupName=NULL, rowColFilters=NULL, cell=NULL) {
+     checkArgument("PivotCalculator", "evaluateNamedCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     checkArgument("PivotCalculator", "evaluateNamedCalculation", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotCalculator", "evaluateNamedCalculation", rowColFilters, missing(rowColFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
+     checkArgument("PivotCalculator", "evaluateNamedCalculation", cell, missing(cell), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotCell")
+     private$p_parentPivot$message("PivotCalculator$evaluateNamedCalculation", "Evaluating named calculation...")
      # get the calculation and calculation group
      calcGrp <- self$getCalculationGroup(calculationGroupName)
      calcs <- calcGrp$calculations
@@ -328,9 +328,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        calc <- calcs[[execOrder[i]]]
        if(calc$type=="value") {
          df <- self$getDataFrame(calc$dataName)
-         if(missing(cell)|is.null(cell))
-           stop("PivotCalculator$evaluateCalculationGroup():  For type=value, cell must be specified.", call. = FALSE)
-         if(cell$isTotal==TRUE) {
+         if((!is.null(cell))&&(cell$isTotal==TRUE)) {
            if(is.null(calc$summariseExpression)) { value <- private$getNullValue() }
            else {
              value <- self$evaluateSummariseExpression(dataFrame=df, rowColFilters=rowColFilters, calcFilters=calc$filters,
@@ -372,11 +370,11 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
                                             calculationFunction=calc$calculationFunction, format=calc$format, baseValues=values, cell=cell)
          results[[calc$calculationName]] <- value
        }
-       else stop(paste0("PivotCalculator$evaluateCalculationGroup():  Unknown calculation type encountered '", calc$type,
+       else stop(paste0("PivotCalculator$evaluateNamedCalculation():  Unknown calculation type encountered '", calc$type,
                         "' for calculaton name ", calc$calculationName, "' in calculation group '", calculationGroupName, "'"), call. = FALSE)
      }
      # returns a list of named results
-     private$p_parentPivot$message("PivotCalculator$evaluateCalculationGroup", "Evaluated calculation group.")
+     private$p_parentPivot$message("PivotCalculator$evaluateNamedCalculation", "Evaluated named calculation.")
      return(invisible(results))
    },
    evaluateCell = function(cell) {
@@ -389,7 +387,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      rowColFilters <- cell$rowColFilters
      if(is.null(calculationGroupName)) return(invisible())
      if(is.null(calculationName)) return(invisible())
-     results <- self$evaluateCalculationGroup(calculationName=calculationName, calculationGroupName=calculationGroupName,
+     results <- self$evaluateNamedCalculation(calculationName=calculationName, calculationGroupName=calculationGroupName,
                                               rowColFilters=rowColFilters, cell=cell)
      if(!(calculationName %in% names(results)))
        stop(paste0("PivotCalculator$evaluateCell():  calculation result for '", calculationName,

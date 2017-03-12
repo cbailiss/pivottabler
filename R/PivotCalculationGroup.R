@@ -21,7 +21,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
       checkArgument("PivotCalculationGroup", "getCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       private$p_parentPivot$message("PivotCalculationGroup$getCalculation", "Getting calculation...",
                                     list(calculationName=calculationName))
-      calculation <- private$p_calculations[[calculationGroupName]]
+      calculation <- private$p_calculations[[calculationName]]
       if(is.null(calculation)) {
         stop(paste0("PivotCalculationGroups$getCalculation(): No calculation exists with the name '", calculationName, "'"), call. = FALSE)
       }

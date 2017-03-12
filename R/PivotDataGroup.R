@@ -7,7 +7,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      checkArgument("PivotDataGroup", "initialize", parentGroup, missing(parentGroup), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotDataGroup")
      checkArgument("PivotDataGroup", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
      checkArgument("PivotDataGroup", "initialize", rowOrColumn, missing(rowOrColumn), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("row", "column"))
-     checkArgument("PivotDataGroup", "initialize", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotDataGroup", "initialize", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
      checkArgument("PivotDataGroup", "initialize", isTotal, missing(isTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotDataGroup", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotDataGroup", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
@@ -107,7 +107,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                             calculationGroupName=NULL, calculationName=NULL) {
      checkArgument("PivotDataGroup", "addChildGroup", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotDataGroup", "addChildGroup", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
-     checkArgument("PivotDataGroup", "addChildGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotDataGroup", "addChildGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
      checkArgument("PivotDataGroup", "addChildGroup", isTotal, missing(isTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotDataGroup", "addChildGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotDataGroup", "addChildGroup", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -322,6 +322,108 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      }
      private$p_parentPivot$message("DataGroup$addLeafDataGroups", "Added leaf groups.", list(count=length(newLeafGroups)))
      return(invisible(newLeafGroups))
+   },
+   sortDataGroups = function(levelNumber=1, orderBy="calculation", sortOrder="desc", calculationGroupName="default", calculationName=NULL) {
+     checkArgument("DataGroup", "sortDataGroups", levelNumber, missing(levelNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+     checkArgument("DataGroup", "sortDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("caption","calculation"))
+     checkArgument("DataGroup", "sortDataGroups", sortOrder, missing(sortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc","desc"))
+     checkArgument("DataGroup", "sortDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+     checkArgument("DataGroup", "sortDataGroups", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     private$p_parentPivot$message("DataGroup$sortDataGroups", "Sorting data groups...",
+                                   list(levelNumber=levelNumber, orderBy=orderBy, sortOrder=sortOrder,
+                                        calculationGroupName=calculationGroupName, calculationName=calculationName))
+     private$p_parentPivot$resetCells()
+     if(is.null(private$p_groups)) return(invisible())
+     if(length(private$p_groups)==0) return(invisible())
+     calculationGroup <- NULL
+     calculation <- NULL
+     if(orderBy=="calculation") {
+       if(!private$p_parentPivot$calculationGroups$isExistingCalculationGroup(calculationGroupName))
+         stop(paste0("DataGroup$sortDataGroups():  There is no Calculation Group named '", calculationGroupName, "'"), call. = FALSE)
+       calculationGroup <- private$p_parentPivot$calculationGroups$getCalculationGroup(calculationGroupName)
+       if(is.null(calculationName)) {
+         calculationName <- calculationGroup$defaultCalculationName
+         if(is.null(calculationName))
+           stop(paste0("DataGroup$sortDataGroups():  No calculation has been specified and there is no default calculation."), call. = FALSE)
+       }
+       if(!calculationGroup$isExistingCalculation(calculationName))
+         stop(paste0("DataGroup$sortDataGroups():  There is no Calculation named '", calculationName , "' in group '", calculationGroupName, "'"), call. = FALSE)
+       calculation <- calculationGroup$getCalculation(calculationName)
+     }
+     # sort at this level, or a level below?
+     if(levelNumber==0) {
+       # sort at this level
+       if(orderBy=="caption") {
+         # sorting by caption
+         groups <- list()
+         captions <- list()
+         j <- 0
+         for(i in 1:length(private$p_groups)) {
+           grp <- private$p_groups[[i]]
+           if(grp$isTotal==TRUE) next
+           j <- j + 1
+           groups[[j]] <- grp
+           captions[[j]] <- grp$caption
+         }
+         if(sortOrder=="asc") sortIndexes <- order(unlist(captions))
+         else sortIndexes <- order(unlist(captions), decreasing=TRUE)
+         j <- 0
+         for(i in 1:length(private$p_groups)) {
+           if(private$p_groups[[i]]$isTotal==TRUE) next
+           j <- j + 1
+           private$p_groups[[i]] <- groups[[sortIndexes[j]]]
+         }
+       }
+       else {
+         # sorting by calculation
+         groups <- list()
+         rawValues <- list()
+         pivotCalculator <- PivotCalculator$new(private$p_parentPivot)
+         j <- 0
+         for(i in 1:length(private$p_groups)) {
+           grp <- private$p_groups[[i]]
+           if(grp$isTotal==TRUE) next
+           j <- j + 1
+           groups[[j]] <- grp
+           # get the filter criteria from the top-most parent group down to this one
+           ancestors <- grp$getAncestorGroups(includeCurrentGroup=TRUE)
+           netFilters <- PivotFilters$new(private$p_parentPivot)
+           for(k in length(ancestors):1) {
+             acs <- ancestors[[k]]
+             filters <- acs$filters
+             if(is.null(filters)) next
+             if(filters$count==0) next
+             for(l in 1:length(filters$filters)) {
+               filter <- filters$filters[[l]]
+               netFilters$setFilter(filter, action="replace")
+             }
+           }
+           # calculate the value
+           results <- pivotCalculator$evaluateNamedCalculation(calculationName=calculationName,
+                                                               calculationGroupName=calculationGroupName,
+                                                               rowColFilters=netFilters, cell=NULL)
+           calcResults <- results[[calculationName]]
+           rawValues[[j]] <- calcResults$rawValue
+         }
+         if(sortOrder=="asc") sortIndexes <- order(unlist(rawValues))
+         else sortIndexes <- order(unlist(rawValues), decreasing=TRUE)
+         j <- 0
+         for(i in 1:length(private$p_groups)) {
+           if(private$p_groups[[i]]$isTotal==TRUE) next
+           j <- j + 1
+           private$p_groups[[i]] <- groups[[sortIndexes[j]]]
+         }
+       }
+     }
+     else {
+       # sort below this level
+       for(i in 1:length(private$p_groups)) {
+         private$p_groups[[i]]$sortDataGroups(levelNumber=levelNumber-1, orderBy=orderBy, sortOrder=sortOrder,
+                                              calculationGroupName=calculationGroupName, calculationName=calculationName)
+       }
+     }
+     private$p_parentPivot$message("DataGroup$sortDataGroups", "Sorted data groups.")
+     return(invisible())
    },
    addLeafCalculationGroups = function(calculationGroupName=NULL) {
      checkArgument("PivotDataGroup", "addLeafCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")

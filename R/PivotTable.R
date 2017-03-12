@@ -42,7 +42,7 @@ PivotTable <- R6::R6Class("PivotTable",
     addTopColumnGroup = function(variableName=NULL, values=NULL, caption=NULL) {
       checkArgument("PivotTable", "addTopColumnGroup", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       checkArgument("PivotTable", "addTopColumnGroup", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
-      checkArgument("PivotTable", "addTopColumnGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "addTopColumnGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
       self$message("PivotTable$addTopColumnGroup", "Adding top level column group...",
                    list(variableName=variableName, values=values, caption=caption))
       self$resetCells()
@@ -103,7 +103,7 @@ PivotTable <- R6::R6Class("PivotTable",
     addTopRowGroup = function(variableName=NULL, values=NULL, caption=NULL) {
       checkArgument("PivotTable", "addTopRowGroup", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       checkArgument("PivotTable", "addTopRowGroup", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
-      checkArgument("PivotTable", "addTopRowGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "addTopRowGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
       self$resetCells()
       self$message("PivotTable$addTopRowGroup", "Adding top level row group...",
                    list(variableName=variableName, values=values, caption=caption))
