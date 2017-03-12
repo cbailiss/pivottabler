@@ -157,6 +157,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(addTotal==TRUE){ private$p_visualTotals <- visualTotals }
      df <- NULL
      topLevelDisinctValues <- NULL
+     topLevelCaptions <- NULL
      topLevelFilter <- NULL
      if(fromData==TRUE) {
        # check that a data frame has been specified (or that we have a default data frame)
@@ -173,6 +174,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if (missing(explicitListOfValues)) stop("DataGroup$addLeafDataGroups():  An explicitListOfValues must be specified when fromData=FALSE", call. = FALSE)
        if (is.null(explicitListOfValues)) stop("DataGroup$addLeafDataGroups():  explicitListOfValues must not be null when fromData=FALSE", call. = FALSE)
        topLevelDisinctValues <- explicitListOfValues
+       topLevelCaptions <- names(explicitListOfValues)
        fvals <- topLevelDisinctValues
        if("list" %in% class(topLevelDisinctValues)) { fvals <- unlist(topLevelDisinctValues) }
        topLevelFilter <- PivotFilter$new(parentPivot=private$p_parentPivot, variableName=variableName, values=fvals)
@@ -207,7 +209,11 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
 
        # use top level groups?
        distinctValues <- NULL
-       if(!is.null(topLevelDisinctValues)) { distinctValues <- topLevelDisinctValues }
+       distinctCaptions <- NULL
+       if(!is.null(topLevelDisinctValues)) {
+         distinctValues <- topLevelDisinctValues
+         distinctCaptions <- topLevelCaptions
+       }
        else {
          # get the ancestor groups for this group, starting with the current object
          ancestors <- grp$getAncestorGroups(includeCurrentGroup=TRUE)
@@ -271,7 +277,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            newLeafGroups[[index]] <- newGrp
          }
          for(j in 1:length(distinctValues)) {
-           newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[[j]], calculationGroupName=calculationGroupName, isTotal=self$isTotal)
+           caption <- NULL
+           if((!is.null(distinctCaptions))&&(nchar(distinctCaptions[j])>0)) caption <- distinctCaptions[j]
+           newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[[j]], caption=caption,
+                                       calculationGroupName=calculationGroupName, isTotal=self$isTotal)
            index <- length(newLeafGroups) + 1
            newLeafGroups[[index]] <- newGrp
          }
@@ -288,7 +297,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            newLeafGroups[[index]] <- newGrp
          }
          for(j in 1:length(distinctValues)) {
-           newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[j], calculationGroupName=calculationGroupName, isTotal=self$isTotal)
+           caption <- NULL
+           if((!is.null(distinctCaptions))&&(nchar(distinctCaptions[j])>0)) caption <- distinctCaptions[j]
+           newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[j], caption=caption,
+                                       calculationGroupName=calculationGroupName, isTotal=self$isTotal)
            index <- length(newLeafGroups) + 1
            newLeafGroups[[index]] <- newGrp
          }
