@@ -50,34 +50,34 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$addTopColumnGroup", "Added top level column group.")
       return(invisible(grps))
     },
-    addLeafColumnDataGroup = function(variableName=NULL, dataName=NULL, fromData=TRUE, dataSortOrder="asc",
+    addLeafColumnDataGroups = function(variableName=NULL, dataName=NULL, fromData=TRUE, dataSortOrder="asc",
                                   leafLevelPermutations=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                                   expandExistingTotals=FALSE,
                                   addTotal=TRUE, visualTotals=FALSE,totalPosition="after", totalCaption="Total") {
-      checkArgument("PivotTable", "addLeafColumnDataGroup", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotTable", "addLeafColumnDataGroup", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-      checkArgument("PivotTable", "addLeafColumnDataGroup", fromData, missing(fromData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-      checkArgument("PivotTable", "addLeafColumnDataGroup", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "none"))
-      checkArgument("PivotTable", "addLeafColumnDataGroup", leafLevelPermutations, missing(leafLevelPermutations), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-      checkArgument("PivotTable", "addLeafColumnDataGroup", explicitListOfValues, missing(explicitListOfValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
-      checkArgument("PivotTable", "addLeafColumnDataGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-      checkArgument("PivotTable", "addLeafColumnDataGroup", expandExistingTotals, missing(expandExistingTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-      checkArgument("PivotTable", "addLeafColumnDataGroup", addTotal, missing(addTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-      checkArgument("PivotTable", "addLeafColumnDataGroup", visualTotals, missing(visualTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-      checkArgument("PivotTable", "addLeafColumnDataGroup", totalPosition, missing(totalPosition), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("before", "after"))
-      checkArgument("PivotTable", "addLeafColumnDataGroup", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-      self$message("PivotTable$addLeafColumnDataGroup", "Adding leaf level column group...",
+      checkArgument("PivotTable", "addLeafColumnDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      checkArgument("PivotTable", "addLeafColumnDataGroups", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "addLeafColumnDataGroups", fromData, missing(fromData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "addLeafColumnDataGroups", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "none"))
+      checkArgument("PivotTable", "addLeafColumnDataGroups", leafLevelPermutations, missing(leafLevelPermutations), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "addLeafColumnDataGroups", explicitListOfValues, missing(explicitListOfValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+      checkArgument("PivotTable", "addLeafColumnDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "addLeafColumnDataGroups", expandExistingTotals, missing(expandExistingTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "addLeafColumnDataGroups", addTotal, missing(addTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "addLeafColumnDataGroups", visualTotals, missing(visualTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "addLeafColumnDataGroups", totalPosition, missing(totalPosition), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("before", "after"))
+      checkArgument("PivotTable", "addLeafColumnDataGroups", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+      self$message("PivotTable$addLeafColumnDataGroups", "Adding leaf level column groups...",
                    list(variableName=variableName, dataName=dataName, fromData=fromData, dataSortOrder=dataSortOrder,
                         leafLevelPermutations=leafLevelPermutations, explicitListOfValues=explicitListOfValues,
                         calculationGroupName=calculationGroupName, expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                         visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption))
       self$resetCells()
-      grp <- private$p_columnGroup$addLeafDataGroup(variableName=variableName, dataName=dataName, fromData=fromData, dataSortOrder=dataSortOrder,
+      grp <- private$p_columnGroup$addLeafDataGroups(variableName=variableName, dataName=dataName, fromData=fromData, dataSortOrder=dataSortOrder,
                                                 leafLevelPermutations=leafLevelPermutations, explicitListOfValues=explicitListOfValues,
                                                 calculationGroupName=calculationGroupName,
                                                 expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                                                 visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption)
-      self$message("PivotTable$addLeafColumnDataGroup", "Added leaf level column group.")
+      self$message("PivotTable$addLeafColumnDataGroups", "Added leaf level column groups.")
       return(invisible(grp))
     },
     normaliseColumnGroups = function() {
@@ -111,34 +111,34 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$addTopRowGroup", "Added top level row group.")
       return(invisible(grp))
     },
-    addLeafRowDataGroup = function(variableName=NULL, dataName=NULL, fromData=TRUE, dataSortOrder="asc",
+    addLeafRowDataGroups = function(variableName=NULL, dataName=NULL, fromData=TRUE, dataSortOrder="asc",
                                     leafLevelPermutations=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                                     expandExistingTotals=FALSE,
                                     addTotal=TRUE, visualTotals=FALSE,totalPosition="after", totalCaption="Total") {
-     checkArgument("PivotTable", "addLeafRowDataGroup", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-     checkArgument("PivotTable", "addLeafRowDataGroup", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-     checkArgument("PivotTable", "addLeafRowDataGroup", fromData, missing(fromData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     checkArgument("PivotTable", "addLeafRowDataGroup", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "none"))
-     checkArgument("PivotTable", "addLeafRowDataGroup", leafLevelPermutations, missing(leafLevelPermutations), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     checkArgument("PivotTable", "addLeafRowDataGroup", explicitListOfValues, missing(explicitListOfValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
-     checkArgument("PivotTable", "addLeafRowDataGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-     checkArgument("PivotTable", "addLeafRowDataGroup", expandExistingTotals, missing(expandExistingTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     checkArgument("PivotTable", "addLeafRowDataGroup", addTotal, missing(addTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     checkArgument("PivotTable", "addLeafRowDataGroup", visualTotals, missing(visualTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     checkArgument("PivotTable", "addLeafRowDataGroup", totalPosition, missing(totalPosition), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("before", "after"))
-     checkArgument("PivotTable", "addLeafRowDataGroup", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-      self$message("PivotTable$addLeafRowDataGroup", "Adding leaf level row group...",
+     checkArgument("PivotTable", "addLeafRowDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     checkArgument("PivotTable", "addLeafRowDataGroups", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotTable", "addLeafRowDataGroups", fromData, missing(fromData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("PivotTable", "addLeafRowDataGroups", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "none"))
+     checkArgument("PivotTable", "addLeafRowDataGroups", leafLevelPermutations, missing(leafLevelPermutations), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("PivotTable", "addLeafRowDataGroups", explicitListOfValues, missing(explicitListOfValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+     checkArgument("PivotTable", "addLeafRowDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotTable", "addLeafRowDataGroups", expandExistingTotals, missing(expandExistingTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("PivotTable", "addLeafRowDataGroups", addTotal, missing(addTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("PivotTable", "addLeafRowDataGroups", visualTotals, missing(visualTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("PivotTable", "addLeafRowDataGroups", totalPosition, missing(totalPosition), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("before", "after"))
+     checkArgument("PivotTable", "addLeafRowDataGroups", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+      self$message("PivotTable$addLeafRowDataGroups", "Adding leaf level row groups...",
                    list(variableName=variableName, dataName=dataName, fromData=fromData, dataSortOrder=dataSortOrder,
                         leafLevelPermutations=leafLevelPermutations, explicitListOfValues=explicitListOfValues,
                         calculationGroupName=calculationGroupName, expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                         visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption))
       self$resetCells()
-      grps <- private$p_rowGroup$addLeafDataGroup(variableName=variableName, dataName=dataName, fromData=fromData, dataSortOrder=dataSortOrder,
+      grps <- private$p_rowGroup$addLeafDataGroups(variableName=variableName, dataName=dataName, fromData=fromData, dataSortOrder=dataSortOrder,
                                                 leafLevelPermutations=leafLevelPermutations, explicitListOfValues=explicitListOfValues,
                                                 calculationGroupName=calculationGroupName,
                                                 expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                                                 visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption)
-      self$message("PivotTable$addLeafRowDataGroup", "Added leaf level row group.")
+      self$message("PivotTable$addLeafRowDataGroups", "Added leaf level row groups.")
       return(invisible(grps))
     },
     normaliseRowGroups = function() {
@@ -197,22 +197,22 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$defineCalculation", "Defined calculation.")
       return(invisible(calculation))
     },
-    addLeafColumnCalculationGroup = function(calculationGroupName="default") {
-      checkArgument("PivotTable", "addLeafColumnCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-      self$message("PivotTable$addLeafColumnCalculationGroup", "Adding leaf level column calculation group...",
+    addLeafColumnCalculationGroups = function(calculationGroupName="default") {
+      checkArgument("PivotTable", "addLeafColumnCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+      self$message("PivotTable$addLeafColumnCalculationGroups", "Adding leaf level column calculation groups...",
                    list(calculationGroupName=calculationGroupName))
       self$resetCells()
-      grps <- private$p_columnGroup$addLeafCalculationGroup(calculationGroupName=calculationGroupName)
-      self$message("PivotTable$addLeafColumnCalculationGroup", "Added leaf level column calculation group.")
+      grps <- private$p_columnGroup$addLeafCalculationGroups(calculationGroupName=calculationGroupName)
+      self$message("PivotTable$addLeafColumnCalculationGroups", "Added leaf level column calculation groups.")
       return(invisible(grps))
     },
-    addLeafRowCalculationGroup = function(calculationGroupName="default") {
-      checkArgument("PivotTable", "addLeafRowCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-      self$message("PivotTable$addLeafRowCalculationGroup", "Adding leaf level row calculation group...",
+    addLeafRowCalculationGroups = function(calculationGroupName="default") {
+      checkArgument("PivotTable", "addLeafRowCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+      self$message("PivotTable$addLeafRowCalculationGroups", "Adding leaf level row calculation groups...",
                    list(calculationGroupName=calculationGroupName))
       self$resetCells()
-      grps <- private$p_rowGroup$addLeafCalculationGroup(calculationGroupName=calculationGroupName)
-      self$message("PivotTable$addLeafRowCalculationGroup", "Added leaf level row calculation group.")
+      grps <- private$p_rowGroup$addLeafCalculationGroups(calculationGroupName=calculationGroupName)
+      self$message("PivotTable$addLeafRowCalculationGroups", "Added leaf level row calculation groups.")
       return(invisible(grps))
     },
     addStyle = function(styleName=NULL, declarations=NULL) {

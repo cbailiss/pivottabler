@@ -131,29 +131,29 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    # fromData=FALSE, explicitListOfValues=TRUE, simply generates the groups from the values passed in
    # explicitListOfValues should be a LIST of values, each element in the list can be single value or a vector of values (to allow a
    # single pivot table row/column to represent multiple values)
-   addLeafDataGroup = function(variableName=NULL, dataName=NULL, fromData=TRUE, dataSortOrder="asc",
+   addLeafDataGroups = function(variableName=NULL, dataName=NULL, fromData=TRUE, dataSortOrder="asc",
                            leafLevelPermutations=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                            expandExistingTotals=FALSE,
                            addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total") {
-     checkArgument("DataGroup", "addLeafDataGroup", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-     checkArgument("DataGroup", "addLeafDataGroup", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-     checkArgument("DataGroup", "addLeafDataGroup", fromData, missing(fromData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     checkArgument("DataGroup", "addLeafDataGroup", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "none"))
-     checkArgument("DataGroup", "addLeafDataGroup", leafLevelPermutations, missing(leafLevelPermutations), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     checkArgument("DataGroup", "addLeafDataGroup", explicitListOfValues, missing(explicitListOfValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
-     checkArgument("DataGroup", "addLeafDataGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-     checkArgument("DataGroup", "addLeafDataGroup", expandExistingTotals, missing(expandExistingTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     checkArgument("DataGroup", "addLeafDataGroup", addTotal, missing(addTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     checkArgument("DataGroup", "addLeafDataGroup", visualTotals, missing(visualTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     checkArgument("DataGroup", "addLeafDataGroup", totalPosition, missing(totalPosition), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("before", "after"))
-     checkArgument("DataGroup", "addLeafDataGroup", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-     private$p_parentPivot$message("DataGroup$addLeafDataGroup", "Adding leaf data group...",
+     checkArgument("DataGroup", "addLeafDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     checkArgument("DataGroup", "addLeafDataGroups", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("DataGroup", "addLeafDataGroups", fromData, missing(fromData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("DataGroup", "addLeafDataGroups", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "none"))
+     checkArgument("DataGroup", "addLeafDataGroups", leafLevelPermutations, missing(leafLevelPermutations), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("DataGroup", "addLeafDataGroups", explicitListOfValues, missing(explicitListOfValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+     checkArgument("DataGroup", "addLeafDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("DataGroup", "addLeafDataGroups", expandExistingTotals, missing(expandExistingTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("DataGroup", "addLeafDataGroups", addTotal, missing(addTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("DataGroup", "addLeafDataGroups", visualTotals, missing(visualTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("DataGroup", "addLeafDataGroups", totalPosition, missing(totalPosition), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("before", "after"))
+     checkArgument("DataGroup", "addLeafDataGroups", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+     private$p_parentPivot$message("DataGroup$addLeafDataGroups", "Adding leaf data groups...",
                                    list(variableName=variableName, dataName=dataName, fromData=fromData,
                                         leafLevelPermutations=leafLevelPermutations, explicitListOfValues=explicitListOfValues,
                                         expandExistingTotals=expandExistingTotals, addTotal=addTotal, visualTotals=visualTotals,
                                         totalPosition=totalPosition, totalCaption=totalCaption))
      private$p_parentPivot$resetCells()
-     if(missing(variableName)|is.null(variableName)) stop("DataGroup$addLeafDataGroup(): variableName must be specified", call. = FALSE)
+     if(missing(variableName)|is.null(variableName)) stop("DataGroup$addLeafDataGroups(): variableName must be specified", call. = FALSE)
      if(addTotal==TRUE){ private$p_visualTotals <- visualTotals }
      df <- NULL
      topLevelDisinctValues <- NULL
@@ -161,17 +161,17 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(fromData==TRUE) {
        # check that a data frame has been specified (or that we have a default data frame)
        if(missing(dataName)|is.null(dataName)) {
-         if (private$p_parentPivot$data$count < 1) stop("DataGroup$addLeafDataGroup():  No data frames.  Specify data before calling addLeafGroup.", call. = FALSE)
+         if (private$p_parentPivot$data$count < 1) stop("DataGroup$addLeafDataGroups():  No data frames.  Specify data before calling addLeafGroup.", call. = FALSE)
          df <- private$p_parentPivot$data$defaultData
        }
        else {
          df <- private$p_parentPivot$data$getData(dataName)
-         if(is.null(df)) stop(paste0("DataGroup$addLeafDataGroup():  No data frame found in PivotTable with name '", dataName, "'."), call. = FALSE)
+         if(is.null(df)) stop(paste0("DataGroup$addLeafDataGroups():  No data frame found in PivotTable with name '", dataName, "'."), call. = FALSE)
        }
      }
      else {
-       if (missing(explicitListOfValues)) stop("DataGroup$addLeafDataGroup():  An explicitListOfValues must be specified when fromData=FALSE", call. = FALSE)
-       if (is.null(explicitListOfValues)) stop("DataGroup$addLeafDataGroup():  explicitListOfValues must not be null when fromData=FALSE", call. = FALSE)
+       if (missing(explicitListOfValues)) stop("DataGroup$addLeafDataGroups():  An explicitListOfValues must be specified when fromData=FALSE", call. = FALSE)
+       if (is.null(explicitListOfValues)) stop("DataGroup$addLeafDataGroups():  explicitListOfValues must not be null when fromData=FALSE", call. = FALSE)
        topLevelDisinctValues <- explicitListOfValues
        fvals <- topLevelDisinctValues
        if("list" %in% class(topLevelDisinctValues)) { fvals <- unlist(topLevelDisinctValues) }
@@ -308,22 +308,22 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          if(descdnt$isTotal) descdnt$filters$setFilter(topLevelFilter, action="union")
        }
      }
-     private$p_parentPivot$message("DataGroup$addLeafDataGroup", "Added leaf groups.", list(count=length(newLeafGroups)))
+     private$p_parentPivot$message("DataGroup$addLeafDataGroups", "Added leaf groups.", list(count=length(newLeafGroups)))
      return(invisible(newLeafGroups))
    },
-   addLeafCalculationGroup = function(calculationGroupName=NULL) {
-     checkArgument("PivotDataGroup", "addLeafCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-     private$p_parentPivot$message("DataGroup$addLeafCalculationGroup", "Adding leaf calculation group...")
+   addLeafCalculationGroups = function(calculationGroupName=NULL) {
+     checkArgument("PivotDataGroup", "addLeafCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     private$p_parentPivot$message("DataGroup$addLeafCalculationGroups", "Adding leaf calculation groups...")
      private$p_parentPivot$resetCells()
      private$p_parentPivot$calculationsPosition <- private$p_rowOrColumn # will throw an error if trying to add calcs to one axis when already present on the other axis
-     if(missing(calculationGroupName)) stop("DataGroup$addLeafCalculationGroup():  calculationGroupName must be specified.", call. = FALSE)
-     if(is.null(calculationGroupName)) stop("DataGroup$addLeafCalculationGroup():  calculationGroupName cannot be null.", call. = FALSE)
+     if(missing(calculationGroupName)) stop("DataGroup$addLeafCalculationGroupss():  calculationGroupName must be specified.", call. = FALSE)
+     if(is.null(calculationGroupName)) stop("DataGroup$addLeafCalculationGroups():  calculationGroupName cannot be null.", call. = FALSE)
      if(!private$p_parentPivot$calculationGroups$isExistingCalculationGroup(calculationGroupName))
-       stop(paste0("DataGroup$addLeafCalculationGroup():  There is no Calculation Group named '", calculationGroupName, "' in the Pivot Table."), call. = FALSE)
+       stop(paste0("DataGroup$addLeafCalculationGroups():  There is no Calculation Group named '", calculationGroupName, "' in the Pivot Table."), call. = FALSE)
      # get the calculation group and the calculations to be displayed
      calculationGroup <- private$p_parentPivot$calculationGroups$getCalculationGroup(calculationGroupName)
      if(calculationGroup$count==0)
-       stop(paste0("DataGroup$addLeafCalculationGroup():  There are no calculations in the calculation group '", calculationGroupName, "'"), call. = FALSE)
+       stop(paste0("DataGroup$addLeafCalculationGroups():  There are no calculations in the calculation group '", calculationGroupName, "'"), call. = FALSE)
      calculations <- list()
      for (i in 1:calculationGroup$count) {
        calc <- calculationGroup$calculations[[i]]
@@ -333,7 +333,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        }
      }
      if(length(calculations)==0)
-       stop(paste0("DataGroup$addLeafCalculationGroup():  There are no visible calculations in the calculation group '", calculationGroupName, "'"), call. = FALSE)
+       stop(paste0("DataGroup$addLeafCalculationGroups():  There are no visible calculations in the calculation group '", calculationGroupName, "'"), call. = FALSE)
      calculations <- calculations[order(names(calculations))]
      # get the current set of leaf groups
      leafGroups <- self$getLeafGroups()
@@ -363,7 +363,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          }
        }
      }
-     private$p_parentPivot$message("DataGroup$addLeafCalculationGroup", "Added leaf calculation group.", list(count=length(newLeafGroups)))
+     private$p_parentPivot$message("DataGroup$addLeafCalculationGroups", "Added leaf calculation groups.", list(count=length(newLeafGroups)))
      return(invisible(newLeafGroups))
    },
    getLevelCount = function(includeCurrentLevel=FALSE) {
