@@ -1,0 +1,149 @@
+---
+title: "02. Data Groups"
+author: "Chris Bailiss"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{02. Data Groups}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Data Group Terminology
+
+Data groups form the column headers and row headers in a pivot table.  Typically, the distinct values of a variable of interest form a set of headings (i.e. a set of data groups).  Consider the following pivot table:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafColumnDataGroups("PowerType")
+pt$addLeafRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+In this pivot table, there are three sets of data groups:
+
+* The first row of column headings are the train category data groups - "Express Passenger" and "Ordinary Passenger".
+* The second row of column headings are the power type data groups - "DMU", "EMU", "HST", etc.
+* The row headings are the train operating company data groups - "Arriva Trains Wales", "CrossCountry", etc.
+
+There are two levels of column data groups (level 1 = "TrainCategory", level 2 = "PowerType") and one level of row headings ("TOC").
+
+*Advanced:*  In the underlying implemention, the data groups form a hierarchy.  A data group can have child data groups.  In the pivot table above, there are three column data groups at the first level, "Express Passenger", "Ordinary Passenger" and "Total".  The "Express Passenger" group has four child data groups for the power types "DMU", "EMU", "HST" and "Total".  The "Ordinary Passenger" data group has three child groups and the "Total" data group has one child group (a blank group).  The second level of the column data groups is thus formed of (4+3+1=) eight data groups.   
+
+## Adding data groups to a pivot table
+
+There are a few different ways to add data groups to a pivot table.
+
+* Adding data groups based on the data
+* Adding data groups explicitly
+* Adding data groups that combine values
+* More complex data group layouts
+
+### Adding data groups based on the data
+
+The easiest way to add data groups to a pivot table is to simply generate data groups based on the distinct values that exist for a particular variable (i.e. in a particular column in a data frame).  This is the method used in the pivot table above.  
+
+#### Considering parent data groups
+
+By default, when adding additional levels to a pivot table after the first level (i.e. for level 2, 3, etc.), the filter criteria coming from parent data groups is considered.  For example, in the pivot table above, there are "Express Passenger" trains with a power type of "HST", but no "Ordinary Passenger" trains with a power type of "HST".  So while a "HST" data group exists under "Express Passenger", no"HST" data group exists underneath "Ordinary Passenger".
+
+#### Ignoring parent data groups
+
+Sometimes, a more uniform layout is preferred, i.e. in the above example, we would like "HST" to be present underneath "Ordinary Passenger" as well.  This can be accomplished by setting the argment `leafLevelPermutations` to `FALSE`.
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafColumnDataGroups("PowerType", leafLevelPermutations=FALSE)
+pt$addLeafRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+### Adding data groups explicitly
+
+It is also possible to add data values explicitly, by passing a **list** of values as the `explicitListOfValues` argument.  When an explicit list of values is specified, the pivot table does not sort the values.  For example, if we wished to ignore the "HST" power type completely:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafColumnDataGroups("PowerType", fromData=FALSE, explicitListOfValues=list("DMU", "EMU"))
+pt$addLeafRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+#### Visual Totals
+
+In the above example, some of the totals now do not appear to reconcile, e.g. "CrossCountry DMU" (22400) + "CrossCountry EMU" (0) does not equal "CrossCountry Total" (23141).  The difference is the "CrossCountry HST" (741) data group that has been omitted.   This may or may not be desirable, depending on how the pivot table is introduced, the title that is used, etc.
+
+If it is desirable for the totals to reconcile, then visual totals can be enabled using the `visualTotals` argument:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafColumnDataGroups("PowerType", fromData=FALSE, explicitListOfValues=list("DMU", "EMU"), visualTotals=TRUE)
+pt$addLeafRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+### Adding data groups that combine values
+
+By specifying values explicitly, it is also possible to combine multiple values into one data group.  For example, if the primary focus of an analysis is the two train operating companies operating the most trains ("London Midland" and "CrossCountry"), then "Arrival Trains Wales" and "Virgin" can be combined:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafColumnDataGroups("PowerType")
+pt$addLeafRowDataGroups("TOC", fromData=FALSE, explicitListOfValues=list(
+    "London Midland", "CrossCountry", c("Arriva Trains Wales", "Virgin Trains")))
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+Should an alternative caption be preferred for the combined group, it can be specified by setting the name of the list element.  Following the example above, they could simply be labelled as "Other":
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafColumnDataGroups("PowerType")
+pt$addLeafRowDataGroups("TOC", fromData=FALSE, explicitListOfValues=list(
+  "London Midland", "CrossCountry", "Other"=c("Arriva Trains Wales", "Virgin Trains")))
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+### More complex layouts of data groups
+
+Adding data groups one-at-a-time for complete fine-grained control is also possible.  This is more involved and is described separately in the [Custom Layouts](customlayouts.html) vignette.
+
+
+
+## Code Planning
+
+2) On the PivotDataGroup:
+	sortDataGroups(level=n, orderBy=caption/calculation, sortOrder=asc/desc, 
+		calculationGroupName, calculationName)
+	n=0 run the sort here, n>0 = subtract one and call the same on each of the child groups
+	Running the calculations uses the existing PivotCalculator class.
+	Need to reset the calculated cells to force a recalculation once the sort has been changed.
+
+3) On the PivotDataGroup:  Need to figure out how removing items affects the total.  Is some form of visual totals needed here as well?
+	filterDataGroups(level=n, sortOrder=asc/desc, keepTop=n, keepBottom=n, thresholdValue=X, logicalOperator=Y,
+		calculationGroupName, calculationName)
+	Need to reset the calculated cells to force a recalculation once the sort has been changed.

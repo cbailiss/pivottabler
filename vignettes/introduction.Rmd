@@ -73,8 +73,8 @@ i.e. disable the renderBasicTable() call and the warning disappears - very odd.
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroup("TrainCategory")
-pt$addLeafRowDataGroup("TOC")
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -99,9 +99,9 @@ First, adding an additional column data group to sub-divide each "TrainCategory"
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroup("TrainCategory")
-pt$addLeafColumnDataGroup("PowerType")    #    << **** CODE CHANGE **** <<
-pt$addLeafRowDataGroup("TOC")
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafColumnDataGroups("PowerType")    #    << **** CODE CHANGE **** <<
+pt$addLeafRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -112,9 +112,9 @@ By default, the new data group does not expand the existing "TrainCategory" tota
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroup("TrainCategory")
-pt$addLeafColumnDataGroup("PowerType", expandExistingTotals=TRUE)    #    << **** CODE CHANGE **** <<
-pt$addLeafRowDataGroup("TOC")
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafColumnDataGroups("PowerType", expandExistingTotals=TRUE) # << ** CODE CHANGE ** <<
+pt$addLeafRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -125,9 +125,9 @@ Instead of adding "PowerType" as columns, it can also be added as rows:
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroup("TrainCategory")
-pt$addLeafRowDataGroup("TOC")
-pt$addLeafRowDataGroup("PowerType")    #    << **** CODE CHANGE **** <<
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafRowDataGroups("TOC")
+pt$addLeafRowDataGroups("PowerType")    #    << **** CODE CHANGE **** <<
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -138,10 +138,10 @@ It is possible to continue adding additional data groups.  The pivottabler enfor
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroup("TrainCategory")
-pt$addLeafRowDataGroup("TOC")
-pt$addLeafRowDataGroup("PowerType")
-pt$addLeafRowDataGroup("SchedSpeedMPH")    #    << **** CODE CHANGE **** <<
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafRowDataGroups("TOC")
+pt$addLeafRowDataGroups("PowerType")
+pt$addLeafRowDataGroups("SchedSpeedMPH")    #    << **** CODE CHANGE **** <<
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -152,10 +152,10 @@ As more data groups are added, the pivot table can seem overwhelmed with totals.
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroup("TrainCategory")
-pt$addLeafRowDataGroup("TOC", totalCaption="Grand Total")    #    << **** CODE CHANGE **** <<
-pt$addLeafRowDataGroup("PowerType")
-pt$addLeafRowDataGroup("SchedSpeedMPH", addTotal=FALSE)      #    << **** CODE CHANGE **** <<
+pt$addLeafColumnDataGroups("TrainCategory")
+pt$addLeafRowDataGroups("TOC", totalCaption="Grand Total")    #    << **** CODE CHANGE **** <<
+pt$addLeafRowDataGroups("PowerType")
+pt$addLeafRowDataGroups("SchedSpeedMPH", addTotal=FALSE)      #    << **** CODE CHANGE **** <<
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -179,7 +179,7 @@ The pivottabler package supports many more capabilities not described here.  Mor
 
 2. Data Groups
 
-- Adding data groups based on the distinct values of a variable.
+- Adding data groups based on the distinct values of a variable.  Top level or leaf level.
 - Specifying values manually.  Visual totals.
 - e.g. grouping data so that multiple values in one data group (e.g. have Virgin Trains and "Other TOC" where "Other TOC" is a list of the other three - dead easy to implement since each data group can take a vector of values, not just a single value)
 - Custom sort the data groups by filter value (asc/desc)
@@ -197,6 +197,8 @@ The pivottabler package supports many more capabilities not described here.  Mor
     - Note that for large data frames, better to do some aggregation before generating the pivot table, to come to the same grain as the pivot table.
     - Do an example where scale up the volume (by replicating the bhmtrains data 10 or 100 times).  Time generating a pivot from that.
     - Then aggregate that large dataset up to the grain of the pivot.  And time again.
+NB:  when executing calculations, basedOn is not recursive
+i.e. if C1 based on C2, C2 based on C3, then when specifying C1 must specify basedOn=c("C3", "C2")
 
 4. Formatting and Styling
 
@@ -218,12 +220,13 @@ The pivottabler package supports many more capabilities not described here.  Mor
 6. Custom layouts
 
 - e.g. having multiple measures on columns that are sliced by different attributes on the same level.
+- adding individual headers, then calling normalise to fill the gaps.
 
 7. Retrieving data from the pivot
 
-- As a matrix
-- As a dataframe
-- Drillthrough
+- As a matrix (of values only, plus including the headers)
+- As a dataframe (i.e. the same data as displayed in the pivot, but each cell becomes one data frame row)
+- Drillthrough (retrieving the rows behind a cell as a data frame)
 - As HTML
 - Save HTML
 
