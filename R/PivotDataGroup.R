@@ -187,7 +187,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
        else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", variableName, "))")))
        topLevelDisinctValues <- dplyr::collect(data)[[variableName]]
-       if("factor" %in% class(topLevelDisinctValues)) { topLevelDisinctValues <- as.character(distinctValues) }
+       if("factor" %in% class(topLevelDisinctValues)) { topLevelDisinctValues <- as.character(topLevelDisinctValues) }
        topLevelFilter <- PivotFilter$new(parentPivot=private$p_parentPivot, variableName=variableName, values=topLevelDisinctValues)
      }
      # get the current set of leaf groups
