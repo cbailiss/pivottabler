@@ -87,6 +87,21 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$normaliseColumnGroups", "Normalised column groups.", list(groupsAdded = groupsAdded))
       return(invisible())
     },
+    sortColumnDataGroups = function(levelNumber=1, orderBy="calculation", sortOrder="desc", calculationGroupName="default", calculationName=NULL) {
+      checkArgument("PivotTable", "sortColumnDataGroups", levelNumber, missing(levelNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      checkArgument("PivotTable", "sortColumnDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("caption","calculation"))
+      checkArgument("PivotTable", "sortColumnDataGroups", sortOrder, missing(sortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc","desc"))
+      checkArgument("PivotTable", "sortColumnDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+      checkArgument("PivotTable", "sortColumnDataGroups", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      self$message("PivotTable$sortColumnDataGroups", "Sorting column data groups...",
+                    list(levelNumber=levelNumber, orderBy=orderBy, sortOrder=sortOrder,
+                         calculationGroupName=calculationGroupName, calculationName=calculationName))
+      if(levelNumber<1) stop("PivotTable$sortColumnDataGroups():  levelNumber must be 1 or above.", call. = FALSE)
+      private$p_columnGroup$sortDataGroups(levelNumber=levelNumber-1, orderBy=orderBy, sortOrder=sortOrder,
+                                           calculationGroupName=calculationGroupName, calculationName=calculationName)
+      self$message("PivotTable$sortColumnDataGroups", "Sorted column data groups.")
+      return(invisible())
+    },
     getTopRowGroups = function() {
       self$message("PivotTable$getTopRowGroups", "Getting top level row groups...")
       grps <- private$p_rowGroup$getChildGroups()
@@ -146,6 +161,21 @@ PivotTable <- R6::R6Class("PivotTable",
       self$resetCells()
       groupsAdded <- private$p_rowGroup$normaliseDataGroup()
       self$message("PivotTable$normaliseRowGroups", "Normalised row groups.", list(groupsAdded = groupsAdded))
+      return(invisible())
+    },
+    sortRowDataGroups = function(levelNumber=1, orderBy="calculation", sortOrder="desc", calculationGroupName="default", calculationName=NULL) {
+      checkArgument("PivotTable", "sortRowDataGroups", levelNumber, missing(levelNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      checkArgument("PivotTable", "sortRowDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("caption","calculation"))
+      checkArgument("PivotTable", "sortRowDataGroups", sortOrder, missing(sortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc","desc"))
+      checkArgument("PivotTable", "sortRowDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+      checkArgument("PivotTable", "sortRowDataGroups", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      self$message("PivotTable$sortRowDataGroups", "Sorting row data groups...",
+                    list(levelNumber=levelNumber, orderBy=orderBy, sortOrder=sortOrder,
+                         calculationGroupName=calculationGroupName, calculationName=calculationName))
+      if(levelNumber<1) stop("PivotTable$sortRowDataGroups():  levelNumber must be 1 or above.", call. = FALSE)
+      private$p_rowGroup$sortDataGroups(levelNumber=levelNumber-1, orderBy=orderBy, sortOrder=sortOrder,
+                                           calculationGroupName=calculationGroupName, calculationName=calculationName)
+      self$message("PivotTable$sortRowDataGroups", "Sorted row data groups.")
       return(invisible())
     },
     addCalculationGroup = function(calculationGroupName=NULL) {
