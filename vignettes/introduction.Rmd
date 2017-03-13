@@ -177,15 +177,6 @@ The pivottabler package supports many more capabilities not described here.  Mor
 
 1. NULL/NA equality in the filtering isn't working (look at Cross Country HST, 734+0<>741)**
 
-2. Data Groups
-
-- Adding data groups based on the distinct values of a variable.  Top level or leaf level.
-- Specifying values manually.  Visual totals.
-- e.g. grouping data so that multiple values in one data group (e.g. have Virgin Trains and "Other TOC" where "Other TOC" is a list of the other three - dead easy to implement since each data group can take a vector of values, not just a single value)
-- Custom sort the data groups by filter value (asc/desc)
-- Custom sort the data groups by aggregate values (specify the level and a calc function to sort by, plus asc/desc)
-- Keep only topX and/or bottomX items of a given data group/level (filter by number of aggregate value).  Use the most popular origins/destinations for this.
-
 3. Calculations
  
 - Basics: using dplyr summarise expressions 
