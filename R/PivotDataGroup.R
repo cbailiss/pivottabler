@@ -131,7 +131,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    # fromData=FALSE, explicitListOfValues=TRUE, simply generates the groups from the values passed in
    # explicitListOfValues should be a LIST of values, each element in the list can be single value or a vector of values (to allow a
    # single pivot table row/column to represent multiple values)
-   addLeafDataGroups = function(variableName=NULL, dataName=NULL, fromData=TRUE, dataSortOrder="asc",
+   addLeafDataGroups = function(variableName=NULL, dataName=NULL, fromData=TRUE, dataSortOrder="asc", dataFormat=NULL,
                            leafLevelPermutations=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                            expandExistingTotals=FALSE,
                            addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total") {
@@ -139,6 +139,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      checkArgument("DataGroup", "addLeafDataGroups", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("DataGroup", "addLeafDataGroups", fromData, missing(fromData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("DataGroup", "addLeafDataGroups", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "none"))
+     checkArgument("DataGroup", "addLeafDataGroups", dataFormat, missing(dataFormat), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
      checkArgument("DataGroup", "addLeafDataGroups", leafLevelPermutations, missing(leafLevelPermutations), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("DataGroup", "addLeafDataGroups", explicitListOfValues, missing(explicitListOfValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
      checkArgument("DataGroup", "addLeafDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -149,6 +150,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      checkArgument("DataGroup", "addLeafDataGroups", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
      private$p_parentPivot$message("DataGroup$addLeafDataGroups", "Adding leaf data groups...",
                                    list(variableName=variableName, dataName=dataName, fromData=fromData,
+                                        dataSortOrder=dataSortOrder, dataFormat=dataFormat,
                                         leafLevelPermutations=leafLevelPermutations, explicitListOfValues=explicitListOfValues,
                                         expandExistingTotals=expandExistingTotals, addTotal=addTotal, visualTotals=visualTotals,
                                         totalPosition=totalPosition, totalCaption=totalCaption))
@@ -279,6 +281,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          for(j in 1:length(distinctValues)) {
            caption <- NULL
            if((!is.null(distinctCaptions))&&(nchar(distinctCaptions[j])>0)) caption <- distinctCaptions[j]
+           if(is.null(caption)&&(!is.null(dataFormat))) caption <- private$formatValue(distinctValues[[j]], dataFormat)
            newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[[j]], caption=caption,
                                        calculationGroupName=calculationGroupName, isTotal=self$isTotal)
            index <- length(newLeafGroups) + 1
@@ -299,6 +302,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          for(j in 1:length(distinctValues)) {
            caption <- NULL
            if((!is.null(distinctCaptions))&&(nchar(distinctCaptions[j])>0)) caption <- distinctCaptions[j]
+           if(is.null(caption)&&(!is.null(dataFormat))) caption <- private$formatValue(distinctValues[j], dataFormat)
            newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[j], caption=caption,
                                        calculationGroupName=calculationGroupName, isTotal=self$isTotal)
            index <- length(newLeafGroups) + 1
@@ -634,6 +638,39 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    p_rowColumnNumber = NULL,
    p_baseStyleName = NULL,
    p_style = NULL,
-   p_isRendered = FALSE # helper flag to keep track of which data groups have already been rendered
+   p_isRendered = FALSE, # helper flag to keep track of which data groups have already been rendered
+
+   # private functions:
+   formatValue = function(value=NULL, format=NULL) {
+     checkArgument("PivotDataGroup", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric", "character", "factor", "logical", "Date", "POSIXct", "POSIXlt"))
+     checkArgument("PivotDataGroup", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
+     private$p_parentPivot$message("PivotDataGroup$formatValue", "Formatting value...")
+     if(is.null(value)) return(invisible(NULL))
+     if(is.null(format)) return(value)
+     clsv <- class(value)
+     if(("numeric" %in% clsv)||("integer" %in% clsv)) {
+       clsf <- class(format)
+       if("character" %in% clsf) value <- sprintf(format, value)
+       else if ("list" %in% clsf) {
+         args <- format
+         args$x <- value
+         value <- do.call(base::format, args)
+       }
+       else if ("function" %in% class(format)) value <- format(value)
+     }
+     else if(("Date" %in% clsv)||("POSIXct" %in% clsv)||("POSIXlt" %in% clsv)) {
+       clsf <- class(format)
+       if ("list" %in% clsf) {
+         args <- format
+         args$x <- value
+         value <- do.call(base::format, args)
+       }
+       else if ("function" %in% class(format)) value <- format(value)
+     }
+     else if ("factor" %in% clsv) value <- as.character(value)
+     else if("logical" %in% clsv) value <- as.character(value)
+     private$p_parentPivot$message("PivotDataGroup$formatValue", "Formated value.")
+     return(invisible(value))
+   }
   )
 )

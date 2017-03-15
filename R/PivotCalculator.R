@@ -149,13 +149,36 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      return(invisible(distinctValues))
    },
    formatValue = function(value=NULL, format=NULL) {
+     # this function is ready to support other data types, once the other PivotTable logic/cells have been modified
+     # to work with data types other than numeric/integer
+     # , "character", "factor", "logical", "Date", "POSIXct", "POSIXlt"
      checkArgument("PivotCalculator", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
-     checkArgument("PivotCalculator", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","function"))
+     checkArgument("PivotCalculator", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
      private$p_parentPivot$message("PivotCalculator$formatValue", "Formatting value...")
      if(is.null(value)) return(invisible(NULL))
      if(is.null(format)) return(value)
-     if("character" %in% class(format)) value <- sprintf(format, value)
-     else if ("function" %in% class(format)) value <- format(value)
+     clsv <- class(value)
+     if(("numeric" %in% clsv)||("integer" %in% clsv)) {
+       clsf <- class(format)
+       if("character" %in% clsf) value <- sprintf(format, value)
+       else if ("list" %in% clsf) {
+         args <- format
+         args$x <- value
+         value <- do.call(base::format, args)
+       }
+       else if ("function" %in% class(format)) value <- format(value)
+     }
+     # else if(("Date" %in% clsv)||("POSIXct" %in% clsv)||("POSIXlt" %in% clsv)) {
+     #   clsf <- class(format)
+     #   if ("list" %in% clsf) {
+     #     args <- format
+     #     args$x <- value
+     #     value <- do.call(base::format, args)
+     #   }
+     #   else if ("function" %in% class(format)) value <- format(value)
+     # }
+     # else if ("factor" %in% clsv) value <- as.character(value)
+     # else if("logical" %in% clsv) value <- as.character(value)
      private$p_parentPivot$message("PivotCalculator$formatValue", "Formated value.")
      return(invisible(value))
    },
