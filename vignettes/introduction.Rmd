@@ -9,6 +9,23 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+## In This Vignette
+
+* pivottabler Development Status
+* Pivot Tables
+    + Definition
+    + In reality
+* Sample Data
+* Basic Pivot Table
+* Extending the Basic Pivot Table
+* Further Reading
+
+## pivottabler Development Status
+
+The pivottabler package has undergone a rapid development in a relatively short time period.  Some rough edges exist.  Very likely some bugs too.
+
+The latest version of the pivottabler package can be obtained directly from the [package repository](https://github.com/cbailiss/pivottabler/).  Please log any questions not answered by the vignettes or any bug reports [here](https://github.com/cbailiss/pivottabler/issues).
+
 ## Pivot Tables
 
 ### Defintion
@@ -33,7 +50,7 @@ Since pivot tables are primarily visualisation tools, the pivottabler package of
 
 Output is rendered as HTML via the htmlwidgets framework.  The generated HTML can also be easily retrieved, e.g. to be used outside of R.
 
-## Data: Train Data
+## Sample Data: Trains in Birmingham
 
 To build a series of example pivot tables, we will use the `bhmtrains` data frame.  This contains all 84,745 trains that arrived into and/or departed from [Birmingham New Street railway station](https://en.wikipedia.org/wiki/Birmingham_New_Street_station) between 1st December 2016 and 28th February 2017. As an example, the following are four trains that arrived into Birmingham New Street at the very start of this time period - note the data has been transposed (otherwise the table would be very wide).
 
@@ -73,8 +90,8 @@ i.e. disable the renderBasicTable() call and the warning disappears - very odd.
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafRowDataGroups("TOC")
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -89,7 +106,7 @@ Each line above works as follows:
 6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function^[See the [dplyr cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) for other sumamry functions.].
 7. Generate the pivot table.
 
-## Extending the basic Pivot Table
+## Extending the Basic Pivot Table
 
 There follows below a progressive series of changes to the basic pivot table shown above.  Each change is made by adding or changing one line of code.  To improve readability, each code change is highlighted.
 
@@ -99,9 +116,9 @@ First, adding an additional column data group to sub-divide each "TrainCategory"
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType")    #    << **** CODE CHANGE **** <<
-pt$addLeafRowDataGroups("TOC")
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")    #    << **** CODE CHANGE **** <<
+pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -112,9 +129,9 @@ By default, the new data group does not expand the existing "TrainCategory" tota
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType", expandExistingTotals=TRUE) # << ** CODE CHANGE ** <<
-pt$addLeafRowDataGroups("TOC")
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType", expandExistingTotals=TRUE) # << ** CODE CHANGE ** <<
+pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -125,9 +142,9 @@ Instead of adding "PowerType" as columns, it can also be added as rows:
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafRowDataGroups("TOC")
-pt$addLeafRowDataGroups("PowerType")    #    << **** CODE CHANGE **** <<
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$addRowDataGroups("PowerType")    #    << **** CODE CHANGE **** <<
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -138,10 +155,10 @@ It is possible to continue adding additional data groups.  The pivottabler enfor
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafRowDataGroups("TOC")
-pt$addLeafRowDataGroups("PowerType")
-pt$addLeafRowDataGroups("SchedSpeedMPH")    #    << **** CODE CHANGE **** <<
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$addRowDataGroups("PowerType")
+pt$addRowDataGroups("SchedSpeedMPH")    #    << **** CODE CHANGE **** <<
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -152,10 +169,10 @@ As more data groups are added, the pivot table can seem overwhelmed with totals.
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafRowDataGroups("TOC", totalCaption="Grand Total")    #    << **** CODE CHANGE **** <<
-pt$addLeafRowDataGroups("PowerType")
-pt$addLeafRowDataGroups("SchedSpeedMPH", addTotal=FALSE)      #    << **** CODE CHANGE **** <<
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC", totalCaption="Grand Total")    #    << **** CODE CHANGE **** <<
+pt$addRowDataGroups("PowerType")
+pt$addRowDataGroups("SchedSpeedMPH", addTotal=FALSE)      #    << **** CODE CHANGE **** <<
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -167,11 +184,11 @@ The pivottabler package supports many more capabilities not described here.  Mor
 1. [Introduction](introduction.html)
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
-4. [Formatting and Styling](formattingandstyling.html)
+4. [Styling](styling.html)
 5. [Cell Context](cellcontext.html)
 6. [Custom Layouts](customlayouts.html)
 7. [Retrieving Data](retrievingdata.html)
-8. [Manipulating Individual Cells](cellmanipulation.html)
+8. [Manipulating Individual Cells](cellmanipulation.html) 
 
 ## TODO
 
@@ -191,12 +208,12 @@ The pivottabler package supports many more capabilities not described here.  Mor
 NB:  when executing calculations, basedOn is not recursive
 i.e. if C1 based on C2, C2 based on C3, then when specifying C1 must specify basedOn=c("C3", "C2")
 
-4. Formatting and Styling
+4. Styling
 
-- formatting values (string or custom function)
 - styling with themes
 - custom styling
 - conditional formatting, i.e. pivot of delay minutes by time of day, highlighting the worst times.
+- switching off the display of the values, with conditional formatting, for a chart of small coloured cells, like GitHub contributions chart.
 - on example of highlighting a specific cell, referred to by row and column.  Then refer to advanced vignette for more.
 - using styles defined in a website (i.e. a stylename in the pivot table but not definition of that name)
 
@@ -212,6 +229,7 @@ i.e. if C1 based on C2, C2 based on C3, then when specifying C1 must specify bas
 
 - e.g. having multiple measures on columns that are sliced by different attributes on the same level.
 - adding individual headers, then calling normalise to fill the gaps.
+- e.g. having multiple calculation groups.
 
 7. Retrieving data from the pivot
 

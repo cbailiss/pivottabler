@@ -22,8 +22,9 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      private$p_parentPivot$message("PivotHtmlRenderer$clearIsRenderedFlags", "Cleared isRendered flags...")
      return(invisible())
    },
-   getTableHtml = function(styleNamePrefix=NULL, includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE) {
+   getTableHtml = function(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE) {
      checkArgument("PivotHtmlRenderer", "getTableHtml", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotHtmlRenderer", "getTableHtml", includeHeaderValues, missing(includeHeaderValues), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeRCFilters, missing(includeRCFilters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeCalculationFilters, missing(includeCalculationFilters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeCalculationNames, missing(includeCalculationNames), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
@@ -58,7 +59,8 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      columnCount <- private$p_parentPivot$cells$columnCount
      # special case of no rows and no columns, return a blank empty table
      if((rowGroupCount==0)&(columnGroupCount==0)) {
-       tbl <- htmltools::tags$table(class=tableStyle, htmltools::tags$tr(htmltools::tags$td(class=cellStyle, htmltools::HTML("(no data)"))))
+       tbl <- htmltools::tags$table(class=tableStyle, htmltools::tags$tr(
+         htmltools::tags$td(class=cellStyle, style="text-align: center; padding: 6px", htmltools::HTML("(no data)"))))
        return(tbl)
      }
      # there must always be at least one row and one column
@@ -80,14 +82,29 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
            trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=columnGroupCount, colspan=rowGroupCount, htmltools::HTML("&nbsp;"))
          }
          # get the groups at this level
-         grps <- private$p_parentPivot$columnGroup$getLevelGroups(level=r+1)
+         grps <- private$p_parentPivot$columnGroup$getLevelGroups(level=r)
          for(c in 1:length(grps)) {
            grp <- grps[[c]]
            chs <- colHeaderStyle
            if(!is.null(grp$baseStyleName)) chs <- paste0(styleNamePrefix, grp$baseStyleName)
            colstyl <- NULL
            if(!is.null(grp$style)) colstyl <- grp$style$asCSSRule()
-           trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl, colspan=length(grp$leafGroups), grp$caption) # todo: check escaping
+           if(includeHeaderValues) {
+             lst <- NULL
+             if(is.null(grp$filters)) { lst <- "No filters" }
+             else {
+               lst <- list()
+               if(grp$filters$count > 0) {
+                 for(i in 1:grp$filters$count){
+                   lst[[length(lst)+1]] <- htmltools::tags$li(grp$filters$filters[[i]]$asString(seperator=", "))
+                 }
+               }
+             }
+             detail <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Filters: "),
+                            htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
+             trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl,  colspan=length(grp$leafGroups), htmltools::tags$p(grp$caption), detail) # todo: check escaping
+           }
+           else trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl, colspan=length(grp$leafGroups), grp$caption) # todo: check escaping
          }
          trows[[length(trows)+1]] <- htmltools::tags$tr(trow)
        }
@@ -110,7 +127,22 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
              if(!is.null(ancg$baseStyleName)) rhs <- paste0(styleNamePrefix, ancg$baseStyleName)
              rwstyl <- NULL
              if(!is.null(ancg$style)) rwstyl <- ancg$style$asCSSRule()
-             trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl, rowspan=length(ancg$leafGroups), ancg$caption) # todo: check escaping
+             if(includeHeaderValues) {
+               lst <- NULL
+               if(is.null(ancg$filters)) { lst <- "No filters" }
+               else {
+                 lst <- list()
+                 if(ancg$filters$count > 0) {
+                   for(i in 1:ancg$filters$count){
+                     lst[[length(lst)+1]] <- htmltools::tags$li(ancg$filters$filters[[i]]$asString(seperator=", "))
+                   }
+                 }
+               }
+               detail <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Filters: "),
+                              htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
+               trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl,  rowspan=length(ancg$leafGroups), htmltools::tags$p(ancg$caption), detail) # todo: check escaping
+             }
+             else trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl, rowspan=length(ancg$leafGroups), ancg$caption) # todo: check escaping
              ancg$isRendered <- TRUE
            }
          }
@@ -127,11 +159,11 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
          if(includeRCFilters|includeCalculationFilters|includeCalculationNames|includeRawValue)
          {
            if(includeRawValue) {
-             detail[[length(detail)+1]] <- htmltools::tags$p(style="font-size: 75%;", paste0("raw value = ", cell$rawValue))
+             detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", paste0("raw value = ", cell$rawValue))
            }
            if(includeRCFilters) {
-             fstr <- NULL
-             if(is.null(cell$rowColFilters)) { fstr <- "No RC filters" }
+             lst <- NULL
+             if(is.null(cell$rowColFilters)) { lst <- "No RC filters" }
              else {
                lst <- list()
                if(cell$rowColFilters$count > 0) {
@@ -140,12 +172,12 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
                  }
                }
              }
-             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="font-size: 75%;", "RC Filters: "),
-                                                htmltools::tags$ul(style="font-size: 75%; padding-left: 1em;", lst))
+             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "RC Filters: "),
+                                                htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
            }
            if(includeCalculationFilters) {
-             fstr <- NULL
-             if(is.null(cell$calculationFilters)) { fstr <- "No calculation filters" }
+             lst <- NULL
+             if(is.null(cell$calculationFilters)) { lst <- "No calculation filters" }
              else {
                lst <- list()
                if(cell$calculationFilters$count > 0) {
@@ -154,12 +186,12 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
                  }
                }
              }
-             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="font-size: 75%;", "Calc. Filters: "),
-                                                htmltools::tags$ul(style="font-size: 75%; padding-left: 1em;", lst))
+             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Calc. Filters: "),
+                                                htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
            }
            if(includeCalculationNames) {
              cstr <- paste0("Calc: ",  cell$calculationGroupName, ": ", cell$calculationName)
-             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="font-size: 75%;", cstr))
+             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", cstr))
            }
            trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, htmltools::tags$p(cell$formattedValue), detail) # todo: check escaping
          }

@@ -9,6 +9,17 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+## In This Vignette
+
+* Data Group Terminology
+* Adding data groups to a pivot table
+    + Adding data groups based on the data
+    + Adding data groups explicitly
+    + Adding data groups that combine values
+    + More complex layouts of data groups
+* Formating data groups
+* Sorting data groups
+
 ## Data Group Terminology
 
 Data groups form the column headers and row headers in a pivot table.  Typically, the distinct values of a variable form a set of headings (i.e. a set of data groups).  Consider the following pivot table:
@@ -17,9 +28,9 @@ Data groups form the column headers and row headers in a pivot table.  Typically
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType")
-pt$addLeafRowDataGroups("TOC")
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -51,15 +62,15 @@ By default, when adding additional levels to a pivot table after the first level
 
 #### Ignoring parent data groups
 
-Sometimes, a more uniform layout is preferred, i.e. in the above example, we would like "HST" to be present underneath "Ordinary Passenger" as well.  This can be accomplished by setting the argment `leafLevelPermutations` to `FALSE`.
+Sometimes, a more uniform layout is preferred, i.e. in the above example, we would like "HST" to be present underneath "Ordinary Passenger" as well.  This can be accomplished by setting the argment `onlyCombinationsThatExist` to `FALSE`.
 
 ```{r, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType", leafLevelPermutations=FALSE)
-pt$addLeafRowDataGroups("TOC")
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType", onlyCombinationsThatExist=FALSE)
+pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -72,9 +83,9 @@ It is also possible to add data values explicitly, by passing a **list** of valu
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType", fromData=FALSE, explicitListOfValues=list("DMU", "EMU"))
-pt$addLeafRowDataGroups("TOC")
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType", fromData=FALSE, explicitListOfValues=list("DMU", "EMU"))
+pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -89,9 +100,9 @@ If it is desirable for the totals to reconcile, then visual totals can be enable
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType", fromData=FALSE, explicitListOfValues=list("DMU", "EMU"), visualTotals=TRUE)
-pt$addLeafRowDataGroups("TOC")
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType", fromData=FALSE, explicitListOfValues=list("DMU", "EMU"), visualTotals=TRUE)
+pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -104,9 +115,9 @@ By specifying values explicitly, it is also possible to combine multiple values 
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType")
-pt$addLeafRowDataGroups("TOC", fromData=FALSE, explicitListOfValues=list(
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC", fromData=FALSE, explicitListOfValues=list(
     "London Midland", "CrossCountry", c("Arriva Trains Wales", "Virgin Trains")))
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
@@ -118,9 +129,9 @@ Should an alternative caption be preferred for the combined group, it can be spe
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType")
-pt$addLeafRowDataGroups("TOC", fromData=FALSE, explicitListOfValues=list(
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC", fromData=FALSE, explicitListOfValues=list(
   "London Midland", "CrossCountry", "Other"=c("Arriva Trains Wales", "Virgin Trains")))
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
@@ -130,25 +141,103 @@ pt$renderPivot()
 
 Adding data groups one-at-a-time for complete fine-grained control is also possible.  This is more involved and is described separately in the [Custom Layouts](customlayouts.html) vignette.
 
+## Formatting data groups
+
+In all of the examples above, the data groups are text values.  When data groups are numerical or date/time values, then typically some form of formatting is required.  Formatting generates a caption for each data group, i.e. a more readable version of the underlying data group value.
+
+For example, plotting the total number of trains per month for each train operation company:
+
+```{r, message=FALSE, warning=FALSE}
+# derive the date of each train (from the arrival/dep times),
+# then the month of each train from the date of each train
+library(dplyr)
+library(lubridate)
+trains <- mutate(bhmtrains, 
+   GbttDate=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival), 
+                       origin = "1970-01-01"),
+   GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
+
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("GbttMonth")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+In the example above, the month headings are not explicitly formatted.  The example below shows how to format these headings using the `dataFormat` argument of `addColumnDataGroups()`:
+
+```{r, message=FALSE, warning=FALSE}
+# derive the date of each train (from the arrival/dep times),
+# then the month of each train from the date of each train
+library(dplyr)
+library(lubridate)
+trains <- mutate(bhmtrains, 
+   GbttDate=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival), 
+                       origin = "1970-01-01"),
+   GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
+
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+A number of different approaches to formatting are supported:
+
+* If the `dataFormat` is a text value, then pivottabler invokes `base::sprintf()` with the specified format.
+* If the `dataFormat` is a list, then pivottabler invokes `base::format()` for each value, where the elements in the list become arguments in the function call.
+    + The example above is equivalent to: `base::format(value, format="%B %Y")`
+* If the `dataFormat` is an R function, then this is invoked for each value.
+
+An example of using a custom R function to accomplish the same formatting is:
+
+```{r, message=FALSE, warning=FALSE}
+# derive the date of each train (from the arrival/dep times), then the month of each train from the date of each train
+library(dplyr)
+library(lubridate)
+trains <- mutate(bhmtrains, 
+   GbttDate=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival), 
+                       origin = "1970-01-01"),
+   GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
+
+# define a custom formatting function
+formatDate <- function(x) {
+  base::format(x, format="%B %Y")
+}
+
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("GbttMonth", dataFormat=formatDate)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
 ## Sorting data groups
 
-Data groups can be sorted, both by the caption and by the result of a calculation.
-
-By default, data groups are sorted into ascending order based on the caption displayed by the data group.  The caption is the text seen in the header cell, which is typically one of the distinct values from a column in a data frame.  E.g.:
+By default, data groups are sorted into ascending order based on the data group value, e.g.:
 
 ```{r, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType")
-pt$addLeafRowDataGroups("TOC")
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
 In the above example the train operating companies are sorted into ascending order alphabetically (**A**rriva, **C**rossCountry, **L**ondon, **V**irgin).  Similarly for the train category (**E**xpress, **O**rdinary) and power type (**D**MU, **E**MU **H**ST).  The totals appear in a fixed position, irrespective of the data group sorting.
-
 
 The data groups can be sorted into descending order using `dataSortOrder` argument, e.g. to reverse the order of the train operating companies:
 
@@ -156,30 +245,36 @@ The data groups can be sorted into descending order using `dataSortOrder` argume
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType")
-pt$addLeafRowDataGroups("TOC", dataSortOrder="desc")
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC", dataSortOrder="desc")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-The data groups can also be sorted based on the result of a calculation using the `sortColumnDataGroups` or `sortRowGroups` methods, e.g. to sort the train operating companies into descending order by the total number of trains:
+The data groups can also be sorted using the `sortColumnDataGroups` or `sortRowDataGroups` methods.  Using these methods, data groups can be sorted in three different ways:
+
+* By the data group value - using `orderBy="value"`,
+* By the data group caption (e.g. if formatting has been applied) - using `orderBy="caption"`,
+* By the result of a calculation - the default, or set explicitly using `orderBy="calculation"`.
+
+For example, to sort the train operating companies into descending order by the total number of trains:
 
 ```{r, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType")
-pt$addLeafRowDataGroups("TOC", dataSortOrder="desc")
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC", dataSortOrder="desc")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$sortRowDataGroups(levelNumber=1, orderBy="calculation", sortOrder="desc")
 pt$renderPivot()
 ```
 
-The pivot is sorted using the totals for each data group.  In the pivot table above, the London Midland train operating company is in first place with 48,887 trains.  CrossCountry is in second place with 23,205 trains, etc.
+The pivot is sorted using the totals for each data group.  In the pivot table above, the London Midland train operating company is in first place with 48,279 trains.  CrossCountry is in second place with 22,928 trains, etc.
 
-Since the pivot table above only contains one calculation, it was not necessary to specify the name of the calculation when sorting the row groups.  If a pivot table contains more than one calculation, and there is a wish to sort by a calculation other than the first calculation that was defined, then the calculation can be specified by using the `calculationName` argument when calling either `sortColumnDataGroups` or `sortRowGroups`.
+Since the pivot table above only contains one calculation, it was not necessary to specify the name of the calculation when sorting the row groups.  If a pivot table contains more than one calculation, and there is a wish to sort by a calculation other than the first calculation that was defined, then the calculation can be specified by using the `calculationName` argument when calling either `sortColumnDataGroups` or `sortRowDataGroups`.
 
 When sorting the headings at the second, third, etc level, the sort does not break the structure coming from the parent data groups, i.e. a separate sort is performed within each parent group, e.g.
 
@@ -187,29 +282,30 @@ When sorting the headings at the second, third, etc level, the sort does not bre
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType")
-pt$addLeafRowDataGroups("TOC")
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$sortColumnDataGroups(levelNumber=2, orderBy="calculation", sortOrder="desc")
 pt$renderPivot()
 ```
 
-In the example above, one sort was carried out for the power type groups under "Express Passenger" ("DMU" in first place with 33,387 trains, "EMU" second with 15,500 trains, etc.) and a separate sort was carried out for the power type groups under "Ordinary Passenger" ("EMU" first with 28,553 trains, "DMU" second with 6,564 trains, etc.).
+In the example above, one sort was carried out for the power type groups under "Express Passenger" ("DMU" in first place with 32,987 trains, "EMU" second with 15,306 trains, etc.) and a separate sort was carried out for the power type groups under "Ordinary Passenger" ("EMU" first with 28,201 trains, "DMU" second with 6,484 trains, etc.).
 
-The `sortColumnDataGroups` or `sortRowGroups` can also be used to reset the sort order back to an alphabetic order based on the captions of the groups, e.g.
+The `sortColumnDataGroups` or `sortRowDataGroups` can also be used to reset the sort order back to an alphabetic order based on the value of each of the groups, e.g.
 
 ```{r, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addLeafColumnDataGroups("TrainCategory")
-pt$addLeafColumnDataGroups("PowerType")
-pt$addLeafRowDataGroups("TOC")
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+# the follow line sorts the data based on the totals
 pt$sortColumnDataGroups(levelNumber=2, orderBy="calculation", sortOrder="desc")
 # the following line resets the sort order back, i.e. removes the sort applied in the line above
-pt$sortColumnDataGroups(levelNumber=2, orderBy="caption", sortOrder="asc")
+pt$sortColumnDataGroups(levelNumber=2, orderBy="value", sortOrder="asc")
 pt$renderPivot()
 ```
 
@@ -222,7 +318,7 @@ The full set of vignettes is:
 1. [Introduction](introduction.html)
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
-4. [Formatting and Styling](formattingandstyling.html)
+4. [Styling](styling.html)
 5. [Cell Context](cellcontext.html)
 6. [Custom Layouts](customlayouts.html)
 7. [Retrieving Data](retrievingdata.html)

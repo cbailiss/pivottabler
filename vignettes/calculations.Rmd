@@ -9,43 +9,265 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+## In This Vignette
+
+* Calculations and Calculation Groups
+* Calculation Types
+* Showing a value (no calculation)
+* Summarising Values
+    + Displaying calculations on rows
+* Deriving values from other summarised values
+* Custom calculation functions
+* Using multiple data frames in the same pivot table
+* Formatting calculated values
+* Further Reading
+
+## Calculations and Calculation Groups
+
+Calculations define how (typically numerical) data is to be summarised/aggregated.  Common ways of summarising data include sum, avg (mean, median, ...), max, min, etc.
+
+Within a `pivottabler` pivot table, calculations always belong to a Calculation Group.  Calculation groups allow calculations to be defined that refer to other calculations.
+
+Every pivot table always has a default calculation group (called `default`).  This is sufficient for most scenarios and calculations groups are not referred to again in this vignette.  All the calculations defined in this vignette sit in the `default` calculation group.  
+
+Creating additional calculation groups is only necessary for some advanced pivot table layouts.
+
 ## Calculation Types
 
-The pivottabler package supports several different ways of calculating the values to display in the cells of the pivot table.  In order of increasing sophistication, these are:
+The pivottabler package supports several different ways of calculating the values to display in the cells of the pivot table:
 
-1. Show a value (no calculation)
-2. Summarise values (dplyr summarise)
-3. Deriving values from other summarised values
-4. Custom calculation functions
+1. Summarise values (dplyr summarise)
+2. Deriving values from other summarised values
+3. Custom calculation functions
+4. Show a value (no calculation)
 
-## Showing a value (no calculation)
+Calculations are added to the pivot table using the `defineCalculation()` function.  The following sections show the different ways this function can be used for each of the above types of calculation.
 
-Simplest, pivot calculates the least, just performs layout.  Do the aggregations outside in your own R code.
+## Method 1:  Summarising Values
+
+The most common way to calculate the pivot table is to provide an expression that describes how to summarise the data, e.g. defining a calculation that counts the number of trains:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+The pivottabler package uses the dplyr package.  The summariseExpression is an expression that can be used with the dplyr `summarise()` function.  The following shows several different example expressions:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+trains <- mutate(bhmtrains,
+   ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+   ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains", 
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MinArrivalDelay", caption="Min Arr. Delay", 
+                     summariseExpression="min(ArrivalDelay, na.rm=TRUE)")
+pt$defineCalculation(calculationName="MaxArrivalDelay", caption="Max Arr. Delay", 
+                     summariseExpression="max(ArrivalDelay, na.rm=TRUE)")
+pt$defineCalculation(calculationName="MeanArrivalDelay", caption="Mean Arr. Delay", 
+                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", format="%.1f")
+pt$defineCalculation(calculationName="MedianArrivalDelay", caption="Median Arr. Delay", 
+                     summariseExpression="median(ArrivalDelay, na.rm=TRUE)")
+pt$defineCalculation(calculationName="IQRArrivalDelay", caption="Delay IQR", 
+                     summariseExpression="IQR(ArrivalDelay, na.rm=TRUE)")
+pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev.", 
+                     summariseExpression="sd(ArrivalDelay, na.rm=TRUE)", format="%.1f")
+pt$renderPivot()
+```
+
+### Displaying calculations on rows
+
+Calculations can be swapped onto the rows using the `addRowCalculationGroups()` method.  Transposing the example pivot table from above:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+trains <- mutate(bhmtrains,
+   ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+   ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains", 
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MinArrivalDelay", caption="Min Arr. Delay", 
+                     summariseExpression="min(ArrivalDelay, na.rm=TRUE)")
+pt$defineCalculation(calculationName="MaxArrivalDelay", caption="Max Arr. Delay", 
+                     summariseExpression="max(ArrivalDelay, na.rm=TRUE)")
+pt$defineCalculation(calculationName="MeanArrivalDelay", caption="Mean Arr. Delay", 
+                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", format="%.1f")
+pt$defineCalculation(calculationName="MedianArrivalDelay", caption="Median Arr. Delay", 
+                     summariseExpression="median(ArrivalDelay, na.rm=TRUE)")
+pt$defineCalculation(calculationName="IQRArrivalDelay", caption="Delay IQR", 
+                     summariseExpression="IQR(ArrivalDelay, na.rm=TRUE)")
+pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev.", 
+                     summariseExpression="sd(ArrivalDelay, na.rm=TRUE)", format="%.1f")
+pt$addRowCalculationGroups()
+pt$renderPivot()
+```
+
+## Method 2:  Deriving values from other summarised values
+
+Calculations can be defined that refer to other calculations, by:
+
+* Specifying `type="calculation"`,
+* Specifying the names of the calculations which this calculation is based on in the `basedOn` argument.
+* Specifying an expression for this calculation in the `calculationExpression` argument.
+    + The values of the base calculations are accessed as elements of the `values` list.
+
+For example, calculating the percentage of trains with an arrival delay of greater than five minutes:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+trains <- mutate(bhmtrains,
+   ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+   ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
+   DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="DelayedTrains", caption="Trains Arr. 5+ Mins Late", 
+                     summariseExpression="sum(DelayedByMoreThan5Minutes, na.rm=TRUE)")
+pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains", 
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="DelayedPercent", caption="% Trains Arr. 5+ Mins Late", 
+                     type="calculation", basedOn=c("DelayedTrains", "TotalTrains"), 
+                     format="%.1f %%",
+                     calculationExpression="values$DelayedTrains/values$TotalTrains*100")
+pt$renderPivot()
+```
+
+The base calculations can be hidden by specifying `visible=FALSE`, e.g. to look at how the percentage of trains more than five minutes late varied by month and train operating company:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+trains <- mutate(bhmtrains,
+   GbttDate=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                       origin = "1970-01-01"),
+   GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1),
+   ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+   ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
+   DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="DelayedTrains", visible=FALSE,
+                     summariseExpression="sum(DelayedByMoreThan5Minutes, na.rm=TRUE)")
+pt$defineCalculation(calculationName="TotalTrains", visible=FALSE,
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="DelayedPercent", caption="% Trains Arr. 5+ Mins Late", 
+                     type="calculation", basedOn=c("DelayedTrains", "TotalTrains"), 
+                     format="%.1f %%",
+                     calculationExpression="values$DelayedTrains/values$TotalTrains*100")
+pt$renderPivot()
+```
+
+## Method 3:  Custom calculation functions
+
+The following pivot table shows the mean train arrival delay by train operating company and month:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+trains <- mutate(bhmtrains,
+   GbttDate=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                       origin = "1970-01-01"),
+   GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1),
+   ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+   ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="MeanDelay", format="%.2f",
+                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)")
+pt$renderPivot()
+```
+
+The above pivot table places equal weighting on time of day.  Most passengers travel in the peak hours of the day.  To weight the delay durations more heavily towards the times of day when more passengers are travelling, a custom calculation function can be used:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+trains <- mutate(bhmtrains,
+   GbttTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                       origin = "1970-01-01"),
+   GbttMonth=make_date(year=year(GbttTime), month=month(GbttTime), day=1),
+   ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+   ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
+   HourOfDay=hour(GbttTime))
+
+getWeightedMeanDelayDuration <- function(pivotCalculator, netFilters, format, baseValues, cell) {
+  # get the data frame
+  trains <- pivotCalculator$getDataFrame("trains")
+  # apply the TOC and month filters coming from the headers in the pivot table
+  filteredTrains <- pivotCalculator$getFilteredDataFrame(trains, netFilters)
+  # define the weightings for each hour of the day (note 
+  # these are for illustration only, i.e. not based on real data)
+  weights <- c(
+    0.2,                     # 00:00 to 00:59
+    0.1, 0.1, 0.1, 0.2, 0.4, # 01:00 to 05:59
+    0.8, 1.5, 3.0, 1.5, 1.0, # 06:00 to 10:59
+    1.0, 1.0, 1.0, 1.0, 1.2, # 11:00 to 15:59
+    1.5, 2.5, 2.5, 1.2, 1.0, # 16:00 to 20:59
+    0.9, 0.7, 0.3)           # 21:00 to 23:59
+  weights <- weights/sum(weights)
+  hourWeightings = data.frame(HourOfDay=0:23, Weight=weights)
+  # calculate the weighted mean
+  tw <- dplyr::left_join(filteredTrains, hourWeightings, by="HourOfDay")
+  wm <- stats::weighted.mean(tw$ArrivalDelay, tw$Weight, na.rm=TRUE)
+  # build the return value
+  value <- list()
+  value$rawValue <- wm
+  value$formattedValue <- pivotCalculator$formatValue(wm, format=format)
+  return(value)
+}
+
+pt <- PivotTable$new()
+pt$addData(trains, "trains")
+pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="MeanDelay", format="%.2f",
+                     type="function", calculationFunction=getWeightedMeanDelayDuration)
+pt$renderPivot()
+```
+
+The `getWeightedMeanDelayDuration()` function performs the calculations for this pivot table.  This function is invoked once for each cell in the body of the pivot table.  Custom calculation functions like this one must always have the same arguments defined:
+
+* `pivotCalculator` is a helper object that offers various methods to assist in calculations,
+* `netFilters` contains the definitions of the filter criteria coming from the row and column headers in the pivot table,
+* `format` provides the formatting definition - this is the same value specified in the `defineCalculation()` call,
+* `baseValues` provides access to the results of other calculations in the calculation group,
+* `cell` provides access to more details about the individual cell that is being calculated.
+
+The return value from the custom function must be a list containing the raw result value (i.e. unformatted, that is either `integer` or `numeric` data type) and a formatted value (that is `character` data type).
+
+## Method 4:  Showing a value (no calculation)
+
+With this approach, the pivot table performs little or no calculations.  The values to display are predominantly calculated in R code before the pivot table is created.  This pivot table is used primarily as a visualisation mechanism.
 
 (example, number of trains operated by each TOC)
 
-## Summarising Values
-
-Most common, uses dplyr summarise function.  List standard summarise functions used with dplyr.
-
-(example, number of trains operated by each TOC)
-
-### Multiple calculations in a pivot table
-
-(example, number of trains per TOC, plus (in the same pivot)
-number of trains 5 or more minutes late, done 3 different ways:
-a - use a separate data frame (bhmtrains filtered to only those trains 5 or more minutes late, using the dplyr n() summarise function)
-b - additional column in same data frame, col = 1 where train 5 or more mins late, so sum() this extra column
-c - same data frame, extra column where train 5 or more mins late = TRUE, calculation has a filter to where extra column = TRUE, then n() summarise function
-)
-
-## Deriving values from other summarised values
-
-(example - % trains 5 or more minutes late)
-
-## Custom calculation functions
-
-(example - weighted average of average delay minutes, with greater weighting for peak hours)
+## Using multiple data frames in the same pivot table
 
 ## Formatting calculated values
 
@@ -57,3 +279,16 @@ Pivot table calculates each cell independently.  This allows it to offer flexibl
 
 Duplicate the bhmtrains df 100 times.  Compare execution times for aggregate outside the pivot vs. aggregate inside the pivot.
 For large data frames, aggregate outside the pivot table.
+
+## Further Reading
+
+The full set of vignettes is:
+
+1. [Introduction](introduction.html)
+2. [Data Groups](datagroups.html)
+3. [Calculations](calculations.html)
+4. [Styling](styling.html)
+5. [Cell Context](cellcontext.html)
+6. [Custom Layouts](customlayouts.html)
+7. [Retrieving Data](retrievingdata.html)
+8. [Manipulating Individual Cells](cellmanipulation.html) 
