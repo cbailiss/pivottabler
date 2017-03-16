@@ -146,7 +146,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-As more data groups are added, the pivot table can seem overwhelmed with totals.  It is possible to selectively shpw/hide totals using the addTotal argument.  Similarly, totals can be renamed using the totalCaption argument.  Both of these options are demonstrated below.
+As more data groups are added, the pivot table can seem overwhelmed with totals.  It is possible to selectively shpw/hide totals using the `addTotal` argument.  Totals can be renamed using the `totalCaption` argument.  Both of these options are demonstrated below.
 
 ```{r, warning=FALSE}
 library(pivottabler)

@@ -1,0 +1,59 @@
+---
+title: "03. Calculations"
+author: "Chris Bailiss"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{03. Calculations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Calculation Types
+
+The pivottabler package supports several different ways of calculating the values to display in the cells of the pivot table.  In order of increasing sophistication, these are:
+
+1. Show a value (no calculation)
+2. Summarise values (dplyr summarise)
+3. Deriving values from other summarised values
+4. Custom calculation functions
+
+## Showing a value (no calculation)
+
+Simplest, pivot calculates the least, just performs layout.  Do the aggregations outside in your own R code.
+
+(example, number of trains operated by each TOC)
+
+## Summarising Values
+
+Most common, uses dplyr summarise function.  List standard summarise functions used with dplyr.
+
+(example, number of trains operated by each TOC)
+
+### Multiple calculations in a pivot table
+
+(example, number of trains per TOC, plus (in the same pivot)
+number of trains 5 or more minutes late, done 3 different ways:
+a - use a separate data frame (bhmtrains filtered to only those trains 5 or more minutes late, using the dplyr n() summarise function)
+b - additional column in same data frame, col = 1 where train 5 or more mins late, so sum() this extra column
+c - same data frame, extra column where train 5 or more mins late = TRUE, calculation has a filter to where extra column = TRUE, then n() summarise function
+)
+
+## Deriving values from other summarised values
+
+(example - % trains 5 or more minutes late)
+
+## Custom calculation functions
+
+(example - weighted average of average delay minutes, with greater weighting for peak hours)
+
+## Formatting calculated values
+
+sprintf vs. format function
+
+## Performance considerations
+
+Pivot table calculates each cell independently.  This allows it to offer flexible layouts (i.e. layout flexibility is prioritised over performance since a pivot table is primarily a visualisation tool).  So aggregate large data sets outside the pivot.
+
+Duplicate the bhmtrains df 100 times.  Compare execution times for aggregate outside the pivot vs. aggregate inside the pivot.
+For large data frames, aggregate outside the pivot table.
