@@ -232,7 +232,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      checkArgument("PivotCalculator", "evaluateSingleValue", rowColFilters, missing(rowColFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
      checkArgument("PivotCalculator", "evaluateSingleValue", calcFilters, missing(calcFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
      checkArgument("PivotCalculator", "evaluateSingleValue", valueName, missing(valueName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-     checkArgument("PivotCalculator", "evaluateSingleValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","function"))
+     checkArgument("PivotCalculator", "evaluateSingleValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
      private$p_parentPivot$message("PivotCalculator$evaluateSingleValue", "Evaluating single value...")
      data <- dataFrame
      # get the final filter context for this calculation (calcFilters override row/col filters)
@@ -266,7 +266,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      checkArgument("PivotCalculator", "evaluateSummariseExpression", calcFilters, missing(calcFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
      checkArgument("PivotCalculator", "evaluateSummariseExpression", summaryName, missing(summaryName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      checkArgument("PivotCalculator", "evaluateSummariseExpression", summariseExpression, missing(summariseExpression), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-     checkArgument("PivotCalculator", "evaluateSummariseExpression", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","function"))
+     checkArgument("PivotCalculator", "evaluateSummariseExpression", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
      private$p_parentPivot$message("PivotCalculator$evaluateSummariseExpression", "Evaluating summary expression...")
      data <- dataFrame
      # get the final filter context for this calculation (calcFilters override row/col filters)
@@ -296,7 +296,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
    evaluateCalculationExpression = function(values=NULL, calculationExpression=NULL, format=NULL) {
      checkArgument("PivotCalculator", "evaluateCalculationExpression", values, missing(values), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
      checkArgument("PivotCalculator", "evaluateCalculationExpression", calculationExpression, missing(calculationExpression), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-     checkArgument("PivotCalculator", "evaluateCalculationExpression", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","function"))
+     checkArgument("PivotCalculator", "evaluateCalculationExpression", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
      private$p_parentPivot$message("PivotCalculator$evaluateSCalculationExpression", "Evaluating summary expression...")
      rv <- eval(parse(text=calculationExpression))
      value <- list()
@@ -310,7 +310,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      checkArgument("PivotCalculator", "evaluateCalculateFunction", rowColFilters, missing(rowColFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
      checkArgument("PivotCalculator", "evaluateCalculateFunction", calcFilters, missing(calcFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
      checkArgument("PivotCalculator", "evaluateCalculateFunction", calculationFunction, missing(calculationFunction), allowMissing=FALSE, allowNull=FALSE, allowedClasses="function")
-     checkArgument("PivotCalculator", "evaluateCalculateFunction", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","function"))
+     checkArgument("PivotCalculator", "evaluateCalculateFunction", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
      checkArgument("PivotCalculator", "evaluateCalculateFunction", baseValues, missing(baseValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
      checkArgument("PivotCalculator", "evaluateCalculateFunction", cell, missing(cell), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotCell")
      private$p_parentPivot$message("PivotCalculator$evaluateCalculateFunction", "Evaluating calculation function...")
