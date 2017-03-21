@@ -19,13 +19,13 @@ test_that("bhmtrains basic pivot total", {
 
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
-  pt$addLeafColumnDataGroup("TrainCategory")
-  pt$addLeafRowDataGroup("TOC")
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   pt$cells$asMatrix()
 
-  expect_equal(sum(pt$cells$asMatrix()), 338980)
+  expect_equal(sum(pt$cells$asMatrix()), 334840)
 })
 
 test_that("bhmtrains basic pivot values", {
@@ -34,13 +34,13 @@ test_that("bhmtrains basic pivot values", {
 
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
-  pt$addLeafColumnDataGroup("TrainCategory")
-  pt$addLeafRowDataGroup("TOC")
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   pt$cells$asMatrix()
 
-  expect_identical(digest::digest(pt$cells$asMatrix(), algo="md5"), "8153e0f25d156f8762da2fb5cc25d6d3")
+  expect_identical(digest::digest(pt$cells$asMatrix(), algo="md5"), "e81b6ca05b770cbb304c36a44d7ce013")
 })
 
 test_that("bhmtrains basic pivot html", {
@@ -49,12 +49,12 @@ test_that("bhmtrains basic pivot html", {
 
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
-  pt$addLeafColumnDataGroup("TrainCategory")
-  pt$addLeafRowDataGroup("TOC")
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   pt$cells$asMatrix()
 
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "6dfbc0e41701d6f3d7f0e6aa0fba9851")
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "3109a0a30f29510724e957ad8e2dce93")
 })
 
