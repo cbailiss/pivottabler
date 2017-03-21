@@ -127,3 +127,58 @@ getCompactTheme <- function(parentPivot=NULL, themeName="compact") {
   pivotStyles$totalStyle <- "Cell"
   return(invisible(pivotStyles))
 }
+
+getSimpleColoredTheme <- function(parentPivot=NULL, themeName="coloredTheme", colors, fontName) {
+  checkArgument("", "getSimpleColoredTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+  checkArgument("", "getSimpleColoredTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  checkArgument("", "getSimpleColoredTheme", colors, missing(colors), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="character")
+  checkArgument("", "getSimpleColoredTheme", fontName, missing(fontName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
+  pivotStyles$addStyle(styleName="Table", list(
+      "border-collapse"="collapse",
+      "border"=paste0("2px solid ", colors$borderColor)
+    ))
+  pivotStyles$addStyle(styleName="ColumnHeader", list(
+      font=paste0("0.75em ", fontName),
+      padding="2px",
+      "border"=paste0("1px solid ", colors$borderColor),
+      "vertical-align"="middle",
+      "text-align"="center",
+      "font-weight"="bold",
+      color=colors$headerColor,
+      "background-color"=colors$headerBackgroundColor
+    ))
+  pivotStyles$addStyle(styleName="RowHeader", list(
+      font=paste0("0.75em ", fontName),
+      padding="2px 8px 2px 2px",
+      "border"=paste0("1px solid ", colors$borderColor),
+      "vertical-align"="middle",
+      "text-align"="left",
+      "font-weight"="bold",
+      color=colors$headerColor,
+      "background-color"=colors$headerBackgroundColor
+    ))
+  pivotStyles$addStyle(styleName="Cell", list(
+      font=paste0("0.75em ", fontName),
+      padding="2px 2px 2px 8px",
+      "border"=paste0("1px solid ", colors$borderColor),
+      "text-align"="right",
+      color=colors$cellColor,
+      "background-color"=colors$cellBackgroundColor
+    ))
+  pivotStyles$addStyle(styleName="Total", list(
+      font=paste0("0.75em ", fontName),
+      padding="2px 2px 2px 8px",
+      "border"=paste0("1px solid ", colors$borderColor),
+      "text-align"="right",
+      color=colors$totalColor,
+      "background-color"=colors$totalBackgroundColor
+    ))
+  pivotStyles$tableStyle <- "Table"
+  pivotStyles$rootStyle <- "ColumnHeader"
+  pivotStyles$rowHeaderStyle <- "RowHeader"
+  pivotStyles$colHeaderStyle <- "ColumnHeader"
+  pivotStyles$cellStyle <- "Cell"
+  pivotStyles$totalStyle <- "Total"
+  return(invisible(pivotStyles))
+}
