@@ -30,7 +30,7 @@ renderBasicTable <- function(matrix=NULL, stylePrefix=NULL, rowNamesAsHeader=FAL
     for(r in 2:rowCount) {
       row <- list()
       for(c in 1:columnCount) {
-        if((c==1)&(rowNamesAsHeader==TRUE)) style <- paste0(stylePrefix, "RowHeader")
+        if((c==1)&&(rowNamesAsHeader==TRUE)) style <- paste0(stylePrefix, "RowHeader")
         else style <- paste0(stylePrefix, "Cell")
         row[[length(row)+1]] <- htmltools::tags$td(class=style, m[r,c])
       }

@@ -29,33 +29,33 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
                                    valueName=valueName, summariseExpression=summariseExpression,
                                    calculationExpression=calculationExpression,
                                    calculationFunctionIsNull=is.null(calculationFunction), basedOn=basedOn))
-     if(missing(caption)|is.null(caption)) caption <- calculationName
-     if((!(missing(dataName)))&(!is.null(dataName))) {
+     if(missing(caption)||is.null(caption)) caption <- calculationName
+     if((!(missing(dataName)))&&(!is.null(dataName))) {
        if(!private$p_parentPivot$data$isKnownData(dataName))
          stop(paste0("PivotCalculation$new():  Data Frame with name '", dataName, "' not found in the Pivot Data."), call. = FALSE)
      }
      if(type=="value") {
-       if (missing(valueName)|is.null(valueName))
+       if (missing(valueName)||is.null(valueName))
          stop("PivotCalculation$new():  For type=value, a valueName must be specified.", call. = FALSE)
-       if((missing(dataName))|(is.null(dataName))) {
+       if((missing(dataName))||(is.null(dataName))) {
          if (private$p_parentPivot$data$count < 1)
            stop(paste0("PivotCalculation$new():  For type=value, a dataName must be specified."), call. = FALSE)
          dataName <- private$p_parentPivot$data$defaultName
        }
      }
      if(type=="summary") {
-       if(missing(summariseExpression)|is.null(summariseExpression))
+       if(missing(summariseExpression)||is.null(summariseExpression))
          stop("PivotCalculation$new():  For type=summary, a summariseExpression must be specified.", call. = FALSE)
-       if((missing(dataName))|(is.null(dataName))) {
+       if((missing(dataName))||(is.null(dataName))) {
          if (private$p_parentPivot$data$count < 1)
            stop(paste0("PivotCalculation$new():  For type=summary, a dataName must be specified."), call. = FALSE)
          dataName <- private$p_parentPivot$data$defaultName
        }
      }
-     if((type=="calculation")&(missing(calculationExpression)|is.null(calculationExpression))) {
+     if((type=="calculation")&&(missing(calculationExpression)||is.null(calculationExpression))) {
        stop("PivotCalculation$new():  For type=calculation, a calculationExpression must be specified.", call. = FALSE)
      }
-     if((type=="function")&(missing(calculationFunction)|is.null(calculationFunction))) {
+     if((type=="function")&&(missing(calculationFunction)||is.null(calculationFunction))) {
        stop("PivotCalculation$new():  For type=function, a calculationFunction must be specified.", call. = FALSE)
      }
 

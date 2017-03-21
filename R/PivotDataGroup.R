@@ -35,7 +35,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_parentPivot$message("DataGroup$getAncestorGroups", "Getting ancestors...",
                                    list(ancestorCount=length(ancestors), includeCurrentGroup=includeCurrentGroup))
      acs <- NULL
-     if(missing(ancestors)|is.null(ancestors)) {
+     if(missing(ancestors)||is.null(ancestors)) {
        acs <- list()
        if(includeCurrentGroup==TRUE) { acs[[1]] <- self }
      }
@@ -53,7 +53,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      checkArgument("PivotDataGroup", "getDescendantGroups", includeCurrentGroup, missing(includeCurrentGroup), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
      private$p_parentPivot$message("DataGroup$getDescendantGroups", "Getting descendant groups...")
      dgs <- NULL
-     if(missing(descendants)|is.null(descendants)) { dgs <- list() }
+     if(missing(descendants)||is.null(descendants)) { dgs <- list() }
      else { dgs <- descendants }
      index <- length(dgs) + 1
      dgs[[index]] <- self
@@ -69,7 +69,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      checkArgument("PivotDataGroup", "getLeafGroups", leafGroups, missing(leafGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
      private$p_parentPivot$message("DataGroup$getLeafGroups", "Getting leaf groups...", list(leafGroupCount=length(leafGroups)))
      lgs <- NULL
-     if(missing(leafGroups)|is.null(leafGroups)) { lgs <- list() }
+     if(missing(leafGroups)||is.null(leafGroups)) { lgs <- list() }
      else { lgs <- leafGroups }
      if(length(private$p_groups) > 0) {
        for (i in 1:length(private$p_groups)) {
@@ -89,7 +89,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_parentPivot$message("DataGroup$getLevelGroups", "Getting level groups...",
                                    list(level=level, levelGroupCount=length(levelGroups)))
      lgs <- NULL
-     if(missing(levelGroups)|is.null(levelGroups)) { lgs <- list() }
+     if(missing(levelGroups)||is.null(levelGroups)) { lgs <- list() }
      else { lgs <- levelGroups }
      if(level==0) {
        index <- length(lgs) + 1
@@ -159,7 +159,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                         expandExistingTotals=expandExistingTotals, addTotal=addTotal, visualTotals=visualTotals,
                                         totalPosition=totalPosition, totalCaption=totalCaption))
      private$p_parentPivot$resetCells()
-     if(missing(variableName)|is.null(variableName)) stop("DataGroup$addDataGroups(): variableName must be specified", call. = FALSE)
+     if(missing(variableName)||is.null(variableName)) stop("DataGroup$addDataGroups(): variableName must be specified", call. = FALSE)
      if(addTotal==TRUE){ private$p_visualTotals <- visualTotals }
      df <- NULL
      topLevelDisinctValues <- NULL
@@ -167,7 +167,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      topLevelFilter <- NULL
      if(fromData==TRUE) {
        # check that a data frame has been specified (or that we have a default data frame)
-       if(missing(dataName)|is.null(dataName)) {
+       if(missing(dataName)||is.null(dataName)) {
          if (private$p_parentPivot$data$count < 1) stop("DataGroup$addDataGroups():  No data frames.  Specify data before calling addLeafGroup.", call. = FALSE)
          df <- private$p_parentPivot$data$defaultData
        }
@@ -186,7 +186,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        topLevelFilter <- PivotFilter$new(parentPivot=private$p_parentPivot, variableName=variableName, values=fvals)
      }
      # ignore the filters from the other heading groups?
-     if((fromData==TRUE)&(onlyCombinationsThatExist==FALSE)) {
+     if((fromData==TRUE)&&(onlyCombinationsThatExist==FALSE)) {
        # build a dplyr query
        # todo: see escaping note 50 or so lines below
        data <- df
@@ -227,7 +227,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      for(i in 1:length(parentGroups))
      {
        grp <- parentGroups[[i]]
-       if((grp$isTotal==TRUE)&(expandExistingTotals==FALSE)) next
+       if((grp$isTotal==TRUE)&&(expandExistingTotals==FALSE)) next
 
        # use top level groups?
        distinctValues <- NULL
@@ -293,7 +293,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
 
        # append the child groups
        if("list" %in% class(distinctValues)) {
-         if((addTotal==TRUE)&(totalPosition=="before")) {
+         if((addTotal==TRUE)&&(totalPosition=="before")) {
            newGrp <- grp$addChildGroup(caption=totalCaption, calculationGroupName=calculationGroupName, isTotal=TRUE)
            index <- length(newGroups) + 1
            newGroups[[index]] <- newGrp
@@ -307,14 +307,14 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            index <- length(newGroups) + 1
            newGroups[[index]] <- newGrp
          }
-         if((addTotal==TRUE)&(totalPosition=="after")) {
+         if((addTotal==TRUE)&&(totalPosition=="after")) {
            newGrp <- grp$addChildGroup(caption=totalCaption, calculationGroupName=calculationGroupName, isTotal=TRUE)
            index <- length(newGroups) + 1
            newGroups[[index]] <- newGrp
          }
        }
        else {
-         if((addTotal==TRUE)&(totalPosition=="before")) {
+         if((addTotal==TRUE)&&(totalPosition=="before")) {
            newGrp <- grp$addChildGroup(caption=totalCaption, calculationGroupName=calculationGroupName, isTotal=TRUE)
            index <- length(newGroups) + 1
            newGroups[[index]] <- newGrp
@@ -328,7 +328,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            index <- length(newGroups) + 1
            newGroups[[index]] <- newGrp
          }
-         if((addTotal==TRUE)&(totalPosition=="after")) {
+         if((addTotal==TRUE)&&(totalPosition=="after")) {
            newGrp <- grp$addChildGroup(caption=totalCaption, calculationGroupName=calculationGroupName, isTotal=TRUE)
            index <- length(newGroups) + 1
            newGroups[[index]] <- newGrp

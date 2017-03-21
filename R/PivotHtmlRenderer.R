@@ -58,7 +58,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      rowCount <- private$p_parentPivot$cells$rowCount
      columnCount <- private$p_parentPivot$cells$columnCount
      # special case of no rows and no columns, return a blank empty table
-     if((rowGroupCount==0)&(columnGroupCount==0)) {
+     if((rowGroupCount==0)&&(columnGroupCount==0)) {
        tbl <- htmltools::tags$table(class=tableStyle, htmltools::tags$tr(
          htmltools::tags$td(class=cellStyle, style="text-align: center; padding: 6px", htmltools::HTML("(no data)"))))
        return(tbl)

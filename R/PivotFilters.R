@@ -8,7 +8,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
       private$p_parentPivot$message("PivotFilters$new", "Creating new Pivot Filters...", list(variableName=variableName, values=values))
 
       private$p_filters <- list()
-      if(!missing(variableName)&!is.null(variableName)) {
+      if(!missing(variableName)&&!is.null(variableName)) {
         self$setFilterValues(variableName, values, action="replace")
       }
       private$p_parentPivot$message("PivotFilters$new", "Created new Pivot Filters.")

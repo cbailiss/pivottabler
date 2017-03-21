@@ -4,8 +4,8 @@ checkArgument <- function(className, methodName, argumentValue, isMissing, # no 
                           allowedValues=NULL, minValue=NULL, maxValue=NULL, maxLength=NULL) {
   argumentName <- substitute(argumentValue)
   if(isMissing&(!allowMissing)) stop(paste0(className, "$", methodName, "():  ", argumentName, " must be specified"), call. = FALSE)
-  if(is.null(argumentValue)&(!allowNull)) stop(paste0(className, "$", methodName, "():  ", argumentName, " must not be null"), call. = FALSE)
-  if((!is.null(argumentValue))&(!is.null(allowedClasses))) {
+  if(is.null(argumentValue)&&(!allowNull)) stop(paste0(className, "$", methodName, "():  ", argumentName, " must not be null"), call. = FALSE)
+  if((!is.null(argumentValue))&&(!is.null(allowedClasses))) {
     if(length(intersect(allowedClasses, class(argumentValue))) == 0) {
       if(length(allowedClasses) > 0) {
         stop(paste0(className, "$", methodName, "():  ", argumentName, " must be one of the following types: [",
@@ -41,7 +41,7 @@ checkArgument <- function(className, methodName, argumentValue, isMissing, # no 
       }
     }
   }
-  if((mustBeAtomic==TRUE)&!(is.atomic(argumentValue))) {
+  if((mustBeAtomic==TRUE)&&!(is.atomic(argumentValue))) {
     stop(paste0(className, "$", methodName, "():  ", argumentName, " must be one of the atomic data types"), call. = FALSE)
   }
   if(!is.null(allowedValues)) {

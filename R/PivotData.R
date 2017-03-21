@@ -61,7 +61,7 @@ PivotData <- R6::R6Class("PivotData",
   ),
   private = list(
     getDfDesc = function(df) {
-      if(missing(df)|is.null(df)) return("")
+      if(missing(df)||is.null(df)) return("")
       return(list(
            rows=nrow(df),
            cols=ncol(df),
@@ -70,7 +70,7 @@ PivotData <- R6::R6Class("PivotData",
       ))
     },
     getDfStr = function(df) {
-      if(missing(df)|is.null(df)) return("")
+      if(missing(df)||is.null(df)) return("")
       lst <- private$getDfDesc(df)
       dfStr <- paste0(lst$rows, " rows, ", lst$cols, " cols, ", lst$size, ", col names: ", paste(lst$colNames, collapse=", "))
       return(dfStr)

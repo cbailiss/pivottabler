@@ -211,7 +211,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      # todo: escaping below
      summaryCmd <- paste0("data <- dplyr::summarise(dataFrame, ", summaryName, " = ", summariseExpression, ")")
      eval(parse(text=summaryCmd))
-     if((nrow(data)>1)|(ncol(data)>1))
+     if((nrow(data)>1)||(ncol(data)>1))
        stop(paste0("PivotCalculator$getSummaryValue(): Summary expression '", summaryName, "' has resulted in '", nrow(data),
                    " row(s) and ", ncol(data), " columns.  There must be a maximum of 1 row and 1 column in the result."))
      data <- dplyr::collect(data)
