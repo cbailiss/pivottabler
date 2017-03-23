@@ -13,11 +13,11 @@ vignette: >
 
 * Calculations and Calculation Groups
 * Calculation Types
-* Showing a value (no calculation)
-* Summarising Values
+* Method 1:  Summarising Values
     + Displaying calculations on rows
-* Deriving values from other summarised values
-* Custom calculation functions
+* Method 2:  Deriving values from other summarised values
+* Method 3:  Custom calculation functions
+* Method 4:  Showing a value (no calculation)
 * Using multiple data frames in the same pivot table
 * Formatting calculated values
 * Further Reading
@@ -63,9 +63,13 @@ The pivottabler package uses the dplyr package.  The summariseExpression is an e
 library(pivottabler)
 library(dplyr)
 library(lubridate)
+
+# derive some additional data
 trains <- mutate(bhmtrains,
    ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
    ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
+
+# create the pivot table
 pt <- PivotTable$new()
 pt$addData(trains)
 pt$addRowDataGroups("TOC", totalCaption="All TOCs")
@@ -94,9 +98,13 @@ Calculations can be swapped onto the rows using the `addRowCalculationGroups()` 
 library(pivottabler)
 library(dplyr)
 library(lubridate)
+
+# derive some additional data
 trains <- mutate(bhmtrains,
    ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
    ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
+
+# create the pivot table
 pt <- PivotTable$new()
 pt$addData(trains)
 pt$addColumnDataGroups("TOC", totalCaption="All TOCs")
@@ -114,18 +122,18 @@ pt$defineCalculation(calculationName="IQRArrivalDelay", caption="Delay IQR",
                      summariseExpression="IQR(ArrivalDelay, na.rm=TRUE)")
 pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev.", 
                      summariseExpression="sd(ArrivalDelay, na.rm=TRUE)", format="%.1f")
-pt$addRowCalculationGroups()
+
+pt$addRowCalculationGroups()  #  << ***** CODE CHANGE ***** <<
 pt$renderPivot()
 ```
 
 ## Method 2:  Deriving values from other summarised values
 
-Calculations can be defined that refer to other calculations, by:
+Calculations can be defined that refer to other calculations, by following these steps:
 
-* Specifying `type="calculation"`,
-* Specifying the names of the calculations which this calculation is based on in the `basedOn` argument.
-* Specifying an expression for this calculation in the `calculationExpression` argument.
-    + The values of the base calculations are accessed as elements of the `values` list.
+1. Specifying `type="calculation"`,
+2. Specifying the names of the calculations which this calculation is based on in the `basedOn` argument.
+3. Specifying an expression for this calculation in the `calculationExpression` argument.  The values of the base calculations are accessed as elements of the `values` list.
 
 For example, calculating the percentage of trains with an arrival delay of greater than five minutes:
 
@@ -133,10 +141,14 @@ For example, calculating the percentage of trains with an arrival delay of great
 library(pivottabler)
 library(dplyr)
 library(lubridate)
+
+# derive some additional data
 trains <- mutate(bhmtrains,
    ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
    ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
    DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
+
+# create the pivot table
 pt <- PivotTable$new()
 pt$addData(trains)
 pt$addRowDataGroups("TOC", totalCaption="All TOCs")
@@ -157,13 +169,17 @@ The base calculations can be hidden by specifying `visible=FALSE`, e.g. to look 
 library(pivottabler)
 library(dplyr)
 library(lubridate)
+
+# derive some additional data
 trains <- mutate(bhmtrains,
-   GbttDate=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
+   GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
                        origin = "1970-01-01"),
-   GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1),
+   GbttMonth=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=1),
    ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
    ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
    DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
+
+# create the pivot table
 pt <- PivotTable$new()
 pt$addData(trains)
 pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
@@ -181,104 +197,307 @@ pt$renderPivot()
 
 ## Method 3:  Custom calculation functions
 
-The following pivot table shows the mean train arrival delay by train operating company and month:
+A custom calculation function allows more complex calculation logic to be used.  Such a function is invoked once for each cell in the body of the pivot table.  Custom calculation functions always have the same arguments defined:
+
+* `pivotCalculator` is a helper object that offers various methods to assist in performing calculations,
+* `netFilters` contains the definitions of the filter criteria coming from the row and column headers in the pivot table,
+* `format` provides the formatting definition - this is the same value specified in the `defineCalculation()` call,
+* `baseValues` provides access to the results of other calculations in the calculation group,
+* `cell` provides access to more details about the individual cell that is being calculated
+    + The `cell` argument is provided to support future scenarios so is not explained here.
+
+For example, if we wish to examine the worst single day performance, we need to:
+
+1.  For each date, calculate the percentage of trains more than five minutes late,
+2.  Sort this list (of dates and percentages) into descending oder (by percentage of trains more than five minutes late),
+3.  Display the top percentage value from this list.
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 library(dplyr)
 library(lubridate)
-trains <- mutate(bhmtrains,
-   GbttDate=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
-                       origin = "1970-01-01"),
-   GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1),
-   ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
-   ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
-pt <- PivotTable$new()
-pt$addData(trains)
-pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
-pt$addRowDataGroups("TOC", totalCaption="All TOCs")
-pt$defineCalculation(calculationName="MeanDelay", format="%.2f",
-                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)")
-pt$renderPivot()
-```
 
-The above pivot table places equal weighting on time of day.  Most passengers travel in the peak hours of the day.  To weight the delay durations more heavily towards the times of day when more passengers are travelling, a custom calculation function can be used:
-
-```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-library(dplyr)
-library(lubridate)
+# derive some additional data
 trains <- mutate(bhmtrains,
-   GbttTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
-                       origin = "1970-01-01"),
-   GbttMonth=make_date(year=year(GbttTime), month=month(GbttTime), day=1),
+   GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                           origin = "1970-01-01"),
+   GbttDate=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=day(GbttDateTime)),
+   GbttMonth=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=1),
    ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
    ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
-   HourOfDay=hour(GbttTime))
+   DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
 
-getWeightedMeanDelayDuration <- function(pivotCalculator, netFilters, format, baseValues, cell) {
+# custom calculation function
+getWorstSingleDayPerformance <- function(pivotCalculator, netFilters, format, baseValues, cell) {
   # get the data frame
   trains <- pivotCalculator$getDataFrame("trains")
   # apply the TOC and month filters coming from the headers in the pivot table
   filteredTrains <- pivotCalculator$getFilteredDataFrame(trains, netFilters)
-  # define the weightings for each hour of the day (note 
-  # these are for illustration only, i.e. not based on real data)
-  weights <- c(
-    0.2,                     # 00:00 to 00:59
-    0.1, 0.1, 0.1, 0.2, 0.4, # 01:00 to 05:59
-    0.8, 1.5, 3.0, 1.5, 1.0, # 06:00 to 10:59
-    1.0, 1.0, 1.0, 1.0, 1.2, # 11:00 to 15:59
-    1.5, 2.5, 2.5, 1.2, 1.0, # 16:00 to 20:59
-    0.9, 0.7, 0.3)           # 21:00 to 23:59
-  weights <- weights/sum(weights)
-  hourWeightings = data.frame(HourOfDay=0:23, Weight=weights)
-  # calculate the weighted mean
-  tw <- dplyr::left_join(filteredTrains, hourWeightings, by="HourOfDay")
-  wm <- stats::weighted.mean(tw$ArrivalDelay, tw$Weight, na.rm=TRUE)
+  # calculate the percentage of trains more than five minutes late by date
+  dateSummary <- filteredTrains %>%
+    group_by(GbttDate) %>%
+    summarise(DelayedPercent = sum(DelayedByMoreThan5Minutes, na.rm=TRUE) / n() * 100) %>%
+    arrange(desc(DelayedPercent))
+  # top value
+  tv <- dateSummary$DelayedPercent[1]
   # build the return value
   value <- list()
-  value$rawValue <- wm
-  value$formattedValue <- pivotCalculator$formatValue(wm, format=format)
+  value$rawValue <- tv
+  value$formattedValue <- pivotCalculator$formatValue(tv, format=format)
   return(value)
 }
 
+# create the pivot table
 pt <- PivotTable$new()
 pt$addData(trains, "trains")
 pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
 pt$addRowDataGroups("TOC", totalCaption="All TOCs")
-pt$defineCalculation(calculationName="MeanDelay", format="%.2f",
-                     type="function", calculationFunction=getWeightedMeanDelayDuration)
+pt$defineCalculation(calculationName="WorstSingleDayDelay", format="%.1f %%",
+                     type="function", calculationFunction=getWorstSingleDayPerformance)
 pt$renderPivot()
 ```
 
-The `getWeightedMeanDelayDuration()` function performs the calculations for this pivot table.  This function is invoked once for each cell in the body of the pivot table.  Custom calculation functions like this one must always have the same arguments defined:
+The return value from the custom function must be a list containing the raw result value (i.e. unformatted, that is either `integer` or `numeric` data type) and a formatted value (that is `character` data type).  
 
-* `pivotCalculator` is a helper object that offers various methods to assist in calculations,
-* `netFilters` contains the definitions of the filter criteria coming from the row and column headers in the pivot table,
-* `format` provides the formatting definition - this is the same value specified in the `defineCalculation()` call,
-* `baseValues` provides access to the results of other calculations in the calculation group,
-* `cell` provides access to more details about the individual cell that is being calculated.
+Using a custom calculation function also enables additional possibilities, e.g. including additional information in the formatted value, in this case the date of the worst single day performance (where the code changes compared to the example above are highlighted):
 
-The return value from the custom function must be a list containing the raw result value (i.e. unformatted, that is either `integer` or `numeric` data type) and a formatted value (that is `character` data type).
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+
+# derive some additional data
+trains <- mutate(bhmtrains,
+   GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                           origin = "1970-01-01"),
+   GbttDate=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=day(GbttDateTime)),
+   GbttMonth=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=1),
+   ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+   ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
+   DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
+
+# custom calculation function
+getWorstSingleDayPerformance <- function(pivotCalculator, netFilters, format, baseValues, cell) {
+  # get the data frame
+  trains <- pivotCalculator$getDataFrame("trains")
+  # apply the TOC and month filters coming from the headers in the pivot table
+  filteredTrains <- pivotCalculator$getFilteredDataFrame(trains, netFilters)
+  # calculate the percentage of trains more than five minutes late by date
+  dateSummary <- filteredTrains %>%
+    group_by(GbttDate) %>%
+    summarise(DelayedPercent = sum(DelayedByMoreThan5Minutes, na.rm=TRUE) / n() * 100) %>%
+    arrange(desc(DelayedPercent))
+  # top value
+  tv <- dateSummary$DelayedPercent[1]
+  date <- dateSummary$GbttDate[1]             #     <<  CODE CHANGE  <<
+  # build the return value
+  value <- list()
+  value$rawValue <- tv
+  value$formattedValue <- paste0(format(      #     <<  CODE CHANGE (AND BELOW)  <<
+    date, format="%a %d"), ":  ", pivotCalculator$formatValue(tv, format=format))
+  return(value)
+}
+
+# create the pivot table
+pt <- PivotTable$new()
+pt$addData(trains, "trains")
+pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="WorstSingleDayDelay", format="%.1f %%",
+                     type="function", calculationFunction=getWorstSingleDayPerformance)
+pt$renderPivot()
+```
+
+Including two values in each cell somewhat reduces the readability however.
 
 ## Method 4:  Showing a value (no calculation)
 
 With this approach, the pivot table performs little or no calculations.  The values to display are predominantly calculated in R code before the pivot table is created.  This pivot table is used primarily as a visualisation mechanism.
 
-(example, number of trains operated by each TOC)
+Returning to the original simple example of the number of trains operated by each train operating company:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+In the example above, `pivottabler` calculated the values in each pivot table cell.  We can alternatively calculate the values explictly in R code and instead just use the pivot table to display them:
+
+```{r, warning=FALSE}
+library(pivottabler)
+
+# perform the aggregation in R code explicitly
+trains <- bhmtrains %>%
+  group_by(TrainCategory, TOC) %>%
+  summarise(NumberOfTrains=n()) %>%
+  ungroup()
+
+# a sample of the aggregated data
+head(trains)
+
+# display this pre-calculated data
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", type="value", valueName="NumberOfTrains")
+pt$renderPivot()
+```
+
+In the current version of `pivottabler` there is no way to explictly pre-calculate the totals.  Instead, two workarounds are possible.  Either the totals can be hidden or a summarise expression can be specified to calculate the totals.  Both of these examples are presented below.
+
+### Hiding the totals
+
+```{r, warning=FALSE}
+library(pivottabler)
+
+# perform the aggregation in R code explicitly
+trains <- bhmtrains %>%
+  group_by(TrainCategory, TOC) %>%
+  summarise(NumberOfTrains=n()) %>%
+  ungroup()
+
+# display this pre-calculated data
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TrainCategory", addTotal=FALSE)   #  <<  *** CODE CHANGE ***  <<
+pt$addRowDataGroups("TOC", addTotal=FALSE)                #  <<  *** CODE CHANGE ***  <<
+pt$defineCalculation(calculationName="TotalTrains", type="value", valueName="NumberOfTrains")
+pt$renderPivot()
+```
+
+### Calculating the totals
+
+```{r, warning=FALSE}
+library(pivottabler)
+
+# perform the aggregation in R code explicitly
+trains <- bhmtrains %>%
+  group_by(TrainCategory, TOC) %>%
+  summarise(NumberOfTrains=n()) %>%
+  ungroup()
+
+# display this pre-calculated data
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains",  # <<  *** CODE CHANGE (AND BELOW) *** <<
+                     type="value", valueName="NumberOfTrains", 
+                     summariseExpression="sum(NumberOfTrains)")
+pt$renderPivot()
+```
 
 ## Using multiple data frames in the same pivot table
 
+A pivot table can display data from multiple data frames.  The following summarises the possible functionality:
+
+*  A pivot table can contain multiple calculations. Many of the examples above in this vignette illustrate this.
+*  Each calculation must be based on one data frame.  This is specified as part of the arguments to the `defineCalculation()` function^[If the pivot table contains only one data frame, then specifying the data frame when calling `defineCalculation()` is not necessary.].
+*  Defining multiple calculations allows data from multiple data frames to be displayed in the pivot table.
+
+**Important:**  When adding multiple data frames to a pivot table, the data frame columns used for the data groups (i.e. row/column headings) must be conformed, i.e.:
+
+*  The columns from the data frames placed on the row/column headings in the pivot table must be present in all of the data frames added to the pivot table.
+*  Those columns must have the same names in all of the data frames added to the pivot table.
+*  The data values used in those columns should be consistent (e.g. "England" must be "England" in all data frames added to the pivot table, not "England" in one data frame and "Eng",  "ENGLAND", etc. in other data frames).
+
+It is also worth noting that only the first data frame added to the pivot table is used when generating the row/column headings.
+
+The example below illustrates using two data frames with a single pivot table:
+
+```{r, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+
+# derive some additional data
+trains <- mutate(bhmtrains, 
+  ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+  ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
+  DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0)) %>%
+  select(TrainCategory, TOC, DelayedByMoreThan5Minutes) 
+# in this example, bhmtraindisruption is joined to bhmtrains
+# so that the TrainCategory and TOC columns are present in both
+# data frames added to the pivot table
+cancellations <- bhmtraindisruption %>%
+  inner_join(bhmtrains, by="ServiceId") %>%
+  mutate(CancelledInBirmingham=ifelse(LastCancellationLocation=="BHM",1,0)) %>%
+  select(TrainCategory, TOC, CancelledInBirmingham)
+
+# create the pivot table
+pt <- PivotTable$new()
+pt$addData(trains, "trains")
+pt$addData(cancellations, "cancellations")
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="DelayedTrains", dataName="trains", 
+                     caption="Delayed", 
+                     summariseExpression="sum(DelayedByMoreThan5Minutes, na.rm=TRUE)")
+pt$defineCalculation(calculationName="CancelledTrains", dataName="cancellations", 
+                     caption="Cancelled", 
+                     summariseExpression="sum(CancelledInBirmingham, na.rm=TRUE)")
+pt$renderPivot()
+```
+
+In the example above, the number of trains more than five minutes late is calculated from the `trains` data frame and the number of trains cancelled at Birmingham New Street is calculated from the `cancellations` data frame.
+
 ## Formatting calculated values
 
-sprintf vs. format function
+The formatting of calculation results is specified by setting the `format` parameter when calling the `defineCalculation` function.
+
+A number of different approaches to formatting are supported:
+
+* If `format` is a text value, then pivottabler invokes `base::sprintf()` with the specified format.
+* If `format` is a list, then pivottabler invokes `base::format()`, where the elements in the list become arguments in the function call.
+* If `format` is an R function, then this is invoked for each value.
+
+The above are the same approaches used when formatting data groups.  See the [Data Groups](datagroups.html) vignette for more details.
+
+Examples of the first two approaches above can be found in previous examples in this vignette.  An example of the third approach can be found in the [Data Groups](datagroups.html) vignette.
 
 ## Performance considerations
 
-Pivot table calculates each cell independently.  This allows it to offer flexible layouts (i.e. layout flexibility is prioritised over performance since a pivot table is primarily a visualisation tool).  So aggregate large data sets outside the pivot.
+`pivottabler` calculates each cell in a pivot table independently.  This allows it to offer flexible layouts - i.e. layout flexibility is prioritised over performance since a pivot table is primarily a visualisation tool.
 
-Duplicate the bhmtrains df 100 times.  Compare execution times for aggregate outside the pivot vs. aggregate inside the pivot.
-For large data frames, aggregate outside the pivot table.
+However, for very large data frames, this approach can significantly increase the time taken to calculate the pivot table cell values.  In such cases, aggregating the data explictly in R code (where possible) before creating the pivot table can greatly reduce the overall time required.
+
+For example, duplicating the `bhmtrains` sample data frame to create a larger data set.
+
+```{r, warning=FALSE}
+# create a larger data frame
+manytrains <- rbind(bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains, 
+                    bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains)
+paste0("manytrains consists of ", nrow(manytrains), " rows and is ", format(object.size(manytrains), units="auto"), " in size.")
+
+# function for generating a pivot
+library(pivottabler)
+generatePivot <- function(data) {
+  pt <- PivotTable$new()
+  pt$addData(data)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot() 
+}
+
+# time creating a pivot table (without aggregating the data first)
+system.time(replicate(10, generatePivot(manytrains))) / 10
+
+# aggregate the larger data frame
+library(dplyr)
+aggmanytrains <- manytrains %>%
+  group_by(TrainCategory, TOC) %>%
+  summarise(TotalTrains=n()) %>%
+  ungroup()
+
+# time creating a pivot table (using the pre-aggregated data frame)
+system.time(replicate(10, generatePivot(aggmanytrains))) / 10
+```
 
 ## Further Reading
 
@@ -288,7 +507,10 @@ The full set of vignettes is:
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
 4. [Styling](styling.html)
+
+<!--
 5. [Cell Context](cellcontext.html)
 6. [Custom Layouts](customlayouts.html)
 7. [Retrieving Data](retrievingdata.html)
 8. [Manipulating Individual Cells](cellmanipulation.html) 
+-->

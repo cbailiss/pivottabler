@@ -28,7 +28,7 @@ The latest version of the pivottabler package can be obtained directly from the 
 
 ## Pivot Tables
 
-### Defintion
+### Definition
 
 Pivot tables are a common technique for summarising large tables of data into smaller and more easily understood summary tables to answer specific questions.  
 
@@ -52,7 +52,7 @@ Output is rendered as HTML via the htmlwidgets framework.  The generated HTML ca
 
 ## Sample Data: Trains in Birmingham
 
-To build a series of example pivot tables, we will use the `bhmtrains` data frame.  This contains all 84,745 trains that arrived into and/or departed from [Birmingham New Street railway station](https://en.wikipedia.org/wiki/Birmingham_New_Street_station) between 1st December 2016 and 28th February 2017. As an example, the following are four trains that arrived into Birmingham New Street at the very start of this time period - note the data has been transposed (otherwise the table would be very wide).
+To build a series of example pivot tables, we will use the `bhmtrains` data frame.  This contains all 83,710 trains that arrived into and/or departed from [Birmingham New Street railway station](https://en.wikipedia.org/wiki/Birmingham_New_Street_station) between 1st December 2016 and 28th February 2017. As an example, the following are four trains that arrived into Birmingham New Street at the very start of this time period - note the data has been transposed (otherwise the table would be very wide).
 
 ```{r, echo=FALSE}
 library(pivottabler)
@@ -103,7 +103,7 @@ Each line above works as follows:
 3. Specify the data frame that contains the data for the pivot table.
 4. Add the distinct values from the TrainCategory column in the data frame as columns in the pivot table.
 5. Add the distinct values from the TOC column in the data frame as rows in the pivot table.
-6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function^[See the [dplyr cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) for other sumamry functions.].
+6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function^[See the [dplyr cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) for other summary functions.].
 7. Generate the pivot table.
 
 ## Extending the Basic Pivot Table
@@ -185,63 +185,10 @@ The pivottabler package supports many more capabilities not described here.  Mor
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
 4. [Styling](styling.html)
+
+<!--
 5. [Cell Context](cellcontext.html)
 6. [Custom Layouts](customlayouts.html)
 7. [Retrieving Data](retrievingdata.html)
 8. [Manipulating Individual Cells](cellmanipulation.html) 
-
-## TODO
-
-1. NULL/NA equality in the filtering isn't working (look at Cross Country HST, 734+0<>741)**
-
-3. Calculations
- 
-- Basics: using dplyr summarise expressions 
-- Go back to a simpler pivot from above, add in a second measure:  the number of trains more than 5 late.
-- Calculate a percentage in the pivot of number of trains more than 5 late.
-- value
-- custom calculation function
-- performance considerations - i.e. pivottabler is executed for each cell.  This allows pivottabler to offer flexible layout options.  
-    - Note that for large data frames, better to do some aggregation before generating the pivot table, to come to the same grain as the pivot table.
-    - Do an example where scale up the volume (by replicating the bhmtrains data 10 or 100 times).  Time generating a pivot from that.
-    - Then aggregate that large dataset up to the grain of the pivot.  And time again.
-NB:  when executing calculations, basedOn is not recursive
-i.e. if C1 based on C2, C2 based on C3, then when specifying C1 must specify basedOn=c("C3", "C2")
-
-4. Styling
-
-- styling with themes
-- custom styling
-- conditional formatting, i.e. pivot of delay minutes by time of day, highlighting the worst times.
-- switching off the display of the values, with conditional formatting, for a chart of small coloured cells, like GitHub contributions chart.
-- on example of highlighting a specific cell, referred to by row and column.  Then refer to advanced vignette for more.
-- using styles defined in a website (i.e. a stylename in the pivot table but not definition of that name)
-
-5. Cell Context
-
-- a description of how filering works.
-- build up a pivot table from simple and show how filtering context builds up.
-    - use the same examples as shown in the introduction vignette. 
-- switching on the advanced mode, i.e. to display the context in each cell.
-- viewing the pivot as JSON
-
-6. Custom layouts
-
-- e.g. having multiple measures on columns that are sliced by different attributes on the same level.
-- adding individual headers, then calling normalise to fill the gaps.
-- e.g. having multiple calculation groups.
-
-7. Retrieving data from the pivot
-
-- As a matrix (of values only, plus including the headers)
-- As a dataframe (i.e. the same data as displayed in the pivot, but each cell becomes one data frame row)
-- Drillthrough (retrieving the rows behind a cell as a data frame)
-- As HTML
-- Save HTML
-
-8. Manipulating individual cells
-
-- retrieving headers
-- retrieving cells
-- iterating
-- styling
+-->

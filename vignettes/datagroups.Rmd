@@ -139,7 +139,8 @@ pt$renderPivot()
 
 ### More complex layouts of data groups
 
-Adding data groups one-at-a-time for complete fine-grained control is also possible.  This is more involved and is described separately in the [Custom Layouts](customlayouts.html) vignette.
+Adding data groups one-at-a-time for complete fine-grained control will be possible in a future version.
+<!-- This is  more involved and is described separately in the [Custom Layouts](customlayouts.html) vignette. -->
 
 ## Formatting data groups
 
@@ -192,7 +193,7 @@ pt$renderPivot()
 A number of different approaches to formatting are supported:
 
 * If the `dataFormat` is a text value, then pivottabler invokes `base::sprintf()` with the specified format.
-* If the `dataFormat` is a list, then pivottabler invokes `base::format()` for each value, where the elements in the list become arguments in the function call.
+* If the `dataFormat` is a list, then pivottabler invokes `base::format()`, where the elements in the list become arguments in the function call.
     + The example above is equivalent to: `base::format(value, format="%B %Y")`
 * If the `dataFormat` is an R function, then this is invoked for each value.
 
@@ -319,8 +320,11 @@ The full set of vignettes is:
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
 4. [Styling](styling.html)
+
+<!--
 5. [Cell Context](cellcontext.html)
 6. [Custom Layouts](customlayouts.html)
 7. [Retrieving Data](retrievingdata.html)
 8. [Manipulating Individual Cells](cellmanipulation.html) 
+-->
 	

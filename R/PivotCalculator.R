@@ -152,7 +152,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      # this function is ready to support other data types, once the other PivotTable logic/cells have been modified
      # to work with data types other than numeric/integer
      # , "character", "factor", "logical", "Date", "POSIXct", "POSIXlt"
-     checkArgument("PivotCalculator", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+     checkArgument("PivotCalculator", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
      checkArgument("PivotCalculator", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
      private$p_parentPivot$message("PivotCalculator$formatValue", "Formatting value...")
      if(is.null(value)) return(invisible(NULL))
