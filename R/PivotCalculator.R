@@ -120,14 +120,10 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          if(is.null(filter$values)) next
          if(length(filter$values)==0) next
          if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
-         if(length(filter$values)==1) {
-           filterCmd <- paste0(filterCmd, "(", filter$variableName, " == filters$filters[[", j, "]]$values)")
-         }
-         else if(length(filter$values)>1) {
+         if(length(filter$values)>0) {
+           # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
            filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% filters$filters[[", j, "]]$values)")
          }
-         # using eval repeatedly with the command above is not very efficient
-         # but it avoids issues with values as strings, escaping, using stringi::stri_escape_unicode, etc
        }
        filterCmd <- paste0("data <- dplyr::filter(data,", filterCmd, ")")
        eval(parse(text=filterCmd))
