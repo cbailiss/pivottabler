@@ -17,6 +17,7 @@ vignette: >
     + In reality
 * Sample Data
 * Basic Pivot Table
+* Constructing the Basic Pivot Table
 * Extending the Basic Pivot Table
 * Further Reading
 
@@ -106,9 +107,51 @@ Each line above works as follows:
 6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function^[See the [dplyr cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) for other summary functions.].
 7. Generate the pivot table.
 
+## Constructing the Basic Pivot Table
+
+The following examples show how each line in the above example constructs the pivot table.  To improve readability, each code change is highlighted.
+
+```{r, warning=FALSE}
+# produces no pivot table
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$renderPivot()
+```
+
+```{r, warning=FALSE}
+# specify the column headings
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")   #    << **** LINE ADDED **** <<
+pt$renderPivot()
+```
+
+```{r, warning=FALSE}
+# specify the row headings
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")                #    << **** LINE ADDED **** <<
+pt$renderPivot()
+```
+
+```{r, warning=FALSE}
+# specifying a calculation
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")                #     **** LINE BELOW ADDED ****
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
 ## Extending the Basic Pivot Table
 
-There follows below a progressive series of changes to the basic pivot table shown above.  Each change is made by adding or changing one line of code.  To improve readability, each code change is highlighted.
+There follows below a progressive series of changes to the basic pivot table shown above.  Each change is made by adding or changing one line of code.  Again, to improve readability, each code change is highlighted.
 
 First, adding an additional column data group to sub-divide each "TrainCategory" by "PowerType":
 
@@ -179,7 +222,7 @@ pt$renderPivot()
 
 ## Further Reading
 
-The pivottabler package supports many more capabilities not described here.  More details can be found in the other vignettes.  The full set of vignettes is:
+The pivottabler package has many more capabilities.  More details can be found in the other vignettes.  The full set of vignettes is:
 
 1. [Introduction](introduction.html)
 2. [Data Groups](datagroups.html)

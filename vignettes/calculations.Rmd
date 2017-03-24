@@ -107,7 +107,7 @@ trains <- mutate(bhmtrains,
 # create the pivot table
 pt <- PivotTable$new()
 pt$addData(trains)
-pt$addColumnDataGroups("TOC", totalCaption="All TOCs")
+pt$addColumnDataGroups("TOC", totalCaption="All TOCs")   #  << ***** CODE CHANGE ***** <<
 pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains", 
                      summariseExpression="n()")
 pt$defineCalculation(calculationName="MinArrivalDelay", caption="Min Arr. Delay", 
@@ -123,7 +123,7 @@ pt$defineCalculation(calculationName="IQRArrivalDelay", caption="Delay IQR",
 pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev.", 
                      summariseExpression="sd(ArrivalDelay, na.rm=TRUE)", format="%.1f")
 
-pt$addRowCalculationGroups()  #  << ***** CODE CHANGE ***** <<
+pt$addRowCalculationGroups()                             #  << ***** CODE CHANGE ***** <<
 pt$renderPivot()
 ```
 

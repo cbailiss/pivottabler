@@ -601,8 +601,9 @@ PivotTable <- R6::R6Class("PivotTable",
         else return(invisible(private$p_styles$theme))
       }
       else {
-        checkArgument("PivotTable", "theme", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-        private$p_styles <- getTheme(parentPivot=self, themeName=value)
+        checkArgument("PivotTable", "theme", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("character", "PivotStyles"))
+        if("character" %in% class(value)) private$p_styles <- getTheme(parentPivot=self, themeName=value)
+        else if("PivotStyles" %in% class(value)) private$p_styles <- value
         return(invisible())
       }
     },
