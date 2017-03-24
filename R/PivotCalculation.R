@@ -2,7 +2,8 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
   public = list(
    initialize = function(parentPivot, calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
                          filters=NULL, format=NULL, dataName=NULL, type="summary",
-                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL) {
+                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
+                         noDataValue=NULL, noDataCaption=NULL) {
      checkArgument("PivotCalculation", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
      checkArgument("PivotCalculation", "initialize", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      checkArgument("PivotCalculation", "initialize", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -17,6 +18,8 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
      checkArgument("PivotCalculation", "initialize", calculationExpression, missing(calculationExpression), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotCalculation", "initialize", calculationFunction, missing(calculationFunction), allowMissing=TRUE, allowNull=TRUE, allowedClasses="function")
      checkArgument("PivotCalculation", "initialize", basedOn, missing(basedOn), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotCalculation", "initialize", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+     checkArgument("PivotCalculation", "initialize", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      private$p_parentPivot <- parentPivot
      fstr <- NULL
      if(!is.null(filters)) {
@@ -28,7 +31,8 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
                                    displayOrder=displayOrder, filters=fstr, format=format, dataName=dataName,
                                    valueName=valueName, summariseExpression=summariseExpression,
                                    calculationExpression=calculationExpression,
-                                   calculationFunctionIsNull=is.null(calculationFunction), basedOn=basedOn))
+                                   calculationFunctionIsNull=is.null(calculationFunction), basedOn=basedOn,
+                                   noDataValue=noDataValue, noDataCaption=noDataCaption))
      if(missing(caption)||is.null(caption)) caption <- calculationName
      if((!(missing(dataName)))&&(!is.null(dataName))) {
        if(!private$p_parentPivot$data$isKnownData(dataName))
@@ -72,6 +76,8 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
      private$p_calculationExpression <- calculationExpression
      private$p_calculationFunction <- calculationFunction
      private$p_basedOn <- basedOn
+     private$p_noDataValue <- noDataValue
+     private$p_noDataCaption <- noDataCaption
      private$p_parentPivot$message("PivotCalculation$new", "Created new Pivot Calculation")
    },
    asList = function() {
@@ -88,7 +94,9 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
        summariseExpression = private$p_summariseExpression,
        calculationExpression = private$p_calculationExpression,
        calculationFunction = private$p_calculationFunction,
-       basedOn = private$p_basedOn
+       basedOn = private$p_basedOn,
+       noDataValue = private$p_noDataValue,
+       noDataCaption = private$p_noDataCaption
      )
      return(invisible(lst))
    },
@@ -117,7 +125,9 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
     summariseExpression = function(value) { return(invisible(private$p_summariseExpression)) },
     calculationExpression = function(value) { return(invisible(private$p_calculationExpression)) },
     calculationFunction = function(value) { return(invisible(private$p_calculationFunction)) },
-    basedOn = function(value) { return(invisible(private$p_basedOn)) }
+    basedOn = function(value) { return(invisible(private$p_basedOn)) },
+    noDataValue = function(value) { return(invisible(private$p_noDataValue)) },
+    noDataCaption = function(value) { return(invisible(private$p_noDataCaption)) }
   ),
   private = list(
     p_parentPivot = NULL,
@@ -133,6 +143,8 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
     p_summariseExpression = NULL,
     p_calculationExpression = NULL,
     p_calculationFunction = NULL,
-    p_basedOn = NULL
+    p_basedOn = NULL,
+    p_noDataValue = NULL,
+    p_noDataCaption = NULL
   )
 )

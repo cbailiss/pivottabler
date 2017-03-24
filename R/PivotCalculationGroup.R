@@ -30,7 +30,8 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
     },
     defineCalculation = function(calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
                          filters=NULL, format=NULL, dataName=NULL, type="summary", executionOrder=NULL,
-                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL) {
+                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
+                         noDataValue=NULL, noDataCaption=NULL) {
      checkArgument("PivotCalculationGroup", "defineCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      checkArgument("PivotCalculationGroup", "defineCalculation", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotCalculationGroup", "defineCalculation", visible, missing(visible), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
@@ -44,6 +45,8 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
      checkArgument("PivotCalculationGroup", "defineCalculation", calculationExpression, missing(calculationExpression), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotCalculationGroup", "defineCalculation", calculationFunction, missing(calculationFunction), allowMissing=TRUE, allowNull=TRUE, allowedClasses="function")
      checkArgument("PivotCalculationGroup", "defineCalculation", basedOn, missing(basedOn), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotCalculationGroup", "defineCalculation", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+     checkArgument("PivotCalculationGroup", "defineCalculation", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       private$p_parentPivot$message("PivotCalculationGroup$defineCalculation", "Defining calculation...")
       if(calculationName %in% names(private$p_calculations)) {
         stop(paste0("PivotCalculationGroup$defineCalculation():  A Calculation already exists",
@@ -53,7 +56,8 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
       calculation <- PivotCalculation$new(private$p_parentPivot, calculationName=calculationName, caption=caption,
                                           visible=visible, displayOrder=displayOrder, filters=filters, format=format,
                                           dataName=dataName, type=type, valueName=valueName, summariseExpression=summariseExpression,
-                                          calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn)
+                                          calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn,
+                                          noDataValue=noDataValue, noDataCaption=noDataCaption)
       private$p_calculations[[calculationName]] <- calculation
       if(is.null(private$p_defaultCalculation)) private$p_defaultCalculation <- calculationName
       private$p_parentPivot$message("PivotCalculationGroup$defineCalculation", "Defined calculation.")

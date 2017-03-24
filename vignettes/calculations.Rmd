@@ -20,6 +20,8 @@ vignette: >
 * Method 4:  Showing a value (no calculation)
 * Using multiple data frames in the same pivot table
 * Formatting calculated values
+* Empty cells
+* Performance considerations
 * Further Reading
 
 ## Calculations and Calculation Groups
@@ -459,6 +461,42 @@ A number of different approaches to formatting are supported:
 The above are the same approaches used when formatting data groups.  See the [Data Groups](datagroups.html) vignette for more details.
 
 Examples of the first two approaches above can be found in previous examples in this vignette.  An example of the third approach can be found in the [Data Groups](datagroups.html) vignette.
+
+## Empty cells
+
+By default, where no data exists (for a particular combination of row and column headers) `pivottabler` will leave the pivot table cell empty.  Sometimes it is desirable to display a value in these cells.  This can be specified in two ways in the `defineCalculation()` function - either by specifying a value for either the `noDataValue` or `noDataCaption` arguments.  The differences between these two options are as follows:
+
+| Comparison                           | noDataValue argument      | noDataCaption argument        |
+|:-------------------------------------|:--------------------------|:------------------------------|
+| Allowed Data Type(s)                 | `integer` or `numeric`    | `character`                   |
+| `format` argument applies            | Yes (will be formatted)   | No (will be displayed as-is)  |
+| Will be used in other calculations   | Yes                       | No                            |
+
+If the requirement is only to display a different value when there is no data, then `noDataCaption` is the right choice.  Both approaches are demonstrated below, where the Virgin Trains, Ordinary Passenger cell has no data, so the empty cell value/caption is shown.
+
+### noDataValue Example
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", noDataValue=0)
+pt$renderPivot()
+```
+
+### noDataCaption Example
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", noDataCaption="-")
+pt$renderPivot()
+```
 
 ## Performance considerations
 

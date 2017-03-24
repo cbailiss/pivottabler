@@ -25,9 +25,9 @@ test_that("bhmtrains basic pivot total", {
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
 
-  expect_equal(sum(pt$cells$asMatrix()), 334840)
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
 })
 
 
@@ -44,7 +44,7 @@ test_that("smoke tests:  bhmtrains basic pivot values", {
   # pt$renderPivot()
   # digest::digest(pt$cells$asMatrix(), algo="md5")
 
-  expect_identical(digest::digest(pt$cells$asMatrix(), algo="md5"), "e81b6ca05b770cbb304c36a44d7ce013")
+  expect_identical(digest::digest(pt$cells$asMatrix(), algo="md5"), "98734d1163b8eaf2de0903292effe2fc")
 })
 
 
@@ -61,7 +61,7 @@ test_that("smoke tests:  bhmtrains basic pivot html", {
   # pt$renderPivot()
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "3109a0a30f29510724e957ad8e2dce93")
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "69abeaf38dc735daeddeae4d94d3ed59")
 })
 
 
@@ -258,11 +258,11 @@ test_that("basic layout tests:  rows, columns and calculation", {
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 334840)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "3109a0a30f29510724e957ad8e2dce93")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "69abeaf38dc735daeddeae4d94d3ed59")
 })
 
 
@@ -282,7 +282,7 @@ test_that("basic layout tests:  rows, columns and two calculations", {
   # digest::digest(pt$getHtml(), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 336380)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "b58e200be995448504d42a04ab7585b3")
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "06780240f4afc3784525836829f65a66")
 })
 
 
@@ -337,11 +337,11 @@ test_that("basic layout tests:  rows, columns and calculation on rows", {
   pt$addRowCalculationGroups()
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 334840)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "3109a0a30f29510724e957ad8e2dce93")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "69abeaf38dc735daeddeae4d94d3ed59")
 })
 
 
@@ -362,11 +362,13 @@ test_that("basic layout tests:  rows, columns and two calculations on rows", {
   # digest::digest(pt$getHtml(), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 336380)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "472ca35d840705c54574786c577cb5fa")
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "e82ee929b0e423df8b48adc926a264d8")
 })
 
 
 test_that("data groups tests:  dplyr ignoring parent groups", {
+
+  checkDigestAvailable()
 
   library(pivottabler)
   pt <- PivotTable$new()
@@ -377,15 +379,17 @@ test_that("data groups tests:  dplyr ignoring parent groups", {
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 502260)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "678dc830d716f1e6f9c1e9005e75e8c4")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "39fd4b80e8be158ae9a888dcbbddc43e")
 })
 
 
 test_that("data groups tests:  adding data groups explicitly", {
+
+  checkDigestAvailable()
 
   library(pivottabler)
   pt <- PivotTable$new()
@@ -396,15 +400,17 @@ test_that("data groups tests:  adding data groups explicitly", {
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 500796)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "3fbc34d7a1bca9f54f346a63c6f1acb6")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 500796)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "e4738a1ff93776a3b5011442234947fd")
 })
 
 
 test_that("data groups tests:  adding data groups that combine values", {
+
+  checkDigestAvailable()
 
   library(pivottabler)
   pt <- PivotTable$new()
@@ -416,15 +422,17 @@ test_that("data groups tests:  adding data groups that combine values", {
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 502260)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "73b2d4afe853ca8566cb5f84db018f89")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "5520c3f4363267de0e416e2d0f54f509")
 })
 
 
 test_that("data groups tests:  formatting data groups", {
+
+  checkDigestAvailable()
 
   library(dplyr)
   library(lubridate)
@@ -442,15 +450,17 @@ test_that("data groups tests:  formatting data groups", {
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 502260)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "ed14ca51e10ebd11a23bb07170f10c77")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "2bbed6d4f402fcb465d7b3569aa14e46")
 })
 
 
 test_that("data groups tests:  sort by group into descending order", {
+
+  checkDigestAvailable()
 
   library(pivottabler)
   pt <- PivotTable$new()
@@ -461,15 +471,42 @@ test_that("data groups tests:  sort by group into descending order", {
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 502260)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "ce9fb7d48bc71226719f9d73cdd2ba42")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "2c5eef1aca9347004d48e73b2010f63d")
+})
+
+
+test_that("data groups tests:  numerical sort by group into descending order", {
+
+  checkDigestAvailable()
+
+  a <- c(7,4,6,1,8,3,2,9,5,10,12,11,0)
+  b <- c(1,5,4,2,3,2,4,3,1,5,2,1,4)
+  z <- a + b
+  df <- data.frame(a, b, z)
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(df)
+  pt$addColumnDataGroups("a", dataSortOrder="asc")
+  pt$addRowDataGroups("b", dataSortOrder="desc")
+  pt$defineCalculation(calculationName="z", summariseExpression="sum(z)")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 460)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "c68ba30efb84bb22036d5384dfa14a34")
 })
 
 
 test_that("data groups tests:  sort by value into descending order", {
+
+  checkDigestAvailable()
 
   library(pivottabler)
   pt <- PivotTable$new()
@@ -481,15 +518,17 @@ test_that("data groups tests:  sort by value into descending order", {
   pt$sortRowDataGroups(levelNumber=1, orderBy="calculation", sortOrder="desc")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 502260)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "8159223c3aeb1f23f9d01fbf5cf53d93")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "82516909a522ba233e179e98bcce4448")
 })
 
 
 test_that("data groups tests:  sort by level 2 value into descending order", {
+
+  checkDigestAvailable()
 
   library(pivottabler)
   pt <- PivotTable$new()
@@ -501,15 +540,17 @@ test_that("data groups tests:  sort by level 2 value into descending order", {
   pt$sortColumnDataGroups(levelNumber=2, orderBy="calculation", sortOrder="desc")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 502260)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "f727387e2e2d74fc713e21319061563b")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "484cab0595571b25af22912ea9ea69ec")
 })
 
 
 test_that("calculation tests:  calculate dply summarise", {
+
+  checkDigestAvailable()
 
   library(pivottabler)
   library(dplyr)
@@ -550,6 +591,8 @@ test_that("calculation tests:  calculate dply summarise", {
 
 
 test_that("calculation tests:  calculate on rows dply summarise", {
+
+  checkDigestAvailable()
 
   library(pivottabler)
   library(dplyr)
@@ -592,6 +635,8 @@ test_that("calculation tests:  calculate on rows dply summarise", {
 
 test_that("calculation tests:  deriving values from other calculations", {
 
+  checkDigestAvailable()
+
   library(pivottabler)
   library(dplyr)
   library(lubridate)
@@ -627,6 +672,8 @@ test_that("calculation tests:  deriving values from other calculations", {
 
 test_that("calculation tests:  showing values only", {
 
+  checkDigestAvailable()
+
   library(pivottabler)
   library(dplyr)
 
@@ -654,6 +701,8 @@ test_that("calculation tests:  showing values only", {
 
 
 test_that("calculation tests:  showing values plus totals", {
+
+  checkDigestAvailable()
 
   library(pivottabler)
   library(dplyr)
@@ -685,6 +734,8 @@ test_that("calculation tests:  showing values plus totals", {
 
 test_that("specific tests:  checking NA matching", {
 
+  checkDigestAvailable()
+
   library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
@@ -695,16 +746,18 @@ test_that("specific tests:  checking NA matching", {
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 669680)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "81cfb6fa1ffc3f23222dc4638e5e2f9f")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 669680)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "4de9b5984fc79813e347de07177f6d58")
 })
 
 
 
 test_that("specific tests:  visual totals", {
+
+  checkDigestAvailable()
 
   library(pivottabler)
   pt <- PivotTable$new()
@@ -716,16 +769,18 @@ test_that("specific tests:  visual totals", {
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 149920)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "71d12188ff5b8e4670fe98d63e3238f7")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 149920)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "fecc86f450c27978d80b6234bde45c33")
 })
 
 
 
 test_that("theming tests:  basic test", {
+
+  checkDigestAvailable()
 
   # define the colours
   orangeColors <- list(
@@ -747,12 +802,12 @@ test_that("theming tests:  basic test", {
   pt$theme <- getSimpleColoredTheme(parentPivot=pt, colors=orangeColors, fontName="Garamond, arial")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # sum(pt$cells$asMatrix())
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # digest::digest(pt$getHtml(), algo="md5")
   # digest::digest(pt$getCss(), algo="md5")
 
-  expect_equal(sum(pt$cells$asMatrix()), 334840)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "9827911bd43f90643c95d1c08f0cff7d")
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "01a7b4884d7eb49eb83afe7c9d1819d5")
   expect_identical(digest::digest(pt$getCss(), algo="md5"), "929497023d21358b044ce4fc084e31cd")
 })
 

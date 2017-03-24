@@ -178,7 +178,8 @@ PivotTable <- R6::R6Class("PivotTable",
     },
     defineCalculation = function(calculationGroupName="default", calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
                          filters=NULL, format=NULL, dataName=NULL, type="summary",
-                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL) {
+                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
+                         noDataValue=NULL, noDataCaption=NULL) {
       checkArgument("PivotTable", "defineCalculation", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
       checkArgument("PivotTable", "defineCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       checkArgument("PivotTable", "defineCalculation", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -193,6 +194,8 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument("PivotTable", "defineCalculation", calculationExpression, missing(calculationExpression), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       checkArgument("PivotTable", "defineCalculation", calculationFunction, missing(calculationFunction), allowMissing=TRUE, allowNull=TRUE, allowedClasses="function")
       checkArgument("PivotTable", "defineCalculation", basedOn, missing(basedOn), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "defineCalculation", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+      checkArgument("PivotTable", "defineCalculation", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       fstr <- NULL
       if(!is.null(filters)) {
         fstr <- filters$asString()
@@ -201,7 +204,8 @@ PivotTable <- R6::R6Class("PivotTable",
                    list(calculationGroupName=calculationGroupName, calculationName=calculationName, caption=caption,
                         visible=visible, displayOrder=displayOrder, filters=fstr, format=format, dataName=dataName,
                         type=type, valueName=valueName, summariseExpression=summariseExpression,
-                        calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn))
+                        calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn,
+                        noDataValue=noDataValue, noDataCaption=noDataCaption))
       self$resetCells()
       calculationGroupExists <- private$p_calculationGroups$isExistingCalculationGroup(calculationGroupName)
       if(calculationGroupExists) {
@@ -213,7 +217,8 @@ PivotTable <- R6::R6Class("PivotTable",
       calculation <- calculationGroup$defineCalculation(calculationName=calculationName, caption=caption, visible=visible,
                          displayOrder=displayOrder, filters=filters, format=format, dataName=dataName,
                          type=type, valueName=valueName, summariseExpression=summariseExpression,
-                         calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn)
+                         calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn,
+                         noDataValue=noDataValue, noDataCaption=noDataCaption)
       self$message("PivotTable$defineCalculation", "Defined calculation.")
       return(invisible(calculation))
     },
