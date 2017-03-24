@@ -188,14 +188,16 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
                    " row(s).  There must be a maximum of 1 row for the value after the filters have been applied."))
      if(nrow(data)==0) return(invisible(NULL))
      data <- dplyr::collect(data)
-     if("tbl_df" %in% class(data)) {
-       data <- as.data.frame(data) # workaround of a possible bug in dplyr? collect seems to still sometimes return a tbl_df
-       if("tbl_df" %in% class(data)) {
-         stop(paste0("PivotCalculator$getSingleValue(): Unable to coerce the tbl_df back to a data.frame for summary epxression '", summaryName, "'.",
-                   "  This has resulted in a value of data type [", class(data), "] with ", nrow(data), " row(s)."))
-       }
-     }
-     value <- data[1, valueName]
+     # The code below is no longer needed.
+     # Even if data is still a tbl_df, tbl_df[[valueName]] will always return a column as a vector
+     # if("tbl_df" %in% class(data)) {
+     #   data <- as.data.frame(data) # workaround of a possible bug in dplyr? collect seems to still sometimes return a tbl_df
+     #   if("tbl_df" %in% class(data)) {
+     #     stop(paste0("PivotCalculator$getSingleValue(): Unable to coerce the tbl_df back to a data.frame for summary expression '", summaryName, "'.",
+     #               "  This has resulted in a value of data type [", class(data), "] with ", nrow(data), " row(s)."))
+     #   }
+     # }
+     value <- data[[valueName]][1]
      private$p_parentPivot$message("PivotCalculator$getSingleValue", "Got single value.")
      return(invisible(value))
    },
@@ -211,14 +213,16 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        stop(paste0("PivotCalculator$getSummaryValue(): Summary expression '", summaryName, "' has resulted in '", nrow(data),
                    " row(s) and ", ncol(data), " columns.  There must be a maximum of 1 row and 1 column in the result."))
      data <- dplyr::collect(data)
-     if("tbl_df" %in% class(data)) {
-       data <- as.data.frame(data) # workaround of a possible bug in dplyr? collect seems to still sometimes return a tbl_df
-       if("tbl_df" %in% class(data)) {
-         stop(paste0("PivotCalculator$getSummaryValue(): Unable to coerce the tbl_df back to a data.frame for summary epxression '", summaryName, "'.",
-                   "  This has resulted in a value of data type [", class(data), "] with ", nrow(data), " row(s) and ", ncol(data), " columns."))
-       }
-     }
-     value <- data[1, 1]
+     # The code below is no longer needed.
+     # Even if data is still a tbl_df, tbl_df[[colIndex]] will always return a column (as a vector) and tbl_df[[colIndex]][rowIndex] will always return a single value
+     # if("tbl_df" %in% class(data)) {
+     #   data <- as.data.frame(data) # workaround of a possible bug in dplyr? collect seems to still sometimes return a tbl_df
+     #   if("tbl_df" %in% class(data)) {
+     #     stop(paste0("PivotCalculator$getSummaryValue(): Unable to coerce the tbl_df back to a data.frame for summary epxression '", summaryName, "'.",
+     #               "  This has resulted in a value of data type [", class(data), "] with ", nrow(data), " row(s) and ", ncol(data), " columns."))
+     #   }
+     # }
+     value <- data[[1]][1]
      private$p_parentPivot$message("PivotCalculator$getSummaryValue", "Got summary value.")
      return(invisible(value))
    },

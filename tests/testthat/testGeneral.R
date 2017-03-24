@@ -628,6 +628,7 @@ test_that("calculation tests:  deriving values from other calculations", {
 test_that("calculation tests:  showing values only", {
 
   library(pivottabler)
+  library(dplyr)
 
   # perform the aggregation in R code explicitly
   trains <- bhmtrains %>%
@@ -655,6 +656,7 @@ test_that("calculation tests:  showing values only", {
 test_that("calculation tests:  showing values plus totals", {
 
   library(pivottabler)
+  library(dplyr)
 
   # perform the aggregation in R code explicitly
   trains <- bhmtrains %>%
@@ -735,8 +737,6 @@ test_that("theming tests:  basic test", {
     totalColor = "rgb(0, 0, 0)",
     borderColor = "rgb(198, 89, 17)"
   )
-  # define the theme
-  theme <- getSimpleColoredTheme(parentPivot=pt, colors=orangeColors, fontName="Garamond, arial")
   # create the pivot table
   library(pivottabler)
   pt <- PivotTable$new()
@@ -744,7 +744,7 @@ test_that("theming tests:  basic test", {
   pt$addColumnDataGroups("TrainCategory")
   pt$addRowDataGroups("TOC")
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-  pt$theme <- theme
+  pt$theme <- getSimpleColoredTheme(parentPivot=pt, colors=orangeColors, fontName="Garamond, arial")
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix())
