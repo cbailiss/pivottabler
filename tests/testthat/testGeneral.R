@@ -18,7 +18,7 @@ checkDigestAvailable <- function() {
 test_that("bhmtrains basic pivot total", {
 
   library(pivottabler)
-  pt <- PivotTable$new()
+  pt <- pivottabler::PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TrainCategory")
   pt$addRowDataGroups("TOC")
