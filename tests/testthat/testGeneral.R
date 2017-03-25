@@ -1,4 +1,3 @@
-library(pivottabler)
 library(testthat)
 context("General tests")
 
@@ -18,6 +17,7 @@ checkDigestAvailable <- function() {
 
 test_that("bhmtrains basic pivot total", {
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TrainCategory")
@@ -35,6 +35,7 @@ test_that("smoke tests:  bhmtrains basic pivot values", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TrainCategory")
@@ -52,6 +53,7 @@ test_that("smoke tests:  bhmtrains basic pivot html", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TrainCategory")
@@ -69,6 +71,7 @@ test_that("smoke tests:  basic layout tests:  empty pivot", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$evaluatePivot()
   # pt$renderPivot()
@@ -82,6 +85,7 @@ test_that("basic layout tests:  empty pivot plus data", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$evaluatePivot()
@@ -96,6 +100,7 @@ test_that("basic layout tests:  just a total", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
@@ -113,6 +118,7 @@ test_that("basic layout tests:  two measures", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
@@ -131,6 +137,7 @@ test_that("basic layout tests:  rows only", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addRowDataGroups("TOC")
@@ -146,6 +153,7 @@ test_that("basic layout tests:  rows plus total", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addRowDataGroups("TOC")
@@ -164,6 +172,7 @@ test_that("basic layout tests:  rows plus two measures", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addRowDataGroups("TOC")
@@ -183,6 +192,7 @@ test_that("basic layout tests:  columns only", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TOC")
@@ -198,6 +208,7 @@ test_that("basic layout tests:  columns plus total", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TOC")
@@ -216,6 +227,7 @@ test_that("basic layout tests:  columns plus two totals", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TOC")
@@ -235,6 +247,7 @@ test_that("basic layout tests:  rows and columns only", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TrainCategory")
@@ -251,6 +264,7 @@ test_that("basic layout tests:  rows, columns and calculation", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TrainCategory")
@@ -270,6 +284,7 @@ test_that("basic layout tests:  rows, columns and two calculations", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TrainCategory")
@@ -290,6 +305,7 @@ test_that("basic layout tests:  columns plus total on row", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TOC")
@@ -309,6 +325,7 @@ test_that("basic layout tests:  columns plus two totals on rows", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TOC")
@@ -329,6 +346,7 @@ test_that("basic layout tests:  rows, columns and calculation on rows", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TrainCategory")
@@ -349,6 +367,7 @@ test_that("basic layout tests:  rows, columns and two calculations on rows", {
 
   checkDigestAvailable()
 
+  library(pivottabler)
   pt <- PivotTable$new()
   pt$addData(bhmtrains)
   pt$addColumnDataGroups("TrainCategory")
