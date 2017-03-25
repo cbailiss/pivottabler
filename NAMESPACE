@@ -1,1 +1,4 @@
 exportPattern("^[[:alpha:]]+")
+export(PivotTable)
+export(PivotStyle)
+export(PivotStyles)
