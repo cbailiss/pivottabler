@@ -22,5 +22,5 @@ pivottablerOutput <- function(outputId, width = "100%", height = "100%") {
 #' @export
 renderPivottabler <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
-  shinyRenderWidget(expr, sigmaOutput, env, quoted = TRUE)
+  shinyRenderWidget(expr, pivottablerOutput, env, quoted = TRUE)
 }
