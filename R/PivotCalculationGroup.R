@@ -1,3 +1,34 @@
+#' A class that defines a group of calculations.
+#'
+#' The PivotCalculationGroup class is a container for multiple PivotCalculation objects.
+#'
+#' @docType class
+#' @importFrom R6 R6Class
+#' @import jsonlite
+#' @keywords calculation
+#' @return Object of \code{\link{R6Class}} with properties and methods that define a group of calculations.
+#' @format \code{\link{R6Class}} object.
+#' @examples
+#' PivotCalculationGroup$new(pt, calculationGroupName="default")
+#' @field parentPivot Owning pivot table.
+#' @field calculationGroupName Calculation group unique name.  Recommendation:  Do not have spaces in this name.
+
+#' @section Methods:
+#' \describe{
+#'   \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
+#'   \item{\code{new(...)}}{Create a new pivot calculation group, specifying the field values documented above.}
+#'
+#'   \item{\code{isExistingCalculation(calculationName=NULL)}}{Check if a calculation exists with the specified name in this calculation group.}
+#'   \item{\code{getCalculation(calculationName=NULL)}}{Get the calculation with the specified name.}
+#'   \item{\code{defineCalculation(calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
+#'                       filters=NULL, format=NULL, dataName=NULL, type="summary", executionOrder=NULL,
+#'                       valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
+#'                       noDataValue=NULL, noDataCaption=NULL)}}{Create a new calculation.  See the \code{\link{PivotCalculation}} class documentation for more details on the arguments.}
+#'   \item{\code{asList()}}{Get a list representation of this calculation group.}
+#'   \item{\code{asJSON()}}{Get a JSON representation of this calculation group.}
+#'   \item{\code{asString()}}{Get a text representation of this calculation group.}
+#' }
+
 PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
   public = list(
     initialize = function(parentPivot, calculationGroupName=NULL) {
@@ -9,7 +40,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
       private$p_calculations <- list()
       private$p_parentPivot$message("PivotCalculationGroup$new", "Created new Pivot Calculation Group.")
     },
-    isExistingCalculation = function(calculationName) {
+    isExistingCalculation = function(calculationName=NULL) {
       checkArgument("PivotCalculationGroup", "isExistingCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       private$p_parentPivot$message("PivotCalculationGroup$isExistingCalculation", "Checking calculation exists...",
                                     list(calculationName=calculationName))
@@ -17,7 +48,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
       private$p_parentPivot$message("PivotCalculationGroup$isExistingCalculation", "Checked calculation exists.")
       return(invisible(calcExists))
     },
-    getCalculation = function(calculationName) {
+    getCalculation = function(calculationName=NULL) {
       checkArgument("PivotCalculationGroup", "getCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       private$p_parentPivot$message("PivotCalculationGroup$getCalculation", "Getting calculation...",
                                     list(calculationName=calculationName))

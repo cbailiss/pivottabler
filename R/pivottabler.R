@@ -1,5 +1,21 @@
+#' Render a pivot table as a HTML widget.
+#'
+#' The \code{pivottabler} function is primarily intended for use with Shiny web applications.
+#'
+#' @import htmltools
 #' @import htmlwidgets
-#' @export
+#' @param pt The pivot table to render.
+#' @param width The target width.
+#' @param height The target height.
+#' @param styleNamePrefix A text prefix to be prepennded to the CSS declarations (to ensure uniqueness).
+#' @param includeRCFilters Show/hide filter detail for debugging.
+#' @param includeCalculationFilters Show/hide filter detail for debugging.
+#' @param includeCalculationNames Show/hide filter detail for debugging.
+#' @param includeRawValue Show/hide filter detail for debugging.
+#' @return A HTML widget.
+#' @examples
+#' # See the Shiny vignette in this package for more complete examples.
+#' pivottabler(pt)
 pivottabler <- function(pt, width=NULL, height=NULL, styleNamePrefix=NULL,
                    includeRCFilters=FALSE, includeCalculationFilters=FALSE,
                    includeCalculationNames=FALSE, includeRawValue=FALSE) {
@@ -14,11 +30,13 @@ pivottabler <- function(pt, width=NULL, height=NULL, styleNamePrefix=NULL,
   htmlwidgets::createWidget("pivottabler", widgetData, width=width, height=height)
 }
 
+#' Standard function for Shiny scaffolding.
 #' @export
 pivottablerOutput <- function(outputId, width = "100%", height = "100%") {
   shinyWidgetOutput(outputId, "pivottabler", width, height, package = "pivottabler")
 }
 
+#' Standard function for Shiny scaffolding.
 #' @export
 renderPivottabler <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted

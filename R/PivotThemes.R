@@ -1,4 +1,12 @@
-getTheme <- function(parentPivot=NULL, themeName=NULL) {
+#' Get a built-in theme for styling a pivot table.
+#'
+#' \code{getTheme} returns the specified theme.
+#'
+#' @export
+#' @param parentPivot Owning pivot table.
+#' @param themeName The name of the theme to retrieve.
+#' @return A PivotStyles object.
+getTheme <- function(parentPivot, themeName=NULL) {
   checkArgument("", "getTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
   checkArgument("", "getTheme", themeName, missing(themeName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
   if(themeName=="default") return(getDefaultTheme(parentPivot=parentPivot))
@@ -7,7 +15,13 @@ getTheme <- function(parentPivot=NULL, themeName=NULL) {
   else stop(paste0("getTheme(): Theme '", themeName, "' is not a recognised theme."))
 }
 
-getDefaultTheme <- function(parentPivot=NULL, themeName="default") {
+#' Get the default theme for styling a pivot table.
+#'
+#' @export
+#' @param parentPivot Owning pivot table.
+#' @param themeName The name to use as the new theme name.
+#' @return A PivotStyles object.
+getDefaultTheme <- function(parentPivot, themeName="default") {
   checkArgument("", "getPlainTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
   checkArgument("", "getPlainTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
@@ -47,7 +61,13 @@ getDefaultTheme <- function(parentPivot=NULL, themeName="default") {
   return(invisible(pivotStyles))
 }
 
-getLargePlainTheme <- function(parentPivot=NULL, themeName="largeplain") {
+#' Get the large plain theme for styling a pivot table.
+#'
+#' @export
+#' @param parentPivot Owning pivot table.
+#' @param themeName The name to use as the new theme name.
+#' @return A PivotStyles object.
+getLargePlainTheme <- function(parentPivot, themeName="largeplain") {
   checkArgument("", "getPlainTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
   checkArgument("", "getPlainTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
@@ -88,7 +108,13 @@ getLargePlainTheme <- function(parentPivot=NULL, themeName="largeplain") {
   return(invisible(pivotStyles))
 }
 
-getCompactTheme <- function(parentPivot=NULL, themeName="compact") {
+#' Get the compact theme for styling a pivot table.
+#'
+#' @export
+#' @param parentPivot Owning pivot table.
+#' @param themeName The name to use as the new theme name.
+#' @return A PivotStyles object.
+getCompactTheme <- function(parentPivot, themeName="compact") {
   checkArgument("", "getPlainTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
   checkArgument("", "getPlainTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
@@ -128,7 +154,17 @@ getCompactTheme <- function(parentPivot=NULL, themeName="compact") {
   return(invisible(pivotStyles))
 }
 
-getSimpleColoredTheme <- function(parentPivot=NULL, themeName="coloredTheme", colors, fontName) {
+#' Get a simple coloured theme.
+#'
+#' Get a simple coloured theme that can be used to style a pivot table into a custom colour scheme.
+#'
+#' @export
+#' @param parentPivot Owning pivot table.
+#' @param themeName The name to use as the new theme name.
+#' @param colors The set of colours to use when generating the theme (see the Styling vignette for details).
+#' @param fontName The name of the font to use, or a comma separated list (for font-fall-back).
+#' @return A PivotStyles object.
+getSimpleColoredTheme <- function(parentPivot, themeName="coloredTheme", colors, fontName) {
   checkArgument("", "getSimpleColoredTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
   checkArgument("", "getSimpleColoredTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
   checkArgument("", "getSimpleColoredTheme", colors, missing(colors), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="character")

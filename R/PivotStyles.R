@@ -1,3 +1,51 @@
+#' A class that defines a collection of styles.
+#'
+#' The PivotStyles class defines all of the base styles needed to style/theme a pivot table.  It also defines the names of the styles that are used for styling the different parts of the pivot table.
+#'
+#' @docType class
+#' @importFrom R6 R6Class
+#' @import jsonlite
+#' @export
+#' @keywords calculation
+#' @return Object of \code{\link{R6Class}} with properties and methods that define styles/a theme for a pivot table.
+#' @format \code{\link{R6Class}} object.
+#' @examples
+#' pivotStyles <- PivotStyles$new(pt, themeName="compact")
+#' pivotStyles$addStyle(styleName="ColumnHeader", list(
+#'     font="0.75em arial",
+#'     padding="2px",
+#'     border="1px solid lightgray",
+#'     "vertical-align"="middle",
+#'     "text-align"="center",
+#'     "font-weight"="bold",
+#'     "background-color"="#F2F2F2"
+#'   ))
+#' @field parentPivot Owning pivot table.
+#' @field themeName The name of the theme.
+#' @field allowExternalStyles Enables integration scenarios where an external system is supplying the CSS definitions.
+#' @field tableStyle The name of the style for the HTML table element.
+#' @field rootStyle The name of the style for the HTML cell at the top left of the pivot table.
+#' @field rowHeaderStyle The name of the style for the row headers in the pivot table.
+#' @field colHeaderStyle The name of the style for the column headers in the pivot table.
+#' @field cellStyle The name of the cell style for the non-total cells in the body of the pivot table.
+#' @field totalStyle The name of the cell style for the total cells in the pivot table.
+
+#' @section Methods:
+#' \describe{
+#'   \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
+#'   \item{\code{new(...)}}{Create a new set of styles, specifying the field values documented above.}
+#'
+#'   \item{\code{isExistingStyle(styleName)}}{Check whether the specified style exists.}
+#'   \item{\code{getStyle(styleName)}}{Get the specified style.}
+#'   \item{\code{addStyle(styleName, declarations)}}{Add a new style to the collection of styles.}
+#'   \item{\code{copyStyle(styleName, newStyleName)}}{Create a copy of a style with the specified name.}
+#'   \item{\code{asCSSRule(styleName, selector)}}{Get a style definition in the form of a CSS rule.}
+#'   \item{\code{asNamedCSSStyle(styleName, styleNamePrefix)}}{Get a style definition in the form of a named CSS style.}
+#'   \item{\code{asList()}}{Get a list representation of the styles.}
+#'   \item{\code{asJSON()}}{Get a JSON representation of the styles.}
+#'   \item{\code{asString()}}{Get a text representation of the styles.}
+#' }
+
 PivotStyles <- R6::R6Class("PivotStyles",
   public = list(
     initialize = function(parentPivot, themeName=NULL, allowExternalStyles=FALSE) {

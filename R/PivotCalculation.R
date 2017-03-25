@@ -1,3 +1,42 @@
+#' A class that defines a calculation.
+#'
+#' The PivotCalculation class defines one calculation in a pivot table.
+#'
+#' @docType class
+#' @importFrom R6 R6Class
+#' @import jsonlite
+#' @keywords calculation
+#' @return Object of \code{\link{R6Class}} with properties and methods that define a single pivot table calculation.
+#' @format \code{\link{R6Class}} object.
+#' @examples
+#' This class should only be created by the pivot table.
+#' It is not intended to be created outside of the pivot table.
+#' @field parentPivot Owning pivot table.
+#' @field calculationName Calculation unique name.  Recommendation:  Do not have spaces in this name.
+#' @field caption Calculation display name - i.e. the name shown in the pivot table.
+#' @field visible Show or hide the calculation.  Hidden calculations are typically used as base values for other calculations.
+#' @field displayOrder The order the calculations are displayed in the pivot table.
+#' @field filters Any data filters specific to this calculation.  A PivotFilters object.
+#' @field format A character, list or custom function to format the calculation result.
+#' @field dataName Specifies which data frame in the pivot table is used for this calculation.
+#' @field type The calculation type:  "summary", "calculation", "function" or "value".
+#' @field valueName For type="value", the name of the column containing the value to display in the pivot table.
+#' @field summariseExpression For type="summary", the dplyr expression to use with dplyr::summarise().
+#' @field calculationExpression For type="calculation", an expression to combine aggregate values.
+#' @field calculationFunction For type="function", a reference to a custom R function that will carry out the calculation.
+#' @field basedOn A character vector specifying the names of one or more calculations that this calculation depends on.
+#' @field noDataValue An integer or numeric value specifying the value to use if no data exists for a particular cell.
+#' @field noDataCaption A character value that will be displayed by the pivot table if no  data exists for a particular cell.
+#' @section Methods:
+#' \describe{
+#'   \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
+#'   \item{\code{new(...)}}{Create a new pivot calculation, specifying the field values documented above.}
+#'
+#'   \item{\code{asList()}}{Get a list representation of this calculation.}
+#'   \item{\code{asJSON()}}{Get a JSON representation of this calculation.}
+#'   \item{\code{asString()}}{Get a text representation of this calculation.}
+#' }
+
 PivotCalculation <- R6::R6Class("PivotCalculation",
   public = list(
    initialize = function(parentPivot, calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,

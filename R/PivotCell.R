@@ -1,3 +1,43 @@
+#' A class that represents a cell in a pivot table
+#'
+#' The PivotCell class represents a cell in the body of a pivot table (i.e. not a row/column heading, rather a cell typically containing a numerical value).
+#'
+#' @docType class
+#' @importFrom R6 R6Class
+#' @import jsonlite
+#' @keywords cell
+#' @return Object of \code{\link{R6Class}} with properties and methods that define a single pivot table cell
+#' @format \code{\link{R6Class}} object.
+#' @examples
+#' This class should only be created by the pivot table.
+#' It is not intended to be created outside of the pivot table.
+#' @field parentPivot Owning pivot table.
+#' @field rowNumber The row number of the cell.  1 = the first (i.e. top) data row.
+#' @field columnNumber The column number of the cell.  1 = the first (i.e. leftmost) data column.
+#' @field rowLeafGroup The row data group linked to this row.
+#' @field columnLeafGroup The column data group linked to this column.
+#' @field calculationName The name of the calculation that is displayed in the cell.
+#' @field calculationGroupName The name of the calculation group that owns the above calculation.
+#' @field rowFilters The data filters applied to this cell from the row headings.
+#' @field columnFilters The data filters applied to this cell from the column headings.
+#' @field rowColFilters The data filters applied to this cell from both the row and column headings.
+#' @field calculationFilters The data filters applied to this cell from the calculation definition.
+#' @field isTotal Whether this cell is a total cell.
+#' @field rawValue The numerical calculation result.
+#' @field formattedValue The formatted calculation result (i.e. character data type).
+#' @field baseStyleName The name of the style applied to this cell (a character value).  The style must exist in the PivotStyles object associated with the PivotTable.
+#' @field style A PivotStyle object that can apply overrides to the base style for this cell.
+
+#' @section Methods:
+#' \describe{
+#'   \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
+#'   \item{\code{new(...)}}{Create a new pivot table cell, specifying the field values documented above.}
+#'
+#'   \item{\code{getCopy())}}{Get a copy of this cell.}
+#'   \item{\code{asList())}}{Get a list representation of this cell}
+#'   \item{\code{asJSON()}}{Get a JSON representation of this cell}
+#' }
+
 PivotCell <- R6::R6Class("PivotCell",
   public = list(
    initialize = function(parentPivot, rowNumber=NULL, columnNumber=NULL,

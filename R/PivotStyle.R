@@ -52,6 +52,46 @@
 # Striped table: tr:nth-child(even) {background-color: #f2f2f2}
 
 
+#' A class that specifies styling.
+#'
+#' The PivotStyle class specifies the styling for headers and cells in a pivot table.  Styles are specified in the form of Cascading Style Sheet (CSS) name-value pairs.
+#'
+#' @docType class
+#' @importFrom R6 R6Class
+#' @import jsonlite
+#' @export
+#' @keywords calculation
+#' @return Object of \code{\link{R6Class}} with properties and methods that help define styles.
+#' @format \code{\link{R6Class}} object.
+#' @examples
+#' pivotStyles$new(styleName="ColumnHeader", declarations=list(
+#'       font="0.75em arial",
+#'       padding="2px",
+#'       border="1px solid lightgray",
+#'       "vertical-align"="middle",
+#'       "text-align"="center",
+#'       "font-weight"="bold",
+#'       "background-color"="#F2F2F2"
+#'     ))
+#' @field parentPivot Owning pivot table.
+#' @field styleName Style unique name.
+#' @field declarations CSS style declarations.
+
+#' @section Methods:
+#' \describe{
+#'   \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
+#'   \item{\code{new(...)}}{Create a new style declaration, specifying the field values documented above.}
+#'
+#'   \item{\code{setPropertyValue(property, value)}}{Set a single style property.}
+#'   \item{\code{setPropertyValues(declarations)}}{Set multiple style properties, where declarations is a list similar to the code example below.}
+#'   \item{\code{getPropertyValue(property)}}{Get the style declarations for a single property.}
+#'   \item{\code{asCSSRule(selector)}}{Get this style definition in the form of a CSS rule.}
+#'   \item{\code{asNamedCSSStyle(styleNamePrefix)}}{Get this style definition in the form of a named CSS style.}
+#'   \item{\code{getCopy(newStyleName)}}{Get a copy of this style.}
+#'   \item{\code{asList()}}{Get a list representation of this style.}
+#'   \item{\code{asJSON()}}{Get a JSON representation of this style.}
+#' }
+
 PivotStyle <- R6::R6Class("PivotStyle",
   public = list(
    initialize = function(parentPivot, styleName=NULL, declarations= NULL) { # declarations = list(font="...", color="...")

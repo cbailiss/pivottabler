@@ -4,6 +4,19 @@
 # rendered into the same page.
 # this isn't intended as a general purpose function and so skips some checks.
 
+#' Output a table into a package vignette.
+#'
+#' \code{renderBasicTable} is utility function that renders a basic table into a package vignette.  This function is primarily intended for internal use by the pivottabler package.
+#'
+#' @import htmltools
+#' @import htmlwidgets
+#' @param matrix Tabular data to render.
+#' @param stylePrefix Text prefix for CSS style declarations.
+#' @param rowNamesAsHeader Include row names in output.
+#' @return A basic table rendered as a HTML widget.
+#' @examples
+#' renderBasicTable(matrix(c(1:12), nrow=3))
+
 renderBasicTable <- function(matrix=NULL, stylePrefix=NULL, rowNamesAsHeader=FALSE) {
   checkArgument("", "renderBasicTable", matrix, missing(matrix), allowMissing=FALSE, allowNull=FALSE, allowedClasses="matrix")
   checkArgument("", "renderBasicTable", stylePrefix, missing(stylePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
