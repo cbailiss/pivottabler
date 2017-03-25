@@ -18,7 +18,7 @@ Imports:
     htmltools(>= 0.3.5),
     htmlwidgets (>= 0.8)
 Suggests:
-    lubridate,
+    lubridate (>= 1.5.0),
     listviewer (>= 1.4.0),
     digest (>= 0.6.9),
     knitr,
@@ -30,3 +30,4 @@ LazyData: true
 URL: https://github.com/cbailiss/pivottabler
 BugReports: https://github.com/cbailiss/pivottabler/issues
 VignetteBuilder: knitr
+RoxygenNote: 6.0.1
