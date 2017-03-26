@@ -4,3 +4,4 @@
 ^R\Notes\.txt$
 ^Template\.R$
 ^\Template\.R$
+^\.travis\.yml$
