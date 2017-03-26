@@ -9,8 +9,8 @@
 #' @return Object of \code{\link{R6Class}} with properties and methods relating to the cells of a pivot table.
 #' @format \code{\link{R6Class}} object.
 #' @examples
-#' This class should only be created by the pivot table.
-#' It is not intended to be created outside of the pivot table.
+#' # This class should only be created by the pivot table.
+#' # It is not intended to be created outside of the pivot table.
 #' @field parentPivot Owning pivot table.
 #' @field rowGroups The row data groups that represent the row headings in the pivot table.
 #' @field columnGroups The column data groups that represent the column headings in the pivot table.

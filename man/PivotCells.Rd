@@ -39,7 +39,7 @@ The PivotCells class contains all of the PivotCell objects that comprise the bod
 }
 
 \examples{
-This class should only be created by the pivot table.
-It is not intended to be created outside of the pivot table.
+# This class should only be created by the pivot table.
+# It is not intended to be created outside of the pivot table.
 }
 \keyword{cell}

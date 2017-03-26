@@ -17,9 +17,6 @@
 #' @param maxValue For numerical values, the highest allowed value.
 #' @param maxLength For character values, the maximum allowed length (in characters) of the value.
 #' @return No return value.  If invalid values are encountered, the \code{stop()} function is used to interrupt execution.
-#' @examples
-#' checkArgument("PivotCalculation", "initialize", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-#' checkArgument("PivotCalculation", "initialize", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value", "summary", "calculation", "function"))
 
 checkArgument <- function(className, methodName, argumentValue, isMissing, # no point putting "=NULL" for these args, as if
                           # they aren't present then there isn't enough information to generate a meaningful error message anyway

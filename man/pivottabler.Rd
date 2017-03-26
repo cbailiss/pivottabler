@@ -32,6 +32,5 @@ A HTML widget.
 The \code{pivottabler} function is primarily intended for use with Shiny web applications.
 }
 \examples{
-# See the Shiny vignette in this package for more complete examples.
-pivottabler(pt)
+# See the Shiny vignette in this package for examples.
 }

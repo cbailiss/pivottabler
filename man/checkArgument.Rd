@@ -45,7 +45,3 @@ No return value.  If invalid values are encountered, the \code{stop()} function 
 \description{
 \code{checkArgument} is a utility function that provides basic assurances about function argument values and generates standardised error messages when invalid values are encountered.
 }
-\examples{
-checkArgument("PivotCalculation", "initialize", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-checkArgument("PivotCalculation", "initialize", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value", "summary", "calculation", "function"))
-}

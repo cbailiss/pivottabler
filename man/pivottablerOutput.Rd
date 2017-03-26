@@ -6,6 +6,13 @@
 \usage{
 pivottablerOutput(outputId, width = "100\%", height = "100\%")
 }
+\arguments{
+\item{outputId}{The id of the html element that will contain the htmlwidget.}
+
+\item{width}{The target width of the htmlwidget.}
+
+\item{height}{The target height of the htmlwidget.}
+}
 \description{
 Standard function for Shiny scaffolding.
 }

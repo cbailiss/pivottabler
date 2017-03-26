@@ -63,7 +63,7 @@ The PivotCell class represents a cell in the body of a pivot table (i.e. not a r
 }
 
 \examples{
-This class should only be created by the pivot table.
-It is not intended to be created outside of the pivot table.
+# This class should only be created by the pivot table.
+# It is not intended to be created outside of the pivot table.
 }
 \keyword{cell}

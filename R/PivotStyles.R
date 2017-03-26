@@ -10,8 +10,10 @@
 #' @return Object of \code{\link{R6Class}} with properties and methods that define styles/a theme for a pivot table.
 #' @format \code{\link{R6Class}} object.
 #' @examples
+#' pt <- PivotTable$new()
+#' # ...
 #' pivotStyles <- PivotStyles$new(pt, themeName="compact")
-#' pivotStyles$addStyle(styleName="ColumnHeader", list(
+#' pivotStyles$addStyle(styleName="MyNewStyle", list(
 #'     font="0.75em arial",
 #'     padding="2px",
 #'     border="1px solid lightgray",

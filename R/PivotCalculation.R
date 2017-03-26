@@ -9,8 +9,8 @@
 #' @return Object of \code{\link{R6Class}} with properties and methods that define a single pivot table calculation.
 #' @format \code{\link{R6Class}} object.
 #' @examples
-#' This class should only be created by the pivot table.
-#' It is not intended to be created outside of the pivot table.
+#' # This class should only be created by the pivot table.
+#' # It is not intended to be created outside of the pivot table.
 #' @field parentPivot Owning pivot table.
 #' @field calculationName Calculation unique name.  Recommendation:  Do not have spaces in this name.
 #' @field caption Calculation display name - i.e. the name shown in the pivot table.

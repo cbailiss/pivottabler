@@ -38,6 +38,8 @@ The PivotFilters class allows multiple filter conditions relating to different d
 }
 
 \examples{
+pt <- PivotTable$new()
+# ...
 # PivotFilters constructor allows a filter to be defined
 filters <- PivotFilters$new(pt, variableName="Year", values=2017)
 # Create a new filter

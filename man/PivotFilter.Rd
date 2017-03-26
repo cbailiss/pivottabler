@@ -41,6 +41,8 @@ The PivotFilter class represents a single filter condition.  The condition relat
 }
 
 \examples{
+pt <- PivotTable$new()
+# ...
 PivotFilter$new(pt, variableName="Country", values="England")
 }
 \keyword{filter}

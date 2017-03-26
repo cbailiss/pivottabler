@@ -41,6 +41,7 @@ The PivotCalculationGroup class is a container for multiple PivotCalculation obj
 }
 
 \examples{
-PivotCalculationGroup$new(pt, calculationGroupName="default")
+# This class should only be created by the pivot table.
+# It is not intended to be created outside of the pivot table.
 }
 \keyword{calculation}

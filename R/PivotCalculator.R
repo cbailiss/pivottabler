@@ -10,8 +10,8 @@
 #' @return Object of \code{\link{R6Class}} with properties and methods that help calculate the value of a pivot table cell.
 #' @format \code{\link{R6Class}} object.
 #' @examples
-#' This class should only be created by the pivot table.
-#' It is not intended to be created outside of the pivot table.
+#' # This class should only be created by the pivot table.
+#' # It is not intended to be created outside of the pivot table.
 #' @field parentPivot Owning pivot table.
 
 #' @section Methods:
@@ -123,9 +123,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      # build a dplyr query
      data <- dataFrame
      # todo: checking the escaping of the variable names and values below
-     # todo: build up the criteria string to include all variables and values in one go, so only
-     # need to invoke one filter call (i.e. loop to create filterCmd, not to execute filter)
-     # filterCmd can be e.g. "data <- filter(data, (", filters[1]$variableName, "== filters[1]$values) & (", filters[2]$variableName, "== filters[2]$values)"
+     # filterCmd is e.g. "data <- filter(data, (", filters[1]$variableName, " %in% filters[1]$values) & (", filters[2]$variableName, " %in% filters[2]$values)"
      # implement the same optimisation inside addLeafDataGroup function - change that code to call this function
      if (filters$count > 0)
      {

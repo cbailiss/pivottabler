@@ -55,8 +55,10 @@ The PivotStyles class defines all of the base styles needed to style/theme a piv
 }
 
 \examples{
+pt <- PivotTable$new()
+# ...
 pivotStyles <- PivotStyles$new(pt, themeName="compact")
-pivotStyles$addStyle(styleName="ColumnHeader", list(
+pivotStyles$addStyle(styleName="MyNewStyle", list(
     font="0.75em arial",
     padding="2px",
     border="1px solid lightgray",

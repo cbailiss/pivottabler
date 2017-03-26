@@ -6,6 +6,13 @@
 \usage{
 renderPivottabler(expr, env = parent.frame(), quoted = FALSE)
 }
+\arguments{
+\item{expr}{The R expression to execute and render in the Shiny web application.}
+
+\item{env}{Standard shiny argument for a render function.}
+
+\item{quoted}{Standard shiny argument for a render function.}
+}
 \description{
 Standard function for Shiny scaffolding.
 }

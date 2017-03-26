@@ -10,6 +10,8 @@
 #' @return Object of \code{\link{R6Class}} with properties and methods that define a set of filter conditions.
 #' @format \code{\link{R6Class}} object.
 #' @examples
+#' pt <- PivotTable$new()
+#' # ...
 #' # PivotFilters constructor allows a filter to be defined
 #' filters <- PivotFilters$new(pt, variableName="Year", values=2017)
 #' # Create a new filter

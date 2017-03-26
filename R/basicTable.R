@@ -10,6 +10,7 @@
 #'
 #' @import htmltools
 #' @import htmlwidgets
+#' @export
 #' @param matrix Tabular data to render.
 #' @param stylePrefix Text prefix for CSS style declarations.
 #' @param rowNamesAsHeader Include row names in output.

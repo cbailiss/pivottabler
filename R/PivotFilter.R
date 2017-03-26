@@ -10,6 +10,8 @@
 #' @return Object of \code{\link{R6Class}} with properties and methods that define a single pivot table filter.
 #' @format \code{\link{R6Class}} object.
 #' @examples
+#' pt <- PivotTable$new()
+#' # ...
 #' PivotFilter$new(pt, variableName="Country", values="England")
 #' @field parentPivot Owning pivot table.
 #' @field variableName The name of the column in the data frame that this filter will apply to.

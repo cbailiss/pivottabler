@@ -48,7 +48,7 @@ The PivotCalculator class has various functions and methods that assist with cal
 }
 
 \examples{
-This class should only be created by the pivot table.
-It is not intended to be created outside of the pivot table.
+# This class should only be created by the pivot table.
+# It is not intended to be created outside of the pivot table.
 }
 \keyword{calculation}

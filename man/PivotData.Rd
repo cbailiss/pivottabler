@@ -35,8 +35,8 @@ The PivotData class stores all of the data frames associated with a pivot table.
 }
 
 \examples{
-This class should only be created by the pivot table.
-It is not intended to be created outside of the pivot table.
+# This class should only be created by the pivot table.
+# It is not intended to be created outside of the pivot table.
 }
 \keyword{data}
 \keyword{frame}

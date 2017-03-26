@@ -64,15 +64,8 @@
 #' @return Object of \code{\link{R6Class}} with properties and methods that help define styles.
 #' @format \code{\link{R6Class}} object.
 #' @examples
-#' pivotStyles$new(styleName="ColumnHeader", declarations=list(
-#'       font="0.75em arial",
-#'       padding="2px",
-#'       border="1px solid lightgray",
-#'       "vertical-align"="middle",
-#'       "text-align"="center",
-#'       "font-weight"="bold",
-#'       "background-color"="#F2F2F2"
-#'     ))
+#' # PivotStyle objects are normally created indirectly via one of the helper methods.
+#' # For an example, see the PivotStyles class.
 #' @field parentPivot Owning pivot table.
 #' @field styleName Style unique name.
 #' @field declarations CSS style declarations.

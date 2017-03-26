@@ -42,14 +42,7 @@ The PivotStyle class specifies the styling for headers and cells in a pivot tabl
 }
 
 \examples{
-pivotStyles$new(styleName="ColumnHeader", declarations=list(
-      font="0.75em arial",
-      padding="2px",
-      border="1px solid lightgray",
-      "vertical-align"="middle",
-      "text-align"="center",
-      "font-weight"="bold",
-      "background-color"="#F2F2F2"
-    ))
+# PivotStyle objects are normally created indirectly via one of the helper methods.
+# For an example, see the PivotStyles class.
 }
 \keyword{calculation}

@@ -14,8 +14,7 @@
 #' @param includeRawValue Show/hide filter detail for debugging.
 #' @return A HTML widget.
 #' @examples
-#' # See the Shiny vignette in this package for more complete examples.
-#' pivottabler(pt)
+#' # See the Shiny vignette in this package for examples.
 pivottabler <- function(pt, width=NULL, height=NULL, styleNamePrefix=NULL,
                    includeRCFilters=FALSE, includeCalculationFilters=FALSE,
                    includeCalculationNames=FALSE, includeRawValue=FALSE) {
@@ -32,12 +31,18 @@ pivottabler <- function(pt, width=NULL, height=NULL, styleNamePrefix=NULL,
 
 #' Standard function for Shiny scaffolding.
 #' @export
+#' @param outputId The id of the html element that will contain the htmlwidget.
+#' @param width The target width of the htmlwidget.
+#' @param height The target height of the htmlwidget.
 pivottablerOutput <- function(outputId, width = "100%", height = "100%") {
   shinyWidgetOutput(outputId, "pivottabler", width, height, package = "pivottabler")
 }
 
 #' Standard function for Shiny scaffolding.
 #' @export
+#' @param expr The R expression to execute and render in the Shiny web application.
+#' @param env Standard shiny argument for a render function.
+#' @param quoted Standard shiny argument for a render function.
 renderPivottabler <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
   shinyRenderWidget(expr, pivottablerOutput, env, quoted = TRUE)
