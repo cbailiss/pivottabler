@@ -500,9 +500,9 @@ pt$renderPivot()
 
 ## Performance considerations
 
-`pivottabler` calculates each cell in a pivot table independently.  This allows it to offer flexible layouts - i.e. layout flexibility is prioritised over performance since a pivot table is primarily a visualisation tool.
+In the current version of the `pivottabler` package, each cell in the pivot table is calculated independently and sequentially.  Batch execution of cells is under consideration for a future version.
 
-However, for very large data frames, this approach can significantly increase the time taken to calculate the pivot table cell values.  In such cases, aggregating the data explictly in R code (where possible) before creating the pivot table can greatly reduce the overall time required.
+For large data frames, the current approach can significantly increase the time required to calculate the pivot table cell values.  In such cases, aggregating the data explictly in R code (where this is possible) before creating the pivot table can reduce the overall time required.
 
 For example, duplicating the `bhmtrains` sample data frame to create a larger data set.
 
