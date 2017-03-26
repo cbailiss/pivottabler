@@ -336,8 +336,16 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        # then switch visual totals off (if only M and F in the data, and M and F columns are added to the pivot, then
        # having a total column with a filter of M or F is pointless)
 
+       # check we have some values
+       if(is.null(distinctValues)||(length(distinctValues)==0)) {
+         # add a blank group
+         newGrp <- grp$addChildGroup(variableName=variableName, values=NULL, caption="",
+                                     calculationGroupName=calculationGroupName, isTotal=self$isTotal)
+         index <- length(newGroups) + 1
+         newGroups[[index]] <- newGrp
+       }
        # append the child groups
-       if("list" %in% class(distinctValues)) {
+       else if("list" %in% class(distinctValues)) {
          if((addTotal==TRUE)&&(totalPosition=="before")) {
            newGrp <- grp$addChildGroup(caption=totalCaption, calculationGroupName=calculationGroupName, isTotal=TRUE)
            index <- length(newGroups) + 1

@@ -831,3 +831,129 @@ test_that("theming tests:  basic test", {
 })
 
 
+
+test_that("empty data group test 1", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory", fromData=FALSE, explicitListOfValues=list("Freight"))
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 167420)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "bf15028c080c7cb7bef8b30b9b46049a")
+})
+
+
+
+test_that("empty data group test 2", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory", fromData=FALSE, explicitListOfValues=list("Freight"), visualTotals=TRUE)
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 0)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "dd134181eb368210c4b3d958d8a7e166")
+})
+
+
+
+test_that("empty data group test 3", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory", fromData=FALSE, explicitListOfValues=list("Ordinary Passenger", "Freight"))
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 236790)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "47f847ac274dd2fa51b856314c6387d5")
+})
+
+
+
+test_that("empty data group test 4", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory", fromData=FALSE, explicitListOfValues=list("Ordinary Passenger", "Freight"), visualTotals=TRUE)
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 138740)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "4f5ece1b5f35befc62b15391f09c94f2")
+})
+
+
+
+test_that("empty data group test 5", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory", fromData=FALSE, explicitListOfValues=list("Ordinary Passenger", "Freight"))
+  pt$addRowDataGroups("TOC")
+  pt$addColumnDataGroups("PowerType")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 306160)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "44983d5292c294cabe5004a1d3e18433")
+})
+
+
+
+test_that("empty data group test 6", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory", fromData=FALSE, explicitListOfValues=list("Ordinary Passenger", "Freight"), visualTotals=TRUE)
+  pt$addRowDataGroups("TOC")
+  pt$addColumnDataGroups("PowerType")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 208110)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "46c99dd69354dde35faf7283548df2be")
+})
