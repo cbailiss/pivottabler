@@ -1,6 +1,6 @@
 Package: pivottabler
 Type: Package
-Title: Create Pivot Tables natively in R
+Title: Create Pivot Tables Natively in R
 Version: 0.1.0
 Authors@R: person("Christopher", "Bailiss", email = "cbailiss@gmail.com",
   role = c("aut", "cre"))
