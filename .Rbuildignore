@@ -5,3 +5,6 @@
 ^Template\.R$
 ^\Template\.R$
 ^\.travis\.yml$
+^cran-comments\.md$
+^NEWS\.md$
+^README\.Rmd$
