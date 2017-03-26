@@ -5,7 +5,7 @@ pivottabler
 
 The `pivottabler` package enables pivot tables to be created with just a few lines of R.
 
-The objectives of the `pivottabler` package are to:
+The `pivottabler` package aims to:
 
 -   Provide an easy way of creating pivot tables, without requiring the user to specify low-level layout logic.
 -   Provide multiple ways of specifying calculation logic to cover both simple and more sophisticated requirements.
@@ -28,7 +28,7 @@ install.packages("pivottabler")
 -   the latest development version from github with
 
 ``` r
-devtools::install_github("cbailiss/pivottabler")
+devtools::install_github("cbailiss/pivottabler", build_vignettes = TRUE)
 ```
 
 ### Example
@@ -51,5 +51,5 @@ More complex pivot tables can also be created, e.g. with irregular layouts, usin
 # to see a list of available package vignettes:
 vignette(package="pivottabler")
 # to open a specific vignette
-vignette(topic="abc", package="pivottabler")
+vignette(topic="introduction", package="pivottabler")
 ```

@@ -7,7 +7,7 @@ http://r-pkgs.had.co.nz/
 ## Test environments
 
 * local OS (windows) install, R 3.3.3
-* ubuntu 12.04 (on travis-ci), R 3.2.2.
+* ubuntu 12.04 (on travis-ci), R 3.3.2.
 
 ## R CMD check results
 
@@ -19,8 +19,8 @@ http://r-pkgs.had.co.nz/
 
 0 errors | 0 warnings | 1 note
 
-NOTE
-  installed size is  5.0Mb
+NOTE:  
+  installed size is  5.0Mb,
   sub-directories of 1Mb or more:
     data   3.9Mb
 
