@@ -648,9 +648,9 @@ PivotTable <- R6::R6Class("PivotTable",
         rowGroup = private$p_rowGroup$asList(),
         columnGroup = private$p_columnGroup$asList(),
         calculationsPosition = private$p_calculationsPosition,
-        calculationGroups = private$p_calculationGroups$asList(),
-        cells = private$p_cells$asList()
+        calculationGroups = private$p_calculationGroups$asList()
       )
+      if(!is.null(private$p_cells)) lst["cells"] <- private$p_cells$asList()
       self$message("PivotTable$asList", "Got list.")
       return(lst)
     },
