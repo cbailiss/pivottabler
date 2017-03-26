@@ -19,6 +19,7 @@ Suggests:
     lubridate (>= 1.5.0),
     listviewer (>= 1.4.0),
     digest (>= 0.6.9),
+    shiny,
     knitr,
     rmarkdown,
     testthat
