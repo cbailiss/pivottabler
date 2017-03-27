@@ -8,6 +8,7 @@ http://r-pkgs.had.co.nz/
 
 * local OS (windows) install, R 3.3.3
 * ubuntu 12.04 (on travis-ci), R 3.3.2.
+* win-builder, R 3.4.0 alpha 
 
 ## R CMD check results
 
