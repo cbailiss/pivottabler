@@ -100,7 +100,7 @@ pt$renderPivot()
 Each line above works as follows:
 
 1. Load the namespace of the pivottabler library.
-2. Create a new pivot table instance^[pivottabler is implemented in [R6 Classes](https://cran.r-project.org/web/packages/R6/vignettes/Introduction.html) so pt here is an instance of the R6 PivotTable class.].
+2. Create a new pivot table instance^[pivottabler is implemented in [R6 Classes](https://CRAN.R-project.org/package=R6) so pt here is an instance of the R6 PivotTable class.].
 3. Specify the data frame that contains the data for the pivot table.
 4. Add the distinct values from the TrainCategory column in the data frame as columns in the pivot table.
 5. Add the distinct values from the TOC column in the data frame as rows in the pivot table.
