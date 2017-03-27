@@ -27,6 +27,12 @@ NOTE:
 
 Unsure of reason for discrepancy between Local R CMD and Travis-CI CMD check results. The sample data has been compressed into three rda files, total size 1.00 MB. Different compression options were explored and the option chosen that resulted in the smallest files.
 
+### win-builder check results
+
+0 errors | 0 warnings | 1 note
+
+NOTE:  New Submission
+
 ## Downstream dependencies
 
 None - this is a new package.
