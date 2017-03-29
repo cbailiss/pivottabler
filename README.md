@@ -1,7 +1,7 @@
 pivottabler
 ================
 
-[![Build Status](https://travis-ci.org/cbailiss/pivottabler.svg?branch=master)](https://travis-ci.org/cbailiss/pivottabler)
+[![Build Status](https://travis-ci.org/cbailiss/pivottabler.svg?branch=master)](https://travis-ci.org/cbailiss/pivottabler) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/pivottabler)](http://cran.r-project.org/package=pivottabler)
 
 The `pivottabler` package enables pivot tables to be created with just a few lines of R.
 
@@ -19,7 +19,7 @@ Pivot tables are rendered as htmlwidgets. The HTML can be exported for use outsi
 
 You can install:
 
--   **(CRAN release is pending)** the latest released version from CRAN with
+-   the latest released version from CRAN with
 
 ``` r
 install.packages("pivottabler")
