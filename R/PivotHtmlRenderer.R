@@ -6,7 +6,8 @@
 #' @importFrom R6 R6Class
 #' @import htmltools
 #' @keywords calculation
-#' @return Object of \code{\link{R6Class}} with properties and methods that render to HTML.
+#' @return Object of \code{\link{R6Class}} with properties and methods that
+#'   render to HTML.
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
@@ -15,11 +16,18 @@
 
 #' @section Methods:
 #' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new pivot table renderer, specifying the field value documented above.}
+#'   \item{Documentation}{For more complete explanations and examples please see
+#'   the extensive vignettes supplied with this package.}
+#'   \item{\code{new(...)}}{Create a new pivot table renderer, specifying the
+#'   field value documented above.}
 #'
-#'   \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist on the PivotDataGroup and PivotCell classes.}
-#'   \item{\code{getTableHtml(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE)}}{Get a HTML representation of the pivot table, optionally including additional detail for debugging purposes.}
+#'   \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist
+#'   on the PivotDataGroup and PivotCell classes.}
+#'   \item{\code{getTableHtml(styleNamePrefix=NULL, includeHeaderValues=FALSE,
+#'   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
+#'   includeCalculationNames=FALSE, includeRawValue=FALSE)}}{Get a HTML
+#'   representation of the pivot table, optionally including additional detail
+#'   for debugging purposes.}
 #' }
 
 PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",

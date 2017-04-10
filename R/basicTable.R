@@ -1,12 +1,15 @@
 
-# this is a quick function intended to assist with rendering basic tables in the vignettes.
-# it doesn't emit any styles, it is intended to pick up the styles of one of the pivot tables
-# rendered into the same page.
-# this isn't intended as a general purpose function and so skips some checks.
+# This is a quick function intended to assist with rendering basic tables in the
+# vignettes.
+# It doesn't emit any styles, it is intended to pick up the styles of one of the
+# pivot tables rendered into the same page. this isn't intended as a general
+# purpose function and so skips some checks.
 
 #' Output a table into a package vignette.
 #'
-#' \code{renderBasicTable} is utility function that renders a basic table into a package vignette.  This function is primarily intended for internal use by the pivottabler package.
+#' \code{renderBasicTable} is utility function that renders a basic table into a
+#' package vignette.  This function is primarily intended for internal use by
+#' the pivottabler package.
 #'
 #' @import htmltools
 #' @import htmlwidgets

@@ -1,29 +1,40 @@
 #' A class that contains the cells from a pivot table.
 #'
-#' The PivotCells class contains all of the PivotCell objects that comprise the body of a pivot table.
+#' The PivotCells class contains all of the PivotCell objects that comprise the
+#' body of a pivot table.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
 #' @import jsonlite
 #' @keywords cell
-#' @return Object of \code{\link{R6Class}} with properties and methods relating to the cells of a pivot table.
+#' @return Object of \code{\link{R6Class}} with properties and methods relating
+#'   to the cells of a pivot table.
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
 #' @field parentPivot Owning pivot table.
-#' @field rowGroups The row data groups that represent the row headings in the pivot table.
-#' @field columnGroups The column data groups that represent the column headings in the pivot table.
+#' @field rowGroups The row data groups that represent the row headings in the
+#'   pivot table.
+#' @field columnGroups The column data groups that represent the column headings
+#'   in the pivot table.
 
 #' @section Methods:
 #' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new set of pivot table cells, specifying the field values documented above.}
+#'   \item{Documentation}{For more complete explanations and examples please see
+#'   the extensive vignettes supplied with this package.}
+#'   \item{\code{new(...)}}{Create a new set of pivot table cells, specifying
+#'   the field values documented above.}
 #'
-#'   \item{\code{getCell(r, c))}}{Get the PivotCell at the specified row and column coordinates in the pivot table.}
-#'   \item{\code{setCell(r, c, cell))}}{Set the PivotCell at the specified row and column coordinates in the pivot table.}
-#'   \item{\code{asMatrix(rawValue=TRUE))}}{Get a matrix containing all of the numerical values from the body of the pivot table (for rawValue=TRUE) or all of the formatted (i.e. character) values (for rawValue=FALSE).}
-#'   \item{\code{asList())}}{Get a list representation of the pivot table cells.}
+#'   \item{\code{getCell(r, c))}}{Get the PivotCell at the specified row and
+#'   column coordinates in the pivot table.}
+#'   \item{\code{setCell(r, c, cell))}}{Set the PivotCell at the specified row
+#'   and column coordinates in the pivot table.}
+#'   \item{\code{asMatrix(rawValue=TRUE))}}{Get a matrix containing all of the
+#'   numerical values from the body of the pivot table (for rawValue=TRUE) or
+#'   all of the formatted (i.e. character) values (for rawValue=FALSE).}
+#'   \item{\code{asList())}}{Get a list representation of the pivot table
+#'   cells.}
 #'   \item{\code{asJSON()}}{Get a JSON representation of the pivot table cells.}
 #' }
 

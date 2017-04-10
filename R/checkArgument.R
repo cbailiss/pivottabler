@@ -1,22 +1,31 @@
 #' Perform basic checks on a function argument.
 #'
-#' \code{checkArgument} is a utility function that provides basic assurances about function argument values and generates standardised error messages when invalid values are encountered.
+#' \code{checkArgument} is a utility function that provides basic assurances
+#' about function argument values and generates standardised error messages when
+#' invalid values are encountered.
 #'
-#' @param className The name of the calling class, for inclusion in error messages.
-#' @param methodName The name of the calling method, for inclusion in error messages.
+#' @param className The name of the calling class, for inclusion in error
+#'   messages.
+#' @param methodName The name of the calling method, for inclusion in error
+#'   messages.
 #' @param argumentValue The value to check.
 #' @param isMissing Whether the argument is missing in the calling function.
 #' @param allowMissing Whether missing values are permitted.
 #' @param allowNull Whether null values are permitted.
 #' @param allowedClasses The names of the allowed classes for argumentValue.
 #' @param mustBeAtomic Whether the argument value must be atomic.
-#' @param allowedListElementClasses For argument values that are lists(), the names of the allowed classes for the elements in the list.
-#' @param listElementsMustBeAtomic For argument values that are lists(), whether the list elements must be atomic.
-#' @param allowedValues For argument values that must be one value from a set list, the list of allowed values.
+#' @param allowedListElementClasses For argument values that are lists(), the
+#'   names of the allowed classes for the elements in the list.
+#' @param listElementsMustBeAtomic For argument values that are lists(), whether
+#'   the list elements must be atomic.
+#' @param allowedValues For argument values that must be one value from a set
+#'   list, the list of allowed values.
 #' @param minValue For numerical values, the lowest allowed value.
 #' @param maxValue For numerical values, the highest allowed value.
-#' @param maxLength For character values, the maximum allowed length (in characters) of the value.
-#' @return No return value.  If invalid values are encountered, the \code{stop()} function is used to interrupt execution.
+#' @param maxLength For character values, the maximum allowed length (in
+#'   characters) of the value.
+#' @return No return value.  If invalid values are encountered, the
+#'   \code{stop()} function is used to interrupt execution.
 
 checkArgument <- function(className, methodName, argumentValue, isMissing, # no point putting "=NULL" for these args, as if
                           # they aren't present then there isn't enough information to generate a meaningful error message anyway

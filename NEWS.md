@@ -11,7 +11,7 @@ Breaking Changes
 Improvements
 ----------------
 
-(none)
+* Updated object documentation to wrap lines longer than 80 characters. 
 
 Bug Fixes
 ----------------
