@@ -81,7 +81,10 @@ PivotCells <- R6::R6Class("PivotCells",
            v <- private$p_rows[[r]][[c]]$rawValue
            if(!(("integer" %in% class(v))||("numeric" %in% class(v)))) v <- NA
          }
-         else v <- private$p_rows[[r]][[c]]$formattedValue
+         else {
+           v <- private$p_rows[[r]][[c]]$formattedValue
+         }
+         if(is.null(v)) v <- NA
          m[r, c] <- v
        }
      }

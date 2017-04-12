@@ -229,6 +229,7 @@ The pivottabler package has many more capabilities.  More details can be found i
 3. [Calculations](calculations.html)
 4. [Styling](styling.html)
 5. [Shiny](shiny.html)
+6. [Retrieving Results](retrievingresults.html)
 
 <!--
 5. [Cell Context](cellcontext.html)

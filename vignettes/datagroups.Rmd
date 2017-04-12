@@ -321,6 +321,7 @@ The full set of vignettes is:
 3. [Calculations](calculations.html)
 4. [Styling](styling.html)
 5. [Shiny](shiny.html)
+6. [Retrieving Results](retrievingresults.html)
 
 <!--
 5. [Cell Context](cellcontext.html)

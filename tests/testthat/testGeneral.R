@@ -962,3 +962,66 @@ test_that("empty data group test 6", {
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 208110)
   expect_identical(digest::digest(pt$getHtml(), algo="md5"), "46c99dd69354dde35faf7283548df2be")
 })
+
+
+test_that("export tests:  as Matrix (without row headings)", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+
+  # pt$asMatrix(includeHeaders=FALSE, rawValue=TRUE)
+  # sum(pt$asMatrix(includeHeaders=FALSE, rawValue=TRUE), na.rm=TRUE)
+  # digest::digest(pt$asMatrix(includeHeaders=FALSE), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_identical(digest::digest(pt$asMatrix(includeHeaders=FALSE), algo="md5"), "098ad67f0f16ad4e6f0834b54080358b")
+})
+
+
+test_that("export tests:  as Matrix (with row headings)", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+
+  # pt$asMatrix(includeHeaders=TRUE)
+  # digest::digest(pt$asMatrix(includeHeaders=TRUE), algo="md5")
+
+  expect_identical(digest::digest(pt$asMatrix(includeHeaders=TRUE), algo="md5"), "c36b5bea5b354b7529def6dce92c1d59")
+})
+
+
+test_that("export tests:  as Data Frame", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+
+  # sum(pt$asDataFrame(), na.rm=TRUE)
+  #digest::digest(pt$asDataFrame(), algo="md5")
+
+  expect_equal(sum(pt$asDataFrame(), na.rm=TRUE), 502260)
+  expect_identical(digest::digest(pt$asDataFrame(), algo="md5"), "d7ef39c213140c6a7ced92a1cc0c2586")
+})

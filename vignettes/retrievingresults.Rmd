@@ -1,0 +1,151 @@
+---
+title: "06. Retrieving Results"
+author: "Chris Bailiss"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{06. Retrieving Results}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## In This Vignette
+
+* Results of Pivot Calculations
+* Example Pivot Table
+* Results as an R Matrix
+* Results as an R Data Frame
+* Further Reading
+
+## Results of Pivot Calculations
+
+A `pivottabler` pivot table object has a fairly complex internal structure - containing two trees of data groups (the row groups and the column groups) plus a set of cells linked to the data groups.
+
+Sometimes it is desirable to retrieve the pivot table results as a more standard data type that is easier to work with in R code.  The `pivottabler` package allows a pivot table to be converted to either a matrix or a data frame.  Neither data type is a perfect representation of a pivot table - which option is better will depend upon your use case.
+
+## Example Pivot Table
+
+The following pivot table is used as the basis of the examples in the rest of this vignette:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+## Results as an R Matrix
+
+Converting a pivot table to a matrix can be accomplished as follows:
+
+```{r, warning=FALSE, eval=TRUE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$asMatrix()
+```
+
+If only the cell values are required, the headings can be removed from the matrix by setting the `includeHeaders` parameter to `FALSE`.
+
+The `rawValue` parameter specifies that the matrix should contain the numerical result values, not the formatted values.
+
+```{r, warning=FALSE, eval=TRUE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$asMatrix(includeHeaders=FALSE, rawValue=TRUE)
+```
+
+When there are multiple levels of headers, by default the column headers are not repeated:
+
+```{r, warning=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+pt$asMatrix()
+```
+
+However, the `repeatHeaders` parameter can be used to specify repeating headings:
+
+```{r, warning=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$asMatrix(repeatHeaders=TRUE)
+```
+
+## Results as an R Data Frame
+
+Converting a pivot table to a data frame can be accomplished as follows:
+
+```{r, warning=FALSE, eval=TRUE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$asDataFrame()
+str(pt$asDataFrame())
+```
+
+Data frames can have at most one name for each row and column.  Therefore, when there are multiple levels of headers in the pivot table, the captions are concatenated into a single value for each row and column:
+
+```{r, warning=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$asDataFrame()
+```
+
+The space character is the default character used to combine headers as seen above.  This can easily be changed, e.g. to a pipe character:
+
+```{r, warning=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$asDataFrame(separator="|")
+```
+
+## Further Reading
+
+The full set of vignettes is:
+
+1. [Introduction](introduction.html)
+2. [Data Groups](datagroups.html)
+3. [Calculations](calculations.html)
+4. [Styling](styling.html)
+5. [Shiny](shiny.html)
+6. [Retrieving Results](retrievingresults.html)

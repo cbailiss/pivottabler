@@ -119,6 +119,11 @@
 #'   \item{\code{evaluatePivot()}}{A wrapper for calling
 #'   normaliseColumnGroups(), normaliseRowGroups(), generateCellStructure() and
 #'   evaluateCells() in sequence.}
+#'   \item{\code{asMatrix(includeHeaders=TRUE, repeatHeaders=FALSE,
+#'   rawValue=FALSE)}}{Gets the pivot table as a matrix, with or without
+#'   headings.}
+#'   \item{\code{asDataFrame(separator=" ")}}{Gets the pivot table as a data
+#'   frame, combining multiple levels of headings with the specified separator.}
 #'   \item{\code{getCss(styleNamePrefix)}}{Get the CSS declarations for the
 #'   entire pivot table.}
 #'   \item{\code{getHtml(styleNamePrefix, includeHeaderValues=FALSE,
@@ -580,6 +585,136 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$evaluatePivot", "Evaluated pivot table.")
       return(invisible())
     },
+    asMatrix = function(includeHeaders=TRUE, repeatHeaders=FALSE, rawValue=FALSE) {
+      checkArgument("PivotTable", "asMatrix", includeHeaders, missing(includeHeaders), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "asMatrix", rawValue, missing(rawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      self$message("PivotTable$asMatrix", "Getting pivot table as a matrix...",
+                    list(includeHeaders=includeHeaders, repeatHeaders=repeatHeaders, rawValue=rawValue))
+      if(!private$p_evaluated) stop("PivotTable$asMatrix():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$asMatrix():  No cells exist to retrieve.", call. = FALSE)
+      if(includeHeaders==FALSE) {
+        return(private$p_cells$asMatrix(rawValue=rawValue))
+      }
+      if(repeatHeaders==FALSE) {
+        private$clearIsRenderedFlags()
+      }
+      # size the matrix
+      rowHeaderLevelCount <- private$p_rowGroup$getLevelCount()
+      columnHeaderLevelCount <- private$p_columnGroup$getLevelCount()
+      rowCount <- private$p_cells$rowCount
+      columnCount <- private$p_cells$columnCount
+      m <- matrix(data=NA, nrow=columnHeaderLevelCount+rowCount, ncol=rowHeaderLevelCount+columnCount)
+      # set the root cells
+      for(r in 1:columnHeaderLevelCount) {
+        for(c in 1:rowHeaderLevelCount) {
+          m[r, c] <- ""
+        }
+      }
+      # set the column headers
+      colHeaderLeafGroups <- private$p_columnGroup$getLeafGroups()
+      for(c in 1:length(colHeaderLeafGroups)) {
+        leafGroup <- colHeaderLeafGroups[[c]]
+        grps <- leafGroup$getAncestorGroups(includeCurrentGroup=TRUE)
+        for(r in (length(grps)-1):1) {
+          grp <- grps[[length(grps) - r]]
+          if((repeatHeaders==FALSE) && (grp$isRendered==TRUE)) {
+            m[r, c + rowHeaderLevelCount] <- ""
+            next
+          }
+          m[r, c + rowHeaderLevelCount] <- grp$caption
+          grp$isRendered <- TRUE
+        }
+      }
+      # set the row headers
+      rowHeaderLeafGroups <- private$p_rowGroup$getLeafGroups()
+      for(r in 1:length(rowHeaderLeafGroups)) {
+        leafGroup <- rowHeaderLeafGroups[[r]]
+        grps <- leafGroup$getAncestorGroups(includeCurrentGroup=TRUE)
+        for(c in (length(grps)-1):1) {
+          grp <- grps[[length(grps) - c]]
+          if((repeatHeaders==FALSE) && (grp$isRendered==TRUE)) {
+            m[r + columnHeaderLevelCount, c] <- ""
+            next
+          }
+          m[r + columnHeaderLevelCount, c] <- grp$caption
+          grp$isRendered <- TRUE
+        }
+      }
+      # set the cell values
+      for(r in 1:rowCount) {
+        for(c in 1:columnCount) {
+          cell <- private$p_cells$getCell(r, c)
+          if(rawValue==TRUE) {
+            v <- cell$rawValue
+            if(!(("integer" %in% class(v))||("numeric" %in% class(v)))) v <- NA
+          }
+          else v <- cell$formattedValue
+          if(is.null(v)) m[columnHeaderLevelCount + r, rowHeaderLevelCount + c] <- ""
+          else if(is.na(v)) m[columnHeaderLevelCount + r, rowHeaderLevelCount + c] <- ""
+          else m[columnHeaderLevelCount + r, rowHeaderLevelCount + c] <- v
+        }
+      }
+      self$message("PivotTable$asMatrix", "Got pivot table as a matrix.")
+      return(m)
+    },
+    asDataFrame = function(separator=" ") {
+      checkArgument("PivotTable", "asDataFrame", separator, missing(separator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+      self$message("PivotTable$asDataFrame", "Getting pivot table as a data frame...",
+                    list(dataGroupSeparatordataGroupSeparator))
+      if(!private$p_evaluated) stop("PivotTable$asDataFrame():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$asDataFrame():  No cells exist to retrieve.", call. = FALSE)
+      # sizing
+      rowHeaderLevelCount <- private$p_rowGroup$getLevelCount()
+      columnHeaderLevelCount <- private$p_columnGroup$getLevelCount()
+      rowCount <- private$p_cells$rowCount
+      columnCount <- private$p_cells$columnCount
+      rowHeaders <- list()
+      columnHeaders <- list()
+      # set the column headers
+      colHeaderLeafGroups <- private$p_columnGroup$getLeafGroups()
+      for(c in 1:length(colHeaderLeafGroups)) {
+        leafGroup <- colHeaderLeafGroups[[c]]
+        grps <- leafGroup$getAncestorGroups(includeCurrentGroup=TRUE)
+        headerValue <- ""
+        for(r in (length(grps)-1):1) {
+          grp <- grps[[r]]
+          if(nchar(headerValue) == 0) headerValue <- grp$caption
+          else headerValue <- paste0(headerValue, separator, grp$caption)
+        }
+        columnHeaders[[length(columnHeaders) + 1]] <- headerValue
+      }
+      # set the row headers
+      rowHeaderLeafGroups <- private$p_rowGroup$getLeafGroups()
+      for(r in 1:length(rowHeaderLeafGroups)) {
+        leafGroup <- rowHeaderLeafGroups[[r]]
+        grps <- leafGroup$getAncestorGroups(includeCurrentGroup=TRUE)
+        headerValue <- ""
+        for(c in (length(grps)-1):1) {
+          grp <- grps[[c]]
+          if(nchar(headerValue) == 0) headerValue <- grp$caption
+          else headerValue <- paste0(headerValue, separator, grp$caption)
+        }
+        rowHeaders[[length(rowHeaders) + 1]] <- headerValue
+      }
+      # get the value vectors to form the data frame
+      dfColumns <- list()
+      for(c in 1:columnCount) {
+        columnValues <- NA
+        for(r in 1:rowCount) {
+          cell <- private$p_cells$getCell(r, c)
+          v <- cell$rawValue
+          if(!(("integer" %in% class(v))||("numeric" %in% class(v)))) v <- NA
+          if(is.null(v)) v <- NA
+          columnValues[r] <- v
+        }
+        dfColumns[[c]] <- columnValues
+      }
+      df <- as.data.frame(dfColumns)
+      colnames(df) <- columnHeaders
+      rownames(df) <- rowHeaders
+      self$message("PivotTable$asDataFrame", "Got pivot table as a data frame.")
+      return(df)
+    },
     getCss = function(styleNamePrefix=NULL) {
       checkArgument("PivotTable", "getCss", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       self$message("PivotTable$getCss", "Getting Styles...")
@@ -810,6 +945,22 @@ PivotTable <- R6::R6Class("PivotTable",
     p_cells = NULL,
     p_renderer = NULL,
     p_messages = FALSE,
-    p_messageFile = NULL
+    p_messageFile = NULL,
+    clearIsRenderedFlags = function() {
+      self$message("PivotTable$clearIsRenderedFlags", "Clearing isRendered flags...")
+      clearFlags <- function(dg) {
+        grp <- dg
+        while(!is.null(grp)) {
+          grp$isRendered <- FALSE
+          grp <- grp$parentGroup
+        }
+      }
+      rowGroups <- self$rowGroup$getDescendantGroups(includeCurrentGroup=TRUE)
+      lapply(rowGroups, clearFlags)
+      columnGroups <- self$columnGroup$getDescendantGroups(includeCurrentGroup=TRUE)
+      lapply(columnGroups, clearFlags)
+      self$message("PivotTable$clearIsRenderedFlags", "Cleared isRendered flags...")
+      return(invisible())
+    }
   )
 )
