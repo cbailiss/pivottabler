@@ -104,21 +104,19 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
       private$p_parentPivot$message("PivotLatexRenderer$setVisibleRange", "Set visible range.")
       return(invisible())
     },
-    getTableLatex = function(caption=NULL, label=NULL) {
+    getTableLatex = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE) {
       checkArgument("PivotLatexRenderer", "getTableLatex", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       checkArgument("PivotLatexRenderer", "getTableLatex", label, missing(label), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotLatexRenderer", "getTableLatex", boldHeadings, missing(boldHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+      checkArgument("PivotLatexRenderer", "getTableLatex", italicHeadings, missing(italicHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
       private$p_parentPivot$message("PivotLatexRenderer$getTableLatex", "Getting table Latex...")
       # reset rendered flags
       self$clearIsRenderedFlags()
-      # references
-      topRowGroup <- private$p_parentPivot$rowGroup
-      topColumnGroup <- private$p_parentPivot$columnGroup
-      cells <- private$p_parentPivot$cells
       # get the dimensions of the various parts of the table...
       # ...headings:
       rowGroupLevelCount <- private$p_parentPivot$rowGroup$getLevelCount(includeCurrentLevel=FALSE)
       columnGroupLevelCount <- private$p_parentPivot$columnGroup$getLevelCount(includeCurrentLevel=FALSE)
-      # "no data" check
+      # special case: "no data"
       if((rowGroupLevelCount==0)&&(columnGroupLevelCount==0)) {
         ltx <- list()
         ltx[[length(ltx)+1]] <- "\\begin{table}[h!]"
@@ -134,10 +132,31 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
         ltx <- paste(ltx, sep = '', collapse = '\n')
         return(invisible(ltx))
       }
-      message(rowGroupLevelCount)
-      message(columnGroupLevelCount)
-      message(cells$rowCount)
-      message(cells$columnCount)
+      # there must always be at least one row and one column
+      insertDummyRowHeading <- (rowGroupLevelCount==0) & (columnGroupLevelCount > 0)
+      insertDummyColumnHeading <- (columnGroupLevelCount==0) & (rowGroupLevelCount > 0)
+      # run the appropriate function
+      if(insertDummyRowHeading)
+        ltx <- self$getTableLatex1Row(caption=caption, label=label, boldHeadings=boldHeadings, italicHeadings=italicHeadings)
+      else if(insertDummyColumnHeading)
+        ltx <- self$getTableLatex1Column(caption=caption, label=label, boldHeadings=boldHeadings, italicHeadings=italicHeadings)
+      else
+        ltx <- self$getTableLatexNormal(caption=caption, label=label, boldHeadings=boldHeadings, italicHeadings=italicHeadings)
+      return(invisible(ltx))
+    },
+    getTableLatex1Row = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE) {
+      checkArgument("PivotLatexRenderer", "getTableLatex1Row", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotLatexRenderer", "getTableLatex1Row", label, missing(label), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotLatexRenderer", "getTableLatex1Row", boldHeadings, missing(boldHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+      checkArgument("PivotLatexRenderer", "getTableLatex1Row", italicHeadings, missing(italicHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+      private$p_parentPivot$message("PivotLatexRenderer$getTableLatex1Row", "Getting table Latex...")
+      # references
+      topRowGroup <- private$p_parentPivot$rowGroup
+      topColumnGroup <- private$p_parentPivot$columnGroup
+      cells <- private$p_parentPivot$cells
+      # get the dimensions of the various parts of the table...
+      # ...headings:
+      columnGroupLevelCount <- private$p_parentPivot$columnGroup$getLevelCount(includeCurrentLevel=FALSE)
       # ...cells:
       rowCount <- cells$rowCount
       columnCount <- cells$columnCount
@@ -152,6 +171,268 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
       toRow <- private$p_toRow
       fromColumn <- private$p_fromColumn
       toColumn <- private$p_toColumn
+      # heading prefix and suffix
+      headingPrefix <- ""
+      headingSuffix <- ""
+      if(boldHeadings) {
+        headingPrefix <- paste0(headingPrefix, "\\textbf{")
+        headingSuffix <- paste0(headingSuffix, "}")
+      }
+      if(italicHeadings) {
+        headingPrefix <- paste0(headingPrefix, "\\textit{")
+        headingSuffix <- paste0(headingSuffix, "}")
+      }
+      # build the pivot
+      ltx <- list()
+      ltx[[length(ltx)+1]] <- "\\begin{table}[h!]"
+      ltx[[length(ltx)+1]] <- "  \\centering"
+      if(!is.null(caption)) ltx[[length(ltx)+1]] <- paste0("  \\caption{", private$getSafeString(caption), "}")
+      if(!is.null(caption)) ltx[[length(ltx)+1]] <- paste0("  \\label{tab:", private$getSafeString(label), "}")
+      # column alignments in the body of the table
+      # \begin{tabular}{|l|l|lcr|lcr|lcr|} - first few columns cover the row headings, the remainder cover the data cells
+      s <- "  \\begin{tabular}{|l|" # now generate a dividing line between each parent group
+      lastParentGrp <- NULL
+      for(c in fromColumn:toColumn) {
+        grp <- columnGroups[[c]]
+        parentGrp <- grp$parentGroup
+        if(!is.null(lastParentGrp)) {
+          if(!identical(parentGrp, lastParentGrp)) s <- paste0(s, "|")
+        }
+        lastParentGrp <- parentGrp
+        s <- paste0(s, "r")
+      }
+      s <- paste0(s, "|}")
+      ltx[[length(ltx)+1]] <- s
+      # top line of the table
+      ltx[[length(ltx)+1]] <- "    \\hline"
+      # column groups (i.e. column headings)
+      for(r in 1:columnGroupLevelCount) {
+        # if not the first set of column groups, then add a horizontal line
+        if(r > 1) {
+          s <- paste0("    \\cline{", 2, "-", (1 + toColumn - fromColumn + 1), "}")
+          ltx[[length(ltx)+1]] <- s
+        }
+        #     \multicolumn{2}{|c|}{} & \multicolumn{3}{|c|}{n} & \multicolumn{3}{|c|}{m} & \multicolumn{3}{|c|}{e} \\
+        s <- ""
+        s <- "    & "
+        # get the groups at this level
+        grps <- private$p_parentPivot$columnGroup$getLevelGroups(level=r)
+        firstColumn <- TRUE
+        for(c in 1:length(grps)) {
+          grp <- grps[[c]]
+          if(!grp$isWithinVisibleRange) next
+          if(firstColumn==TRUE) firstColumn <- FALSE
+          else s <- paste0(s, " & ")
+          leafGroupCount <- grp$visibleLeafGroupCount
+          if(leafGroupCount > 1) {
+            s <- paste0(s, "\\multicolumn{", leafGroupCount, "}{|c|}{", headingPrefix, private$getSafeString(grp$caption), headingSuffix, "}")
+          }
+          else {
+            s <- paste0(s, headingPrefix, private$getSafeString(grp$caption), headingSuffix)
+          }
+        }
+        s <- paste0(s, "\\\\")
+        ltx[[length(ltx)+1]] <- s
+      }
+      # a line underneath the headings
+      ltx[[length(ltx)+1]] <- "    \\hline"
+      # output the row headings and data values
+      lastParentGrp <- NULL
+      for(r in fromRow:toRow) {
+        # render this line
+        # \multirow{3}{*}{p} & x & 1 & 2 & 3 & 1 & 2 & 3 & 1 & 2 & 3\\
+        s <- "    "
+        # now render the data values
+        for(c in fromColumn:toColumn) {
+          s <- paste0(s, " & ")
+          cell <- cells$getCell(r, c)
+          s <- paste0(s, private$getSafeString(cell$formattedValue))
+        }
+        # finish the line
+        s <- paste0(s, "\\\\")
+        ltx[[length(ltx)+1]] <- s
+      }
+      # finish the table
+      ltx[[length(ltx)+1]] <- "    \\hline"
+      ltx[[length(ltx)+1]] <- "  \\end{tabular}"
+      ltx[[length(ltx)+1]] <- "\\end{table}"
+      private$p_parentPivot$message("PivotLatexRenderer$getTableLatex1Row", "Got table Latex.")
+      ltx <- paste(ltx, sep = '', collapse = '\n')
+      return(invisible(ltx))
+    },
+    getTableLatex1Column = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE) {
+      checkArgument("PivotLatexRenderer", "getTableLatex1Column", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotLatexRenderer", "getTableLatex1Column", label, missing(label), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotLatexRenderer", "getTableLatex1Column", boldHeadings, missing(boldHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+      checkArgument("PivotLatexRenderer", "getTableLatex1Column", italicHeadings, missing(italicHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+      private$p_parentPivot$message("PivotLatexRenderer$getTableLatex1Column", "Getting table Latex...")
+      # references
+      topRowGroup <- private$p_parentPivot$rowGroup
+      topColumnGroup <- private$p_parentPivot$columnGroup
+      cells <- private$p_parentPivot$cells
+      # get the dimensions of the various parts of the table...
+      # ...headings:
+      rowGroupLevelCount <- private$p_parentPivot$rowGroup$getLevelCount(includeCurrentLevel=FALSE)
+      # ...cells:
+      rowCount <- cells$rowCount
+      columnCount <- cells$columnCount
+      # get the data groups:  these are the leaf level groups
+      rowGroups <- private$p_parentPivot$cells$rowGroups
+      columnGroups <- private$p_parentPivot$cells$columnGroups
+      # ranges
+      if(private$p_rangesSet==FALSE) {
+        self$setVisibleRange()
+      }
+      fromRow <- private$p_fromRow
+      toRow <- private$p_toRow
+      fromColumn <- private$p_fromColumn
+      toColumn <- private$p_toColumn
+      # heading prefix and suffix
+      headingPrefix <- ""
+      headingSuffix <- ""
+      if(boldHeadings) {
+        headingPrefix <- paste0(headingPrefix, "\\textbf{")
+        headingSuffix <- paste0(headingSuffix, "}")
+      }
+      if(italicHeadings) {
+        headingPrefix <- paste0(headingPrefix, "\\textit{")
+        headingSuffix <- paste0(headingSuffix, "}")
+      }
+      # build the pivot
+      ltx <- list()
+      ltx[[length(ltx)+1]] <- "\\begin{table}[h!]"
+      ltx[[length(ltx)+1]] <- "  \\centering"
+      if(!is.null(caption)) ltx[[length(ltx)+1]] <- paste0("  \\caption{", private$getSafeString(caption), "}")
+      if(!is.null(caption)) ltx[[length(ltx)+1]] <- paste0("  \\label{tab:", private$getSafeString(label), "}")
+      # column alignments in the body of the table
+      # \begin{tabular}{|l|l|lcr|lcr|lcr|} - first few columns cover the row headings, the remainder cover the data cells
+      s <- "  \\begin{tabular}{|" # now generate a dividing line between each parent group
+      s <- paste0(s, paste(rep("l|", rowGroupLevelCount), sep = '', collapse = ''))
+      lastParentGrp <- NULL
+      for(c in fromColumn:toColumn) {
+        grp <- columnGroups[[c]]
+        parentGrp <- grp$parentGroup
+        if(!is.null(lastParentGrp)) {
+          if(!identical(parentGrp, lastParentGrp)) s <- paste0(s, "|")
+        }
+        lastParentGrp <- parentGrp
+        s <- paste0(s, "r")
+      }
+      s <- paste0(s, "|}")
+      ltx[[length(ltx)+1]] <- s
+      # top line of the table
+      ltx[[length(ltx)+1]] <- "    \\hline"
+      # column group (i.e. one fake column heading)
+      #     \multicolumn{2}{|c|}{} & \multicolumn{3}{|c|}{n} & \multicolumn{3}{|c|}{m} & \multicolumn{3}{|c|}{e} \\
+      s <- ""
+      if(rowGroupLevelCount==1) s <- "    & "
+      else s <- paste0("    \\multicolumn{", rowGroupLevelCount, "}{|c|}{} & ")
+      s <- paste0(s, "\\\\")
+      ltx[[length(ltx)+1]] <- s
+      # a line underneath the headings
+      ltx[[length(ltx)+1]] <- "    \\hline"
+      # output the row headings and data values
+      lastParentGrp <- NULL
+      for(r in fromRow:toRow) {
+        rg <- rowGroups[[r]]
+        parentGrp <- rg$parentGroup
+        # draw a partial horizontal line before this row?
+        if(!is.null(lastParentGrp)) {
+          if(!identical(parentGrp, lastParentGrp)) {
+            # need to work out how where to draw the line from
+            # get the ancestors of this and the previous group and compare
+            prevAncs <- rowGroups[[r-1]]$getAncestorGroups(includeCurrentGroup=TRUE)
+            thisAncs <- rg$getAncestorGroups(includeCurrentGroup=TRUE)
+            startLineFromColumn <- 0
+            for(i in 1:length(prevAncs)) { # length(ancrgs)-1):1
+              if(!identical(prevAncs[[length(ancrgs)-i+1]], thisAncs[[length(ancrgs)-i+1]])) {
+                startLineFromColumn <- i
+                break
+              }
+            }
+            s <- paste0("    \\cline{", startLineFromColumn-1, "-", (rowGroupLevelCount + toColumn - fromColumn + 1), "}")
+            ltx[[length(ltx)+1]] <- s
+          }
+        }
+        lastParentGrp <- parentGrp
+        # render this line
+        # \multirow{3}{*}{p} & x & 1 & 2 & 3 & 1 & 2 & 3 & 1 & 2 & 3\\
+        s <- "    "
+        # first render the row headings
+        ancrgs <- rg$getAncestorGroups(includeCurrentGroup=TRUE)
+        firstColumn <- TRUE
+        for(c in (length(ancrgs)-1):1) {
+          ancg <- ancrgs[[c]]
+          if(firstColumn) firstColumn <- FALSE
+          else s <- paste0(s, "& ")
+          if(ancg$isRendered==FALSE) {
+            leafGroupCount <- ancg$visibleLeafGroupCount
+            if(leafGroupCount > 1) {
+              s <- paste0(s, "\\multirow{", leafGroupCount, "}{*}{", headingPrefix, private$getSafeString(ancg$caption), headingSuffix, "} ")
+            }
+            else {
+              s <- paste0(s, headingPrefix, private$getSafeString(ancg$caption), headingSuffix, " ")
+            }
+            ancg$isRendered <- TRUE
+          }
+        }
+        # now render the data values
+        for(c in fromColumn:toColumn) {
+          s <- paste0(s, " & ")
+          cell <- cells$getCell(r, c)
+          s <- paste0(s, private$getSafeString(cell$formattedValue))
+        }
+        # finish the line
+        s <- paste0(s, "\\\\")
+        ltx[[length(ltx)+1]] <- s
+      }
+      # finish the table
+      ltx[[length(ltx)+1]] <- "    \\hline"
+      ltx[[length(ltx)+1]] <- "  \\end{tabular}"
+      ltx[[length(ltx)+1]] <- "\\end{table}"
+      private$p_parentPivot$message("PivotLatexRenderer$getTableLatex1Column", "Got table Latex.")
+      ltx <- paste(ltx, sep = '', collapse = '\n')
+      return(invisible(ltx))
+    },
+    getTableLatexNormal = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE) {
+      checkArgument("PivotLatexRenderer", "getTableLatexNormal", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotLatexRenderer", "getTableLatexNormal", label, missing(label), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotLatexRenderer", "getTableLatexNormal", boldHeadings, missing(boldHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+      checkArgument("PivotLatexRenderer", "getTableLatexNormal", italicHeadings, missing(italicHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+      private$p_parentPivot$message("PivotLatexRenderer$getTableLatexNormal", "Getting table Latex...")
+      # references
+      topRowGroup <- private$p_parentPivot$rowGroup
+      topColumnGroup <- private$p_parentPivot$columnGroup
+      cells <- private$p_parentPivot$cells
+      # get the dimensions of the various parts of the table...
+      # ...headings:
+      rowGroupLevelCount <- private$p_parentPivot$rowGroup$getLevelCount(includeCurrentLevel=FALSE)
+      columnGroupLevelCount <- private$p_parentPivot$columnGroup$getLevelCount(includeCurrentLevel=FALSE)
+      # ...cells:
+      rowCount <- cells$rowCount
+      columnCount <- cells$columnCount
+      # get the data groups:  these are the leaf level groups
+      rowGroups <- private$p_parentPivot$cells$rowGroups
+      columnGroups <- private$p_parentPivot$cells$columnGroups
+      # ranges
+      if(private$p_rangesSet==FALSE) {
+        self$setVisibleRange()
+      }
+      fromRow <- private$p_fromRow
+      toRow <- private$p_toRow
+      fromColumn <- private$p_fromColumn
+      toColumn <- private$p_toColumn
+      # heading prefix and suffix
+      headingPrefix <- ""
+      headingSuffix <- ""
+      if(boldHeadings) {
+        headingPrefix <- paste0(headingPrefix, "\\textbf{")
+        headingSuffix <- paste0(headingSuffix, "}")
+      }
+      if(italicHeadings) {
+        headingPrefix <- paste0(headingPrefix, "\\textit{")
+        headingSuffix <- paste0(headingSuffix, "}")
+      }
       # build the pivot
       ltx <- list()
       ltx[[length(ltx)+1]] <- "\\begin{table}[h!]"
@@ -189,16 +470,18 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
         else s <- paste0("    \\multicolumn{", rowGroupLevelCount, "}{|c|}{} & ")
         # get the groups at this level
         grps <- private$p_parentPivot$columnGroup$getLevelGroups(level=r)
+        firstColumn <- TRUE
         for(c in 1:length(grps)) {
           grp <- grps[[c]]
           if(!grp$isWithinVisibleRange) next
-          if(c > 1) s <- paste0(s, " & ")
+          if(firstColumn==TRUE) firstColumn <- FALSE
+          else s <- paste0(s, " & ")
           leafGroupCount <- grp$visibleLeafGroupCount
           if(leafGroupCount > 1) {
-            s <- paste0(s, "\\multicolumn{", leafGroupCount, "}{|c|}{", private$getSafeString(grp$caption), "}")
+            s <- paste0(s, "\\multicolumn{", leafGroupCount, "}{|c|}{", headingPrefix, private$getSafeString(grp$caption), headingSuffix, "}")
           }
           else {
-            s <- paste0(s, private$getSafeString(grp$caption))
+            s <- paste0(s, headingPrefix, private$getSafeString(grp$caption), headingSuffix)
           }
         }
         s <- paste0(s, "\\\\")
@@ -243,10 +526,10 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
           if(ancg$isRendered==FALSE) {
             leafGroupCount <- ancg$visibleLeafGroupCount
             if(leafGroupCount > 1) {
-              s <- paste0(s, "\\multirow{", leafGroupCount, "}{*}{", private$getSafeString(ancg$caption), "} ")
+              s <- paste0(s, "\\multirow{", leafGroupCount, "}{*}{", headingPrefix, private$getSafeString(ancg$caption), headingSuffix, "} ")
             }
             else {
-              s <- paste0(s, private$getSafeString(ancg$caption), " ")
+              s <- paste0(s, headingPrefix, private$getSafeString(ancg$caption), headingSuffix, " ")
             }
             ancg$isRendered <- TRUE
           }
@@ -265,7 +548,7 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
       ltx[[length(ltx)+1]] <- "    \\hline"
       ltx[[length(ltx)+1]] <- "  \\end{tabular}"
       ltx[[length(ltx)+1]] <- "\\end{table}"
-      private$p_parentPivot$message("PivotLatexRenderer$getTableLatex", "Got table Latex.")
+      private$p_parentPivot$message("PivotLatexRenderer$getTableLatexNormal", "Got table Latex.")
       ltx <- paste(ltx, sep = '', collapse = '\n')
       return(invisible(ltx))
     }
