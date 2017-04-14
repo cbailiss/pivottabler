@@ -1,0 +1,124 @@
+---
+title: "Pivot Tabler Test Cases"
+output: pdf_document
+header-includes:
+   - \usepackage{multirow}
+---
+
+## Basic Template
+
+Basic example of a table with spans.
+
+\begin{table}[h!]
+  \centering
+  \caption{A basic table with spans.}
+  \label{tab:table1}
+  \begin{tabular}{|l|l|lcr|lcr|lcr|}
+    \hline
+    \multicolumn{2}{|c|}{} & \multicolumn{3}{|c|}{n} & \multicolumn{3}{|c|}{m} & \multicolumn{3}{|c|}{e} \\
+    \cline{3-11}
+    \multicolumn{2}{|c|}{} & a & b & c & a & b & c & a & b & c\\
+    \hline
+    \multirow{3}{*}{p} & x & 1 & 2 & 3 & 1 & 2 & 3 & 1 & 2 & 3\\
+    & y & 4 & 5 & 6 & 4 & 5 & 6 & 4 & 5 & 6\\
+    & z & 7 & 8 & 9 & 7 & 8 & 9 & 7 & 8 & 9\\
+    \cline{1-11} 
+    \multirow{3}{*}{q} & x & 1 & 2 & 3 & 1 & 2 & 3 & 1 & 2 & 3\\
+    & y & 4 & 5 & 6 & 4 & 5 & 6 & 4 & 5 & 6\\
+    & z & 7 & 8 & 9 & 7 & 8 & 9 & 7 & 8 & 9\\
+    \hline
+  \end{tabular}
+\end{table}
+
+# Generating the above basic template from R
+
+```{r results='asis', echo=FALSE, comment=""}
+C1 <- c("n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e")	
+R1 <- c("p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q")	
+C2 <- c("a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c")	
+R2 <- c("x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z")	
+V <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+df <- data.frame(R0="R", R1, R2, C0="C", C1, C2, V)
+
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(df)
+pt$addColumnDataGroups("C1", fromData=FALSE, explicitListOfValues=list("n", "m", "e"), addTotal=FALSE)
+pt$addColumnDataGroups("C2", addTotal=FALSE)
+pt$addRowDataGroups("R1", addTotal=FALSE)
+pt$addRowDataGroups("R2", addTotal=FALSE)
+pt$defineCalculation(calculationName="V", summariseExpression="sum(V)")
+cat(pt$getLatex(caption="My Table", label="mytable"))
+```
+
+# With totals
+
+```{r results='asis', echo=FALSE, comment=""}
+C1 <- c("n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e")	
+R1 <- c("p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q")	
+C2 <- c("a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c")	
+R2 <- c("x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z")	
+V <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+df <- data.frame(R0="R", R1, R2, C0="C", C1, C2, V)
+
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(df)
+pt$addColumnDataGroups("C1", fromData=FALSE, explicitListOfValues=list("n", "m", "e"))
+pt$addColumnDataGroups("C2")
+pt$addRowDataGroups("R1")
+pt$addRowDataGroups("R2")
+pt$defineCalculation(calculationName="V", summariseExpression="sum(V)")
+cat(pt$getLatex(caption="My Table", label="mytable"))
+```
+
+# With an extra level of headers
+
+```{r results='asis', echo=FALSE, comment=""}
+C1 <- c("n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e")	
+R1 <- c("p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q")	
+C2 <- c("a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c")	
+R2 <- c("x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z")	
+V <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+df <- data.frame(R0="R", R1, R2, C0="C", C1, C2, V)
+
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(df)
+pt$addColumnDataGroups("C0", addTotal=FALSE)
+pt$addColumnDataGroups("C1", fromData=FALSE, explicitListOfValues=list("n", "m", "e"), addTotal=FALSE)
+pt$addColumnDataGroups("C2", addTotal=FALSE)
+pt$addRowDataGroups("R0", addTotal=FALSE)
+pt$addRowDataGroups("R1", addTotal=FALSE)
+pt$addRowDataGroups("R2", addTotal=FALSE)
+pt$defineCalculation(calculationName="V", summariseExpression="sum(V)")
+cat(pt$getLatex(caption="My Table", label="mytable"))
+```
+
+# Empty Pivot 1
+
+```{r results='asis', echo=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+cat(pt$getLatex(caption="My Table", label="mytable"))
+```
+
+# Empty Pivot 2
+
+```{r results='asis', echo=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+cat(pt$getLatex(caption="My Table", label="mytable"))
+```
+
+# Just a total
+
+```{r results='asis', echo=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+cat(pt$getLatex(caption="My Table", label="mytable"))
+```
+

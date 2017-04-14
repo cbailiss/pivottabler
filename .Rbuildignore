@@ -7,3 +7,5 @@
 ^\.travis\.yml$
 ^cran-comments\.md$
 ^README\.Rmd$
+^latextest\.Rmd$
+^latextest\.pdf$

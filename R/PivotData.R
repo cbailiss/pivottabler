@@ -51,8 +51,8 @@ PivotData <- R6::R6Class("PivotData",
      private$p_parentPivot$message("PivotData$addData", "Adding data...", list(dataName=dataName, df=private$getDfStr(df)))
      dn <- dataName
      if(is.null(dn)) dn <- deparse(substitute(df))
-     if(is.null(dn)) stop("PivotData$addData(): Please specify a name for the data frame.")
-     if(length(dn)==0) stop("PivotData$addData(): Please specify a name for the data frame.")
+     if(is.null(dn)) stop("PivotData$addData(): Please specify a name for the data frame.", call. = FALSE)
+     if(length(dn)==0) stop("PivotData$addData(): Please specify a name for the data frame.", call. = FALSE)
      if(is.null(private$p_defaultData)) {
        private$p_defaultData <- df
        private$p_defaultName <- dn

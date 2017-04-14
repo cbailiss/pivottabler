@@ -139,6 +139,9 @@
 #'   includeHeaderValues=FALSE, includeRCFilters=FALSE,
 #'   includeCalculationFilters=FALSE, includeCalculationNames=FALSE,
 #'   includeRawValue=FALSE)}}{Render the pivot table as a htmlwidget.}
+#'   \item{\code{getLatex(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL,
+#'   fromColumn=NULL, toColumn=NULL)}}{Get the Latex representation of the pivot
+#'   table.}
 #'   \item{\code{asList()}}{Get a list representation of the pivot table.}
 #'   \item{\code{asJSON()}}{Get a JSON representation of the pivot table.}
 #'   \item{\code{viewJSON()}}{View the JSON representation of the pivot table.}
@@ -160,7 +163,8 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_columnGroup <- PivotDataGroup$new(parentPivot=self, parentGroup=NULL, rowOrColumn="column")
       private$p_calculationsPosition <- NULL
       private$p_calculationGroups <- PivotCalculationGroups$new(parentPivot=self)
-      private$p_renderer <- PivotHtmlRenderer$new(parentPivot=self)
+      private$p_htmlRenderer <- PivotHtmlRenderer$new(parentPivot=self)
+      private$p_latexRenderer <- PivotLatexRenderer$new(parentPivot=self)
       self$message("PivotTable$new", "Created new Pivot Table.")
       return(invisible())
     },
@@ -556,6 +560,7 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_evaluated==TRUE){
         p_cells <- NULL
         private$p_evaluated <- FALSE
+        private$p_latextRenderer$resetVisibleRange()
       }
       self$message("PivotTable$resetCells", "Reset cells.")
       return(invisible())
@@ -740,7 +745,7 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$getHtml", "Getting HTML...")
       if(!private$p_evaluated) stop("PivotTable$getHtml():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$getHtml():  No cells exist to render.", call. = FALSE)
-      htmlTable <- private$p_renderer$getTableHtml(styleNamePrefix=styleNamePrefix, includeHeaderValues=includeHeaderValues,
+      htmlTable <- private$p_htmlRenderer$getTableHtml(styleNamePrefix=styleNamePrefix, includeHeaderValues=includeHeaderValues,
                                                    includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
                                                    includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
       self$message("PivotTable$getHtml", "Got HTML.")
@@ -763,7 +768,7 @@ PivotTable <- R6::R6Class("PivotTable",
       if(!private$p_evaluated) stop("PivotTable$getHtml():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       # todo: enable rendering before cells are calculated so the structure of the pivot can be checked as it is being developed
       if(is.null(private$p_cells)) stop("PivotTable$saveHtml():  No cells exist to render.", call. = FALSE)
-      htmlTable <- private$p_renderer$getTableHtml(styleNamePrefix=styleNamePrefix, includeHeaderValues=includeHeaderValues,
+      htmlTable <- private$p_htmlRenderer$getTableHtml(styleNamePrefix=styleNamePrefix, includeHeaderValues=includeHeaderValues,
                                                    includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
                                                    includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
       if (fullPageHTML==FALSE) {
@@ -826,6 +831,23 @@ PivotTable <- R6::R6Class("PivotTable",
       w <- htmlwidgets::createWidget("pivottabler", widgetData, width=width, height=height, sizingPolicy=sp)
       self$message("PivotTable$renderPivot", "Rendered htmlwidget.")
       return(w)
+    },
+    getLatex = function(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL, fromColumn=NULL, toColumn=NULL) {
+      checkArgument("PivotTable", "getLatex", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "getLatex", label, missing(label), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "getLatex", fromRow, missing(fromRow), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+      checkArgument("PivotTable", "getLatex", toRow, missing(toRow), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+      checkArgument("PivotTable", "getLatex", fromColumn, missing(fromColumn), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+      checkArgument("PivotTable", "getLatex", toColumn, missing(toColumn), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+      self$message("PivotTable$getLatex", "Getting Latex...", list(caption=caption, label=label,
+                                                                   fromRow=fromRow, toRow=toRow, fromColumn=fromColumn, toColumn=toColumn))
+      if(!private$p_evaluated) self$evaluatePivot()
+      if(!private$p_evaluated) stop("PivotTable$getLatex():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$getLatex():  No cells exist to render.", call. = FALSE)
+      private$p_latexRenderer$setVisibleRange(fromRow=fromRow, toRow=toRow, fromColumn=fromColumn, toColumn=toColumn)
+      ltx <- private$p_latexRenderer$getTableLatex(caption=caption, label=label)
+      self$message("PivotTable$getLatex", "Got Latex.")
+      return(ltx)
     },
     message = function(methodName, desc, detailList=NULL) {
       if(!private$p_messages) return()
@@ -943,7 +965,8 @@ PivotTable <- R6::R6Class("PivotTable",
     p_calculationGroups = NULL,
     p_evaluated = FALSE,
     p_cells = NULL,
-    p_renderer = NULL,
+    p_htmlRenderer = NULL,
+    p_latexRenderer = NULL,
     p_messages = FALSE,
     p_messageFile = NULL,
     clearIsRenderedFlags = function() {

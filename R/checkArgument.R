@@ -79,12 +79,12 @@ checkArgument <- function(className, methodName, argumentValue, isMissing, # no 
       stop(paste0(className, "$", methodName, "():  [", paste(invalidValues, collapse=", "), "] is/are invalid values for the ", argumentName,
                   " argument. ", argumentName, " must be one of the following values: [", paste(allowedValues, collapse=", "), "]"), call. = FALSE)
   }
-  if(!is.null(minValue)) {
+  if((!is.null(minValue))&&(!is.null(argumentValue))) {
     if(argumentValue < minValue) {
       stop(paste0(className, "$", methodName, "():  ", argumentName, " must be greater than or equal to ", minValue), call. = FALSE)
     }
   }
-  if(!is.null(maxValue)) {
+  if((!is.null(maxValue))&&(!is.null(argumentValue))) {
     if(argumentValue > maxValue) {
       stop(paste0(className, "$", methodName, "():  ", argumentName, " must be less than or equal to ", maxValue), call. = FALSE)
     }

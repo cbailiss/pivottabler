@@ -39,6 +39,12 @@
 #'   for this data group.
 #' @field isRendered Whether or not this data group has been rendered yet (used
 #'   as part of the rendering routines).
+#' @field isWithinVisibleRange whether or not this data group is visible (used
+#'   as part of the rendering routines).
+#' @field visibleChildGroupCount The number of visible child groups (used
+#'   as part of the rendering routines)
+#' @field visibleDescendantGroupCount. The number of visible descendant groups
+#'   (used as part of the rendering routines).
 
 #' @section Methods:
 #' \describe{
@@ -138,11 +144,13 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      dgs <- NULL
      if(missing(descendants)||is.null(descendants)) { dgs <- list() }
      else { dgs <- descendants }
-     index <- length(dgs) + 1
-     dgs[[index]] <- self
+     if(includeCurrentGroup==TRUE) {
+       index <- length(dgs) + 1
+       dgs[[index]] <- self
+     }
      if(length(private$p_groups) > 0) {
        for (i in 1:length(private$p_groups)) {
-         dgs <- private$p_groups[[i]]$getLeafGroups(dgs)
+         dgs <- private$p_groups[[i]]$getDescendantGroups(dgs, includeCurrentGroup=TRUE)
        }
      }
      private$p_parentPivot$message("DataGroup$getDescendantGroups", "Got descendant groups", list(count=length(dgs)))
@@ -769,6 +777,43 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        private$p_isRendered <- value
        return(invisible())
      }
+   },
+   isWithinVisibleRange = function(value) {
+     if(missing(value)) { return(invisible(private$p_isWithinVisibleRange)) }
+     else {
+       checkArgument("PivotDataGroup", "isWithinVisibleRange", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+       private$p_isWithinVisibleRange <- value
+       return(invisible())
+     }
+   },
+   visibleChildGroupCount = function(value) {
+     if(is.null(private$p_groups)) return(invisible(0))
+     if(length(private$p_groups)==0) return(invisible(0))
+     visibleCount <- 0
+     for(i in 1:length(private$p_groups)) {
+       if(private$p_groups[[i]]$isWithinVisibleRange==TRUE) visibleCount <- visibleCount + 1
+     }
+     return(invisible(visibleCount))
+   },
+   visibleDescendantGroupCount = function(value) {
+     if(is.null(private$p_groups)) return(invisible(0))
+     if(length(private$p_groups)==0) return(invisible(0))
+     visibleCount <- 0
+     groups <- self$getDescendantGroups(includeCurrentGroup=FALSE)
+     for(i in 1:length(groups)) {
+       if(groups[[i]]$isWithinVisibleRange==TRUE) visibleCount <- visibleCount + 1
+     }
+     return(invisible(visibleCount))
+   },
+   visibleLeafGroupCount = function(value) {
+     if(is.null(private$p_groups)) return(invisible(0))
+     if(length(private$p_groups)==0) return(invisible(0))
+     visibleCount <- 0
+     groups <- self$getLeafGroups()
+     for(i in 1:length(groups)) {
+       if(groups[[i]]$isWithinVisibleRange==TRUE) visibleCount <- visibleCount + 1
+     }
+     return(invisible(visibleCount))
    }
   ),
   private = list(
@@ -786,6 +831,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    p_rowColumnNumber = NULL,
    p_baseStyleName = NULL,
    p_style = NULL,
+   p_isWithinVisibleRange = TRUE, # helper flag to allow a subsection of the pivot table to be output
    p_isRendered = FALSE, # helper flag to keep track of which data groups have already been rendered
 
    # private functions:

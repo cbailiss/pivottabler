@@ -84,34 +84,34 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      self$clearIsRenderedFlags()
      # get the dimensions of the various parts of the table...
      # ...headings:
-     rowGroupCount <- private$p_parentPivot$rowGroup$getLevelCount(includeCurrentLevel=FALSE)
-     columnGroupCount <- private$p_parentPivot$columnGroup$getLevelCount(includeCurrentLevel=FALSE)
+     rowGroupLevelCount <- private$p_parentPivot$rowGroup$getLevelCount(includeCurrentLevel=FALSE)
+     columnGroupLevelCount <- private$p_parentPivot$columnGroup$getLevelCount(includeCurrentLevel=FALSE)
      # ...cells:
      rowCount <- private$p_parentPivot$cells$rowCount
      columnCount <- private$p_parentPivot$cells$columnCount
      # special case of no rows and no columns, return a blank empty table
-     if((rowGroupCount==0)&&(columnGroupCount==0)) {
+     if((rowGroupLevelCount==0)&&(columnGroupLevelCount==0)) {
        tbl <- htmltools::tags$table(class=tableStyle, htmltools::tags$tr(
          htmltools::tags$td(class=cellStyle, style="text-align: center; padding: 6px", htmltools::HTML("(no data)"))))
        return(tbl)
      }
      # there must always be at least one row and one column
-     insertDummyRowHeading <- (rowGroupCount==0) & (columnGroupCount > 0)
-     insertDummyColumnHeading <- (columnGroupCount==0) & (rowGroupCount > 0)
+     insertDummyRowHeading <- (rowGroupLevelCount==0) & (columnGroupLevelCount > 0)
+     insertDummyColumnHeading <- (columnGroupLevelCount==0) & (rowGroupLevelCount > 0)
      # build the table up row by row
      trows <- list()
      # render the column headings, with a large blank cell at the start over the row headings
      if(insertDummyColumnHeading) {
        trow <- list()
-       trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=columnGroupCount, colspan=rowGroupCount, htmltools::HTML("&nbsp;"))
+       trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=columnGroupLevelCount, colspan=rowGroupLevelCount, htmltools::HTML("&nbsp;"))
        trow[[2]] <- htmltools::tags$th(class=colHeaderStyle)
        trows[[1]] <- htmltools::tags$tr(trow)
      }
      else {
-       for(r in 1:columnGroupCount) {
+       for(r in 1:columnGroupLevelCount) {
          trow <- list()
          if(r==1) { # generate the large top-left blank cell
-           trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=columnGroupCount, colspan=rowGroupCount, htmltools::HTML("&nbsp;"))
+           trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=columnGroupLevelCount, colspan=rowGroupLevelCount, htmltools::HTML("&nbsp;"))
          }
          # get the groups at this level
          grps <- private$p_parentPivot$columnGroup$getLevelGroups(level=r)
