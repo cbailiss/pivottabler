@@ -43,8 +43,10 @@
 #'   as part of the rendering routines).
 #' @field visibleChildGroupCount The number of visible child groups (used
 #'   as part of the rendering routines)
-#' @field visibleDescendantGroupCount. The number of visible descendant groups
+#' @field visibleDescendantGroupCount The number of visible descendant groups
 #'   (used as part of the rendering routines).
+#' @field visibleLeafGroupCount The number of visible leaf groups beneath this
+#'   group (used as part of the rendering routines).
 
 #' @section Methods:
 #' \describe{
