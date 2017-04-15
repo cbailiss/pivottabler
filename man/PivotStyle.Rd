@@ -57,7 +57,4 @@ name-value pairs.
 # methods.
 # For an example, see the PivotStyles class.
 }
-\keyword{format}
-\keyword{formatting}
-\keyword{style}
-\keyword{styling}
+\keyword{datasets}

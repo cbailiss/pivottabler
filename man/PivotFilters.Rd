@@ -68,4 +68,4 @@ filters$setFilterValues(variableName="Product", values="Cadbury Dairy Milk
 Chocolate 100g")
 # filters now contains criteria for Year, Country and Product
 }
-\keyword{filter}
+\keyword{datasets}

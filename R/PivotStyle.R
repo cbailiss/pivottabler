@@ -8,7 +8,6 @@
 #' @importFrom R6 R6Class
 #' @import jsonlite
 #' @export
-#' @keywords style styling format formatting
 #' @return Object of \code{\link{R6Class}} with properties and methods that help
 #'   define styles.
 #' @format \code{\link{R6Class}} object.

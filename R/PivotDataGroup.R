@@ -8,7 +8,6 @@
 #' @importFrom R6 R6Class
 #' @import dplyr
 #' @import jsonlite
-#' @keywords data group
 #' @return Object of \code{\link{R6Class}} with properties and methods that help
 #'   define the row and column headings in a pivot table.
 #' @format \code{\link{R6Class}} object.

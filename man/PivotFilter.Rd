@@ -58,4 +58,4 @@ pt <- PivotTable$new()
 # ...
 PivotFilter$new(pt, variableName="Country", values="England")
 }
-\keyword{filter}
+\keyword{datasets}

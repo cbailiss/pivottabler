@@ -119,5 +119,4 @@ group (used as part of the rendering routines).}
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{data}
-\keyword{group}
+\keyword{datasets}

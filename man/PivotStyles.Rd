@@ -84,4 +84,4 @@ pivotStyles$addStyle(styleName="MyNewStyle", list(
     "background-color"="#F2F2F2"
   ))
 }
-\keyword{calculation}
+\keyword{datasets}

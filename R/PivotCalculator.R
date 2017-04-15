@@ -7,7 +7,6 @@
 #' @importFrom R6 R6Class
 #' @import dplyr
 #' @import jsonlite
-#' @keywords calculation
 #' @return Object of \code{\link{R6Class}} with properties and methods that help
 #'   calculate the value of a pivot table cell.
 #' @format \code{\link{R6Class}} object.

@@ -10,7 +10,6 @@
 #' @importFrom R6 R6Class
 #' @import jsonlite
 #' @export
-#' @keywords filter
 #' @return Object of \code{\link{R6Class}} with properties and methods that
 #'   define a single pivot table filter.
 #' @format \code{\link{R6Class}} object.

@@ -5,7 +5,6 @@
 #' @docType class
 #' @importFrom R6 R6Class
 #' @import htmltools
-#' @keywords html
 #' @return Object of \code{\link{R6Class}} with properties and methods that
 #'   render to HTML.
 #' @format \code{\link{R6Class}} object.

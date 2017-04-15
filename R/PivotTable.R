@@ -9,7 +9,6 @@
 #' @import htmltools
 #' @import jsonlite
 #' @export
-#' @keywords calculation
 #' @return Object of \code{\link{R6Class}} with properties and methods that
 #'   define a pivot table.
 #' @format \code{\link{R6Class}} object.

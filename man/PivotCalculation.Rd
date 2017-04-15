@@ -84,4 +84,4 @@ table if no  data exists for a particular cell.}
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{calculation}
+\keyword{datasets}

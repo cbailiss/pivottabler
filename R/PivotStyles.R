@@ -8,7 +8,6 @@
 #' @importFrom R6 R6Class
 #' @import jsonlite
 #' @export
-#' @keywords calculation
 #' @return Object of \code{\link{R6Class}} with properties and methods that
 #'   define styles/a theme for a pivot table.
 #' @format \code{\link{R6Class}} object.
