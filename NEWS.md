@@ -12,6 +12,8 @@ Improvements
 ----------------
 
 * Added the ability to output a pivot table in Latex.  Many related vignette additions/updates made.
+* Added findRowDataGroups() and findColumnDataGroups() functions to find data groups (i.e. headings) that match specified criteria to simplify scenarios such as changing the styling of specific headings.
+* Added the findCells() function to find cells in the body of a pivot table that match specified criteria to simplify scenarios such as conditional formatting.
 * Added asMatrix() function to allow the pivot table contents to be retrieved as a matrix.
 * Added asDataFrame() function to allow the pivot table contents to be retrieved as a data frame.
 * Updated object documentation to wrap lines longer than 80 characters. 

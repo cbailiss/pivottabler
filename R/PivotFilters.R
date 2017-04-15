@@ -34,7 +34,11 @@
 #'   \item{\code{new(...)}}{Create a new pivot calculation, specifying the field
 #'   values documented above.}
 #'
-#'   \item{\code{setFilters(filters, action="replace"}}{Update the value of this
+#'   \item{\code{getFilter(variableName)}}{Find a filter with the specified
+#'   variable name.}
+#'   \item{\code{isFilterMatch(variableNames=NULL, variableValues=NULL)}}{Tests
+#'   whether these filters match the specified criteria.}
+#'   \item{\code{setFilters(filters, action="replace")}}{Update the value of this
 #'   PivotFilters object with the filters from the specified PivotFilters
 #'   object, either unioning, intersecting or replacing the filter criteria.}
 #'   \item{\code{setFilter(filter, action="replace")}}{Update the value of this
@@ -70,13 +74,55 @@ PivotFilters <- R6::R6Class("PivotFilters",
       }
       private$p_parentPivot$message("PivotFilters$new", "Created new Pivot Filters.")
     },
+    getFilter = function(variableName) {
+      checkArgument("PivotFilters", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      private$p_parentPivot$message("PivotFilters$getFilter", "Getting filter...", list(variableName=variableName))
+      if(length(private$p_filters)>0) {
+        for(i in 1:length(private$p_filters)) {
+          if(private$p_filters[[i]]$variableName==variableName) {
+            return(invisible(private$p_filters[[i]]))
+          }
+        }
+      }
+      private$p_parentPivot$message("PivotFilters$getFilter", "Got filter.")
+      return(invisible())
+    },
+    isFilterMatch = function(variableNames=NULL, variableValues=NULL) {
+      checkArgument("PivotFilters", "isFilterMatch", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotFilters", "isFilterMatch", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+      private$p_parentPivot$message("PivotFilters$isFilterMatch", "Checking if is filter match...")
+      if(!is.null(variableNames)) {
+        if(length(variableNames) > 0) {
+          for(i in 1:length(variableNames)) {
+            filter <- self$getFilter(variableNames[i])
+            if(is.null(filter)) return(invisible(FALSE))
+          }
+        }
+      }
+      if(!is.null(variableValues)) {
+        if(length(variableValues) > 0) {
+          varNames <- names(variableValues)
+          for(i in 1:length(varNames)) {
+            filter <- self$getFilter(varNames[i])
+            if(is.null(filter)) return(invisible(FALSE))
+            varValues <- variableValues[[i]]
+            if(is.null(varValues)) next
+            if(length(varValues)==0) next
+            intrsct <- intersect(filter$values, varValues)
+            if(is.null(intrsct)) return(invisible(FALSE))
+            if(length(intrsct)==0) return(invisible(FALSE))
+          }
+        }
+      }
+      private$p_parentPivot$message("PivotFilters$isFilterMatch", "Checked if is filter match.")
+      return(invisible(TRUE))
+    },
     setFilters = function(filters, action="replace") {
       checkArgument("PivotFilters", "setFilters", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
       checkArgument("PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("union", "intersect", "replace"))
       private$p_parentPivot$message("PivotFilters$setFilters", "Setting filters...", list(action=action, filters=filters$asString()))
       if(length(filters$filters)>0) {
-        for(i in 1:length(filters$filters))
-        {
+        for(i in 1:length(filters$filters)) {
           self$setFilter(filters$filters[[i]], action)
         }
       }

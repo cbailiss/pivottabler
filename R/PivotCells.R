@@ -29,6 +29,10 @@
 #'   column coordinates in the pivot table.}
 #'   \item{\code{setCell(r, c, cell))}}{Set the PivotCell at the specified row
 #'   and column coordinates in the pivot table.}
+#'   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
+#'   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
+#'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells matching
+#'   the specified criteria.}
 #'   \item{\code{asMatrix(rawValue=TRUE))}}{Get a matrix containing all of the
 #'   numerical values from the body of the pivot table (for rawValue=TRUE) or
 #'   all of the formatted (i.e. character) values (for rawValue=FALSE).}
@@ -69,6 +73,75 @@ PivotCells <- R6::R6Class("PivotCells",
      checkArgument("PivotCells", "setCell", cell, missing(cell), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotCell")
      private$p_rows[[r]][[c]] <- cell
      return(invisible())
+   },
+   findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
+                        minValue=NULL, maxValue=NULL, exactValues=NULL, includeNull=TRUE, includeNA=TRUE) {
+     checkArgument("PivotCells", "findCells", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotCells", "findCells", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+     checkArgument("PivotCells", "findCells", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
+     checkArgument("PivotCells", "findCells", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotCells", "findCells", minValue, missing(minValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+     checkArgument("PivotCells", "findCells", maxValue, missing(maxValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+     checkArgument("PivotCells", "findCells", exactValues, missing(exactValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+     checkArgument("PivotCells", "findCells", includeNull, missing(includeNull), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("PivotCells", "findCells", includeNA, missing(includeNA), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     private$p_parentPivot$message("PivotCells$findCells", "Finding cells...")
+     matches <- list()
+     if(length(private$p_rows) > 0) {
+       for(r in 1:length(private$p_rows)) {
+         if(length(private$p_rows[[r]]) > 0) {
+           for(c in 1:length(private$p_rows[[r]])) {
+             cell <- private$p_rows[[r]][[c]]
+             rowColFilters <- cell$rowColFilters
+             # a) check the filter match
+             if((!is.null(variableNames))||(!is.null(variableValues))) {
+               if(is.null(rowColFilters)) next
+               isMatch <- rowColFilters$isFilterMatch(variableNames=variableNames, variableValues=variableValues)
+               if(isMatch==FALSE) next
+             }
+             # b) check totals criteria
+             if((totals=="exclude")&&(cell$isTotal==TRUE)) next
+             if((totals=="only")&&(cell$isTotal==FALSE)) next
+             # c) check calculation criteria
+             if(!is.null(calculationNames)) {
+               calcName <- cell$calculationName
+               if(is.null(calcName)) next
+               if(!(calcName %in% calculationNames)) next
+             }
+             # d) value tests:  is null, NA, minValue, maxValue, exactValues
+             if(is.null(cell$rawValue)) {
+               if(includeNull==FALSE) next
+             }
+             else {
+               if(is.na(cell$rawValue)) {
+                 if(includeNA==FALSE) next
+               }
+               else {
+                 if((!is.null(minValue))||(!is.null(maxValue))) {
+                   cls <- class(cell$rawValue)
+                   if(("integer" %in% cls)||("numeric" %in% cls)) {
+                     if(!is.null(minValue)) {
+                       if(cell$rawValue < minValue) next
+                     }
+                     if(!is.null(maxValue)) {
+                       if(cell$rawValue > maxValue) next
+                     }
+                   }
+                   else next
+                 }
+                 if(!is.null(exactValues)) {
+                   if(!(cell$rawValue %in% exactValues)) next
+                 }
+               }
+             }
+             # is a match
+             matches[[length(matches)+1]] <- cell
+           }
+         }
+       }
+     }
+     private$p_parentPivot$message("PivotCells$findCells", "Found cells.")
+     return(invisible(matches))
    },
    asMatrix = function(rawValue=TRUE) {
      checkArgument("PivotCells", "asMatrix", rawValue, missing(rawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")

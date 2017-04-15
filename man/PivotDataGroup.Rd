@@ -56,6 +56,9 @@ associated with the PivotTable.}
 \item{\code{style}}{A PivotStyle object that can apply overrides to the base style
 for this data group.}
 
+\item{\code{isMatch}}{Whether or not this data group matches the criteria of the
+last find.}
+
 \item{\code{isRendered}}{Whether or not this data group has been rendered yet (used
 as part of the rendering routines).}
 
@@ -110,6 +113,17 @@ group (used as part of the rendering routines).}
   \item{\code{normaliseDataGroup()}}{Normalise the data group hierachy so
   that all branches have the same number of levels - accomplished by adding
   empty child data groups where needed.}
+  \item{\code{getNetFilters()}}{Get a PivotFilters object that contains all
+  of the filters applied in this data group and all of its ancestors.}
+  \item{\code{getNetCalculationName()}}{Get the calculation name applied in
+  this data group or its nearest ancestor.}
+  \item{\code{isFindMatch(variableNames=NULL, variableValues=NULL,
+  totals="include", calculationNames=NULL)}}{Tests whether this data group
+  matches the specified criteria.}
+  \item{\code{findDataGroups(variableNames=NULL, variableValues=NULL,
+  totals="include", calculationNames=NULL,
+  includeChildGroups=FALSE)}}{Searches all data groups underneath this data
+  group to find groups that match the specified criteria.}
   \item{\code{asList()}}{Get a list representation of the data group(s).}
   \item{\code{asJSON()}}{Get a JSON representation of the data group(s).}
 }

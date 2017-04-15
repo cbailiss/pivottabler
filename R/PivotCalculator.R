@@ -165,6 +165,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if (filters$count > 0)
      {
        filterCmd <- NULL
+       filterCount <- 0
        for(j in 1:length(filters$filters)) {
          filter <- filters$filters[[j]]
          if(is.null(filter$variableName)) stop("PivotCalculator$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
@@ -174,10 +175,13 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          if(length(filter$values)>0) {
            # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
            filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% filters$filters[[", j, "]]$values)")
+           filterCount <- filterCount + 1
          }
        }
-       filterCmd <- paste0("data <- dplyr::filter(data,", filterCmd, ")")
-       eval(parse(text=filterCmd))
+       if(filterCount > 0) {
+         filterCmd <- paste0("data <- dplyr::filter(data,", filterCmd, ")")
+         eval(parse(text=filterCmd))
+       }
      }
      private$p_parentPivot$message("PivotCalculator$getFilteredDataFrame", "Got filtered data frame.")
      return(invisible(data))

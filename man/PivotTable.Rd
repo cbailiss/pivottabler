@@ -124,6 +124,16 @@ content for external systems.}
   \item{\code{evaluatePivot()}}{A wrapper for calling
   normaliseColumnGroups(), normaliseRowGroups(), generateCellStructure() and
   evaluateCells() in sequence.}
+  \item{\code{findRowDataGroups(variableNames=NULL, variableValues=NULL,
+  totals="include", calculationNames=NULL, includeChildGroups=FALSE)}}{Find
+  row data groups matching the specified criteria.}
+  \item{\code{findColumnDataGroups(variableNames=NULL, variableValues=NULL,
+  totals="include", calculationNames=NULL, includeChildGroups=FALSE)}}{Find
+  column data groups matching the specified criteria.}
+  \item{\code{findCells(variableNames=NULL, variableValues=NULL,
+  totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
+  exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells in the
+  body of the pivot table matching the specified criteria.}
   \item{\code{asMatrix(includeHeaders=TRUE, repeatHeaders=FALSE,
   rawValue=FALSE)}}{Gets the pivot table as a matrix, with or without
   headings.}

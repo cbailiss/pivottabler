@@ -118,6 +118,16 @@
 #'   \item{\code{evaluatePivot()}}{A wrapper for calling
 #'   normaliseColumnGroups(), normaliseRowGroups(), generateCellStructure() and
 #'   evaluateCells() in sequence.}
+#'   \item{\code{findRowDataGroups(variableNames=NULL, variableValues=NULL,
+#'   totals="include", calculationNames=NULL, includeChildGroups=FALSE)}}{Find
+#'   row data groups matching the specified criteria.}
+#'   \item{\code{findColumnDataGroups(variableNames=NULL, variableValues=NULL,
+#'   totals="include", calculationNames=NULL, includeChildGroups=FALSE)}}{Find
+#'   column data groups matching the specified criteria.}
+#'   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
+#'   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
+#'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells in the
+#'   body of the pivot table matching the specified criteria.}
 #'   \item{\code{asMatrix(includeHeaders=TRUE, repeatHeaders=FALSE,
 #'   rawValue=FALSE)}}{Gets the pivot table as a matrix, with or without
 #'   headings.}
@@ -594,6 +604,51 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$evaluatePivot", "Evaluated pivot table.")
       return(invisible())
     },
+    findRowDataGroups = function(variableNames=NULL, variableValues=NULL, totals="include",
+                                 calculationNames=NULL, includeChildGroups=FALSE) {
+      checkArgument("PivotTable", "findRowDataGroups", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "findRowDataGroups", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+      checkArgument("PivotTable", "findRowDataGroups", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
+      checkArgument("PivotTable", "findRowDataGroups", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "findRowDataGroups", includeChildGroups, missing(includeChildGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      self$message("PivotTable$findRowDataGroups", "Finding row data groups...")
+      grps <- private$p_rowGroup$findDataGroups(variableNames=variableNames, variableValues=variableValues, totals=totals,
+                                                calculationNames=calculationNames, includeChildGroups=includeChildGroups)
+      self$message("PivotTable$findRowDataGroups", "Found row data groups.")
+      return(invisible(grps))
+    },
+    findColumnDataGroups = function(variableNames=NULL, variableValues=NULL, totals="include",
+                                 calculationNames=NULL, includeChildGroups=FALSE) {
+      checkArgument("PivotTable", "findColumnDataGroups", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "findColumnDataGroups", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+      checkArgument("PivotTable", "findColumnDataGroups", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
+      checkArgument("PivotTable", "findColumnDataGroups", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "findColumnDataGroups", includeChildGroups, missing(includeChildGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      private$p_parentPivot$message("PivotTable$findColumnDataGroups", "Finding column data groups...")
+      grps <- private$p_columnGroup$findDataGroups(variableNames=variableNames, variableValues=variableValues, totals=totals,
+                                                   calculationNames=calculationNames, includeChildGroups=includeChildGroups)
+      private$p_parentPivot$message("PivotTable$findColumnDataGroups", "Found column data groups.")
+      return(invisible(grps))
+    },
+    findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
+                         minValue=NULL, maxValue=NULL, exactValues=NULL, includeNull=TRUE, includeNA=TRUE) {
+      checkArgument("PivotTable", "findCells", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "findCells", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+      checkArgument("PivotTable", "findCells", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
+      checkArgument("PivotTable", "findCells", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      checkArgument("PivotTable", "findCells", minValue, missing(minValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+      checkArgument("PivotTable", "findCells", maxValue, missing(maxValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+      checkArgument("PivotTable", "findCells", exactValues, missing(exactValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+      checkArgument("PivotTable", "findCells", includeNull, missing(includeNull), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "findCells", includeNA, missing(includeNA), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      self$message("PivotTable$findCells", "Finding cells...")
+      if(!private$p_evaluated) stop("PivotTable$findCells():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$findCells():  No cells exist to retrieve.", call. = FALSE)
+      cells <- private$p_cells$findCells(variableNames=variableNames, variableValues=variableValues, totals=totals, calculationNames=calculationNames,
+                                         minValue=minValue, maxValue=maxValue, exactValues=exactValues, includeNull=includeNull, includeNA=includeNA)
+      self$message("PivotTable$findCells", "Found cells.")
+      return(invisible(cells))
+    },
     asMatrix = function(includeHeaders=TRUE, repeatHeaders=FALSE, rawValue=FALSE) {
       checkArgument("PivotTable", "asMatrix", includeHeaders, missing(includeHeaders), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "asMatrix", rawValue, missing(rawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -889,7 +944,7 @@ PivotTable <- R6::R6Class("PivotTable",
         calculationsPosition = private$p_calculationsPosition,
         calculationGroups = private$p_calculationGroups$asList()
       )
-      if(!is.null(private$p_cells)) lst["cells"] <- private$p_cells$asList()
+      if(!is.null(private$p_cells)) lst$cells <- private$p_cells$asList()
       self$message("PivotTable$asList", "Got list.")
       return(lst)
     },

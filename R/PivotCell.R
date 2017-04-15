@@ -177,7 +177,7 @@ PivotCell <- R6::R6Class("PivotCell",
     p_columnLeafGroup = NULL,         # an object ref (shared across this column)
     p_rawValue = NULL ,               # a value (unique to this cell)
     p_formattedValue = NULL,          # a value (unique to this cell)
-    p_baseStyleName = NULL,
-    p_style = NULL
+    p_baseStyleName = NULL,           # a string
+    p_style = NULL                    # an object ref (may or may not be shared) to a PivotStyle object
   )
 )
