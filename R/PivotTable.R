@@ -820,8 +820,8 @@ PivotTable <- R6::R6Class("PivotTable",
       #                 includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
       settings <- list() # may need this in the future
       widgetData <- list(
-        tableCss = pt$getCss(styleNamePrefix=styleNamePrefix),
-        tableHtml = as.character(pt$getHtml(styleNamePrefix=styleNamePrefix, includeHeaderValues=includeHeaderValues,
+        tableCss = self$getCss(styleNamePrefix=styleNamePrefix),
+        tableHtml = as.character(self$getHtml(styleNamePrefix=styleNamePrefix, includeHeaderValues=includeHeaderValues,
                                             includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
                                             includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)),
         settings = settings
