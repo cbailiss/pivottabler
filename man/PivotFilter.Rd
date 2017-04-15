@@ -9,34 +9,47 @@
 PivotFilter
 }
 \value{
-Object of \code{\link{R6Class}} with properties and methods that define a single pivot table filter.
+Object of \code{\link{R6Class}} with properties and methods that
+  define a single pivot table filter.
 }
 \description{
-The PivotFilter class represents a single filter condition.  The condition relates to one column and is of the form [ColumnName] IN c(Value1, Value2, Value3, ...).  Often in a pivot table, each filter specifies only one data value, as typically each distinct data value exists in a separate row or column.
+The PivotFilter class represents a single filter condition.  The condition
+relates to one column and is of the form [ColumnName] IN c(Value1, Value2,
+Value3, ...).  Often in a pivot table, each filter specifies only one data
+value, as typically each distinct data value exists in a separate row or
+column.
 }
 \section{Fields}{
 
 \describe{
 \item{\code{parentPivot}}{Owning pivot table.}
 
-\item{\code{variableName}}{The name of the column in the data frame that this filter will apply to.}
+\item{\code{variableName}}{The name of the column in the data frame that this filter
+will apply to.}
 
-\item{\code{values}}{A single data value or a vector of data values that could/can be found in the data frame column.}
+\item{\code{values}}{A single data value or a vector of data values that could/can
+be found in the data frame column.}
 }}
 
 \section{Methods}{
 
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot filter, specifying the field values documented above.}
+  \item{Documentation}{For more complete explanations and examples please see
+  the extensive vignettes supplied with this package.}
+  \item{\code{new(...)}}{Create a new pivot filter, specifying the field
+  values documented above.}
 
-  \item{\code{union(filter)}}{Update this PivotFilter by unioning the filter values of this filter with those from the specified PivotFilter.}
-  \item{\code{intersect(filter)}}{Update this PivotFilter by intersecting the filter values of this filter with those from the specified PivotFilter.}
-  \item{\code{replace(filter)}}{Update this PivotFilter by setting the filter values of this filter to match those of the specified PivotFilter.}
+  \item{\code{union(filter)}}{Update this PivotFilter by unioning the filter
+  values of this filter with those from the specified PivotFilter.}
+  \item{\code{intersect(filter)}}{Update this PivotFilter by intersecting the
+  filter values of this filter with those from the specified PivotFilter.}
+  \item{\code{replace(filter)}}{Update this PivotFilter by setting the filter
+  values of this filter to match those of the specified PivotFilter.}
   \item{\code{getCopy()}}{Get a copy of this PivotFilter.}
   \item{\code{asList()}}{Get a list representation of this PivotFilter.}
   \item{\code{asJSON()}}{Get a list representation of this PivotFilter.}
-  \item{\code{asString(includeVariableName=TRUE, seperator=" ")}}{Get a text representation of this PivotFilter.}
+  \item{\code{asString(includeVariableName=TRUE, seperator=" ")}}{Get a text
+  representation of this PivotFilter.}
 }
 }
 

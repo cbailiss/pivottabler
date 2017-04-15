@@ -9,7 +9,8 @@
 PivotCalculation
 }
 \value{
-Object of \code{\link{R6Class}} with properties and methods that define a single pivot table calculation.
+Object of \code{\link{R6Class}} with properties and methods that
+  define a single pivot table calculation.
 }
 \description{
 The PivotCalculation class defines one calculation in a pivot table.
@@ -19,42 +20,59 @@ The PivotCalculation class defines one calculation in a pivot table.
 \describe{
 \item{\code{parentPivot}}{Owning pivot table.}
 
-\item{\code{calculationName}}{Calculation unique name.  Recommendation:  Do not have spaces in this name.}
+\item{\code{calculationName}}{Calculation unique name.  Recommendation:  Do not have
+spaces in this name.}
 
-\item{\code{caption}}{Calculation display name - i.e. the name shown in the pivot table.}
+\item{\code{caption}}{Calculation display name - i.e. the name shown in the pivot
+table.}
 
-\item{\code{visible}}{Show or hide the calculation.  Hidden calculations are typically used as base values for other calculations.}
+\item{\code{visible}}{Show or hide the calculation.  Hidden calculations are
+typically used as base values for other calculations.}
 
-\item{\code{displayOrder}}{The order the calculations are displayed in the pivot table.}
+\item{\code{displayOrder}}{The order the calculations are displayed in the pivot
+table.}
 
-\item{\code{filters}}{Any data filters specific to this calculation.  A PivotFilters object.}
+\item{\code{filters}}{Any data filters specific to this calculation.  A PivotFilters
+object.}
 
-\item{\code{format}}{A character, list or custom function to format the calculation result.}
+\item{\code{format}}{A character, list or custom function to format the calculation
+result.}
 
-\item{\code{dataName}}{Specifies which data frame in the pivot table is used for this calculation.}
+\item{\code{dataName}}{Specifies which data frame in the pivot table is used for
+this calculation.}
 
-\item{\code{type}}{The calculation type:  "summary", "calculation", "function" or "value".}
+\item{\code{type}}{The calculation type:  "summary", "calculation", "function" or
+"value".}
 
-\item{\code{valueName}}{For type="value", the name of the column containing the value to display in the pivot table.}
+\item{\code{valueName}}{For type="value", the name of the column containing the
+value to display in the pivot table.}
 
-\item{\code{summariseExpression}}{For type="summary", the dplyr expression to use with dplyr::summarise().}
+\item{\code{summariseExpression}}{For type="summary", the dplyr expression to use
+with dplyr::summarise().}
 
-\item{\code{calculationExpression}}{For type="calculation", an expression to combine aggregate values.}
+\item{\code{calculationExpression}}{For type="calculation", an expression to combine
+aggregate values.}
 
-\item{\code{calculationFunction}}{For type="function", a reference to a custom R function that will carry out the calculation.}
+\item{\code{calculationFunction}}{For type="function", a reference to a custom R
+function that will carry out the calculation.}
 
-\item{\code{basedOn}}{A character vector specifying the names of one or more calculations that this calculation depends on.}
+\item{\code{basedOn}}{A character vector specifying the names of one or more
+calculations that this calculation depends on.}
 
-\item{\code{noDataValue}}{An integer or numeric value specifying the value to use if no data exists for a particular cell.}
+\item{\code{noDataValue}}{An integer or numeric value specifying the value to use if
+no data exists for a particular cell.}
 
-\item{\code{noDataCaption}}{A character value that will be displayed by the pivot table if no  data exists for a particular cell.}
+\item{\code{noDataCaption}}{A character value that will be displayed by the pivot
+table if no  data exists for a particular cell.}
 }}
 
 \section{Methods}{
 
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot calculation, specifying the field values documented above.}
+  \item{Documentation}{For more complete explanations and examples please see
+  the extensive vignettes supplied with this package.}
+  \item{\code{new(...)}}{Create a new pivot calculation, specifying the field
+  values documented above.}
 
   \item{\code{asList()}}{Get a list representation of this calculation.}
   \item{\code{asJSON()}}{Get a JSON representation of this calculation.}

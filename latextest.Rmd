@@ -410,6 +410,6 @@ cat(pt$getLatex(caption="Col 1", label="mytable", fromColumn=1, toColumn=1))
 cat(pt$getLatex(caption="Cols 2-3", label="mytable", fromColumn=2, toColumn=3))
 cat(pt$getLatex(caption="Rows 1-2, Cols 1-2", label="mytable", fromRow=1, toRow=2, fromColumn=1, toColumn=2))
 cat(pt$getLatex(caption="Rows 1-2, Col 3", label="mytable", fromRow=1, toRow=2, fromColumn=3, toColumn=3))
-cat(pt$getLatex(caption="Rows 3-5, Cols 1-2", label="mytable", fromRow=3, toRow=5, fromColumn=1, toColumn=2))
+cat(pt$getLatex(caption="Rows 3-5, Cols 1-2", label="mytable"))
 cat(pt$getLatex(caption="Rows 3-5, Col 3", label="mytable", fromRow=3, toRow=5, fromColumn=3, toColumn=3))
 ```

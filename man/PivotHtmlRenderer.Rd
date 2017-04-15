@@ -9,7 +9,8 @@
 PivotHtmlRenderer
 }
 \value{
-Object of \code{\link{R6Class}} with properties and methods that render to HTML.
+Object of \code{\link{R6Class}} with properties and methods that
+  render to HTML.
 }
 \description{
 The PivotHtmlRenderer class creates a HTML representation of a pivot table.
@@ -23,11 +24,18 @@ The PivotHtmlRenderer class creates a HTML representation of a pivot table.
 \section{Methods}{
 
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot table renderer, specifying the field value documented above.}
+  \item{Documentation}{For more complete explanations and examples please see
+  the extensive vignettes supplied with this package.}
+  \item{\code{new(...)}}{Create a new pivot table renderer, specifying the
+  field value documented above.}
 
-  \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist on the PivotDataGroup and PivotCell classes.}
-  \item{\code{getTableHtml(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE)}}{Get a HTML representation of the pivot table, optionally including additional detail for debugging purposes.}
+  \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist
+  on the PivotDataGroup class.}
+  \item{\code{getTableHtml(styleNamePrefix=NULL, includeHeaderValues=FALSE,
+  includeRCFilters=FALSE, includeCalculationFilters=FALSE,
+  includeCalculationNames=FALSE, includeRawValue=FALSE)}}{Get a HTML
+  representation of the pivot table, optionally including additional detail
+  for debugging purposes.}
 }
 }
 
@@ -35,4 +43,4 @@ The PivotHtmlRenderer class creates a HTML representation of a pivot table.
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{calculation}
+\keyword{html}

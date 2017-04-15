@@ -10,17 +10,20 @@
   \item{Status}{Train status: A=Active, C=Cancelled, R=Reinstated}
   \item{TOC}{Train operating company}
   \item{TrainCategory}{Express Passenger or Ordinary Passenger}
-  \item{PowerType}{DMU=Diesel Multiple Unit, EMU=Electrical Multiple Unit, HST=High Speed Train}
+  \item{PowerType}{DMU=Diesel Multiple Unit, EMU=Electrical Multiple Unit,
+  HST=High Speed Train}
   \item{SchedSpeedMPH}{Scheduled maximum speed (in miles per hour)}
   \item{Origin}{3-letter code denoting the scheduled origin of the train}
-  \item{OriginGbttDeparture}{Scheduled departure time in the Great Britain Train Timetable (GBTT) from the origin station}
+  \item{OriginGbttDeparture}{Scheduled departure time in the Great Britain
+  Train Timetable (GBTT) from the origin station}
   \item{OriginActualDeparture}{Actual departure time from the origin station}
   \item{GbttArrival}{Scheduled arrival time in Birmingham in the GBTT}
   \item{ActualArrival}{Actual arrival time in Birmingham in the GBTT}
   \item{GbttDeparture}{Scheduled departture time from Birmingham in the GBTT}
   \item{ActualDeparture}{Actual departure time from Birmingham in the GBTT}
   \item{Destination}{3-letter code denoting the scheduled destination of the train}
-  \item{DestinationGbttArrival}{Scheduled arrival time in the GBTT at the destination station}
+  \item{DestinationGbttArrival}{Scheduled arrival time in the GBTT at the
+  destination station}
   \item{DestinationActualArrival}{Actual arrival time at the destination station}
 }}
 \source{

@@ -8,13 +8,13 @@
 #' @importFrom R6 R6Class
 #' @import jsonlite
 #' @export
-#' @keywords calculation
+#' @keywords style styling format formatting
 #' @return Object of \code{\link{R6Class}} with properties and methods that help
 #'   define styles.
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # PivotStyle objects are normally created indirectly via one of the helper
-#' methods.
+#' # methods.
 #' # For an example, see the PivotStyles class.
 #' @field parentPivot Owning pivot table.
 #' @field styleName Style unique name.

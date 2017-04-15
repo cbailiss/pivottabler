@@ -9,7 +9,8 @@
   \item{CrsCode}{3-letter code for the station}
   \item{StationName}{The name of the station}
   \item{OsEasting}{The UK Ordnance Survey Easting coordinate for the station}
-  \item{OsNorthing}{The UK Ordnance Survey Northing coordinate for the station}
+  \item{OsNorthing}{The UK Ordnance Survey Northing coordinate for the
+  station}
   \item{GridReference}{Grid reference for the station}
   \item{Latitude}{Latitude of the station location}
   \item{Longitude}{Longitude of the station location}

@@ -9,35 +9,45 @@
 PivotCell
 }
 \value{
-Object of \code{\link{R6Class}} with properties and methods that define a single pivot table cell
+Object of \code{\link{R6Class}} with properties and methods that
+  define a single pivot table cell
 }
 \description{
-The PivotCell class represents a cell in the body of a pivot table (i.e. not a row/column heading, rather a cell typically containing a numerical value).
+The PivotCell class represents a cell in the body of a pivot table (i.e. not
+a row/column heading, rather a cell typically containing a numerical value).
 }
 \section{Fields}{
 
 \describe{
 \item{\code{parentPivot}}{Owning pivot table.}
 
-\item{\code{rowNumber}}{The row number of the cell.  1 = the first (i.e. top) data row.}
+\item{\code{rowNumber}}{The row number of the cell.  1 = the first (i.e. top) data
+row.}
 
-\item{\code{columnNumber}}{The column number of the cell.  1 = the first (i.e. leftmost) data column.}
+\item{\code{columnNumber}}{The column number of the cell.  1 = the first (i.e.
+leftmost) data column.}
 
 \item{\code{rowLeafGroup}}{The row data group linked to this row.}
 
 \item{\code{columnLeafGroup}}{The column data group linked to this column.}
 
-\item{\code{calculationName}}{The name of the calculation that is displayed in the cell.}
+\item{\code{calculationName}}{The name of the calculation that is displayed in the
+cell.}
 
-\item{\code{calculationGroupName}}{The name of the calculation group that owns the above calculation.}
+\item{\code{calculationGroupName}}{The name of the calculation group that owns the
+above calculation.}
 
-\item{\code{rowFilters}}{The data filters applied to this cell from the row headings.}
+\item{\code{rowFilters}}{The data filters applied to this cell from the row
+headings.}
 
-\item{\code{columnFilters}}{The data filters applied to this cell from the column headings.}
+\item{\code{columnFilters}}{The data filters applied to this cell from the column
+headings.}
 
-\item{\code{rowColFilters}}{The data filters applied to this cell from both the row and column headings.}
+\item{\code{rowColFilters}}{The data filters applied to this cell from both the row
+and column headings.}
 
-\item{\code{calculationFilters}}{The data filters applied to this cell from the calculation definition.}
+\item{\code{calculationFilters}}{The data filters applied to this cell from the
+calculation definition.}
 
 \item{\code{isTotal}}{Whether this cell is a total cell.}
 
@@ -45,16 +55,21 @@ The PivotCell class represents a cell in the body of a pivot table (i.e. not a r
 
 \item{\code{formattedValue}}{The formatted calculation result (i.e. character data type).}
 
-\item{\code{baseStyleName}}{The name of the style applied to this cell (a character value).  The style must exist in the PivotStyles object associated with the PivotTable.}
+\item{\code{baseStyleName}}{The name of the style applied to this cell (a character
+value).  The style must exist in the PivotStyles object associated with the
+PivotTable.}
 
-\item{\code{style}}{A PivotStyle object that can apply overrides to the base style for this cell.}
+\item{\code{style}}{A PivotStyle object that can apply overrides to the base style
+for this cell.}
 }}
 
 \section{Methods}{
 
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot table cell, specifying the field values documented above.}
+  \item{Documentation}{For more complete explanations and examples please see
+  the extensive vignettes supplied with this package.}
+  \item{\code{new(...)}}{Create a new pivot table cell, specifying the field
+  values documented above.}
 
   \item{\code{getCopy())}}{Get a copy of this cell.}
   \item{\code{asList())}}{Get a list representation of this cell}

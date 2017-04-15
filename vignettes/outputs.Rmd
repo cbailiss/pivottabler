@@ -1,10 +1,10 @@
 ---
-title: "06. Retrieving Results"
+title: "04. Outputs"
 author: "Chris Bailiss"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{06. Retrieving Results}
+  %\VignetteIndexEntry{04. Outputs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,6 +13,8 @@ vignette: >
 
 * Results of Pivot Calculations
 * Example Pivot Table
+* Results as HTML
+* Results as Latex
 * Results as an R Matrix
 * Results as an R Data Frame
 * Further Reading
@@ -21,7 +23,16 @@ vignette: >
 
 A `pivottabler` pivot table object has a fairly complex internal structure - containing two trees of data groups (the row groups and the column groups) plus a set of cells linked to the data groups.
 
-Sometimes it is desirable to retrieve the pivot table results as a more standard data type that is easier to work with in R code.  The `pivottabler` package allows a pivot table to be converted to either a matrix or a data frame.  Neither data type is a perfect representation of a pivot table - which option is better will depend upon your use case.
+The `pivottabler` package supports outputing a pivot table in a number of different forms:
+
+- A htmlwidget for R-Studio - using `pt$renderPivot()` to render the pivot table into the "Viewer" tab in R-Studio,
+- A htmlwidget for Shiny applications - using `pivottabler(pt)` to render the pivot table into the Shiny app,
+- As HTML - using either:
+    + `pt$getHtml()` to retrieve a character variable containing HTML, or
+    + `pt$saveHtml()` to save the HTML to a file.
+- As Latex - using `pt$getLatex()` to retrieve a character variable containing Latex.
+
+Sometimes it is desirable to retrieve the pivot table results as a more standard data type that is easier to work with in R code.  A pivot table can be converted to either a matrix or a data frame.  Neither data type is a perfect representation of a pivot table - which option is better will depend upon your use case.
 
 ## Example Pivot Table
 
@@ -36,6 +47,35 @@ pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
+
+## Results as HTML
+
+### Rendering a htmlwidget
+
+A pivot table is outputted as a htmlwidget simply by calling `pt$renderPivot()`.  There are numerous examples throughout these vignettes, including the example directly above.
+
+For outputting as a htmlwidget in a Shiny application, use `pivottabler(pt)`.
+
+### Retrieving HTML
+
+To retrieve the HTML of a pivot table, use `pt$getHtml()`.  This returns a list of html tag objects built using the htmltools package.  This object can be converted to a simple character variable using `as.character()` or as illustrated below.  The CSS declarations for a pivot table can be retrieved using `pt$getCss()` - also illustrated below.
+
+```{r, warning=FALSE, comment=""}
+library(pivottabler)
+library(htmltools)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+cat(paste(pt$getHtml(), sep="", collapse="\n"))
+cat(pt$getCss())
+```
+
+## Results as Latex
+
+Please see the [Latex Output](latexoutput.html) vignette.
 
 ## Results as an R Matrix
 
@@ -146,6 +186,7 @@ The full set of vignettes is:
 1. [Introduction](introduction.html)
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
-4. [Styling](styling.html)
-5. [Shiny](shiny.html)
-6. [Retrieving Results](retrievingresults.html)
+4. [Outputs](outputs.html)
+5. [Styling](styling.html)
+6. [Shiny](shiny.html)
+7. [Latex Output](latexoutput.html)

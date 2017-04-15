@@ -23,11 +23,25 @@ vignette: >
 
 ## pivottabler Development Status
 
-The pivottabler package has undergone a rapid development in a relatively short time period.  Some rough edges exist.  Very likely some bugs too.
+The pivottabler package has undergone a rapid development in a relatively short time period.  Some rough edges exist.  Possibly some bugs too.
 
 The latest version of the pivottabler package can be obtained directly from the [package repository](https://github.com/cbailiss/pivottabler/).  Please log any questions not answered by the vignettes or any bug reports [here](https://github.com/cbailiss/pivottabler/issues).
 
 ## Pivot Tables
+
+### Example
+
+An example of a pivot table (explained further below) is:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
 
 ### Definition
 
@@ -46,10 +60,11 @@ The pivottabler package:
 - enables pivot tables to be constructed natively in R, via a series of R commands that gradually build a pivot table to meet your needs.  
 - provides a simple framework for specifying and aggregating data, based on the dplyr package.  
 - provides hooks for custom calculation/aggregations for more complex scenarios.
+- supports output to HTML and Latex as well as converting a pivot table to either a standard R matrix or data frame.
 
-Since pivot tables are primarily visualisation tools, the pivottabler package offers several custom styling options as well as conditional/custom formatting capabilities.  
+Since pivot tables are primarily visualisation tools, the pivottabler package offers several custom styling options as well as conditional/custom formatting capabilities.
 
-Output is rendered as HTML via the htmlwidgets framework.  The generated HTML can also be easily retrieved, e.g. to be used outside of R.
+Output can be rendered as HTML, including via the htmlwidgets framework, or rendered in Latex to PDF.  The generated HTML and Latex can also be easily retrieved, e.g. to be used outside of R.
 
 ## Sample Data: Trains in Birmingham
 
@@ -227,9 +242,10 @@ The pivottabler package has many more capabilities.  More details can be found i
 1. [Introduction](introduction.html)
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
-4. [Styling](styling.html)
-5. [Shiny](shiny.html)
-6. [Retrieving Results](retrievingresults.html)
+4. [Outputs](outputs.html)
+5. [Styling](styling.html)
+6. [Shiny](shiny.html)
+7. [Latex Output](latexoutput.html)
 
 <!--
 5. [Cell Context](cellcontext.html)

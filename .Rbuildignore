@@ -9,3 +9,6 @@
 ^README\.Rmd$
 ^latextest\.Rmd$
 ^latextest\.pdf$
+^latexexample\.Rmd$
+^latexexample\.pdf$
+^devresources\.md$

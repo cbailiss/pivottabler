@@ -1,0 +1,39 @@
+---
+title: "Latex Example"
+output: pdf_document
+header-includes:
+   - \usepackage{multirow}
+---
+
+```{r results='asis', echo=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+cat(pt$getLatex(caption="An example table", label="basictable"))
+```
+
+
+```{r results='asis', echo=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", caption="# Trains", summariseExpression="n()")
+pt$defineCalculation(calculationName="MaxSpeed", caption="Max. Speed", summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+cat(pt$getLatex(caption="A larger table", label="largertable"))
+```
+
+
+```{r results='asis', echo=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+cat(pt$getLatex(caption="An example table with italic headings", label="italicstable", italicHeadings=TRUE))
+```

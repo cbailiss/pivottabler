@@ -13,7 +13,9 @@ The `pivottabler` package aims to:
 
 All calculations for the pivot tables take place inside R, enabling the use of a wide-range of R functions in the calculation logic.
 
-Pivot tables are rendered as htmlwidgets. The HTML can be exported for use outside of R.
+Pivot tables are rendered as htmlwidgets or as Latex. The HTML/Latex can be exported for use outside of R.
+
+Pivot tables can also be converted to a standard R matrix or data frame.
 
 ### Installation
 

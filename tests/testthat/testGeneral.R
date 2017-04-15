@@ -1025,3 +1025,437 @@ test_that("export tests:  as Data Frame", {
   expect_equal(sum(pt$asDataFrame(), na.rm=TRUE), 502260)
   expect_identical(digest::digest(pt$asDataFrame(), algo="md5"), "d7ef39c213140c6a7ced92a1cc0c2586")
 })
+
+
+test_that("latex tests:  basic latex table with spans", {
+
+  checkDigestAvailable()
+
+  C1 <- c("n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e")
+  R1 <- c("p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q")
+  C2 <- c("a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c")
+  R2 <- c("x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z")
+  V <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+  df <- data.frame(R0="R", R1, R2, C0="C", C1, C2, V)
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(df)
+  pt$addColumnDataGroups("C1", fromData=FALSE, explicitListOfValues=list("n", "m", "e"), addTotal=FALSE)
+  pt$addColumnDataGroups("C2", addTotal=FALSE)
+  pt$addRowDataGroups("R1", addTotal=FALSE)
+  pt$addRowDataGroups("R2", addTotal=FALSE)
+  pt$defineCalculation(calculationName="V", summariseExpression="sum(V)")
+  pt$evaluatePivot()
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 270)
+  expect_identical(digest::digest(ltx, algo="md5"), "d723355b5f211c407d3f57598be925d6")
+})
+
+
+test_that("latex tests:  no data", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 0)
+  expect_identical(digest::digest(ltx, algo="md5"), "946b3fc57de73bd14ce9d497e6e9baac")
+})
+
+
+test_that("latex tests:  just rows", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addRowDataGroups("TOC")
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 0)
+  expect_identical(digest::digest(ltx, algo="md5"), "afab86560162109434c0c2e6abf324e7")
+})
+
+
+test_that("latex tests:  just columns", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 0)
+  expect_identical(digest::digest(ltx, algo="md5"), "904295a902232a1c61bc2dc699514204")
+})
+
+
+test_that("latex tests:  rows and columns", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 0)
+  expect_identical(digest::digest(ltx, algo="md5"), "83419a617ba8d6075ba74f271579337a")
+})
+
+
+test_that("latex tests:  rows, columns and a measure", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+  expect_identical(digest::digest(ltx, algo="md5"), "90ef511752df1d8ce9735633870560b7")
+})
+
+
+test_that("latex tests:  styling headers", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  ltx <- pt$getLatex(caption="My Table", label="mytable", boldHeadings=TRUE, italicHeadings=TRUE)
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+  expect_identical(digest::digest(ltx, algo="md5"), "693fb55b5b837e81ebf39e6da7b55039")
+})
+
+
+test_that("latex tests:  rows, columns and two measures (on cols)", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$defineCalculation(calculationName="MaxSchedSpeed", summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 336380)
+  expect_identical(digest::digest(ltx, algo="md5"), "69008efe82cc5b4f2807d4a31adef839")
+})
+
+
+test_that("latex tests:  rows, columns and two measures (on rows)", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$defineCalculation(calculationName="MaxSchedSpeed", summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+  pt$addRowCalculationGroups()
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 336380)
+  expect_identical(digest::digest(ltx, algo="md5"), "8417788d94d150845453e06395a27e70")
+})
+
+
+test_that("latex tests:  just a total (on columns)", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 83710)
+  expect_identical(digest::digest(ltx, algo="md5"), "a0e3dd35bde9afa1b10a0872932d8b96")
+})
+
+
+test_that("latex tests:  two totals (on columns)", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$defineCalculation(calculationName="TotalTrains1", summariseExpression="n()")
+  pt$defineCalculation(calculationName="TotalTrains2", summariseExpression="n()")
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 167420)
+  expect_identical(digest::digest(ltx, algo="md5"), "211e172de8c706ac1cf8c9c0db130d31")
+})
+
+
+test_that("latex tests:  multiple levels on columns (but no rows)", {
+
+  checkDigestAvailable()
+
+  C1 <- c("n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e")
+  R1 <- c("p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q")
+  C2 <- c("a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c")
+  R2 <- c("x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z")
+  V <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+  df <- data.frame(R0="R", R1, R2, C0="C", C1, C2, V)
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(df)
+  pt$addColumnDataGroups("C0", addTotal=FALSE)
+  pt$addColumnDataGroups("C1", fromData=FALSE, explicitListOfValues=list("n", "m", "e"), addTotal=FALSE)
+  pt$addColumnDataGroups("C2", addTotal=FALSE)
+  pt$defineCalculation(calculationName="V", summariseExpression="sum(V)")
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 270)
+  expect_identical(digest::digest(ltx, algo="md5"), "e02f971e108f7e51e6ac3b88ab78430a")
+})
+
+
+test_that("latex tests:  multiple levels on columns (but no rows) with the calc on rows", {
+
+  checkDigestAvailable()
+
+  C1 <- c("n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e")
+  R1 <- c("p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q")
+  C2 <- c("a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c")
+  R2 <- c("x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z")
+  V <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+  df <- data.frame(R0="R", R1, R2, C0="C", C1, C2, V)
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(df)
+  pt$addColumnDataGroups("C0", addTotal=FALSE)
+  pt$addColumnDataGroups("C1", fromData=FALSE, explicitListOfValues=list("n", "m", "e"), addTotal=FALSE)
+  pt$addColumnDataGroups("C2", addTotal=FALSE)
+  pt$defineCalculation(calculationName="V", summariseExpression="sum(V)")
+  pt$addRowCalculationGroups()
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 270)
+  expect_identical(digest::digest(ltx, algo="md5"), "c4e96c45911efc17b6b996cdbbaffd2f")
+})
+
+
+test_that("latex tests:  just a total (on rows)", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$addRowCalculationGroups()
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 83710)
+  expect_identical(digest::digest(ltx, algo="md5"), "08f92e0770f7230e0926959c029331e3")
+})
+
+
+test_that("latex tests:  two totals (on rows)", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$defineCalculation(calculationName="TotalTrains1", summariseExpression="n()")
+  pt$defineCalculation(calculationName="TotalTrains2", summariseExpression="n()")
+  pt$addRowCalculationGroups()
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 167420)
+  expect_identical(digest::digest(ltx, algo="md5"), "c35948f5461bb45249482b7b8a83e4f8")
+})
+
+
+test_that("latex tests:  multiple levels on rows (but no columns)", {
+
+  checkDigestAvailable()
+
+  C1 <- c("n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e")
+  R1 <- c("p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q")
+  C2 <- c("a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c")
+  R2 <- c("x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z")
+  V <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+  df <- data.frame(R0="R", R1, R2, C0="C", C1, C2, V)
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(df)
+  pt$addRowDataGroups("R0", addTotal=FALSE)
+  pt$addRowDataGroups("R1", addTotal=FALSE)
+  pt$addRowDataGroups("R2", addTotal=FALSE)
+  pt$defineCalculation(calculationName="V", summariseExpression="sum(V)")
+  pt$addRowCalculationGroups()
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 270)
+  expect_identical(digest::digest(ltx, algo="md5"), "7604d2674bd289706e0181d1a8eb3278")
+})
+
+
+test_that("latex tests:  multiple levels on rows (but no columns) with the calculation on columns", {
+
+  checkDigestAvailable()
+
+  C1 <- c("n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "n", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e")
+  R1 <- c("p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q", "p", "p", "p", "p", "p", "p", "p", "p", "p", "q", "q", "q", "q", "q", "q", "q", "q", "q")
+  C2 <- c("a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c", "a", "b", "c")
+  R2 <- c("x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z", "x", "x", "x", "y", "y", "y", "z", "z", "z")
+  V <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+  df <- data.frame(R0="R", R1, R2, C0="C", C1, C2, V)
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(df)
+  pt$addRowDataGroups("R0", addTotal=FALSE)
+  pt$addRowDataGroups("R1", addTotal=FALSE)
+  pt$addRowDataGroups("R2", addTotal=FALSE)
+  pt$defineCalculation(calculationName="V", summariseExpression="sum(V)")
+  ltx <- pt$getLatex(caption="My Table", label="mytable")
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 270)
+  expect_identical(digest::digest(ltx, algo="md5"), "a5b96394302e12a037dafe4e5db46fd4")
+})
+
+
+test_that("latex tests:  rows/cols split 1", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  ltx <- pt$getLatex(caption="My Table", label="mytable", fromRow=2, toRow=4)
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+  expect_identical(digest::digest(ltx, algo="md5"), "1e75325e2a21479080d7a746e90cdcec")
+})
+
+
+test_that("latex tests:  rows/cols split 2", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  ltx <- pt$getLatex(caption="My Table", label="mytable", fromColumn=2, toColumn=3)
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+  expect_identical(digest::digest(ltx, algo="md5"), "3b4ecd3dc898562018859ca16d5af694")
+})
+
+
+test_that("latex tests:  rows/cols split 3", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  ltx <- pt$getLatex(caption="My Table", label="mytable", fromRow=3, toRow=5, fromColumn=1, toColumn=2)
+
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # digest::digest(ltx, algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+  expect_identical(digest::digest(ltx, algo="md5"), "1c182f34dc3cef47549c053ac883bbac")
+})

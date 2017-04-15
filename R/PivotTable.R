@@ -15,7 +15,7 @@
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # The package vignettes have many more examples of working with the
-#' PivotTable class.
+#' # PivotTable class.
 #' library(pivottabler)
 #' pt <- PivotTable$new()
 #' pt$addData(bhmtrains)
@@ -129,7 +129,9 @@
 #'   \item{\code{getHtml(styleNamePrefix, includeHeaderValues=FALSE,
 #'   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
 #'   includeCalculationNames=FALSE, includeRawValue=FALSE)}}{Get the HTML
-#'   representation of the pivot table.}
+#'   representation of the pivot table, specifying the CSS style name prefix to
+#'   use and whether additional debug information should be included in the
+#'   pivot table.}
 #'   \item{\code{saveHtml(filePath, fullPageHTML=TRUE, styleNamePrefix,
 #'   includeHeaderValues=FALSE, includeRCFilters=FALSE,
 #'   includeCalculationFilters=FALSE, includeCalculationNames=FALSE,
@@ -140,8 +142,11 @@
 #'   includeCalculationFilters=FALSE, includeCalculationNames=FALSE,
 #'   includeRawValue=FALSE)}}{Render the pivot table as a htmlwidget.}
 #'   \item{\code{getLatex(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL,
-#'   fromColumn=NULL, toColumn=NULL)}}{Get the Latex representation of the pivot
-#'   table.}
+#'   fromColumn=NULL, toColumn=NULL, boldHeadings=FALSE,
+#'   italicHeadings=FALSE)}}{Get the Latex representation of the pivot table,
+#'   specifying the caption to appear above the table, the label to use when
+#'   referring to the table elsewhere in the document and how headings should be
+#'   styled.}
 #'   \item{\code{asList()}}{Get a list representation of the pivot table.}
 #'   \item{\code{asJSON()}}{Get a JSON representation of the pivot table.}
 #'   \item{\code{viewJSON()}}{View the JSON representation of the pivot table.}

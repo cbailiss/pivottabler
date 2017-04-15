@@ -8,14 +8,20 @@
 \describe{
   \item{ServiceId}{Unique train identifier}
   \item{LastCancellationAt}{Time of the last cancellation}
-  \item{LastCancellationLocation}{3-letter code denoting the location of the last cancellation}
-  \item{LastCancellationReasonCategory}{The broad reason why the train was cancelled}
-  \item{LastCancellationReasonDesc}{A more specific reason why the train was cancelled}
+  \item{LastCancellationLocation}{3-letter code denoting the location of the
+  last cancellation}
+  \item{LastCancellationReasonCategory}{The broad reason why the train was
+  cancelled}
+  \item{LastCancellationReasonDesc}{A more specific reason why the train was
+  cancelled}
   \item{LastReinstatedAt}{Time of the last reinstatement}
   \item{LastChangeOfOriginAt}{Time of the last change of origin}
-  \item{LastChangeOfOriginLocation}{3-letter code denoting the location of the last change of origin}
-  \item{LastChangeOfOriginReasonCategory}{The broad reason why the origin was changed}
-  \item{LastChangeOfOriginReasonDesc}{A more specific reason why the origin was changed}
+  \item{LastChangeOfOriginLocation}{3-letter code denoting the location of
+  the last change of origin}
+  \item{LastChangeOfOriginReasonCategory}{The broad reason why the origin was
+  changed}
+  \item{LastChangeOfOriginReasonDesc}{A more specific reason why the origin
+  was changed}
 }}
 \source{
 \url{http://www.recenttraintimes.co.uk/}

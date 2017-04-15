@@ -9,34 +9,48 @@
 PivotCalculationGroup
 }
 \value{
-Object of \code{\link{R6Class}} with properties and methods that define a group of calculations.
+Object of \code{\link{R6Class}} with properties and methods that
+  define a group of calculations.
 }
 \description{
-The PivotCalculationGroup class is a container for multiple PivotCalculation objects.
+The PivotCalculationGroup class is a container for multiple PivotCalculation
+objects.
 }
 \section{Fields}{
 
 \describe{
 \item{\code{parentPivot}}{Owning pivot table.}
 
-\item{\code{calculationGroupName}}{Calculation group unique name.  Recommendation:  Do not have spaces in this name.}
+\item{\code{calculationGroupName}}{Calculation group unique name.  Recommendation:
+Do not have spaces in this name.}
 }}
 
 \section{Methods}{
 
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot calculation group, specifying the field values documented above.}
+  \item{Documentation}{For more complete explanations and examples please see
+  the extensive vignettes supplied with this package.}
+  \item{\code{new(...)}}{Create a new pivot calculation group, specifying the
+  field values documented above.}
 
-  \item{\code{isExistingCalculation(calculationName=NULL)}}{Check if a calculation exists with the specified name in this calculation group.}
-  \item{\code{getCalculation(calculationName=NULL)}}{Get the calculation with the specified name.}
-  \item{\code{defineCalculation(calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
-                      filters=NULL, format=NULL, dataName=NULL, type="summary", executionOrder=NULL,
-                      valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
-                      noDataValue=NULL, noDataCaption=NULL)}}{Create a new calculation.  See the \code{\link{PivotCalculation}} class documentation for more details on the arguments.}
-  \item{\code{asList()}}{Get a list representation of this calculation group.}
-  \item{\code{asJSON()}}{Get a JSON representation of this calculation group.}
-  \item{\code{asString()}}{Get a text representation of this calculation group.}
+  \item{\code{isExistingCalculation(calculationName=NULL)}}{Check if a
+  calculation exists with the specified name in this calculation group.}
+  \item{\code{getCalculation(calculationName=NULL)}}{Get the calculation with
+  the specified name.}
+  \item{\code{defineCalculation(calculationName=NULL, caption=NULL,
+  visible=TRUE, displayOrder=NULL, filters=NULL, format=NULL, dataName=NULL,
+  type="summary", executionOrder=NULL, valueName=NULL,
+  summariseExpression=NULL, calculationExpression=NULL,
+  calculationFunction=NULL, basedOn=NULL, noDataValue=NULL,
+  noDataCaption=NULL)}}{Create a new calculation.  See the
+  \code{\link{PivotCalculation}} class documentation for more details on the
+  arguments.}
+  \item{\code{asList()}}{Get a list representation of this calculation
+  group.}
+  \item{\code{asJSON()}}{Get a JSON representation of this calculation
+  group.}
+  \item{\code{asString()}}{Get a text representation of this calculation
+  group.}
 }
 }
 

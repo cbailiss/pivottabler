@@ -5,7 +5,7 @@
 #' @docType class
 #' @importFrom R6 R6Class
 #' @import htmltools
-#' @keywords calculation
+#' @keywords html
 #' @return Object of \code{\link{R6Class}} with properties and methods that
 #'   render to HTML.
 #' @format \code{\link{R6Class}} object.
@@ -22,7 +22,7 @@
 #'   field value documented above.}
 #'
 #'   \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist
-#'   on the PivotDataGroup and PivotCell classes.}
+#'   on the PivotDataGroup class.}
 #'   \item{\code{getTableHtml(styleNamePrefix=NULL, includeHeaderValues=FALSE,
 #'   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
 #'   includeCalculationNames=FALSE, includeRawValue=FALSE)}}{Get a HTML

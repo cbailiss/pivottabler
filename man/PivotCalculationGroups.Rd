@@ -12,7 +12,8 @@ PivotCalculationGroups
 Object of \code{\link{R6Class}}.
 }
 \description{
-The PivotCalculationGroups class stores all of the calculation groups for a pivot table.
+The PivotCalculationGroups class stores all of the calculation groups for a
+pivot table.
 }
 \section{Fields}{
 
@@ -23,15 +24,23 @@ The PivotCalculationGroups class stores all of the calculation groups for a pivo
 \section{Methods}{
 
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new container for pivot table calculation groups, specifying the field values documented above.}
+  \item{Documentation}{For more complete explanations and examples please see
+  the extensive vignettes supplied with this package.}
+  \item{\code{new(...)}}{Create a new container for pivot table calculation
+  groups, specifying the field values documented above.}
 
-  \item{\code{isExistingCalculationGroup(calculationGroupName)}}{Check if a calculation group exists with the specified name.}
-  \item{\code{getCalculationGroup(calculationGroupName)}}{Get the calculation group with the specified name.}
-  \item{\code{addCalculationGroup(calculationGroupName)}}{Create a new calculation group with the specified name.}
-  \item{\code{asList()}}{Get a list representation of these calculation groups.}
-  \item{\code{asJSON()}}{Get a JSON representation of these calculation groups.}
-  \item{\code{asString()}}{Get a text representation of these calculation groups.}
+  \item{\code{isExistingCalculationGroup(calculationGroupName)}}{Check if a
+  calculation group exists with the specified name.}
+  \item{\code{getCalculationGroup(calculationGroupName)}}{Get the calculation
+  group with the specified name.}
+  \item{\code{addCalculationGroup(calculationGroupName)}}{Create a new
+  calculation group with the specified name.}
+  \item{\code{asList()}}{Get a list representation of these calculation
+  groups.}
+  \item{\code{asJSON()}}{Get a JSON representation of these calculation
+  groups.}
+  \item{\code{asString()}}{Get a text representation of these calculation
+  groups.}
 }
 }
 

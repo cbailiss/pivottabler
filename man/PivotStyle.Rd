@@ -9,10 +9,13 @@
 PivotStyle
 }
 \value{
-Object of \code{\link{R6Class}} with properties and methods that help define styles.
+Object of \code{\link{R6Class}} with properties and methods that help
+  define styles.
 }
 \description{
-The PivotStyle class specifies the styling for headers and cells in a pivot table.  Styles are specified in the form of Cascading Style Sheet (CSS) name-value pairs.
+The PivotStyle class specifies the styling for headers and cells in a pivot
+table.  Styles are specified in the form of Cascading Style Sheet (CSS)
+name-value pairs.
 }
 \section{Fields}{
 
@@ -27,14 +30,22 @@ The PivotStyle class specifies the styling for headers and cells in a pivot tabl
 \section{Methods}{
 
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new style declaration, specifying the field values documented above.}
+  \item{Documentation}{For more complete explanations and examples please see
+  the extensive vignettes supplied with this package.}
+  \item{\code{new(...)}}{Create a new style declaration, specifying the field
+  values documented above.}
 
-  \item{\code{setPropertyValue(property, value)}}{Set a single style property.}
-  \item{\code{setPropertyValues(declarations)}}{Set multiple style properties, where declarations is a list similar to the code example below.}
-  \item{\code{getPropertyValue(property)}}{Get the style declarations for a single property.}
-  \item{\code{asCSSRule(selector)}}{Get this style definition in the form of a CSS rule.}
-  \item{\code{asNamedCSSStyle(styleNamePrefix)}}{Get this style definition in the form of a named CSS style.}
+  \item{\code{setPropertyValue(property, value)}}{Set a single style
+  property.}
+  \item{\code{setPropertyValues(declarations)}}{Set multiple style
+  properties, where declarations is a list similar to the code example
+  below.}
+  \item{\code{getPropertyValue(property)}}{Get the style declarations for a
+  single property.}
+  \item{\code{asCSSRule(selector)}}{Get this style definition in the form of
+  a CSS rule.}
+  \item{\code{asNamedCSSStyle(styleNamePrefix)}}{Get this style definition in
+  the form of a named CSS style.}
   \item{\code{getCopy(newStyleName)}}{Get a copy of this style.}
   \item{\code{asList()}}{Get a list representation of this style.}
   \item{\code{asJSON()}}{Get a JSON representation of this style.}
@@ -42,7 +53,11 @@ The PivotStyle class specifies the styling for headers and cells in a pivot tabl
 }
 
 \examples{
-# PivotStyle objects are normally created indirectly via one of the helper methods.
+# PivotStyle objects are normally created indirectly via one of the helper
+# methods.
 # For an example, see the PivotStyles class.
 }
-\keyword{calculation}
+\keyword{format}
+\keyword{formatting}
+\keyword{style}
+\keyword{styling}

@@ -9,10 +9,12 @@
 PivotData
 }
 \value{
-Object of \code{\link{R6Class}} with properties and methods that help quickly storing and retrieving data frames.
+Object of \code{\link{R6Class}} with properties and methods that help
+  quickly storing and retrieving data frames.
 }
 \description{
-The PivotData class stores all of the data frames associated with a pivot table.
+The PivotData class stores all of the data frames associated with a pivot
+table.
 }
 \section{Fields}{
 
@@ -23,14 +25,22 @@ The PivotData class stores all of the data frames associated with a pivot table.
 \section{Methods}{
 
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot data container, specifying the field value documented above.}
+  \item{Documentation}{For more complete explanations and examples please see
+  the extensive vignettes supplied with this package.}
+  \item{\code{new(...)}}{Create a new pivot data container, specifying the
+  field value documented above.}
 
-  \item{\code{addData(df, dataName)}}{And a data frame to the pivot table, specifying a name that can be used to easily retrieve it or refer to it later.}
-  \item{\code{getData(dataName)}}{Get the data frame with the specified name.}
-  \item{\code{isKnownData(dataName))}}{Check if a data frame exists with the specified name.}
-  \item{\code{asList()}}{Get a list representation of the contained data frames.}
-  \item{\code{asJSON()}}{Get a JSON representation of the contained data frames.}
+  \item{\code{addData(df, dataName)}}{And a data frame to the pivot table,
+  specifying a name that can be used to easily retrieve it or refer to it
+  later.}
+  \item{\code{getData(dataName)}}{Get the data frame with the specified
+  name.}
+  \item{\code{isKnownData(dataName))}}{Check if a data frame exists with the
+  specified name.}
+  \item{\code{asList()}}{Get a list representation of the contained data
+  frames.}
+  \item{\code{asJSON()}}{Get a JSON representation of the contained data
+  frames.}
 }
 }
 

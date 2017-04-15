@@ -9,10 +9,13 @@
 PivotFilters
 }
 \value{
-Object of \code{\link{R6Class}} with properties and methods that define a set of filter conditions.
+Object of \code{\link{R6Class}} with properties and methods that
+  define a set of filter conditions.
 }
 \description{
-The PivotFilters class allows multiple filter conditions relating to different data frame columns to be combined, i.e. a PivotFilters object can contain multiple \code{\link{PivotFilter}} objects.
+The PivotFilters class allows multiple filter conditions relating to
+different data frame columns to be combined, i.e. a PivotFilters object can
+contain multiple \code{\link{PivotFilter}} objects.
 }
 \section{Fields}{
 
@@ -23,17 +26,30 @@ The PivotFilters class allows multiple filter conditions relating to different d
 \section{Methods}{
 
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot calculation, specifying the field values documented above.}
+  \item{Documentation}{For more complete explanations and examples please see
+  the extensive vignettes supplied with this package.}
+  \item{\code{new(...)}}{Create a new pivot calculation, specifying the field
+  values documented above.}
 
-  \item{\code{setFilters(filters, action="replace"}}{Update the value of this PivotFilters object with the filters from the specified PivotFilters object, either unioning, intersecting or replacing the filter criteria.}
-  \item{\code{setFilter(filter, action="replace")}}{Update the value of this PivotFilters object with the specified PivotFilter object, either unioning, intersecting or replacing the filter criteria.}
-  \item{\code{setFilterValues(variableName=NULL, values=NULL, action="replace")}}{Update the value of this PivotFilters object with the specified criteria, either unioning, intersecting or replacing the filter criteria.}
-  \item{\code{addFilter()}}{Directly add a PivotFilter object to this PivotFilters object.}
+  \item{\code{setFilters(filters, action="replace"}}{Update the value of this
+  PivotFilters object with the filters from the specified PivotFilters
+  object, either unioning, intersecting or replacing the filter criteria.}
+  \item{\code{setFilter(filter, action="replace")}}{Update the value of this
+  PivotFilters object with the specified PivotFilter object, either unioning,
+  intersecting or replacing the filter criteria.}
+  \item{\code{setFilterValues(variableName=NULL, values=NULL,
+  action="replace")}}{Update the value of this PivotFilters object with the
+  specified criteria, either unioning, intersecting or replacing the filter
+  criteria.}
+  \item{\code{addFilter()}}{Directly add a PivotFilter object to this
+  PivotFilters object.}
   \item{\code{getCopy()}}{Get a copy of this set of filters.}
-  \item{\code{asList()}}{Get a list representation of this PivotFilters object.}
-  \item{\code{asJSON()}}{Get a JSON representation of this PivotFilters object.}
-  \item{\code{asString(includeVariableName=TRUE, seperator=", ")}}{Get a text representation of this PivotFilters object.}
+  \item{\code{asList()}}{Get a list representation of this PivotFilters
+  object.}
+  \item{\code{asJSON()}}{Get a JSON representation of this PivotFilters
+  object.}
+  \item{\code{asString(includeVariableName=TRUE, seperator=", ")}}{Get a text
+  representation of this PivotFilters object.}
 }
 }
 
@@ -48,7 +64,8 @@ filter <- PivotFilter$new(pt, variableName="Country", values="England")
 filters$setFilter(filter)
 # filters now contains criteria for both Year and Country
 # Now add another filter, this time via an alternative method
-filters$setFilterValues(variableName="Product", values="Cadbury Dairy Milk Chocolate 100g")
+filters$setFilterValues(variableName="Product", values="Cadbury Dairy Milk
+Chocolate 100g")
 # filters now contains criteria for Year, Country and Product
 }
 \keyword{filter}

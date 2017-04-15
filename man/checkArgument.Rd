@@ -11,9 +11,11 @@ checkArgument(className, methodName, argumentValue, isMissing,
   maxValue = NULL, maxLength = NULL)
 }
 \arguments{
-\item{className}{The name of the calling class, for inclusion in error messages.}
+\item{className}{The name of the calling class, for inclusion in error
+messages.}
 
-\item{methodName}{The name of the calling method, for inclusion in error messages.}
+\item{methodName}{The name of the calling method, for inclusion in error
+messages.}
 
 \item{argumentValue}{The value to check.}
 
@@ -27,21 +29,28 @@ checkArgument(className, methodName, argumentValue, isMissing,
 
 \item{mustBeAtomic}{Whether the argument value must be atomic.}
 
-\item{allowedListElementClasses}{For argument values that are lists(), the names of the allowed classes for the elements in the list.}
+\item{allowedListElementClasses}{For argument values that are lists(), the
+names of the allowed classes for the elements in the list.}
 
-\item{listElementsMustBeAtomic}{For argument values that are lists(), whether the list elements must be atomic.}
+\item{listElementsMustBeAtomic}{For argument values that are lists(), whether
+the list elements must be atomic.}
 
-\item{allowedValues}{For argument values that must be one value from a set list, the list of allowed values.}
+\item{allowedValues}{For argument values that must be one value from a set
+list, the list of allowed values.}
 
 \item{minValue}{For numerical values, the lowest allowed value.}
 
 \item{maxValue}{For numerical values, the highest allowed value.}
 
-\item{maxLength}{For character values, the maximum allowed length (in characters) of the value.}
+\item{maxLength}{For character values, the maximum allowed length (in
+characters) of the value.}
 }
 \value{
-No return value.  If invalid values are encountered, the \code{stop()} function is used to interrupt execution.
+No return value.  If invalid values are encountered, the
+  \code{stop()} function is used to interrupt execution.
 }
 \description{
-\code{checkArgument} is a utility function that provides basic assurances about function argument values and generates standardised error messages when invalid values are encountered.
+\code{checkArgument} is a utility function that provides basic assurances
+about function argument values and generates standardised error messages when
+invalid values are encountered.
 }

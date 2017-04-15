@@ -18,7 +18,9 @@ renderBasicTable(matrix = NULL, stylePrefix = NULL,
 A basic table rendered as a HTML widget.
 }
 \description{
-\code{renderBasicTable} is utility function that renders a basic table into a package vignette.  This function is primarily intended for internal use by the pivottabler package.
+\code{renderBasicTable} is utility function that renders a basic table into a
+package vignette.  This function is primarily intended for internal use by
+the pivottabler package.
 }
 \examples{
 renderBasicTable(matrix(c(1:12), nrow=3))

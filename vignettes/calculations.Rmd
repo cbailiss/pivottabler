@@ -544,9 +544,10 @@ The full set of vignettes is:
 1. [Introduction](introduction.html)
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
-4. [Styling](styling.html)
-5. [Shiny](shiny.html)
-6. [Retrieving Results](retrievingresults.html)
+4. [Outputs](outputs.html)
+5. [Styling](styling.html)
+6. [Shiny](shiny.html)
+7. [Latex Output](latexoutput.html)
 
 <!--
 5. [Cell Context](cellcontext.html)
