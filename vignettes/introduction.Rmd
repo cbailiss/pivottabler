@@ -246,6 +246,7 @@ The pivottabler package has many more capabilities.  More details can be found i
 5. [Styling](styling.html)
 6. [Shiny](shiny.html)
 7. [Latex Output](latexoutput.html)
+8. [Finding and Formatting](findandformatting.html)
 
 <!--
 5. [Cell Context](cellcontext.html)

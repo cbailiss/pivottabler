@@ -1,0 +1,282 @@
+---
+title: "08. Finding and Formatting"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{08. Finding and Formatting}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## In This Vignette
+
+* Finding and Formatting
+* Example Pivot Table
+* Finding Headings
+* Getting Cells By Row and/or Column Numbers 
+* Finding Cells
+* Conditional Formatting
+* Further Reading
+
+## Finding and Formatting
+
+This vignette explains how to find parts of a pivot table - either one or more data groups (i.e. row/column headings) or one or more cells in the body of the pivot table.
+
+This is often useful to retrieve either a specific value/values, or to change the appearance of specific headings/cells - similar to the conditional formatting capabilities of many off-the-shelf tools.
+
+The following pivot table is used as the basis of the examples in the rest of this vignette:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+## Finding Headings
+
+The `findRowDataGroups()` and `findColumnDataGroups()` functions are used to find data groups (i.e. row and/or column headings) that match specific criteria.  These functions can operate in two different ways, specified by the `matchMode` argument.
+
+`matchMode="simple"` is used when matching only one variable, e.g. TrainCategory="Express Passenger".
+
+`matchMode="combinations"` is used when matching for combinations of variables, e.g. TrainCategory="Express Passenger" and PowerType="DMU", which would return the "DMU" data group underneath "Express Passenger" (but not the "DMU" data group underneath "Ordinary Passenger").  Examples of each follow below.
+
+These functions also accept the following arguments:
+
+- `variableNames` - a character vector specifying the name/names of the variables to find - useful for finding all of the data groups for a specific variable.
+- `variableValues` - a list specifying the variable names and values to find.
+- `totals` - a word that specifies how totals are matched - must be one of:
+    + `include` to match total and non-total data groups.
+    + `exclude` to match only non-total data groups.
+    + `only` to match only total data groups.
+- `calculationNames` - a character vector specifying the name/names of the calculations to find.
+- `includeDescendantGroups` - a logical value specifying whether only the top-most matching data group for each row/column is returned, or whether the descendant groups are also included.
+
+Several examples follow below.  In each of the examples the data groups that have been found are highlighted in yellow by specifying a different style.
+
+The examples in this section use column data groups, but all are equally applicable to row data groups.
+
+### Examples:  `matchMode="simple"`
+
+"simple" match mode is the default.  The following examples illustrate how the "simple" matching mode works.
+
+#### variableNames
+
+Find all of the data groups for the "TrainCategory" variable:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+groups <- pt$findColumnDataGroups(variableNames="TrainCategory")
+groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+pt$renderPivot()
+```
+
+#### variableValues
+
+Find all of the data groups for the "PowerType" variable with the values "DMU" and "HST":
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+groups <- pt$findColumnDataGroups(variableValues=list("PowerType"=c("DMU", "HST")))
+groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+pt$renderPivot()
+```
+
+#### totals (exclude)
+
+Exclude totals:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+groups <- pt$findColumnDataGroups(variableNames="TrainCategory", totals="exclude")
+groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+pt$renderPivot()
+```
+
+### totals (only)
+
+Find only totals:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+groups <- pt$findColumnDataGroups(variableNames="TrainCategory", totals="only")
+groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+pt$renderPivot()
+```
+
+#### includeDescendantGroups
+
+Find all of the data groups for the "TrainCategory" variable with the value "Ordinary Passenger", including the descendant data groups:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+groups <- pt$findColumnDataGroups(
+  variableValues=list("TrainCategory"="Ordinary Passenger"), 
+  includeDescendantGroup=TRUE)
+groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+pt$renderPivot()
+```
+
+### Selecting a grand total data group
+
+To select the right-most/bottom total data group:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+groups <- pt$findColumnDataGroups(variableNames="TrainCategory",
+                                  totals="only", includeDescendantGroups=TRUE)
+groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+pt$renderPivot()
+```
+
+### Examples:  `matchMode="combinations"`
+
+The following examples illustrate how the "combinations" matching mode works.  
+
+The key concept to understand here is that the filtering criteria (i.e. the variableName(s) and variableValues) set for a data group also apply to all descendant data groups.  For example, in the example pivot table above, the "DMU" under "Express Passenger" effectively means `WHERE ("TrainCategory"="Express Passenger") AND ("PowerType"="DMU")]`.
+
+#### variableNames
+
+Find all of the data groups that have filter criteria specified for both the "TrainCategory" and "Power Type" variables:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+groups <- pt$findColumnDataGroups(matchMode="combinations",
+                                  variableNames=c("TrainCategory", "PowerType"))
+groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+pt$renderPivot()
+```
+
+In the example above, the first row of headings relates only to the "TrainCategory" variable.  The second row of headings relates both to the "PowerType" variable and the "TrainCategory" variable. 
+
+#### variableValues
+
+Find all of the data groups for the "PowerType" variable with the values "DMU" and "HST" for the "TrainCategory" of "Express Passenger":
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+groups <- pt$findColumnDataGroups(matchMode="combinations",
+  variableValues=list("TrainCategory"="Express Passenger", "PowerType"=c("DMU", "HST")))
+groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+pt$renderPivot()
+```
+
+In the above example, the highlighted "DMU" and "HST" data groups are subject to the "Express Passenger" filtering since they are underneath that data group.
+
+The "combinations" match mode effectively AND's the criteria together, i.e. the data groups must match both "TrainCategory"="Express Passenger" AND "PowerType"=("DMU" OR "HST").
+
+The "simple" match mode, by contrast, effectively OR's the criteria together, i.e. the data groups must match either "TrainCategory"="Express Passenger" OR "PowerType"=("DMU" OR "HST").  Changing the match mode back to simple (but otherwise leaving the previous example unchanged):
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+groups <- pt$findColumnDataGroups(
+  variableValues=list("TrainCategory"="Express Passenger", "PowerType"=c("DMU", "HST")))
+groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+pt$renderPivot()
+```
+
+### Selecting a specific sub-total
+
+To select the sub-total data group under "Express Passenger":
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+groups <- pt$findColumnDataGroups(matchMode="combinations", 
+                                  variableValues=list("TrainCategory"="Express Passenger"),
+                                  totals="only", 
+                                  includeDescendantGroups = TRUE)
+groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+pt$renderPivot()
+```
+
+
+
+Example of retrieving a cell raw value and formatted value.
+
+## Further Reading
+
+The full set of vignettes is:
+
+1. [Introduction](introduction.html)
+2. [Data Groups](datagroups.html)
+3. [Calculations](calculations.html)
+4. [Outputs](outputs.html)
+5. [Styling](styling.html)
+6. [Shiny](shiny.html)
+7. [Latex Output](latexoutput.html)
+8. [Finding and Formatting](findandformatting.html)

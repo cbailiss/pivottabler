@@ -55,3 +55,5 @@ vignette(package="pivottabler")
 # to open a specific vignette
 vignette(topic="introduction", package="pivottabler")
 ```
+
+The vignettes can also be read on CRAN at: <https://cran.r-project.org/package=pivottabler>

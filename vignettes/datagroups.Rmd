@@ -323,6 +323,7 @@ The full set of vignettes is:
 5. [Styling](styling.html)
 6. [Shiny](shiny.html)
 7. [Latex Output](latexoutput.html)
+8. [Finding and Formatting](findandformatting.html)
 
 <!--
 5. [Cell Context](cellcontext.html)

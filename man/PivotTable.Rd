@@ -124,12 +124,17 @@ content for external systems.}
   \item{\code{evaluatePivot()}}{A wrapper for calling
   normaliseColumnGroups(), normaliseRowGroups(), generateCellStructure() and
   evaluateCells() in sequence.}
-  \item{\code{findRowDataGroups(variableNames=NULL, variableValues=NULL,
-  totals="include", calculationNames=NULL, includeChildGroups=FALSE)}}{Find
-  row data groups matching the specified criteria.}
-  \item{\code{findColumnDataGroups(variableNames=NULL, variableValues=NULL,
-  totals="include", calculationNames=NULL, includeChildGroups=FALSE)}}{Find
-  column data groups matching the specified criteria.}
+  \item{\code{findRowDataGroups(matchMode="simple", variableNames=NULL,
+  variableValues=NULL, totals="include", calculationNames=NULL,
+  includeDescendantGroups=FALSE)}}{Find row data groups matching the
+  specified criteria.}
+  \item{\code{findColumnDataGroups(matchMode="simple", variableNames=NULL,
+  variableValues=NULL, totals="include", calculationNames=NULL,
+  includeDescendantGroups=FALSE)}}{Find column data groups matching the
+  specified criteria.}
+  \item{\code{getCells = function(rowNumbers=NULL,
+  columnNumbers=NULL)}}{Retrieve cells by a combination of row and/or column
+  numbers.}
   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells in the

@@ -90,11 +90,11 @@
 #'   of the filters applied in this data group and all of its ancestors.}
 #'   \item{\code{getNetCalculationName()}}{Get the calculation name applied in
 #'   this data group or its nearest ancestor.}
-#'   \item{\code{isFindMatch(variableNames=NULL, variableValues=NULL,
-#'   totals="include", calculationNames=NULL)}}{Tests whether this data group
-#'   matches the specified criteria.}
-#'   \item{\code{findDataGroups(variableNames=NULL, variableValues=NULL,
-#'   totals="include", calculationNames=NULL,
+#'   \item{\code{isFindMatch(matchMode="simple", variableNames=NULL,
+#'   variableValues=NULL, totals="include", calculationNames=NULL)}}{Tests
+#'   whether this data group matches the specified criteria.}
+#'   \item{\code{findDataGroups(matchMode="simple", variableNames=NULL,
+#'   variableValues=NULL, totals="include", calculationNames=NULL,
 #'   includeChildGroups=FALSE)}}{Searches all data groups underneath this data
 #'   group to find groups that match the specified criteria.}
 #'   \item{\code{asList()}}{Get a list representation of the data group(s).}
@@ -332,7 +332,14 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      for(i in 1:length(parentGroups))
      {
        grp <- parentGroups[[i]]
-       if((grp$isTotal==TRUE)&&(expandExistingTotals==FALSE)) next
+       if((grp$isTotal==TRUE)&&(expandExistingTotals==FALSE)) {
+         # add a single group that is an unexpanded total
+         newGrp <- grp$addChildGroup(variableName=variableName, values=NULL, # so that the totals have a reference to the variable
+                                     calculationGroupName=calculationGroupName, isTotal=TRUE)
+         index <- length(newGroups) + 1
+         newGroups[[index]] <- newGrp
+         next
+       }
 
        # use top level groups?
        distinctValues <- NULL
@@ -506,13 +513,15 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            groups[[j]] <- grp
            values[[j]] <- grp$sortValue
          }
-         if(sortOrder=="asc") sortIndexes <- order(unlist(values))
-         else sortIndexes <- order(unlist(values), decreasing=TRUE)
-         j <- 0
-         for(i in 1:length(private$p_groups)) {
-           if(private$p_groups[[i]]$isTotal==TRUE) next
-           j <- j + 1
-           private$p_groups[[i]] <- groups[[sortIndexes[j]]]
+         if(length(values)>0){
+           if(sortOrder=="asc") sortIndexes <- order(unlist(values))
+           else sortIndexes <- order(unlist(values), decreasing=TRUE)
+           j <- 0
+           for(i in 1:length(private$p_groups)) {
+             if(private$p_groups[[i]]$isTotal==TRUE) next
+             j <- j + 1
+             private$p_groups[[i]] <- groups[[sortIndexes[j]]]
+           }
          }
        }
        else if(orderBy=="caption") {
@@ -527,13 +536,15 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            groups[[j]] <- grp
            captions[[j]] <- grp$caption
          }
-         if(sortOrder=="asc") sortIndexes <- order(unlist(captions))
-         else sortIndexes <- order(unlist(captions), decreasing=TRUE)
-         j <- 0
-         for(i in 1:length(private$p_groups)) {
-           if(private$p_groups[[i]]$isTotal==TRUE) next
-           j <- j + 1
-           private$p_groups[[i]] <- groups[[sortIndexes[j]]]
+         if(length(captions)>0) {
+           if(sortOrder=="asc") sortIndexes <- order(unlist(captions))
+           else sortIndexes <- order(unlist(captions), decreasing=TRUE)
+           j <- 0
+           for(i in 1:length(private$p_groups)) {
+             if(private$p_groups[[i]]$isTotal==TRUE) next
+             j <- j + 1
+             private$p_groups[[i]] <- groups[[sortIndexes[j]]]
+           }
          }
        }
        else {
@@ -567,13 +578,15 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            calcResults <- results[[calculationName]]
            rawValues[[j]] <- calcResults$rawValue
          }
-         if(sortOrder=="asc") sortIndexes <- order(unlist(rawValues))
-         else sortIndexes <- order(unlist(rawValues), decreasing=TRUE)
-         j <- 0
-         for(i in 1:length(private$p_groups)) {
-           if(private$p_groups[[i]]$isTotal==TRUE) next
-           j <- j + 1
-           private$p_groups[[i]] <- groups[[sortIndexes[j]]]
+         if(length(rawValues)>0) {
+           if(sortOrder=="asc") sortIndexes <- order(unlist(rawValues))
+           else sortIndexes <- order(unlist(rawValues), decreasing=TRUE)
+           j <- 0
+           for(i in 1:length(private$p_groups)) {
+             if(private$p_groups[[i]]$isTotal==TRUE) next
+             j <- j + 1
+             private$p_groups[[i]] <- groups[[sortIndexes[j]]]
+           }
          }
        }
      }
@@ -713,7 +726,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          netFilters$setFilter(filter, action="replace")
        }
      }
-     private$p_parentPivot$message("PivotDataGroup$findDataGroups", "Got net filters.")
+     private$p_parentPivot$message("PivotDataGroup$getNetFilters", "Got net filters.")
      return(invisible(netFilters))
    },
    getNetCalculationName = function() { # start at the current node and work upwards until the first calculation is encountered
@@ -726,7 +739,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_parentPivot$message("PivotDataGroup$getNetCalculationName", "Got net calculation.")
      return(invisible())
    },
-   isFindMatch = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL) {
+   isFindMatch = function(matchMode="simple", variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL) {
+     checkArgument("PivotDataGroup", "isFindMatch", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
      checkArgument("PivotDataGroup", "isFindMatch", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotDataGroup", "isFindMatch", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
      checkArgument("PivotDataGroup", "isFindMatch", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
@@ -734,9 +748,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_parentPivot$message("PivotDataGroup$isFindMatch", "Checking if matches criteria...")
      # a) check the filter match
      if((!is.null(variableNames))||(!is.null(variableValues))) {
-       netFilters <- self$getNetFilters()
-       if(is.null(netFilters)) return(invisible(FALSE))
-       isMatch <- netFilters$isFilterMatch(variableNames=variableNames, variableValues=variableValues)
+       if(matchMode=="simple") filters <- private$p_filters
+       else filters <- self$getNetFilters()
+       if(is.null(filters)) return(invisible(FALSE))
+       isMatch <- filters$isFilterMatch(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues)
        if(isMatch==FALSE) return(invisible(FALSE))
      }
      # b) check totals criteria
@@ -744,20 +759,22 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if((totals=="only")&&(self$isTotal==FALSE)) return(invisible(FALSE))
      # c) check calculation criteria
      if(!is.null(calculationNames)) {
-       calcName <- self$getNetCalculationName()
+       if(matchMode=="simple") calcName <- private$p_calculationName
+       else calcName <- self$getNetCalculationName()
        if(is.null(calcName)) return(invisible(FALSE))
        if(!(calcName %in% calculationNames)) return(invisible(FALSE))
      }
      private$p_parentPivot$message("PivotDataGroup$isFindMatch", "Checked if matches criteria.")
      return(invisible(TRUE))
    },
-   findDataGroups = function(variableNames=NULL, variableValues=NULL, totals="include",
-                             calculationNames=NULL, includeChildGroups=FALSE) {
+   findDataGroups = function(matchMode="simple", variableNames=NULL, variableValues=NULL,
+                             totals="include", calculationNames=NULL, includeDescendantGroups=FALSE) {
+     checkArgument("PivotDataGroup", "findDataGroups", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
      checkArgument("PivotDataGroup", "findDataGroups", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotDataGroup", "findDataGroups", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
      checkArgument("PivotDataGroup", "findDataGroups", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
      checkArgument("PivotDataGroup", "findDataGroups", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-     checkArgument("PivotDataGroup", "findDataGroups", includeChildGroups, missing(includeChildGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("PivotDataGroup", "findDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      private$p_parentPivot$message("PivotDataGroup$findDataGroups", "Finding data groups...")
      # clear the isMatch flag across all descendants
      clearFlags <- function(dg) {
@@ -765,35 +782,57 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      }
      grps <- self$getDescendantGroups(includeCurrentGroup=TRUE)
      lapply(grps, clearFlags)
-     # iterate the leaf groups...
-     leafgrps <- self$getLeafGroups()
-     if(is.null(leafgrps)) return(invisible(NULL))
-     if(length(leafgrps)==0) return(invisible(NULL))
-     for(i in 1:length(leafgrps)) {
-       # for each leaf group, start at the leaf level and work up the ancestors towards the root, checking
-       # at each level whether the node is a match.
-       matches <- list()
-       grp <- leafgrps[[i]]
-       while(!is.null(grp)) {
-         if(grp$isFindMatch(variableNames=variableNames, variableValues=variableValues, totals=totals,
-                            calculationNames=calculationNames)) {
-           matches[[length(matches)+1]] <- grp
-           grp <- grp$parentGroup
-         }
-         else break
-       }
-       # if we have a match, then set the isMatched flag
-       if(includeChildGroups==TRUE) {
-         # mark the top-most group and all groups beneath (in this branch) as a match
-         if(length(matches)>0) {
-           for(j in 1:length(matches)) {
-             matches[[j]]$isMatch <- TRUE
+     if(length(grps)==0) return(invisible())
+     # search approach changes depending on variable matching method
+     setFlags <- function(dg) {
+       dg$isMatch <- TRUE
+     }
+     if(matchMode=="simple") {
+       # if simple mode, then just test every data group
+       for(i in 1:length(grps)) {
+         grp <- grps[[i]]
+         if(grp$isMatch==TRUE) next
+         if(grp$isFindMatch(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues,
+                              totals=totals, calculationNames=calculationNames)) {
+           grp$isMatch <- TRUE
+           if(includeDescendantGroups==TRUE) {
+             descgrps <- grp$getDescendantGroups(includeCurrentGroup=FALSE)
+             if(length(descgrps)>0) lapply(descgrps, setFlags)
            }
          }
        }
-       else {
-         # only mark the topmost group as a match
-         if(length(matches)>0) matches[[length(matches)]]$isMatch <- TRUE
+     }
+     else {
+       # iterate the leaf groups...
+       leafgrps <- self$getLeafGroups()
+       if(is.null(leafgrps)) return(invisible(NULL))
+       if(length(leafgrps)==0) return(invisible(NULL))
+       for(i in 1:length(leafgrps)) {
+         # for each leaf group, start at the leaf level and work up the ancestors towards the root, checking
+         # at each level whether the node is a match.
+         matches <- list()
+         grp <- leafgrps[[i]]
+         while(!is.null(grp)) {
+           if(grp$isFindMatch(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues,
+                              totals=totals, calculationNames=calculationNames)) {
+             matches[[length(matches)+1]] <- grp
+             grp <- grp$parentGroup
+           }
+           else break
+         }
+         # if we have a match, then set the isMatched flag
+         if(includeDescendantGroups==TRUE) {
+           # mark the top-most group and all groups beneath (in this branch) as a match
+           if(length(matches)>0) {
+             for(j in 1:length(matches)) {
+               matches[[j]]$isMatch <- TRUE
+             }
+           }
+         }
+         else {
+           # only mark the topmost group as a match
+           if(length(matches)>0) matches[[length(matches)]]$isMatch <- TRUE
+         }
        }
      }
      # collect the matching groups
@@ -865,6 +904,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    isTotal = function(value) { return(invisible(private$p_isTotal)) },
    caption = function(value) {
      if(is.null(private$p_caption)) {
+       if(private$p_isTotal) return(invisible(""))
        if(is.null(private$p_filters)) return(invisible(""))
        else return(invisible(private$p_filters$asString(includeVariableName=FALSE)))
      }

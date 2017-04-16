@@ -87,35 +87,65 @@ PivotFilters <- R6::R6Class("PivotFilters",
       private$p_parentPivot$message("PivotFilters$getFilter", "Got filter.")
       return(invisible())
     },
-    isFilterMatch = function(variableNames=NULL, variableValues=NULL) {
+    isFilterMatch = function(matchMode="simple", variableNames=NULL, variableValues=NULL) {
+      checkArgument("PivotFilters", "isFilterMatch", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
       checkArgument("PivotFilters", "isFilterMatch", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       checkArgument("PivotFilters", "isFilterMatch", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
       private$p_parentPivot$message("PivotFilters$isFilterMatch", "Checking if is filter match...")
+      # Summary
+      # variableNames can be a vector (i.e. more than one item specified)
+      # variableValues can be a vector (i.e. more than one item specified)
+      # For matchMode=simple, a single match is good enough, i.e. any given data group
+      # must match only one variableNames element and only one variableValues element.
+      # For matchMode=combinations, any given data group must match all of the
+      # specified variablesNames and variableValues
       if(!is.null(variableNames)) {
+        matched <- FALSE
         if(length(variableNames) > 0) {
           for(i in 1:length(variableNames)) {
             filter <- self$getFilter(variableNames[i])
-            if(is.null(filter)) return(invisible(FALSE))
+            if((matchMode=="simple")&&(!is.null(filter))) {
+              matched <- TRUE
+              break # i.e. one match from variableNames is enough
+            }
+            if((matchMode=="combinations")&&(is.null(filter))) return(invisible(FALSE))
           }
+          if((matchMode=="simple")&&(!matched)) return(invisible(FALSE))
         }
       }
-      if(!is.null(variableValues)) {
+      if(is.null(variableValues)) {
+        if(matchMode=="simple") return(invisible(TRUE))
+      }
+      else {
         if(length(variableValues) > 0) {
           varNames <- names(variableValues)
           for(i in 1:length(varNames)) {
             filter <- self$getFilter(varNames[i])
-            if(is.null(filter)) return(invisible(FALSE))
+            if(is.null(filter)) {
+              if(matchMode=="simple") next
+              else return(invisible(FALSE))
+            }
             varValues <- variableValues[[i]]
             if(is.null(varValues)) next
             if(length(varValues)==0) next
             intrsct <- intersect(filter$values, varValues)
-            if(is.null(intrsct)) return(invisible(FALSE))
-            if(length(intrsct)==0) return(invisible(FALSE))
+            if(is.null(intrsct)) {
+              if(matchMode=="simple") next
+              else return(invisible(FALSE))
+            }
+            if(length(intrsct)==0) {
+              if(matchMode=="simple") next
+              else return(invisible(FALSE))
+            }
+            if((length(intrsct)>0)&&(matchMode=="simple")) {
+              return(invisible(TRUE)) # i.e. a single match is good enough
+            }
           }
         }
       }
       private$p_parentPivot$message("PivotFilters$isFilterMatch", "Checked if is filter match.")
-      return(invisible(TRUE))
+      if(matchMode=="simple") return(invisible(FALSE))
+      else return(invisible(TRUE))
     },
     setFilters = function(filters, action="replace") {
       checkArgument("PivotFilters", "setFilters", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")

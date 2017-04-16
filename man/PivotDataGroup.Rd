@@ -117,11 +117,11 @@ group (used as part of the rendering routines).}
   of the filters applied in this data group and all of its ancestors.}
   \item{\code{getNetCalculationName()}}{Get the calculation name applied in
   this data group or its nearest ancestor.}
-  \item{\code{isFindMatch(variableNames=NULL, variableValues=NULL,
-  totals="include", calculationNames=NULL)}}{Tests whether this data group
-  matches the specified criteria.}
-  \item{\code{findDataGroups(variableNames=NULL, variableValues=NULL,
-  totals="include", calculationNames=NULL,
+  \item{\code{isFindMatch(matchMode="simple", variableNames=NULL,
+  variableValues=NULL, totals="include", calculationNames=NULL)}}{Tests
+  whether this data group matches the specified criteria.}
+  \item{\code{findDataGroups(matchMode="simple", variableNames=NULL,
+  variableValues=NULL, totals="include", calculationNames=NULL,
   includeChildGroups=FALSE)}}{Searches all data groups underneath this data
   group to find groups that match the specified criteria.}
   \item{\code{asList()}}{Get a list representation of the data group(s).}

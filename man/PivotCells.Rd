@@ -40,6 +40,9 @@ in the pivot table.}
   column coordinates in the pivot table.}
   \item{\code{setCell(r, c, cell))}}{Set the PivotCell at the specified row
   and column coordinates in the pivot table.}
+  \item{\code{getCells = function(rowNumbers=NULL,
+  columnNumbers=NULL)}}{Retrieve cells by a combination of row and/or column
+  numbers.}
   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells matching
