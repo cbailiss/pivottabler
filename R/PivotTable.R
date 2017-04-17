@@ -182,6 +182,7 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_columnGroup <- PivotDataGroup$new(parentPivot=self, parentGroup=NULL, rowOrColumn="column")
       private$p_calculationsPosition <- NULL
       private$p_calculationGroups <- PivotCalculationGroups$new(parentPivot=self)
+      private$p_cells <- PivotCells$new(self)
       private$p_htmlRenderer <- PivotHtmlRenderer$new(parentPivot=self)
       private$p_latexRenderer <- PivotLatexRenderer$new(parentPivot=self)
       self$message("PivotTable$new", "Created new Pivot Table.")
@@ -440,7 +441,7 @@ PivotTable <- R6::R6Class("PivotTable",
     generateCellStructure = function() {
       self$message("PivotTable$generateCellStructure", "Generating cell structure...")
       # clear any existing PivotCells
-      private$p_cells <- NULL
+      private$p_cells$reset()
       # clear rowColumn numbers on both axes
       rowGrps <- private$p_rowGroup$getDescendantGroups(descendants=NULL, includeCurrentGroup=TRUE)
       for(i in 1:length(rowGrps)) {
@@ -533,7 +534,7 @@ PivotTable <- R6::R6Class("PivotTable",
       if(!(calculationsPosition %in% c("row", "column")))
         stop("PivotTable$generateCellStructure(): calculationsPosition must be either row or column", call. = FALSE)
       # create and size the new PivotCells
-      private$p_cells <- PivotCells$new(self, rowGroups=rowGrps, columnGroups=columnGrps)
+      private$p_cells$setGroups(rowGroups=rowGrps, columnGroups=columnGrps)
       if(rowCount>0) {
         for(r in 1:rowCount) {
           if(columnCount>0) {
@@ -577,9 +578,9 @@ PivotTable <- R6::R6Class("PivotTable",
     resetCells = function() {
       self$message("PivotTable$resetCells", "Resetting cells...")
       if(private$p_evaluated==TRUE){
-        p_cells <- NULL
+        private$p_cells$reset()
         private$p_evaluated <- FALSE
-        private$p_latextRenderer$resetVisibleRange()
+        private$p_latexRenderer$resetVisibleRange()
       }
       self$message("PivotTable$resetCells", "Reset cells.")
       return(invisible())

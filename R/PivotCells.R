@@ -46,24 +46,31 @@
 
 PivotCells <- R6::R6Class("PivotCells",
   public = list(
-   initialize = function(parentPivot, rowGroups=NULL, columnGroups=NULL) {
+   initialize = function(parentPivot) {
      checkArgument("PivotCells", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
      private$p_parentPivot <- parentPivot
-     private$p_parentPivot$message("PivotCells$new", "Creating new PivotCells...",
+     private$p_parentPivot$message("PivotCells$new", "Creating new PivotCells...")
+     private$p_parentPivot$message("PivotCells$new", "Created new PivotCells.")
+   },
+   reset = function() {
+     private$p_parentPivot$message("PivotCells$resetCells", "Resetting cells...")
+     private$p_rowGroups <- NULL
+     private$p_columnGroups <- NULL
+     private$p_rows <- NULL
+     private$p_parentPivot$message("PivotCells$resetCells", "Reset cells.")
+   },
+   setGroups = function(rowGroups=NULL, columnGroups=NULL) {
+     private$p_parentPivot$message("PivotCells$setGroups", "Creating new PivotCells...",
                                    list(rowCount=length(rowGroups), columnCount=length(columnGroups)))
-     checkArgument("PivotCells", "initialize", rowGroups, missing(rowGroups), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
-     checkArgument("PivotCells", "initialize", columnGroups, missing(columnGroups), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
+     checkArgument("PivotCells", "setGroups", rowGroups, missing(rowGroups), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
+     checkArgument("PivotCells", "setGroups", columnGroups, missing(columnGroups), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
      private$p_rowGroups <- rowGroups
      private$p_columnGroups <- columnGroups
      private$p_rows <- list() # a list of rows, each containing a list of values in the row
      for(r in 1:length(rowGroups)) {
-       cellsInRow <- list()
-       for(c in 1:length(columnGroups)) {
-         cellsInRow[[c]] <- NULL
-       }
-       private$p_rows[[r]] <- cellsInRow
+       private$p_rows[[r]] <- list()
      }
-     private$p_parentPivot$message("PivotCells$new", "Created new PivotCells.")
+     private$p_parentPivot$message("PivotCells$setGroups", "Created new PivotCells.")
    },
    getCell = function(r=NULL, c=NULL) {
      checkArgument("PivotCells", "getCell", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_rowGroups))

@@ -123,7 +123,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
             filter <- self$getFilter(varNames[i])
             varValues <- variableValues[[i]]
             # special cases
-            if(varValues=="**") {
+            if("**" %in% varValues) {
               # asterix means the filter should exist and the filter values should be null
               if(is.null(filter)) {
                 if(matchMode=="simple") next
@@ -135,7 +135,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
               }
               else return(invisible(FALSE))
             }
-            if(varValues=="!*") {
+            if("!*" %in% varValues) {
               # asterix means the filter should exist and  the filter values should not be null
               if(is.null(filter)) {
                 if(matchMode=="simple") next

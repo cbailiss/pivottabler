@@ -527,14 +527,21 @@ pt$renderPivot()
 
 ## Conditional Formatting
 
-The `findCells()` and `getCells()` functions can be used to conditionally format a pivot table.
+The `findCells()` and `getCells()` functions can be used to help conditionally format a pivot table.
 
-For example, to find the average arrival delay (in minutes) in the morning peak time, for the top 20 origin stations, broken down by the hour of the day (i.e. 5am, 6am, 7am, etc): 
+For example, analysing the average arrival delay (in minutes) in the morning peak time, for the top 20 origin stations, broken down by the hour of the day (i.e. 5am, 6am, 7am, etc), with the results formatted as follows:
+
+- Average arrival delay between 0 and 2 minutes - green,
+- Average arrival delay between 2 and 4 minutes - yellow,
+- Average arrival delay of 4 and above minutes - red.
+
+The `findCells()` function is used to find the cells matching the criteria above.  One of three custom styles (green, yellow or red) is then applied to the cells:
 
 ```{r, warning=FALSE, message=FALSE}
 # calculate arrival delay information
 library(dplyr)
 library(lubridate)
+library(pivottabler)
 
 stations <- mutate(trainstations, CrsCodeChr=as.character(CrsCode))
 
@@ -551,24 +558,20 @@ trains <- bhmtrains %>%
   inner_join(topOrigins, by=c("OriginChr"="OriginChr")) %>%
   inner_join(stations, by=c("OriginChr"="CrsCodeChr")) %>%
   inner_join(stations, by=c("DestinationChr"="CrsCodeChr")) %>%
-  select(Status, TOC, TrainCategory, PowerType, SchedSpeedMPH,
-         Origin=StationName.x, OriginGbttDeparture, OriginActualDeparture,
-         GbttArrival, ActualArrival, GbttDeparture, ActualDeparture,
-         Destination=StationName.y, DestinationGbttArrival, DestinationActualArrival) %>%
-  mutate(Status=recode(Status, "A"="Normal", "C"="Cancelled", "R"="Reinstated"),
-         GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
+  select(TOC, TrainCategory, PowerType, Origin=StationName.x, 
+         GbttArrival, ActualArrival, GbttDeparture, ActualDeparture) %>%
+  mutate(GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
                                  origin = "1970-01-01"),
          GbttHourOfDay=hour(GbttDateTime),
          ArrivalDeltaMins=difftime(ActualArrival, GbttArrival, units="mins"),
          ArrivalDelayMins=ifelse(ArrivalDeltaMins<0, 0, ArrivalDeltaMins)) %>%
-  select(Status, TOC, TrainCategory, PowerType, SchedSpeedMPH, Origin, Destination,
-         GbttHourOfDay, ArrivalDeltaMins, ArrivalDelayMins)
+  filter(GbttHourOfDay %in% c(5, 6, 7, 8, 9, 10)) %>%
+  select(TOC, TrainCategory, PowerType, Origin, GbttHourOfDay, ArrivalDelayMins)
 
 # create the pivot table
-library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(trains)
-pt$addColumnDataGroups("GbttHourOfDay", fromData=FALSE, explicitListOfValues=list(5, 6, 7, 8, 9, 10))
+pt$addColumnDataGroups("GbttHourOfDay")
 pt$addRowDataGroups("Origin")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", visible=FALSE)
 pt$defineCalculation(calculationName="TotalDelayMins", 
@@ -595,12 +598,13 @@ cellCount <- lapply(cells, function(cell) {cell$style <- redStyle})
 pt$renderPivot()
 ```
 
-It is also possible to iterate through the cells to use a continuous colour scale as opposed to three separate styles:
+It is also possible to iterate through the cells to use a continuous colour scale as opposed to three separate styles.  In the example below (using exactly the same data and calculations as above), some helper functions are defined which calculate a colour in a continuous colour scale.  The colour scale used is roughly that described above (i.e. green to yellow to red):
 
 ```{r, warning=FALSE, message=FALSE}
 # calculate arrival delay information
 library(dplyr)
 library(lubridate)
+library(pivottabler)
 
 stations <- mutate(trainstations, CrsCodeChr=as.character(CrsCode))
 
@@ -617,24 +621,21 @@ trains <- bhmtrains %>%
   inner_join(topOrigins, by=c("OriginChr"="OriginChr")) %>%
   inner_join(stations, by=c("OriginChr"="CrsCodeChr")) %>%
   inner_join(stations, by=c("DestinationChr"="CrsCodeChr")) %>%
-  select(Status, TOC, TrainCategory, PowerType, SchedSpeedMPH,
-         Origin=StationName.x, OriginGbttDeparture, OriginActualDeparture,
-         GbttArrival, ActualArrival, GbttDeparture, ActualDeparture,
-         Destination=StationName.y, DestinationGbttArrival, DestinationActualArrival) %>%
-  mutate(Status=recode(Status, "A"="Normal", "C"="Cancelled", "R"="Reinstated"),
-         GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
+  select(TOC, TrainCategory, PowerType, Origin=StationName.x, 
+         GbttArrival, ActualArrival, GbttDeparture, ActualDeparture) %>%
+  mutate(GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
                                  origin = "1970-01-01"),
          GbttHourOfDay=hour(GbttDateTime),
          ArrivalDeltaMins=difftime(ActualArrival, GbttArrival, units="mins"),
          ArrivalDelayMins=ifelse(ArrivalDeltaMins<0, 0, ArrivalDeltaMins)) %>%
-  select(Status, TOC, TrainCategory, PowerType, SchedSpeedMPH, Origin, Destination,
-         GbttHourOfDay, ArrivalDeltaMins, ArrivalDelayMins)
+  filter(GbttHourOfDay %in% c(5, 6, 7, 8, 9, 10)) %>%
+  select(TOC, TrainCategory, PowerType, Origin, GbttHourOfDay, ArrivalDelayMins)
 
 # create the pivot table
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(trains)
-pt$addColumnDataGroups("GbttHourOfDay", fromData=FALSE, explicitListOfValues=list(5, 6, 7, 8, 9, 10))
+pt$addColumnDataGroups("GbttHourOfDay")
 pt$addRowDataGroups("Origin")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", visible=FALSE)
 pt$defineCalculation(calculationName="TotalDelayMins", 
@@ -684,7 +685,7 @@ backClrGreen <- hexToClr("#C6EFCE")
 backClrYellow <- hexToClr("#FFEB9C")
 backClrRed <- hexToClr("#FFC7CE")
 
-# specify some conditional formatting
+# specify some conditional formatting, calculating the appropriate text colour and back colour for each cell.
 cells <- pt$findCells(includeNull=FALSE, includeNA=FALSE)
 for(i in 1:length(cells)) {
   cell <- cells[[i]]

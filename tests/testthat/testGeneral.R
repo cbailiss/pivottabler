@@ -1459,3 +1459,442 @@ test_that("latex tests:  rows/cols split 3", {
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
   expect_identical(digest::digest(ltx, algo="md5"), "1c182f34dc3cef47549c053ac883bbac")
 })
+
+
+test_that("find groups tests:  simple:  variableNames", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+  groups <- pt$findColumnDataGroups(variableNames="TrainCategory")
+  groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(groups)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(groups), 3)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "73e48063731c7810f2aab06a4892725f")
+})
+
+
+test_that("find groups tests:  simple:  variableValues", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+  groups <- pt$findColumnDataGroups(variableValues=list("PowerType"=c("DMU", "HST")))
+  groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(groups)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(groups), 3)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "3bf492578c2477727d51df9b4b629218")
+})
+
+
+test_that("find groups tests:  simple:  exclude totals", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+  groups <- pt$findColumnDataGroups(variableNames="TrainCategory", totals="exclude")
+  groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(groups)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(groups), 2)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "b9f1be1d9ce848faf7360e97b08f4604")
+})
+
+
+test_that("find groups tests:  simple:  only totals", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+  groups <- pt$findColumnDataGroups(variableNames="TrainCategory", totals="only")
+  groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(groups)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(groups), 1)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "29b71fbdf4737236dee248f1e4255a30")
+})
+
+
+test_that("find groups tests:  simple:  includeDescendantGroups", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FFFF00"))
+  groups <- pt$findColumnDataGroups(
+    variableValues=list("TrainCategory"="Ordinary Passenger"),
+    includeDescendantGroup=TRUE)
+  groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(groups)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(groups), 4)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "5a1d0b134787077316f6f5f78f179d7d")
+})
+
+
+test_that("find groups tests:  combinations:  variableNames", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FFFF"))
+  groups <- pt$findColumnDataGroups(matchMode="combinations",
+                                    variableNames=c("TrainCategory", "PowerType"))
+  groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(groups)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(groups), 8)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "434ce4144cae81324f9f81641ac1702a")
+})
+
+
+test_that("find groups tests:  combinations:  variableValues", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FFFF"))
+  groups <- pt$findColumnDataGroups(matchMode="combinations",
+                                    variableValues=list("TrainCategory"="Express Passenger", "PowerType"=c("DMU", "HST")))
+  groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(groups)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(groups), 2)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "0d1791806360d88617ffb4368832ccfd")
+})
+
+
+test_that("find groups tests:  combinations:  specific sub total", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FFFF"))
+  groups <- pt$findColumnDataGroups(matchMode="combinations",
+                                    variableValues=list("TrainCategory"="Express Passenger", "PowerType"="**"))
+  groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(groups)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(groups), 1)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "bfa03a6adefd8fd6f59bb0ccec574cbe")
+})
+
+
+test_that("get cells tests:  whole rows", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FF00"))
+  cells <- pt$getCells(rowNumbers=c(1, 3))
+  cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(cells)
+  # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(cells), 16)
+  expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 156564)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "98cb2c4f1e0caf7cc3dc6805efba8d44")
+})
+
+
+test_that("get cells tests:  whole columns", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FF00"))
+  cells <- pt$getCells(columnNumbers=2)
+  cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(cells)
+  # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(cells), 5)
+  expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 30612)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "356e13b760a87fbb8cff1ac12b22df77")
+})
+
+
+test_that("get cells tests:  rows, columns and cells", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FF00"))
+  cells <- pt$getCells(rowNumbers=c(2, NA, 5), columnNumbers=c(NA, 4, 7))
+  cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(cells)
+  # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(cells), 14)
+  expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 201519)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "312d7c3d4a3f0ed2ac7526b57fc39a62")
+})
+
+
+test_that("find cells tests:  variableValues 1", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FF00FF"))
+  cells <- pt$findCells(variableValues=list("PowerType"=c("DMU", "HST")))
+  cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(cells)
+  # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(cells), 15)
+  expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 80406)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "cfc88253676485074b371cc22f008c09")
+})
+
+
+test_that("find cells tests:  variableValues 2", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FF00FF"))
+  cells <- pt$findCells(variableValues=list("PowerType"=c("DMU", "HST"), "TOC"="London Midland"))
+  cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(cells)
+  # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(cells), 3)
+  expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 11229)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "9e6a2da0a58d8e56c49251f612ac0db5")
+})
+
+
+test_that("find cells tests:  totals", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FF00FF"))
+  cells <- pt$findCells(variableValues=list("PowerType"="**"))
+  cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(cells)
+  # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(cells), 15)
+  expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 334840)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "3c2a8235b2af5bd420146acaa857f3ee")
+})
+
+
+test_that("find cells tests:  grand total", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FF00FF"))
+  cells <- pt$findCells(variableValues=list("TrainCategory"="**", "PowerType"="**", "TOC"="**"))
+  cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(cells)
+  # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(cells), 1)
+  expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 83710)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "a74e5a64b55415d85703fa4faf2f9f74")
+})
+
+
+test_that("find cells tests:  conditional formatting", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  redStyle <- PivotStyle$new(pt, "redStyle", list("background-color"="#FFC7CE", "color"="#9C0006"))
+  cells <- pt$findCells(minValue=30000, maxValue=50000, includeNull=FALSE, includeNA=FALSE)
+  cellCount <- lapply(cells, function(cell) {cell$style <- redStyle})
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # length(cells)
+  # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
+  # digest::digest(pt$getHtml(), algo="md5")
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_equal(length(cells), 5)
+  expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 198768)
+  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "babdc75cff52ebe815cd28786eeb15c3")
+})
+
+
