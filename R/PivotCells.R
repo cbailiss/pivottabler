@@ -227,7 +227,7 @@ PivotCells <- R6::R6Class("PivotCells",
              # a) check the filter match
              if((!is.null(variableNames))||(!is.null(variableValues))) {
                if(is.null(rowColFilters)) next
-               isMatch <- rowColFilters$isFilterMatch(variableNames=variableNames, variableValues=variableValues)
+               isMatch <- rowColFilters$isFilterMatch(matchMode="combinations", variableNames=variableNames, variableValues=variableValues)
                if(isMatch==FALSE) next
              }
              # b) check totals criteria
@@ -241,6 +241,9 @@ PivotCells <- R6::R6Class("PivotCells",
              }
              # d) value tests:  is null, NA, minValue, maxValue, exactValues
              if(is.null(cell$rawValue)) {
+               if(includeNull==FALSE) next
+             }
+             else if(length(cell$rawValue)==0) {
                if(includeNull==FALSE) next
              }
              else {

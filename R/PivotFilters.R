@@ -121,11 +121,40 @@ PivotFilters <- R6::R6Class("PivotFilters",
           varNames <- names(variableValues)
           for(i in 1:length(varNames)) {
             filter <- self$getFilter(varNames[i])
+            varValues <- variableValues[[i]]
+            # special cases
+            if(varValues=="**") {
+              # asterix means the filter should exist and the filter values should be null
+              if(is.null(filter)) {
+                if(matchMode=="simple") next
+                return(invisible(FALSE))
+              }
+              if(is.null(filter$values)) {
+                if(matchMode=="simple") return(invisible(TRUE))
+                else next
+              }
+              else return(invisible(FALSE))
+            }
+            if(varValues=="!*") {
+              # asterix means the filter should exist and  the filter values should not be null
+              if(is.null(filter)) {
+                if(matchMode=="simple") next
+                return(invisible(FALSE))
+              }
+              if(is.null(filter$values)) {
+                if(matchMode=="simple") next
+                else return(invisible(FALSE))
+              }
+              else {
+                if(matchMode=="simple") return(invisible(TRUE))
+                next
+              }
+            }
+            # normal values criteria
             if(is.null(filter)) {
               if(matchMode=="simple") next
               else return(invisible(FALSE))
             }
-            varValues <- variableValues[[i]]
             if(is.null(varValues)) next
             if(length(varValues)==0) next
             intrsct <- intersect(filter$values, varValues)
