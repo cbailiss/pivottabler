@@ -68,7 +68,7 @@
 #' A reference dataset listing the codes, names and locations
 #' of trains stations in Great Britain.
 #'
-#' @format A data frame with 2982 rows and  10 variables:
+#' @format A data frame with 2568 rows and  7 variables:
 #' \describe{
 #'   \item{CrsCode}{3-letter code for the station}
 #'   \item{StationName}{The name of the station}
