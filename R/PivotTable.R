@@ -138,6 +138,10 @@
 #'   headings.}
 #'   \item{\code{asDataFrame(separator=" ")}}{Gets the pivot table as a data
 #'   frame, combining multiple levels of headings with the specified separator.}
+#'   \item{\code{asTidyDataFrame(includeGroupCaptions=TRUE,
+#'   includeGroupValues=TRUE, separator=" ")}}{Gets the pivot table as a tidy
+#'   data frame, where each cell in the body of the pivot table becomes one row
+#'   in the data frame.}
 #'   \item{\code{getCss(styleNamePrefix)}}{Get the CSS declarations for the
 #'   entire pivot table.}
 #'   \item{\code{getHtml(styleNamePrefix, includeHeaderValues=FALSE,
@@ -741,8 +745,7 @@ PivotTable <- R6::R6Class("PivotTable",
     },
     asDataFrame = function(separator=" ") {
       checkArgument("PivotTable", "asDataFrame", separator, missing(separator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-      self$message("PivotTable$asDataFrame", "Getting pivot table as a data frame...",
-                    list(dataGroupSeparatordataGroupSeparator))
+      self$message("PivotTable$asDataFrame", "Getting pivot table as a data frame...", list(separator=separator))
       if(!private$p_evaluated) stop("PivotTable$asDataFrame():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$asDataFrame():  No cells exist to retrieve.", call. = FALSE)
       # sizing
@@ -796,6 +799,118 @@ PivotTable <- R6::R6Class("PivotTable",
       rownames(df) <- rowHeaders
       self$message("PivotTable$asDataFrame", "Got pivot table as a data frame.")
       return(df)
+    },
+    asTidyDataFrame = function(includeGroupCaptions=TRUE, includeGroupValues=TRUE, separator=" ") {
+      checkArgument("PivotTable", "asTidyDataFrame", includeGroupCaptions, missing(includeGroupCaptions), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "asTidyDataFrame", includeGroupValues, missing(includeGroupValues), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "asTidyDataFrame", separator, missing(separator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+      self$message("PivotTable$asTidyDataFrame", "Getting pivot table as a tidy data frame...",
+                   list(includeGroupCaptions=includeGroupCaptions, includeGroupValues=includeGroupValues, separator=separator))
+      if(!private$p_evaluated) stop("PivotTable$asDataFrame():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$asDataFrame():  No cells exist to retrieve.", call. = FALSE)
+      df <- list()
+      vals <- list()
+      # basic information
+      df$rowNumber[1] <- NA
+      df$columnNumber[1] <- NA
+      df$isTotal[1] <- NA
+      vals$calculationName[1] <- NA
+      vals$calculationGroupName[1] <- NA
+      vals$rawValue[1] <- NA
+      vals$formattedValue[1] <- NA
+      # other standard information
+      if(includeGroupCaptions==TRUE) {
+        # add in the level headings
+        rowLevelCount <- private$p_rowGroup$getLevelCount()
+        for(r in 1:rowLevelCount) {
+          df[[paste0("RowLevel", sprintf("%02d", r))]][1] <- NA
+        }
+        columnLevelCount <- private$p_columnGroup$getLevelCount()
+        for(c in 1:columnLevelCount) {
+          df[[paste0("ColumnLevel", sprintf("%02d", c))]][1] <- NA
+        }
+      }
+      # iterate the cells
+      cellNumber <- 0
+      if(private$p_cells$rowCount > 0) {
+        for(r in 1:private$p_cells$rowCount) {
+          if(private$p_cells$columnCount > 0) {
+            for(c in 1:private$p_cells$columnCount) {
+              # get the cell
+              cell <- private$p_cells$getCell(r, c)
+              if(is.null(cell)) next
+              cellNumber <- cellNumber + 1
+              # basic info
+              df$rowNumber[cellNumber] <- r
+              df$columnNumber[cellNumber] <- c
+              df$isTotal[cellNumber] <- cell$isTotal
+              vals$calculationName[cellNumber] <- cell$calculationName
+              vals$calculationGroupName[cellNumber] <- cell$calculationGroupName
+              if(!is.null(cell$rawValue)) {
+                if(length(cell$rawValue)>0) {
+                  if(!is.na(cell$rawValue)) vals$rawValue[cellNumber] <- cell$rawValue
+                }
+              }
+              if(!is.null(cell$formattedValue)) {
+                if(length(cell$formattedValue)>0) {
+                  if(!is.na(cell$formattedValue)) vals$formattedValue[cellNumber] <- cell$formattedValue
+                }
+              }
+              # captions
+              if(includeGroupCaptions==TRUE) {
+                # row heading captions
+                rg <- cell$rowLeafGroup
+                while(!is.null(rg)) {
+                  levelNumber <- rg$getLevelNumber()
+                  if(levelNumber==0) break
+                  df[[paste0("RowLevel", sprintf("%02d", levelNumber))]][cellNumber] <- rg$caption
+                  rg <- rg$parentGroup
+                }
+                # column heading captions
+                cg <- cell$columnLeafGroup
+                while(!is.null(cg)) {
+                  levelNumber <- cg$getLevelNumber()
+                  if(levelNumber==0) break
+                  df[[paste0("ColumnLevel", sprintf("%02d", levelNumber))]][cellNumber] <- cg$caption
+                  cg <- cg$parentGroup
+                }
+              }
+              # filter values
+              if(includeGroupValues==TRUE) {
+                filters <- cell$rowColFilters
+                if(!is.null(filters)) {
+                  if(filters$count>0) {
+                    for(i in 1:filters$count) {
+                      filter <- filters$filters[[i]]
+                      if(is.null(filter)) next
+                      values <- filter$values
+                      if(is.null(values)) values <- NA
+                      if(length(values>1)) values <- paste(values, sep=separator, collapse=separator)
+                      df[[filter$variableName]][cellNumber] <- values
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      if(cellNumber==0) return(invisible())
+      # append the values to the end of the data frame
+      df$calculationName <- vals$calculationName
+      df$calculationGroupName <- vals$calculationGroupName
+      df$rawValue <- vals$rawValue
+      df$formattedValue <- vals$formattedValue
+      # check all of the to-be columns are of the same length and adjust if not
+      maxLength <- 0
+      for(i in 1:length(df)) {
+        maxLength <- max(maxLength, length(df[[i]]))
+      }
+      for(i in 1:length(df)) {
+        if(length(df[[i]]) < maxLength) df[[i]][maxLength] <- NA
+      }
+      self$message("PivotTable$asTidyDataFrame", "Got pivot table as a tidy data frame.")
+      return(invisible(as.data.frame(df)))
     },
     getCss = function(styleNamePrefix=NULL) {
       checkArgument("PivotTable", "getCss", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")

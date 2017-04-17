@@ -56,6 +56,8 @@
 #'   \item{\code{new(...)}}{Create a new pivot data group, specifying the field
 #'   values documented above.}
 #'
+#'   \item{\code{getLevelNumber()}}{Get the level number of this data group,
+#'   where level 1 is the top data group.}
 #'   \item{\code{getAncestorGroups(ancestors, includeCurrentGroup=FALSE)}}{Get
 #'   all of the data groups above the current data group in the parent-child
 #'   data group hierarchy.}
@@ -131,6 +133,17 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_calculationGroupName <- calculationGroupName
      private$p_calculationName <- calculationName
      private$p_parentPivot$message("PivotDataGroup$new", "Created new data group.")
+   },
+   getLevelNumber = function() {
+     private$p_parentPivot$message("PivotDataGroup$getLevelNumber", "Getting level number...")
+     levelNumber <- 0
+     grp <- self
+     while(!is.null(grp$parentGroup)) {
+       levelNumber <- levelNumber + 1
+       grp <- grp$parentGroup
+     }
+     private$p_parentPivot$message("PivotDataGroup$getLevelNumber", "Got level number.")
+     return(invisible(levelNumber))
    },
    getAncestorGroups = function(ancestors=NULL, includeCurrentGroup=FALSE) {
      checkArgument("PivotDataGroup", "getAncestorGroups", ancestors, missing(ancestors), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")

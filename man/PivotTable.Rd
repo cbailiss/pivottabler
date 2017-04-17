@@ -144,6 +144,10 @@ content for external systems.}
   headings.}
   \item{\code{asDataFrame(separator=" ")}}{Gets the pivot table as a data
   frame, combining multiple levels of headings with the specified separator.}
+  \item{\code{asTidyDataFrame(includeGroupCaptions=TRUE,
+  includeGroupValues=TRUE, separator=" ")}}{Gets the pivot table as a tidy
+  data frame, where each cell in the body of the pivot table becomes one row
+  in the data frame.}
   \item{\code{getCss(styleNamePrefix)}}{Get the CSS declarations for the
   entire pivot table.}
   \item{\code{getHtml(styleNamePrefix, includeHeaderValues=FALSE,

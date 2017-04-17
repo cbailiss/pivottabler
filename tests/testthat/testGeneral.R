@@ -1027,6 +1027,27 @@ test_that("export tests:  as Data Frame", {
 })
 
 
+test_that("export tests:  as Tidy Data Frame", {
+
+  checkDigestAvailable()
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+
+  # sum(pt$asTidyDataFrame()$rawValue, na.rm=TRUE)
+  # digest::digest(pt$asTidyDataFrame(), algo="md5")
+
+  expect_equal(sum(pt$asTidyDataFrame()$rawValue, na.rm=TRUE), 502260)
+  expect_identical(digest::digest(pt$asTidyDataFrame(), algo="md5"), "0410f50b561dadf0a032ce2746b47859")
+})
+
+
 test_that("latex tests:  basic latex table with spans", {
 
   checkDigestAvailable()

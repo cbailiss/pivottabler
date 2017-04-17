@@ -83,6 +83,7 @@ PivotCells <- R6::R6Class("PivotCells",
        stop(paste0("PivotCells$getCell(): c (", c, ") must be must be greater than or equal to 1."), call. = FALSE)
      if(c > self$columnCount)
        stop(paste0("PivotCells$getCell(): c (", c, ") must be less than or equal to columnCount (", self$columnCount, ")."), call. = FALSE)
+     if(length(private$p_rows[[r]]) < c) return(invisible(NULL))
      return(invisible(private$p_rows[[r]][[c]]))
    },
    setCell = function(r, c, cell) {
@@ -111,6 +112,7 @@ PivotCells <- R6::R6Class("PivotCells",
           for(r in 1:length(private$p_rows)) {
             if(length(private$p_rows[[r]]) > 0) {
               for(c in 1:length(private$p_rows[[r]])) {
+                if(length(private$p_rows[[r]]) < c) next
                 cell <- private$p_rows[[r]][[c]]
                 cells[[length(cells)+1]] <- cell
               }
@@ -130,6 +132,7 @@ PivotCells <- R6::R6Class("PivotCells",
             stop(paste0("PivotCells$getCells(): rowNumber (", r, ") must be less than or equal to rowCount (", self$rowCount, ")."), call. = FALSE)
           if(length(private$p_rows[[r]]) > 0) {
             for(c in 1:length(private$p_rows[[r]])) {
+              if(length(private$p_rows[[r]]) < c) next
               cell <- private$p_rows[[r]][[c]]
               cells[[length(cells)+1]] <- cell
             }
@@ -150,6 +153,7 @@ PivotCells <- R6::R6Class("PivotCells",
             for(r in 1:length(private$p_rows)) {
               if(length(private$p_rows[[r]]) > 0) {
                 if(c <= length(private$p_rows[[r]])) {
+                  if(length(private$p_rows[[r]]) < c) next
                   cell <- private$p_rows[[r]][[c]]
                   cells[[length(cells)+1]] <- cell
                 }
@@ -181,6 +185,7 @@ PivotCells <- R6::R6Class("PivotCells",
             stop(paste0("PivotCells$getCells(): rowNumber (", r, ") must be less than or equal to rowCount (", self$rowCount, ")."), call. = FALSE)
           if(length(private$p_rows[[r]]) > 0) {
             for(c in 1:length(private$p_rows[[r]])) {
+              if(length(private$p_rows[[r]]) < c) next
               cell <- private$p_rows[[r]][[c]]
               cells[[length(cells)+1]] <- cell
             }
@@ -197,6 +202,7 @@ PivotCells <- R6::R6Class("PivotCells",
             for(r in 1:length(private$p_rows)) {
               if(length(private$p_rows[[r]]) > 0) {
                 if(c <= length(private$p_rows[[r]])) {
+                  if(length(private$p_rows[[r]]) < c) next
                   cell <- private$p_rows[[r]][[c]]
                   cells[[length(cells)+1]] <- cell
                 }
@@ -206,6 +212,7 @@ PivotCells <- R6::R6Class("PivotCells",
           next
         }
         # specific cell
+        if(length(private$p_rows[[r]]) < c) next
         cell <- private$p_rows[[r]][[c]]
         cells[[length(cells)+1]] <- cell
       }

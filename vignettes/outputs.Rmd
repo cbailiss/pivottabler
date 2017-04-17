@@ -137,7 +137,13 @@ pt$asMatrix(repeatHeaders=TRUE)
 
 ## Results as an R Data Frame
 
-Converting a pivot table to a data frame can be accomplished as follows:
+Two different functions can be used to convert a pivot table to a data frame.  The `asDataFrame()` function returns a data frame with a roughly similar layout to the pivot table, e.g. a pivot table with a body consisting of 10 rows and 2 columns will result in a data frame also containing 10 rows and 2 columns.  The `asTidyDataFrame()` function returns a data frame consisting of one row for every cell in the body of the pivot table, e.g. a pivot table with a body consisting of 10 rows and 2 columns will result in a data frame containing 20 rows.
+
+Examples of both functions are given below.
+
+### The `asDataFrame()` function
+
+The example pivot table converts as follows:
 
 ```{r, warning=FALSE, eval=TRUE, comment=""}
 library(pivottabler)
@@ -147,8 +153,9 @@ pt$addColumnDataGroups("PowerType")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$evaluatePivot()
-pt$asDataFrame()
-str(pt$asDataFrame())
+df <- pt$asDataFrame()
+df
+str(df)
 ```
 
 Data frames can have at most one name for each row and column.  Therefore, when there are multiple levels of headers in the pivot table, the captions are concatenated into a single value for each row and column:
@@ -178,6 +185,28 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$evaluatePivot()
 pt$asDataFrame(separator="|")
 ```
+
+### The `asTidyDataFrame()` function
+
+The example pivot table converts as follows:
+
+```{r, warning=FALSE, eval=TRUE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$asDataFrame()
+df <- pt$asTidyDataFrame()
+str(df)
+head(df)
+```
+
+By default the generated pivot table contains columns for both the captions of the data groups and the variables/values that the data groups represent.  Each of these sets of columns can be removed from the data frame by setting `includeGroupCaptions=FALSE` or `includeGroupValues=FALSE` respectively.
+
+Where a data group represents multiple values, those values are concatenated and returned in a single column in the data frame.  Again, the separator between the values can be changed, e.g. by specifying `separator="|"`. 
 
 ## Further Reading
 

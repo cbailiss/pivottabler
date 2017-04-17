@@ -83,6 +83,8 @@ group (used as part of the rendering routines).}
   \item{\code{new(...)}}{Create a new pivot data group, specifying the field
   values documented above.}
 
+  \item{\code{getLevelNumber()}}{Get the level number of this data group,
+  where level 1 is the top data group.}
   \item{\code{getAncestorGroups(ancestors, includeCurrentGroup=FALSE)}}{Get
   all of the data groups above the current data group in the parent-child
   data group hierarchy.}
