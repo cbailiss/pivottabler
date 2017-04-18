@@ -11,6 +11,7 @@ vignette: >
 
 ## In This Vignette
 
+* Introducing pivottabler
 * pivottabler Development Status
 * Pivot Tables
     + Definition
@@ -21,15 +22,36 @@ vignette: >
 * Extending the Basic Pivot Table
 * Further Reading
 
+## Introducing pivottabler
+
+### In one sentance
+
+The `pivottabler` package enables pivot tables to be created with just a few lines of R.
+
+### In a few sentances
+
+The pivottabler package:
+
+- enables pivot tables to be constructed natively in R, via a series of R commands that gradually build a pivot table to meet your needs. 
+- provides a simple framework for specifying and aggregating data, based on the dplyr package.  
+- provides optional hooks for specifying custom calculations/aggregations for more complex scenarios
+    + This allows a wide-range of R functions, including custom functions written in R, to be used in the calculation logic.
+- does not require the user to specify low-level layout logic.
+- supports output to HTML and Latex as well as converting a pivot table to either a standard R matrix or data frame.
+
+Since pivot tables are primarily visualisation tools, the pivottabler package offers several custom styling options as well as conditional/custom formatting capabilities so that the pivot tables can be themed/branded as needed.
+
+Output can be rendered as HTML, including via the htmlwidgets framework, or rendered in Latex to PDF.  The generated HTML and Latex can also be easily retrieved, e.g. to be used outside of R.
+
 ## pivottabler Development Status
 
-The pivottabler package has undergone a rapid development in a relatively short time period.  Some rough edges exist.  Possibly some bugs too.
+The pivottabler package has developed quite rapidly.  Some rough edges exist.  Possibly some bugs too.
 
 The latest version of the pivottabler package can be obtained directly from the [package repository](https://github.com/cbailiss/pivottabler/).  Please log any questions not answered by the vignettes or any bug reports [here](https://github.com/cbailiss/pivottabler/issues).
 
 ## Pivot Tables
 
-### Example
+### Quick Example
 
 An example of a pivot table (explained further below) is:
 
@@ -47,24 +69,13 @@ pt$renderPivot()
 
 Pivot tables are a common technique for summarising large tables of data into smaller and more easily understood summary tables to answer specific questions.  
 
-Starting from a specific question that requires answering, the variables relevant to the question are identified.  The distinct values of the fixed variables^[The terms "fixed variables" and "measured variables" are used here as in [Wickham 2014](http://vita.had.co.nz/papers/tidy-data.html)] are rendered as a mixture of row and column headings in the summary table.  One or more aggregations of the (numerical) measured variables are added into the body of the table.  The summary table should then yield a concise answer to the original question.
+Starting from a specific question that requires answering, the variables relevant to the question are identified.  The distinct values of the fixed variables^[The terms "fixed variables" and "measured variables" are used here as in [Wickham 2014](http://vita.had.co.nz/papers/tidy-data.html)] are rendered as a mixture of row and column headings in the summary table.  One or more aggregations of the (numerical) measured variables are added into the body of the table, where the row/column headings act as data groups.  The summary table should then yield an answer to the original question.
 
 ### In reality
 
 The definition above is probably more difficult to understand than just looking at some examples - several are presented in this vignette.  An extended definition is also provided by [Wikipedia](https://en.wikipedia.org/wiki/Pivot_table).  
 
 Pivot tables can be found in everyday use within many commercial and non-commercial organisations.  Pivot tables feature prominently in applications such as Microsoft Excel, Open Office, etc.  More advanced forms are found in Business Intelligence (BI) and Online Analytical Processing (OLAP) tools.
-
-The pivottabler package:
-
-- enables pivot tables to be constructed natively in R, via a series of R commands that gradually build a pivot table to meet your needs.  
-- provides a simple framework for specifying and aggregating data, based on the dplyr package.  
-- provides hooks for custom calculation/aggregations for more complex scenarios.
-- supports output to HTML and Latex as well as converting a pivot table to either a standard R matrix or data frame.
-
-Since pivot tables are primarily visualisation tools, the pivottabler package offers several custom styling options as well as conditional/custom formatting capabilities.
-
-Output can be rendered as HTML, including via the htmlwidgets framework, or rendered in Latex to PDF.  The generated HTML and Latex can also be easily retrieved, e.g. to be used outside of R.
 
 ## Sample Data: Trains in Birmingham
 
