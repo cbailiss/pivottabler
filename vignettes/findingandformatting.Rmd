@@ -529,7 +529,24 @@ pt$renderPivot()
 
 The `findCells()` and `getCells()` functions can be used to help conditionally format a pivot table.
 
-For example, analysing the average arrival delay (in minutes) in the morning peak time, for the top 20 origin stations, broken down by the hour of the day (i.e. 5am, 6am, 7am, etc), with the results formatted as follows:
+For example, to highlight in red those cells in the basic example pivot table that have a value between 30000 and 50000:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+redStyle <- PivotStyle$new(pt, "redStyle", list("background-color"="#FFC7CE", "color"="#9C0006"))
+cells <- pt$findCells(minValue=30000, maxValue=50000, includeNull=FALSE, includeNA=FALSE)
+cellCount <- lapply(cells, function(cell) {cell$style <- redStyle})
+pt$renderPivot()
+```
+
+Another example:  analysing the average arrival delay (in minutes) in the morning peak time, for the top 20 origin stations, broken down by the hour of the day (i.e. 5am, 6am, 7am, etc), with the results formatted as follows:
 
 - Average arrival delay between 0 and 2 minutes - green,
 - Average arrival delay between 2 and 4 minutes - yellow,
