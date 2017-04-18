@@ -1111,7 +1111,9 @@ PivotTable <- R6::R6Class("PivotTable",
         }
       }
     },
-    cells = function(value) { return(invisible(private$p_cells ))},
+    cells = function(value) { return(invisible(private$p_cells)) },
+    rowCount = function(value) { return(invisible(private$p_cells$rowCount)) },
+    columnCount = function(value) { return(invisible(private$p_cells$columnCount)) },
     theme = function(value) {
       if(missing(value)) {
         if(is.null(private$p_styles)) return(invisible(NULL))
