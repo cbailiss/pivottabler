@@ -61,9 +61,9 @@ test_that("smoke tests:  bhmtrains basic pivot html", {
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "69abeaf38dc735daeddeae4d94d3ed59")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "a93a42c781ec0855456695c83e0bc218")
 })
 
 
@@ -75,9 +75,9 @@ test_that("smoke tests:  basic layout tests:  empty pivot", {
   pt <- PivotTable$new()
   pt$evaluatePivot()
   # pt$renderPivot()
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "cc73c556d32becd5b2658c8cfa03ed52")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "4cbb141f2643a384349301a209816a35")
 })
 
 
@@ -90,9 +90,9 @@ test_that("basic layout tests:  empty pivot plus data", {
   pt$addData(bhmtrains)
   pt$evaluatePivot()
   # pt$renderPivot()
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "cc73c556d32becd5b2658c8cfa03ed52")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "4cbb141f2643a384349301a209816a35")
 })
 
 
@@ -107,10 +107,10 @@ test_that("basic layout tests:  just a total", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix())
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix()), 83710)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "c50ee91df312ff77cfa7220aef5dcd97")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "9a1f109375f16824e1f2673fb98ce49e")
 })
 
 
@@ -126,10 +126,10 @@ test_that("basic layout tests:  two measures", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix())
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix()), 83835)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "f519336add21aeeef3b764e228a53cfe")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "b4c1b54df78bca250fda21f8fec41676")
 })
 
 
@@ -143,9 +143,9 @@ test_that("basic layout tests:  rows only", {
   pt$addRowDataGroups("TOC")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "4535ececc842d2771f7246e86d70f2fb")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "c9a2502913bcb1af727276bc36218835")
 })
 
 
@@ -161,10 +161,10 @@ test_that("basic layout tests:  rows plus total", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix())
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix()), 167420)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "ffb1fbc40f2638a360e0a97d00fc42fa")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "0921e06e31cd11c00c67c15274362552")
 })
 
 
@@ -181,10 +181,10 @@ test_that("basic layout tests:  rows plus two measures", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix())
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix()), 167995)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "db60e2cf41541eae3f3ee72611e1e211")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "180c6dbb7dce5066c1774509926e8c2d")
 })
 
 
@@ -198,9 +198,9 @@ test_that("basic layout tests:  columns only", {
   pt$addColumnDataGroups("TOC")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "f520ed3e8bb111f39ed33694a1cbfbdf")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "0a6d4186e7ad7ba417e7d77478b08b87")
 })
 
 
@@ -216,10 +216,10 @@ test_that("basic layout tests:  columns plus total", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix())
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix()), 167420)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "34eafe5ded056555d4ec42c0e678715a")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "f18a3892caac0451a136d95c3db23953")
 })
 
 
@@ -236,10 +236,10 @@ test_that("basic layout tests:  columns plus two totals", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix())
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix()), 167995)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "f798002d4005ca4b572b85ea44df1f5f")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "289803c216e29da8dc4895ed4066f06f")
 })
 
 
@@ -254,9 +254,9 @@ test_that("basic layout tests:  rows and columns only", {
   pt$addRowDataGroups("TOC")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "dfaf7ca61e381f99ec0e05810b245b8b")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "2af2e6c5f23ffc450ff535a92e9ae25d")
 })
 
 
@@ -273,10 +273,10 @@ test_that("basic layout tests:  rows, columns and calculation", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "69abeaf38dc735daeddeae4d94d3ed59")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "a93a42c781ec0855456695c83e0bc218")
 })
 
 
@@ -294,10 +294,10 @@ test_that("basic layout tests:  rows, columns and two calculations", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 336380)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "06780240f4afc3784525836829f65a66")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "9f24c79b44c0068292fa7916c63c00d6")
 })
 
 
@@ -314,10 +314,10 @@ test_that("basic layout tests:  columns plus total on row", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix())
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix()), 167420)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "41f1c652d393e2910aea62716c8244ea")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "4f9ed38dedbb8052ea52fc920c137c32")
 })
 
 
@@ -335,10 +335,10 @@ test_that("basic layout tests:  columns plus two totals on rows", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix())
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix()), 167995)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "1531ba5f10e9f075b55cb18b037f3cfd")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "5bbbad8408175590395049941e41cd5b")
 })
 
 
@@ -356,10 +356,10 @@ test_that("basic layout tests:  rows, columns and calculation on rows", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "69abeaf38dc735daeddeae4d94d3ed59")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "a93a42c781ec0855456695c83e0bc218")
 })
 
 
@@ -378,10 +378,10 @@ test_that("basic layout tests:  rows, columns and two calculations on rows", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 336380)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "e82ee929b0e423df8b48adc926a264d8")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "5d87c05a38d7eacf0acdd5a9a2d54904")
 })
 
 
@@ -399,10 +399,10 @@ test_that("data groups tests:  dplyr ignoring parent groups", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "39fd4b80e8be158ae9a888dcbbddc43e")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "4c28215c21eb0b904f4eba40fbe4e931")
 })
 
 
@@ -420,10 +420,10 @@ test_that("data groups tests:  adding data groups explicitly", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 500796)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "e4738a1ff93776a3b5011442234947fd")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "480a893200d6ad062e0bc6ce8db3da57")
 })
 
 
@@ -442,10 +442,10 @@ test_that("data groups tests:  adding data groups that combine values", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "5520c3f4363267de0e416e2d0f54f509")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "a2e56e597f1c9d0b7166bad08bd6bf7e")
 })
 
 # fails testing on win builder - format codes %B %Y probably mean different things on different machines
@@ -470,10 +470,10 @@ test_that("data groups tests:  adding data groups that combine values", {
 #   pt$evaluatePivot()
 #   # pt$renderPivot()
 #   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-#   # digest::digest(pt$getHtml(), algo="md5")
+#   # digest::digest(as.character(pt$getHtml()), algo="md5")
 #
 #   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
-#   expect_identical(digest::digest(pt$getHtml(), algo="md5"), "2bbed6d4f402fcb465d7b3569aa14e46")
+#   expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "2bbed6d4f402fcb465d7b3569aa14e46")
 # })
 
 
@@ -491,10 +491,10 @@ test_that("data groups tests:  sort by group into descending order", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "2c5eef1aca9347004d48e73b2010f63d")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "ec319fdc51c46f0096b8cdd06ff66b4a")
 })
 
 
@@ -516,10 +516,10 @@ test_that("data groups tests:  numerical sort by group into descending order", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 460)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "c68ba30efb84bb22036d5384dfa14a34")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "9a832555c1e1b93e83880723b2b327a8")
 })
 
 
@@ -538,10 +538,10 @@ test_that("data groups tests:  sort by value into descending order", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "82516909a522ba233e179e98bcce4448")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "5282168e57c7fff5f74da5293683a104")
 })
 
 
@@ -560,10 +560,10 @@ test_that("data groups tests:  sort by level 2 value into descending order", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "484cab0595571b25af22912ea9ea69ec")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "1a9f60b61dddfcc08f8cf1a878dca0b3")
 })
 
 
@@ -601,10 +601,10 @@ test_that("calculation tests:  calculate dply summarise", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sprintf("%.6f", sum(pt$cells$asMatrix()))
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix()), 168438.858522)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "9f62fc2410dab693c723dd256d763f15")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "6c2a360ffe13a8614c1b43d290af5700")
 })
 
 
@@ -644,10 +644,10 @@ test_that("calculation tests:  calculate on rows dply summarise", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sprintf("%.6f", sum(pt$cells$asMatrix()))
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix()), 168438.858522)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "cd501b5bea3fb0b596837e0a87987640")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "91c6b419f3294aa2abba44023819f5da")
 })
 
 
@@ -681,10 +681,10 @@ test_that("calculation tests:  deriving values from other calculations", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sprintf("%.6f", sum(pt$cells$asMatrix()))
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix()), 182432.916225)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "56a286b5d6aa564261accf8660ddd843")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "666b8152d843bb0d6f55849f0d2d2bdf")
 })
 
 
@@ -709,12 +709,12 @@ test_that("calculation tests:  showing values only", {
   pt$addRowDataGroups("TOC", addTotal=FALSE)                #  <<  *** CODE CHANGE ***  <<
   pt$defineCalculation(calculationName="TotalTrains", type="value", valueName="NumberOfTrains")
   pt$evaluatePivot()
-  # pt$renderPivot()
+  pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 83710)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "fcda3bab7f63063453591d141c274c62")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "eb0538010efa4804a610cf676a5f327e")
 })
 
 
@@ -741,18 +741,18 @@ test_that("calculation tests:  showing values plus totals", {
                        type="value", valueName="NumberOfTrains",
                        summariseExpression="sum(NumberOfTrains)")
   pt$evaluatePivot()
-  # pt$renderPivot()
+  pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "69abeaf38dc735daeddeae4d94d3ed59")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "a93a42c781ec0855456695c83e0bc218")
 })
 
 
 # Failed testing on win builder (R 3.4.0 alpha) - guess: something to do with NA matching or NA sorting
   # 2. Failure: specific tests:  checking NA matching (@testGeneral.R#772) ---------
-  # digest::digest(pt$getHtml(), algo = "md5") not identical to "4de9b5984fc79813e347de07177f6d58".
+  # digest::digest(as.character(pt$getHtml()), algo = "md5") not identical to "4de9b5984fc79813e347de07177f6d58".
   # 1/1 mismatches
   # x[1]: "b60fb6d08a52644b7e535c105a444579"
   # y[1]: "4de9b5984fc79813e347de07177f6d58"
@@ -771,10 +771,10 @@ test_that("calculation tests:  showing values plus totals", {
 #   pt$evaluatePivot()
 #   # pt$renderPivot()
 #   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-#   # digest::digest(pt$getHtml(), algo="md5")
+#   # digest::digest(as.character(pt$getHtml()), algo="md5")
 #
 #   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 669680)
-#   expect_identical(digest::digest(pt$getHtml(), algo="md5"), "4de9b5984fc79813e347de07177f6d58")
+#   expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "4de9b5984fc79813e347de07177f6d58")
 # })
 
 
@@ -794,10 +794,10 @@ test_that("specific tests:  visual totals", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 149920)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "fecc86f450c27978d80b6234bde45c33")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "f67036acc61d2f58b12bbedf7e6c8b1b")
 })
 
 
@@ -827,11 +827,11 @@ test_that("theming tests:  basic test", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
   # digest::digest(pt$getCss(), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "01a7b4884d7eb49eb83afe7c9d1819d5")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "02c77d4b27bb76629110d68aea4d5438")
   expect_identical(digest::digest(pt$getCss(), algo="md5"), "929497023d21358b044ce4fc084e31cd")
 })
 
@@ -850,10 +850,10 @@ test_that("empty data group test 1", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 167420)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "bf15028c080c7cb7bef8b30b9b46049a")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "020ba3be27a175e885f5f0e1b3207c2e")
 })
 
 
@@ -871,10 +871,10 @@ test_that("empty data group test 2", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 0)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "dd134181eb368210c4b3d958d8a7e166")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "7ef58df5f3c515bec1082843bb90f328")
 })
 
 
@@ -892,10 +892,10 @@ test_that("empty data group test 3", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 236790)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "47f847ac274dd2fa51b856314c6387d5")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "3998e09a5ada0b32a461de90ff6f8a6a")
 })
 
 
@@ -913,10 +913,10 @@ test_that("empty data group test 4", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 138740)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "4f5ece1b5f35befc62b15391f09c94f2")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "cda8c56baf02aea9aae12b3b7ff187bc")
 })
 
 
@@ -935,10 +935,10 @@ test_that("empty data group test 5", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 306160)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "44983d5292c294cabe5004a1d3e18433")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "a3eb21c719504c56e61562dbdf1aab00")
 })
 
 
@@ -957,10 +957,10 @@ test_that("empty data group test 6", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 208110)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "46c99dd69354dde35faf7283548df2be")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "609bdcbd415698cb44627f00adc5352d")
 })
 
 
@@ -1500,11 +1500,11 @@ test_that("find groups tests:  simple:  variableNames", {
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(groups)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(groups), 3)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "73e48063731c7810f2aab06a4892725f")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "ddf28a5c7043edccac96cde146f24cbf")
 })
 
 
@@ -1526,11 +1526,11 @@ test_that("find groups tests:  simple:  variableValues", {
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(groups)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(groups), 3)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "3bf492578c2477727d51df9b4b629218")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "24262ffb2311df047758b7fd9771e14b")
 })
 
 
@@ -1552,11 +1552,11 @@ test_that("find groups tests:  simple:  exclude totals", {
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(groups)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(groups), 2)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "b9f1be1d9ce848faf7360e97b08f4604")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "1c2c091aca3132e5ac58ac6273e416fc")
 })
 
 
@@ -1578,11 +1578,11 @@ test_that("find groups tests:  simple:  only totals", {
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(groups)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(groups), 1)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "29b71fbdf4737236dee248f1e4255a30")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "0a0d46aa60e4f0a9f1c8e1d7f927bae8")
 })
 
 
@@ -1606,11 +1606,11 @@ test_that("find groups tests:  simple:  includeDescendantGroups", {
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(groups)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(groups), 4)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "5a1d0b134787077316f6f5f78f179d7d")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "c9092ffb76a65dabf81e81d6ac2de060")
 })
 
 
@@ -1633,11 +1633,11 @@ test_that("find groups tests:  combinations:  variableNames", {
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(groups)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(groups), 8)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "434ce4144cae81324f9f81641ac1702a")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "0f4528309de180a08bc303969a1ba78c")
 })
 
 
@@ -1660,11 +1660,11 @@ test_that("find groups tests:  combinations:  variableValues", {
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(groups)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(groups), 2)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "0d1791806360d88617ffb4368832ccfd")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "e9a691aa552828548ebfa7e4b7e86943")
 })
 
 
@@ -1687,11 +1687,11 @@ test_that("find groups tests:  combinations:  specific sub total", {
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(groups)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(groups), 1)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "bfa03a6adefd8fd6f59bb0ccec574cbe")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "d59ac3d2eb4abcd8ae4b4be98785c433")
 })
 
 
@@ -1714,12 +1714,12 @@ test_that("get cells tests:  whole rows", {
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(cells)
   # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(cells), 16)
   expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 156564)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "98cb2c4f1e0caf7cc3dc6805efba8d44")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "5d8ec18a72a60e7f9bd074426e3af2c3")
 })
 
 
@@ -1742,12 +1742,12 @@ test_that("get cells tests:  whole columns", {
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(cells)
   # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(cells), 5)
   expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 30612)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "356e13b760a87fbb8cff1ac12b22df77")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "61289bc8558869783943bb2550da2948")
 })
 
 
@@ -1770,12 +1770,12 @@ test_that("get cells tests:  rows, columns and cells", {
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(cells)
   # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(cells), 14)
   expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 201519)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "312d7c3d4a3f0ed2ac7526b57fc39a62")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "f7db50d7a0501e51708cc95b2890313a")
 })
 
 
@@ -1798,12 +1798,12 @@ test_that("find cells tests:  variableValues 1", {
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(cells)
   # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(cells), 15)
   expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 80406)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "cfc88253676485074b371cc22f008c09")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "970f136cd0ad4fa42143a20cc28bfd2f")
 })
 
 
@@ -1826,12 +1826,12 @@ test_that("find cells tests:  variableValues 2", {
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(cells)
   # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(cells), 3)
   expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 11229)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "9e6a2da0a58d8e56c49251f612ac0db5")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "f447c681713c9f9b78a097af483fa0e5")
 })
 
 
@@ -1854,12 +1854,12 @@ test_that("find cells tests:  totals", {
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(cells)
   # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(cells), 15)
   expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 334840)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "3c2a8235b2af5bd420146acaa857f3ee")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "97319f513afdc03a4f2f09fccad54113")
 })
 
 
@@ -1882,12 +1882,12 @@ test_that("find cells tests:  grand total", {
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(cells)
   # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(cells), 1)
   expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 83710)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "a74e5a64b55415d85703fa4faf2f9f74")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "6da0c0557c2be512c282994a1a190535")
 })
 
 
@@ -1910,12 +1910,12 @@ test_that("find cells tests:  conditional formatting", {
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # length(cells)
   # sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE)
-  # digest::digest(pt$getHtml(), algo="md5")
+  # digest::digest(as.character(pt$getHtml()), algo="md5")
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
   expect_equal(length(cells), 5)
   expect_equal(sum(unlist(lapply(cells, function(x) { return(x$rawValue) })), na.rm=TRUE), 198768)
-  expect_identical(digest::digest(pt$getHtml(), algo="md5"), "babdc75cff52ebe815cd28786eeb15c3")
+  expect_identical(digest::digest(as.character(pt$getHtml()), algo="md5"), "d74803ec078b4972fa3455ba04b7efab")
 })
 
 
