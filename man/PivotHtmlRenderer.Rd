@@ -33,9 +33,9 @@ The PivotHtmlRenderer class creates a HTML representation of a pivot table.
   on the PivotDataGroup class.}
   \item{\code{getTableHtml(styleNamePrefix=NULL, includeHeaderValues=FALSE,
   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
-  includeCalculationNames=FALSE, includeRawValue=FALSE)}}{Get a HTML
-  representation of the pivot table, optionally including additional detail
-  for debugging purposes.}
+  includeCalculationNames=FALSE, includeRawValue=FALSE,
+  includeTotalInfo=FALSE)}}{Get a HTML representation of the pivot table,
+  optionally including additional detail for debugging purposes.}
 }
 }
 

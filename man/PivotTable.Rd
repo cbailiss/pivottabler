@@ -152,19 +152,20 @@ content for external systems.}
   entire pivot table.}
   \item{\code{getHtml(styleNamePrefix, includeHeaderValues=FALSE,
   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
-  includeCalculationNames=FALSE, includeRawValue=FALSE)}}{Get the HTML
-  representation of the pivot table, specifying the CSS style name prefix to
-  use and whether additional debug information should be included in the
-  pivot table.}
+  includeCalculationNames=FALSE, includeRawValue=FALSE,
+  includeTotalInfo=FALSE)}}{Get the HTML representation of the pivot table,
+  specifying the CSS style name prefix to use and whether additional debug
+  information should be included in the pivot table.}
   \item{\code{saveHtml(filePath, fullPageHTML=TRUE, styleNamePrefix,
   includeHeaderValues=FALSE, includeRCFilters=FALSE,
   includeCalculationFilters=FALSE, includeCalculationNames=FALSE,
-  includeRawValue=FALSE)}}{Save the HTML representation of the pivot table to
-  a file.}
+  includeRawValue=FALSE, includeTotalInfo=FALSE)}}{Save the HTML
+  representation of the pivot table to a file.}
   \item{\code{renderPivot(width, height, styleNamePrefix,
   includeHeaderValues=FALSE, includeRCFilters=FALSE,
   includeCalculationFilters=FALSE, includeCalculationNames=FALSE,
-  includeRawValue=FALSE)}}{Render the pivot table as a htmlwidget.}
+  includeRawValue=FALSE, includeTotalInfo=FALSE)}}{Render the pivot table as
+  a htmlwidget.}
   \item{\code{getLatex(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL,
   fromColumn=NULL, toColumn=NULL, boldHeadings=FALSE,
   italicHeadings=FALSE)}}{Get the Latex representation of the pivot table,

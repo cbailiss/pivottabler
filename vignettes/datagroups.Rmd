@@ -107,6 +107,8 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
+Note that finding total/non-total data groups/cells with the `findRowDataGroups()`, `findColumnDataGroups()` and `findCells()` functions won't work when visual totals are enabled.  See the [Finding and Formatting](findandformatting.html) vignette for more details on these functions.
+
 ### Adding data groups that combine values
 
 By specifying values explicitly, it is also possible to combine multiple values into one data group.  For example, if the primary focus of an analysis is the two train operating companies operating the most trains ("London Midland" and "CrossCountry"), then "Arrival Trains Wales" and "Virgin" can be combined:
