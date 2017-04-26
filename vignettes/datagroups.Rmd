@@ -92,7 +92,7 @@ pt$renderPivot()
 
 #### Visual Totals
 
-In the above example, some of the totals now do not appear to reconcile, e.g. "CrossCountry DMU" (22400) + "CrossCountry EMU" (0) does not equal "CrossCountry Total" (23141).  The difference is the "CrossCountry HST" (741) data group that has been omitted.   This may or may not be desirable, depending on how the pivot table is introduced, the title that is used, etc.
+In the above example, some of the totals now do not appear to reconcile, e.g. "CrossCountry DMU" (22133) + "CrossCountry EMU" (0) does not equal "CrossCountry Total" (22865).  The difference is the "CrossCountry HST" (732) data group that has been omitted.   This may or may not be desirable, depending on how the pivot table is introduced, the title that is used, etc.
 
 If it is desirable for the totals to reconcile, then visual totals can be enabled using the `visualTotals` argument:
 
