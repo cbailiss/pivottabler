@@ -52,8 +52,10 @@ These functions also accept the following arguments:
 
 - `variableNames` - a character vector specifying the name/names of the variables to find - useful for finding all of the data groups for a specific variable.
 - `variableValues` - a list specifying the variable names and values to find.
+    + Specify one or more variables values to match that/those value(s) for the specified variable.
     + Specify "**" as the variable value to match totals for the specified variable.
     + Specify "!*" as the variable value to match non-totals for the specified variable.
+    + NB:  The totals/non-totals criteria above won't work when visual totals are used.  See the [Data Groups](datagroups.html) vignette for more details on visual totals.
 - `totals` - a word that specifies how totals are matched (overrides the finer settings above) - must be one of:
     + `include` to match total and non-total data groups.
     + `exclude` to match only non-total data groups.
@@ -399,6 +401,7 @@ The `findCells()` function is used to search for cells within the body of the pi
 - `variableValues` - a list specifying the variable names and values to find.   
     + Specify "**" as the variable value to match totals for the specified variable.
     + Specify "!*" as the variable value to match non-totals for the specified variable.
+    + NB:  The totals/non-totals criteria above won't work when visual totals are used.  See the [Data Groups](datagroups.html) vignette for more details on visual totals.
 - `totals` - a word that specifies how totals are matched (overrides the finer settings above) - must be one of:
     + `include` to match total and non-total cells.
     + `exclude` to match only non-total cells.
@@ -504,6 +507,23 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$evaluatePivot()
 highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FF00FF"))
 cells <- pt$findCells(variableValues=list("PowerType"="**"))
+cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
+pt$renderPivot()
+```
+
+To explicitly match only the sub-total columns for the "PowerType" variable (i.e. excluding the far right TrainCategory total column), use the following:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#FF00FF"))
+cells <- pt$findCells(variableValues=list("TrainCategory"="!*", "PowerType"="**"))
 cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
 pt$renderPivot()
 ```

@@ -39,6 +39,12 @@ vector of values.}
 
 \item{\code{isTotal}}{Whether this data group is a total group.}
 
+\item{\code{isLevelSubTotal}}{Whether this data group is a sub-total group in the
+current level.}
+
+\item{\code{isLevelTotal}}{Whether this data group is a total group in the current
+level.}
+
 \item{\code{visualTotals}}{Whether visual totals are enabled for this data group.}
 
 \item{\code{calculationGroupName}}{The name of the calculation group applied to this
@@ -96,8 +102,9 @@ group (used as part of the rendering routines).}
   \item{\code{getLevelGroups(level, levelGroups)}}{Get all of the data groups
   at a specific level in the data group hierarchy.}
   \item{\code{addChildGroup(variableName, values, caption, isTotal=FALSE,
-  calculationGroupName, calculationName)}}{Add a new data group as the child
-  of the current data group.}
+  isLevelSubTotal=FALSE, isLevelTotal=FALSE, calculationGroupName,
+  calculationName)}}{Add a new data group as the child of the current data
+  group.}
   \item{\code{addDataGroups(variableName, atLevel, fromData=TRUE,  dataName,
   dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,

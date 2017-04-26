@@ -146,19 +146,20 @@
 #'   entire pivot table.}
 #'   \item{\code{getHtml(styleNamePrefix, includeHeaderValues=FALSE,
 #'   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
-#'   includeCalculationNames=FALSE, includeRawValue=FALSE)}}{Get the HTML
-#'   representation of the pivot table, specifying the CSS style name prefix to
-#'   use and whether additional debug information should be included in the
-#'   pivot table.}
+#'   includeCalculationNames=FALSE, includeRawValue=FALSE,
+#'   includeTotalInfo=FALSE)}}{Get the HTML representation of the pivot table,
+#'   specifying the CSS style name prefix to use and whether additional debug
+#'   information should be included in the pivot table.}
 #'   \item{\code{saveHtml(filePath, fullPageHTML=TRUE, styleNamePrefix,
 #'   includeHeaderValues=FALSE, includeRCFilters=FALSE,
 #'   includeCalculationFilters=FALSE, includeCalculationNames=FALSE,
-#'   includeRawValue=FALSE)}}{Save the HTML representation of the pivot table to
-#'   a file.}
+#'   includeRawValue=FALSE, includeTotalInfo=FALSE)}}{Save the HTML
+#'   representation of the pivot table to a file.}
 #'   \item{\code{renderPivot(width, height, styleNamePrefix,
 #'   includeHeaderValues=FALSE, includeRCFilters=FALSE,
 #'   includeCalculationFilters=FALSE, includeCalculationNames=FALSE,
-#'   includeRawValue=FALSE)}}{Render the pivot table as a htmlwidget.}
+#'   includeRawValue=FALSE, includeTotalInfo=FALSE)}}{Render the pivot table as
+#'   a htmlwidget.}
 #'   \item{\code{getLatex(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL,
 #'   fromColumn=NULL, toColumn=NULL, boldHeadings=FALSE,
 #'   italicHeadings=FALSE)}}{Get the Latex representation of the pivot table,
@@ -182,8 +183,8 @@ PivotTable <- R6::R6Class("PivotTable",
       self$message("PivotTable$new", "Creating new Pivot Table...")
       private$p_data <- PivotData$new(parentPivot=self)
       private$p_styles <- getTheme(parentPivot=self, themeName="default")
-      private$p_rowGroup <- PivotDataGroup$new(parentPivot=self, parentGroup=NULL, rowOrColumn="row")
-      private$p_columnGroup <- PivotDataGroup$new(parentPivot=self, parentGroup=NULL, rowOrColumn="column")
+      private$p_rowGroup <- PivotDataGroup$new(parentPivot=self, parentGroup=NULL, rowOrColumn="row", isLevelTotal=TRUE)
+      private$p_columnGroup <- PivotDataGroup$new(parentPivot=self, parentGroup=NULL, rowOrColumn="column", isLevelTotal=TRUE)
       private$p_calculationsPosition <- NULL
       private$p_calculationGroups <- PivotCalculationGroups$new(parentPivot=self)
       private$p_cells <- PivotCells$new(self)
@@ -927,24 +928,27 @@ PivotTable <- R6::R6Class("PivotTable",
       return(invisible(styles))
     },
     getHtml = function(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE, includeCalculationFilters=FALSE,
-                       includeCalculationNames=FALSE, includeRawValue=FALSE) {
+                       includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE) {
       checkArgument("PivotTable", "getHtml", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       checkArgument("PivotTable", "getHtml", includeHeaderValues, missing(includeHeaderValues), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "getHtml", includeRCFilters, missing(includeRCFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "getHtml", includeCalculationFilters, missing(includeCalculationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "getHtml", includeCalculationNames, missing(includeCalculationNames), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "getHtml", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "getHtml", includeTotalInfo, missing(includeTotalInfo), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       self$message("PivotTable$getHtml", "Getting HTML...")
       if(!private$p_evaluated) stop("PivotTable$getHtml():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$getHtml():  No cells exist to render.", call. = FALSE)
       htmlTable <- private$p_htmlRenderer$getTableHtml(styleNamePrefix=styleNamePrefix, includeHeaderValues=includeHeaderValues,
                                                    includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
-                                                   includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
+                                                   includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue,
+                                                   includeTotalInfo=includeTotalInfo)
       self$message("PivotTable$getHtml", "Got HTML.")
       return(invisible(htmlTable))
     },
     saveHtml = function(filePath=NULL, fullPageHTML=TRUE, styleNamePrefix=NULL, includeHeaderValues=FALSE,
-                        includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE) {
+                        includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE,
+                        includeTotalInfo=FALSE) {
       checkArgument("PivotTable", "saveHtml", filePath, missing(filePath), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       checkArgument("PivotTable", "saveHtml", fullPageHTML, missing(fullPageHTML), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "saveHtml", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -953,16 +957,15 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument("PivotTable", "saveHtml", includeCalculationFilters, missing(includeCalculationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "saveHtml", includeCalculationNames, missing(includeCalculationNames), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "saveHtml", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-      self$message("PivotTable$saveHtml", "Saving HTML...", list(filePath=filePath, fullPageHTML=fullPageHTML, styleNamePrefix=styleNamePrefix,
-                                                                 includeHeaderValues=includeHeaderValues,
-                                                                 includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
-                                                                 includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue))
+      checkArgument("PivotTable", "saveHtml", includeTotalInfo, missing(includeTotalInfo), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      self$message("PivotTable$saveHtml", "Saving HTML...", list(filePath=filePath, fullPageHTML=fullPageHTML))
       if(!private$p_evaluated) stop("PivotTable$getHtml():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       # todo: enable rendering before cells are calculated so the structure of the pivot can be checked as it is being developed
       if(is.null(private$p_cells)) stop("PivotTable$saveHtml():  No cells exist to render.", call. = FALSE)
       htmlTable <- private$p_htmlRenderer$getTableHtml(styleNamePrefix=styleNamePrefix, includeHeaderValues=includeHeaderValues,
                                                    includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
-                                                   includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
+                                                   includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue,
+                                                   includeTotalInfo=includeTotalInfo)
       if (fullPageHTML==FALSE) {
         fileConn <- file(filePath)
         writeLines(as.character(htmlTable), fileConn)
@@ -988,7 +991,8 @@ PivotTable <- R6::R6Class("PivotTable",
       return(invisible())
     },
     renderPivot = function(width=NULL, height=NULL, styleNamePrefix=NULL, includeHeaderValues=FALSE,
-                           includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE) {
+                           includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE,
+                           includeTotalInfo=FALSE) {
       checkArgument("PivotTable", "renderPivot", width, missing(width), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
       checkArgument("PivotTable", "renderPivot", height, missing(height), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
       checkArgument("PivotTable", "renderPivot", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -997,10 +1001,12 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument("PivotTable", "renderPivot", includeCalculationFilters, missing(includeCalculationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "renderPivot", includeCalculationNames, missing(includeCalculationNames), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "renderPivot", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      checkArgument("PivotTable", "renderPivot", includeTotalInfo, missing(includeTotalInfo), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       self$message("PivotTable$renderPivot", "Rendering htmlwidget...", list(width=width, height=height, styleNamePrefix=styleNamePrefix,
                                                                              includeHeaderValues=includeHeaderValues,
                                                                              includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
-                                                                             includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue))
+                                                                             includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue,
+                                                                             includeTotalInfo=includeTotalInfo))
       if(!private$p_evaluated) self$evaluatePivot()
       if(!private$p_evaluated) stop("PivotTable$getHtml():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       # pivottabler(self, width=width, height=height, includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
@@ -1010,7 +1016,8 @@ PivotTable <- R6::R6Class("PivotTable",
         tableCss = self$getCss(styleNamePrefix=styleNamePrefix),
         tableHtml = as.character(self$getHtml(styleNamePrefix=styleNamePrefix, includeHeaderValues=includeHeaderValues,
                                             includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
-                                            includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)),
+                                            includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue,
+                                            includeTotalInfo=includeTotalInfo)),
         settings = settings
       )
       # viewer.fill=TRUE and browser.fill=TRUE sound like they would be good things, but they seem to prevent

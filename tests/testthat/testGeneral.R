@@ -53,7 +53,7 @@ test_that("smoke tests:  bhmtrains basic pivot values", {
   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
   pt$evaluatePivot()
   # pt$renderPivot()
-  # as.vector(pt$cells$asMatrix())
+  # cat(paste(as.vector(pt$cells$asMatrix()), sep=", ", collapse=", "))
   res <- c(3079, 22865, 14487, 8594, 49025, 830, 63, 33792, NA, 34685, 3909, 22928, 48279, 8594, 83710)
 
   expect_equal(pt$cells$asMatrix(), matrix(res, nrow=5))
@@ -72,6 +72,78 @@ test_that("smoke tests:  bhmtrains basic pivot html", {
   # pt$renderPivot()
   # prepStr(as.character(pt$getHtml()))
   html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">14487</td>\n    <td class=\"Cell\">33792</td>\n    <td class=\"Cell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\">49025</td>\n    <td class=\"Cell\">34685</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n</table>"
+
+  expect_identical(as.character(pt$getHtml()), html)
+})
+
+
+test_that("smoke tests:  bhmtrains basic pivot values two levels", {
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # cat(paste(as.vector(pt$cells$asMatrix()), sep=", ", collapse=", "))
+  res <- c(3079, 22133, 5638, 2137, 32987, NA, NA, 8849, 6457, 15306, NA, 732, NA, NA, 732, 3079, 22865, 14487, 8594, 49025, 830, 63, 5591, NA, 6484, NA, NA, 28201, NA, 28201, 830, 63, 33792, NA, 34685, 3909, 22928, 48279, 8594, 83710)
+
+  expect_equal(pt$cells$asMatrix(), matrix(res, nrow=5))
+})
+
+
+test_that("smoke tests:  bhmtrains basic pivot html two levels", {
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # prepStr(as.character(pt$getHtml()))
+  html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"4\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"3\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"ColumnHeader\" colspan=\"1\">DMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">EMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">HST</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">DMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">EMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n    <th class=\"ColumnHeader\" colspan=\"1\"></th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">22133</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">5638</td>\n    <td class=\"Cell\">8849</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">14487</td>\n    <td class=\"Cell\">5591</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Cell\">33792</td>\n    <td class=\"Cell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\">32987</td>\n    <td class=\"Cell\">15306</td>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\">49025</td>\n    <td class=\"Cell\">6484</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Cell\">34685</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n</table>"
+
+  expect_identical(as.character(pt$getHtml()), html)
+})
+
+
+test_that("smoke tests:  bhmtrains basic pivot values two levels expanded", {
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType", expandExistingTotals=TRUE)
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # cat(paste(as.vector(pt$cells$asMatrix()), sep=", ", collapse=", "))
+  res <- c(3079, 22133, 5638, 2137, 32987, NA, NA, 8849, 6457, 15306, NA, 732, NA, NA, 732, 3079, 22865, 14487, 8594, 49025, 830, 63, 5591, NA, 6484, NA, NA, 28201, NA, 28201, 830, 63, 33792, NA, 34685, 3909, 22196, 11229, 2137, 39471, NA, NA, 37050, 6457, 43507, NA, 732, NA, NA, 732, 3909, 22928, 48279, 8594, 83710)
+
+  expect_equal(pt$cells$asMatrix(), matrix(res, nrow=5))
+})
+
+
+test_that("smoke tests:  bhmtrains basic pivot html two levels expanded", {
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addColumnDataGroups("PowerType", expandExistingTotals=TRUE)
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # prepStr(as.character(pt$getHtml()))
+  html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"4\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"3\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"4\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"ColumnHeader\" colspan=\"1\">DMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">EMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">HST</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">DMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">EMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">DMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">EMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">HST</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\">3909</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">22133</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\">22196</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">5638</td>\n    <td class=\"Cell\">8849</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">14487</td>\n    <td class=\"Cell\">5591</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Cell\">33792</td>\n    <td class=\"Cell\">11229</td>\n    <td class=\"Cell\">37050</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\">32987</td>\n    <td class=\"Cell\">15306</td>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\">49025</td>\n    <td class=\"Cell\">6484</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Cell\">34685</td>\n    <td class=\"Cell\">39471</td>\n    <td class=\"Cell\">43507</td>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n</table>"
 
   expect_identical(as.character(pt$getHtml()), html)
 })
