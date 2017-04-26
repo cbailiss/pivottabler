@@ -301,7 +301,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      else {
        filters <- rowColFilters$getCopy()
-       if(!is.null(calcFilters)) { filters <- filters$setFilters(filters=calcFilters) }
+       if(!is.null(calcFilters)) filters$setFilters(filters=calcFilters)
      }
      # if we have some filters, filter the data frame
      if(!is.null(filters)) {
@@ -345,7 +345,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      else {
        filters <- rowColFilters$getCopy()
-       if(!is.null(calcFilters)) { filters <- filters$setFilters(filters=calcFilters) }
+       if(!is.null(calcFilters)) filters$setFilters(filters=calcFilters)
      }
      # if we have some filters, filter the data frame
      if(!is.null(filters)) {
@@ -418,7 +418,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      else {
        filters <- rowColFilters$getCopy()
-       if(!is.null(calcFilters)) { filters <- filters$setFilters(filters=calcFilters) }
+       if(!is.null(calcFilters)) filters$setFilters(filters=calcFilters)
      }
      # calculate the value by calling the calculation function
      rv <- calculationFunction(pivotCalculator=self, netFilters=filters, format=format, baseValues=baseValues, cell=cell)

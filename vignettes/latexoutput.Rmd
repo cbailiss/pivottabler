@@ -1,10 +1,10 @@
 ---
-title: "07. Latex Output"
-author: "Vignette Author"
+title: "05. Latex Output"
+author: "Chris Bailiss"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{07. Latex Output}
+  %\VignetteIndexEntry{05. Latex Output}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -120,7 +120,9 @@ The full set of vignettes is:
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
 4. [Outputs](outputs.html)
-5. [Styling](styling.html)
-6. [Shiny](shiny.html)
-7. [Latex Output](latexoutput.html)
-8. [Finding and Formatting](findandformatting.html)
+5. [Latex Output](latexoutput.html)
+6. [Styling](styling.html)
+7. [Finding and Formatting](findandformatting.html)
+8. [Cell Context](cellcontext.html)
+9. [Custom Layouts](customlayouts.html)
+10. [Shiny](shiny.html)

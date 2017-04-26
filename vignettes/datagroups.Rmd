@@ -322,15 +322,10 @@ The full set of vignettes is:
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
 4. [Outputs](outputs.html)
-5. [Styling](styling.html)
-6. [Shiny](shiny.html)
-7. [Latex Output](latexoutput.html)
-8. [Finding and Formatting](findandformatting.html)
-
-<!--
-5. [Cell Context](cellcontext.html)
-6. [Custom Layouts](customlayouts.html)
-7. [Retrieving Data](retrievingdata.html)
-8. [Manipulating Individual Cells](cellmanipulation.html) 
--->
+5. [Latex Output](latexoutput.html)
+6. [Styling](styling.html)
+7. [Finding and Formatting](findandformatting.html)
+8. [Cell Context](cellcontext.html)
+9. [Custom Layouts](customlayouts.html)
+10. [Shiny](shiny.html)
 	

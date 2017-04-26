@@ -34,14 +34,14 @@
 #'   \item{\code{new(...)}}{Create a new pivot calculation, specifying the field
 #'   values documented above.}
 #'
-#'   \item{\code{getFilter(variableName)}}{Find a filter with the specified
+#'   \item{\code{getFilter(variableName=NULL)}}{Find a filter with the specified
 #'   variable name.}
 #'   \item{\code{isFilterMatch(variableNames=NULL, variableValues=NULL)}}{Tests
 #'   whether these filters match the specified criteria.}
-#'   \item{\code{setFilters(filters, action="replace")}}{Update the value of this
+#'   \item{\code{setFilters(filters=NULL, action="replace")}}{Update the value of this
 #'   PivotFilters object with the filters from the specified PivotFilters
 #'   object, either unioning, intersecting or replacing the filter criteria.}
-#'   \item{\code{setFilter(filter, action="replace")}}{Update the value of this
+#'   \item{\code{setFilter(filter=NULL, action="replace")}}{Update the value of this
 #'   PivotFilters object with the specified PivotFilter object, either unioning,
 #'   intersecting or replacing the filter criteria.}
 #'   \item{\code{setFilterValues(variableName=NULL, values=NULL,
@@ -74,7 +74,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
       }
       private$p_parentPivot$message("PivotFilters$new", "Created new Pivot Filters.")
     },
-    getFilter = function(variableName) {
+    getFilter = function(variableName=NULL) {
       checkArgument("PivotFilters", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       private$p_parentPivot$message("PivotFilters$getFilter", "Getting filter...", list(variableName=variableName))
       if(length(private$p_filters)>0) {
@@ -176,7 +176,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(matchMode=="simple") return(invisible(FALSE))
       else return(invisible(TRUE))
     },
-    setFilters = function(filters, action="replace") {
+    setFilters = function(filters=NULL, action="replace") {
       checkArgument("PivotFilters", "setFilters", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
       checkArgument("PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("union", "intersect", "replace"))
       private$p_parentPivot$message("PivotFilters$setFilters", "Setting filters...", list(action=action, filters=filters$asString()))
@@ -188,7 +188,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
       private$p_parentPivot$message("PivotFilters$setFilters", "Set filters.")
       return(invisible())
     },
-    setFilter = function(filter, action="replace") {
+    setFilter = function(filter=NULL, action="replace") {
       checkArgument("PivotFilters", "setFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
       checkArgument("PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("union", "intersect", "replace"))
       private$p_parentPivot$message("PivotFilters$setFilters", "Setting filter...", list(action=action, filter=filter$asString()))
@@ -222,7 +222,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
       private$p_parentPivot$message("PivotFilters$setFilterValues", "Set filter values.")
       return(invisible())
     },
-    addFilter = function(filter) {
+    addFilter = function(filter=NULL) {
       checkArgument("PivotFilters", "addFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
       private$p_parentPivot$message("PivotFilters$addFilter", "Adding filter...", list(filter=filter$asString()))
 

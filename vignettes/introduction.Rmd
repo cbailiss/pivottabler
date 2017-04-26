@@ -53,7 +53,7 @@ The latest version of the pivottabler package can be obtained directly from the 
 
 ### Quick Example
 
-An example of a pivot table (explained further below) is:
+An example of a pivot table showing numbers of trains operated by different train companies is:
 
 ```{r, warning=FALSE}
 library(pivottabler)
@@ -64,6 +64,8 @@ pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
+
+This example pivot table is explained in more detail later in this vignette.
 
 ### Definition
 
@@ -254,14 +256,9 @@ The pivottabler package has many more capabilities.  More details can be found i
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
 4. [Outputs](outputs.html)
-5. [Styling](styling.html)
-6. [Shiny](shiny.html)
-7. [Latex Output](latexoutput.html)
-8. [Finding and Formatting](findandformatting.html)
-
-<!--
-5. [Cell Context](cellcontext.html)
-6. [Custom Layouts](customlayouts.html)
-7. [Retrieving Data](retrievingdata.html)
-8. [Manipulating Individual Cells](cellmanipulation.html) 
--->
+5. [Latex Output](latexoutput.html)
+6. [Styling](styling.html)
+7. [Finding and Formatting](findandformatting.html)
+8. [Cell Context](cellcontext.html)
+9. [Custom Layouts](customlayouts.html)
+10. [Shiny](shiny.html)

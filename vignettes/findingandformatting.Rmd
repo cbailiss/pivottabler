@@ -1,10 +1,10 @@
 ---
-title: "08. Finding and Formatting"
-author: "Vignette Author"
+title: "07. Finding and Formatting"
+author: "Chris Bailiss"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{08. Finding and Formatting}
+  %\VignetteIndexEntry{07. Finding and Formatting}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,6 +24,8 @@ vignette: >
 This vignette explains how to find parts of a pivot table - either one or more data groups (i.e. row/column headings) or one or more cells in the body of the pivot table.
 
 This is often useful to retrieve either a specific value/values, or to change the appearance of specific headings/cells - similar to the conditional formatting capabilities of many off-the-shelf tools.
+
+## Example Pivot Table
 
 The following pivot table is used as the basis of the examples in the rest of this vignette:
 
@@ -742,7 +744,9 @@ The full set of vignettes is:
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
 4. [Outputs](outputs.html)
-5. [Styling](styling.html)
-6. [Shiny](shiny.html)
-7. [Latex Output](latexoutput.html)
-8. [Finding and Formatting](findandformatting.html)
+5. [Latex Output](latexoutput.html)
+6. [Styling](styling.html)
+7. [Finding and Formatting](findandformatting.html)
+8. [Cell Context](cellcontext.html)
+9. [Custom Layouts](customlayouts.html)
+10. [Shiny](shiny.html)

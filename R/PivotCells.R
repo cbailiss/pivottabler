@@ -305,6 +305,7 @@ PivotCells <- R6::R6Class("PivotCells",
            v <- private$p_rows[[r]][[c]]$formattedValue
          }
          if(is.null(v)) v <- NA
+         else if(length(v)==0) v <- NA
          m[r, c] <- v
        }
      }

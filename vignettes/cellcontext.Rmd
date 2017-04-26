@@ -1,0 +1,173 @@
+---
+title: "08. Cell Context"
+author: "Chris Bailiss"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{08. Cell Context}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## In This Vignette
+
+* Overview
+* Example Pivot Table
+* What is "Cell Context"?
+* Showing Context/Filters
+* Cell Context and Calculations
+* Further Reading
+
+## Overview
+
+This vignette provides some more information about the workings of `pivottabler` and in particular makes clearer how a pivot table is constructed.
+
+## Example Pivot Table
+
+The following pivot table is used as the basis of the examples in the rest of this vignette:
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+## What is "Cell Context"?
+
+Each cell in a pivot table will sit under one or more row and column headings.  These headings determine the filters that are applied to the data to calculate the value of that cell.  This is the cell context.
+
+For example, in the pivot table below, the cell highlighted in green (value 33792) is subject to the following filters:
+
+- TrainCategory = "Ordinary Passenger"
+- TOC = "London Midland"
+
+i.e. the "Ordinary Passenger" and "London Midland" row/column headings provide context that define the data filters for the cell.
+
+```{r, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FF00"))
+cells <- pt$getCells(rowNumbers=3, columnNumbers=2)
+cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
+pt$renderPivot()
+```
+
+## Showing Context/Filters
+
+For illustrative purposes, it is possible to display the context/filters in a pivot table using the `includeHeaderValues` and `includeRCFilters` parameters when rendering a pivot table:
+
+```{r, warning=FALSE, message=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FF00"))
+cells <- pt$getCells(rowNumbers=3, columnNumbers=2)
+cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
+pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE)
+```
+
+## Cell Context and Calculations
+
+There are four different ways a cell value can be calculated, as explained in the [Data Groups](datagroups.html) vignette.  The calculation steps for each of these (and where the cell context fits in) are described below.
+
+### Method 1:  Summarising Values
+
+This is the simplest case.  The data frame is filtered using the cell filters.  The summarise function is then applied to the filtered data to get the cell value.
+
+### Method 2:  Deriving values from other summarised values
+
+The cell filters are not applied to these calculations.  They are applied as part of the calculation of the summarised values that this derived value calculation is based on.  
+
+For example, in the "Method 2" example in the [Data Groups](datagroups.html) vignette, the cell filters are applied as part of the "Trains Arr. 5+ Mins Late" and "Total Trains" calculations (which are both "Method 1" summary calculations), but not as part of the "% Trains Arr. 5+ Mins Late" derived value calculation.
+
+### Method 3:  Custom calculation functions
+
+The cell filters are explicitly applied in code as part of the custom function definition.  The author of the custom function has full control over if and when the cell filters are applied.
+
+For example, in the "Method 3" example in the [Data Groups](datagroups.html) vignette, the cell filters are explicitly applied by the line `filteredTrains <- pivotCalculator$getFilteredDataFrame(trains, netFilters)`.  Here, the `netFilters` parameter is a `PivotFilters` object that contains the filters for the current cell.  Remember, the custom function is invoked once for each cell in the pivot table.
+
+### Method 4:  Showing a value (no calculation)
+
+The data frame is filtered using the cell filters.  There should then only be one matching row.  The value of the specified data frame column becomes the cell value.  (If there is more than one row after the filtering, an error is raised).
+
+## Showing Further Cell Information
+
+It is possible to display more cell information as illustrated below:
+
+```{r, warning=FALSE, message=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FF00"))
+cells <- pt$getCells(rowNumbers=3, columnNumbers=2)
+cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
+pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE, includeCalculationFilters=TRUE, 
+               includeCalculationNames=TRUE, includeRawValue=TRUE, includeTotalInfo=TRUE)
+```
+
+The calculation filters shown in each cell are the actual filters that were used when calculating the cell value.  These are typically the same as the row-column filters.  One notable exception is When filters are also specified as part of a calculation definition.  For example, calculating the percentage of trains that ran at the weekend (where only the "Arriva Trains Wales" train operating company is shown to reduce the size of the pivot table):
+
+```{r, warning=FALSE, message=FALSE}
+library(dplyr)
+library(lubridate)
+library(pivottabler)
+
+# get the date of each train and whether that date is a weekday or weekend
+trains <- bhmtrains %>%
+  mutate(GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                                 origin = "1970-01-01"),
+         DayNumber=wday(GbttDateTime),
+         WeekdayOrWeekend=ifelse(DayNumber %in% c(1,7), "Weekend", "Weekday"))
+
+# render the pivot table
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC", fromData=FALSE, 
+                    explicitListOfValues=list("Arriva Trains Wales"), addTotal=FALSE)
+weekendFilter <- PivotFilters$new(pt, variableName="WeekdayOrWeekend", values="Weekend")
+pt$defineCalculation(calculationName="WeekendTrains", summariseExpression="n()", 
+                     filters=weekendFilter)
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$defineCalculation(calculationName="WeekendTrainsPercentage",
+                     type="calculation", basedOn=c("WeekendTrains", "TotalTrains"),
+                     format="%.1f %%",
+                     calculationExpression="values$WeekendTrains/values$TotalTrains*100")
+pt$addRowCalculationGroups() 
+pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE, includeCalculationFilters=TRUE,
+               includeCalculationNames=TRUE, includeRawValue=TRUE, includeTotalInfo=TRUE)
+```
+
+In the above example, for the WeekendTrains calculation, the calculation filters differ from the row-column filters.
+
+## Further Reading
+
+The full set of vignettes is:
+
+1. [Introduction](introduction.html)
+2. [Data Groups](datagroups.html)
+3. [Calculations](calculations.html)
+4. [Outputs](outputs.html)
+5. [Latex Output](latexoutput.html)
+6. [Styling](styling.html)
+7. [Finding and Formatting](findandformatting.html)
+8. [Cell Context](cellcontext.html)
+9. [Custom Layouts](customlayouts.html)
+10. [Shiny](shiny.html)

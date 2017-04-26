@@ -19,6 +19,7 @@ vignette: >
 * Method 3:  Custom calculation functions
 * Method 4:  Showing a value (no calculation)
 * Using multiple data frames in the same pivot table
+* Filtering data as part of a calculation
 * Formatting calculated values
 * Empty cells
 * Performance considerations
@@ -448,6 +449,42 @@ pt$renderPivot()
 
 In the example above, the number of trains more than five minutes late is calculated from the `trains` data frame and the number of trains cancelled at Birmingham New Street is calculated from the `cancellations` data frame.
 
+## Filtering data as part of a calculation
+
+Sometimes it is necessary to calculate a value based on a subset of the data.  For example, to calculate the percentage of trains of each category that each train company operated at weekends, for each cell in the pivot table:
+
+1. Filter the data to trains operating at weekends and count the number of trains,
+2. Count the total number of trains (i.e. irrespective of weekday or weekend),
+3. Calculate the percentage.
+
+```{r, warning=FALSE}
+library(dplyr)
+library(lubridate)
+library(pivottabler)
+
+# get the date of each train and whether that date is a weekday or weekend
+trains <- bhmtrains %>%
+  mutate(GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                                 origin = "1970-01-01"),
+         DayNumber=wday(GbttDateTime),
+         WeekdayOrWeekend=ifelse(DayNumber %in% c(1,7), "Weekend", "Weekday"))
+
+# render the pivot table
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+weekendFilter <- PivotFilters$new(pt, variableName="WeekdayOrWeekend", values="Weekend")
+pt$defineCalculation(calculationName="WeekendTrains", summariseExpression="n()", 
+                     filters=weekendFilter, visible=FALSE)
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", visible=FALSE)
+pt$defineCalculation(calculationName="WeekendTrainsPercentage",
+                     type="calculation", basedOn=c("WeekendTrains", "TotalTrains"),
+                     format="%.1f %%",
+                     calculationExpression="values$WeekendTrains/values$TotalTrains*100")
+pt$renderPivot()
+```
+
 ## Formatting calculated values
 
 The formatting of calculation results is specified by setting the `format` parameter when calling the `defineCalculation` function.
@@ -545,14 +582,9 @@ The full set of vignettes is:
 2. [Data Groups](datagroups.html)
 3. [Calculations](calculations.html)
 4. [Outputs](outputs.html)
-5. [Styling](styling.html)
-6. [Shiny](shiny.html)
-7. [Latex Output](latexoutput.html)
-8. [Finding and Formatting](findandformatting.html)
-
-<!--
-5. [Cell Context](cellcontext.html)
-6. [Custom Layouts](customlayouts.html)
-7. [Retrieving Data](retrievingdata.html)
-8. [Manipulating Individual Cells](cellmanipulation.html) 
--->
+5. [Latex Output](latexoutput.html)
+6. [Styling](styling.html)
+7. [Finding and Formatting](findandformatting.html)
+8. [Cell Context](cellcontext.html)
+9. [Custom Layouts](customlayouts.html)
+10. [Shiny](shiny.html)
