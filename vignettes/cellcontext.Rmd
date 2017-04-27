@@ -169,5 +169,5 @@ The full set of vignettes is:
 6. [Styling](styling.html)
 7. [Finding and Formatting](findandformatting.html)
 8. [Cell Context](cellcontext.html)
-9. [Custom Layouts](customlayouts.html)
+9. [Irregular Layout](irregularlayout.html)
 10. [Shiny](shiny.html)

@@ -24,11 +24,11 @@ vignette: >
 
 ## Introducing pivottabler
 
-### In one sentance
+### In one sentence
 
 The `pivottabler` package enables pivot tables to be created with just a few lines of R.
 
-### In a few sentances
+### In a few sentences
 
 The pivottabler package:
 
@@ -234,7 +234,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-As more data groups are added, the pivot table can seem overwhelmed with totals.  It is possible to selectively shpw/hide totals using the `addTotal` argument.  Totals can be renamed using the `totalCaption` argument.  Both of these options are demonstrated below.
+As more data groups are added, the pivot table can seem overwhelmed with totals.  It is possible to selectively show/hide totals using the `addTotal` argument.  Totals can be renamed using the `totalCaption` argument.  Both of these options are demonstrated below.
 
 ```{r, warning=FALSE}
 library(pivottabler)
@@ -260,5 +260,5 @@ The pivottabler package has many more capabilities.  More details can be found i
 6. [Styling](styling.html)
 7. [Finding and Formatting](findandformatting.html)
 8. [Cell Context](cellcontext.html)
-9. [Custom Layouts](customlayouts.html)
+9. [Irregular Layout](irregularlayout.html)
 10. [Shiny](shiny.html)

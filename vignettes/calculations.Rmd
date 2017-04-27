@@ -212,7 +212,7 @@ A custom calculation function allows more complex calculation logic to be used. 
 For example, if we wish to examine the worst single day performance, we need to:
 
 1.  For each date, calculate the percentage of trains more than five minutes late,
-2.  Sort this list (of dates and percentages) into descending oder (by percentage of trains more than five minutes late),
+2.  Sort this list (of dates and percentages) into descending order (by percentage of trains more than five minutes late),
 3.  Display the top percentage value from this list.
 
 ```{r, message=FALSE, warning=FALSE}
@@ -329,7 +329,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-In the example above, `pivottabler` calculated the values in each pivot table cell.  We can alternatively calculate the values explictly in R code and instead just use the pivot table to display them:
+In the example above, `pivottabler` calculated the values in each pivot table cell.  We can alternatively calculate the values explicitly in R code and instead just use the pivot table to display them:
 
 ```{r, warning=FALSE}
 library(pivottabler)
@@ -352,7 +352,7 @@ pt$defineCalculation(calculationName="TotalTrains", type="value", valueName="Num
 pt$renderPivot()
 ```
 
-In the current version of `pivottabler` there is no way to explictly pre-calculate the totals.  Instead, two workarounds are possible.  Either the totals can be hidden or a summarise expression can be specified to calculate the totals.  Both of these examples are presented below.
+In the current version of `pivottabler` there is no way to explicitly pre-calculate the totals.  Instead, two workarounds are possible.  Either the totals can be hidden or a summarise expression can be specified to calculate the totals.  Both of these examples are presented below.
 
 ### Hiding the totals
 
@@ -539,7 +539,7 @@ pt$renderPivot()
 
 In the current version of the `pivottabler` package, each cell in the pivot table is calculated independently and sequentially.  Batch execution of cells is under consideration for a future version.
 
-For large data frames, the current approach can significantly increase the time required to calculate the pivot table cell values.  In such cases, aggregating the data explictly in R code (where this is possible) before creating the pivot table can reduce the overall time required.
+For large data frames, the current approach can significantly increase the time required to calculate the pivot table cell values.  In such cases, aggregating the data explicitly in R code (where this is possible) before creating the pivot table can reduce the overall time required.
 
 For example, duplicating the `bhmtrains` sample data frame to create a larger data set.
 
@@ -586,5 +586,5 @@ The full set of vignettes is:
 6. [Styling](styling.html)
 7. [Finding and Formatting](findandformatting.html)
 8. [Cell Context](cellcontext.html)
-9. [Custom Layouts](customlayouts.html)
+9. [Irregular Layout](irregularlayout.html)
 10. [Shiny](shiny.html)

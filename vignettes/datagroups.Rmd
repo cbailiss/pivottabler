@@ -17,7 +17,7 @@ vignette: >
     + Adding data groups explicitly
     + Adding data groups that combine values
     + More complex layouts of data groups
-* Formating data groups
+* Formatting data groups
 * Sorting data groups
 
 ## Data Group Terminology
@@ -58,11 +58,11 @@ The easiest way to add data groups to a pivot table is to simply generate data g
 
 #### Considering parent data groups
 
-By default, when adding additional levels to a pivot table after the first level (i.e. for level 2, 3, etc.), the filter criteria coming from parent data groups is considered.  For example, in the pivot table above, there are "Express Passenger" trains with a power type of "HST", but no "Ordinary Passenger" trains with a power type of "HST".  So while a "HST" data group exists under "Express Passenger", no"HST" data group exists underneath "Ordinary Passenger".
+By default, when adding additional levels to a pivot table after the first level (i.e. for level 2, 3, etc.), the filter criteria coming from parent data groups is considered.  For example, in the pivot table above, there are "Express Passenger" trains with a power type of "HST", but no "Ordinary Passenger" trains with a power type of "HST".  So while a "HST" data group exists under "Express Passenger", no "HST" data group exists underneath "Ordinary Passenger".
 
 #### Ignoring parent data groups
 
-Sometimes, a more uniform layout is preferred, i.e. in the above example, we would like "HST" to be present underneath "Ordinary Passenger" as well.  This can be accomplished by setting the argment `onlyCombinationsThatExist` to `FALSE`.
+Sometimes, a more uniform layout is preferred, i.e. in the above example, we would like "HST" to be present underneath "Ordinary Passenger" as well.  This can be accomplished by setting the argument `onlyCombinationsThatExist` to `FALSE`.
 
 ```{r, warning=FALSE}
 library(pivottabler)
@@ -279,7 +279,7 @@ The pivot is sorted using the totals for each data group.  In the pivot table ab
 
 Since the pivot table above only contains one calculation, it was not necessary to specify the name of the calculation when sorting the row groups.  If a pivot table contains more than one calculation, and there is a wish to sort by a calculation other than the first calculation that was defined, then the calculation can be specified by using the `calculationName` argument when calling either `sortColumnDataGroups` or `sortRowDataGroups`.
 
-When sorting the headings at the second, third, etc level, the sort does not break the structure coming from the parent data groups, i.e. a separate sort is performed within each parent group, e.g.
+When sorting the headings at the second, third, etc. level, the sort does not break the structure coming from the parent data groups, i.e. a separate sort is performed within each parent group, e.g.
 
 ```{r, warning=FALSE}
 library(pivottabler)
@@ -326,6 +326,6 @@ The full set of vignettes is:
 6. [Styling](styling.html)
 7. [Finding and Formatting](findandformatting.html)
 8. [Cell Context](cellcontext.html)
-9. [Custom Layouts](customlayouts.html)
+9. [Irregular Layout](irregularlayout.html)
 10. [Shiny](shiny.html)
 	

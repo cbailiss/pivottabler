@@ -14,7 +14,7 @@ vignette: >
 * Finding and Formatting
 * Example Pivot Table
 * Finding Headings
-* Getting Cells By Row and/or Column Numbers 
+* Getting Cells by Row and/or Column Numbers 
 * Finding Cells
 * Conditional Formatting
 * Further Reading
@@ -568,7 +568,7 @@ cellCount <- lapply(cells, function(cell) {cell$style <- redStyle})
 pt$renderPivot()
 ```
 
-Another example:  analysing the average arrival delay (in minutes) in the morning peak time, for the top 20 origin stations, broken down by the hour of the day (i.e. 5am, 6am, 7am, etc), with the results formatted as follows:
+Another example:  analysing the average arrival delay (in minutes) in the morning peak time, for the top 20 origin stations, broken down by the hour of the day (i.e. 5am, 6am, 7am, etc.), with the results formatted as follows:
 
 - Average arrival delay between 0 and 2 minutes - green,
 - Average arrival delay between 2 and 4 minutes - yellow,
@@ -748,5 +748,5 @@ The full set of vignettes is:
 6. [Styling](styling.html)
 7. [Finding and Formatting](findandformatting.html)
 8. [Cell Context](cellcontext.html)
-9. [Custom Layouts](customlayouts.html)
+9. [Irregular Layout](irregularlayout.html)
 10. [Shiny](shiny.html)
