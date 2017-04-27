@@ -5,6 +5,7 @@
 #'
 #' @import htmltools
 #' @import htmlwidgets
+#' @export
 #' @param pt The pivot table to render.
 #' @param width The target width.
 #' @param height The target height.
