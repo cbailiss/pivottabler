@@ -156,8 +156,7 @@ For example, plotting the total number of trains per month for each train operat
 library(dplyr)
 library(lubridate)
 trains <- mutate(bhmtrains, 
-   GbttDate=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival), 
-                       origin = "1970-01-01"),
+   GbttDate=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
    GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
 
 library(pivottabler)
@@ -178,8 +177,7 @@ In the example above, the month headings are not explicitly formatted.  The exam
 library(dplyr)
 library(lubridate)
 trains <- mutate(bhmtrains, 
-   GbttDate=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival), 
-                       origin = "1970-01-01"),
+   GbttDate=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
    GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
 
 library(pivottabler)
@@ -206,8 +204,7 @@ An example of using a custom R function to accomplish the same formatting is:
 library(dplyr)
 library(lubridate)
 trains <- mutate(bhmtrains, 
-   GbttDate=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival), 
-                       origin = "1970-01-01"),
+   GbttDate=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
    GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
 
 # define a custom formatting function

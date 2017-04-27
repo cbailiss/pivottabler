@@ -131,8 +131,7 @@ library(pivottabler)
 
 # get the date of each train and whether that date is a weekday or weekend
 trains <- bhmtrains %>%
-  mutate(GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
-                                 origin = "1970-01-01"),
+  mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
          DayNumber=wday(GbttDateTime),
          WeekdayOrWeekend=ifelse(DayNumber %in% c(1,7), "Weekend", "Weekday"))
 

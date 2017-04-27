@@ -125,8 +125,7 @@ trains <- bhmtrains %>%
          GbttArrival, ActualArrival, GbttDeparture, ActualDeparture,
          Destination=StationName.y, DestinationGbttArrival, DestinationActualArrival) %>%
   mutate(Status=recode(Status, "A"="Normal", "C"="Cancelled", "R"="Reinstated"),
-         GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
-                                 origin = "1970-01-01"),
+         GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
          GbttHourOfDay=hour(GbttDateTime),
          GbttDate=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=day(GbttDateTime)),
          GbttMonth=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=1),
