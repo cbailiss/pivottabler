@@ -1,6 +1,30 @@
 Development Resources
 ================
 
+Original Dev Resources
+----------------
+
+git and rstudio
+http://r-bio.github.io/intro-git-rstudio/
+
+writing an R package
+http://r-pkgs.had.co.nz/
+https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/
+https://support.rstudio.com/hc/en-us/articles/200486488-Developing-Packages-with-RStudio
+http://tinyheero.github.io/jekyll/update/2015/07/26/making-your-first-R-package.html
+http://web.mit.edu/insong/www/pdf/rpackage_instructions.pdf
+http://stackoverflow.com/questions/35581343/create-and-document-a-package-with-r6-classes
+
+htmlwidgets
+http://www.htmlwidgets.org/develop_intro.html
+http://deanattali.com/blog/htmlwidgets-tips/
+
+CRAN
+https://datavu.blogspot.co.uk/2015/01/how-to-create-and-publish-r-package-on.html
+
+Excellent article on writing HTML widgets:
+http://deanattali.com/blog/htmlwidgets-tips/
+
 Latex Resources
 ----------------
 
