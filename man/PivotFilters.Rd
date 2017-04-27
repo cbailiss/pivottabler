@@ -31,14 +31,14 @@ contain multiple \code{\link{PivotFilter}} objects.
   \item{\code{new(...)}}{Create a new pivot calculation, specifying the field
   values documented above.}
 
-  \item{\code{getFilter(variableName)}}{Find a filter with the specified
+  \item{\code{getFilter(variableName=NULL)}}{Find a filter with the specified
   variable name.}
   \item{\code{isFilterMatch(variableNames=NULL, variableValues=NULL)}}{Tests
   whether these filters match the specified criteria.}
-  \item{\code{setFilters(filters, action="replace")}}{Update the value of this
+  \item{\code{setFilters(filters=NULL, action="replace")}}{Update the value of this
   PivotFilters object with the filters from the specified PivotFilters
   object, either unioning, intersecting or replacing the filter criteria.}
-  \item{\code{setFilter(filter, action="replace")}}{Update the value of this
+  \item{\code{setFilter(filter=NULL, action="replace")}}{Update the value of this
   PivotFilters object with the specified PivotFilter object, either unioning,
   intersecting or replacing the filter criteria.}
   \item{\code{setFilterValues(variableName=NULL, values=NULL,
