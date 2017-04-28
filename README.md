@@ -1,7 +1,7 @@
 pivottabler
 ================
 
-[![Build Status](https://travis-ci.org/cbailiss/pivottabler.svg?branch=master)](https://travis-ci.org/cbailiss/pivottabler) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/pivottabler)](http://cran.r-project.org/package=pivottabler)
+[![Build Status](https://travis-ci.org/cbailiss/pivottabler.svg?branch=master)](https://travis-ci.org/cbailiss/pivottabler) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/pivottabler)](https://cran.r-project.org/package=pivottabler)
 
 The `pivottabler` package enables pivot tables to be created with just a few lines of R.
 
