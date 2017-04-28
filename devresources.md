@@ -25,6 +25,9 @@ https://datavu.blogspot.co.uk/2015/01/how-to-create-and-publish-r-package-on.htm
 Excellent article on writing HTML widgets:
 http://deanattali.com/blog/htmlwidgets-tips/
 
+Date time in POSIXct
+http://stackoverflow.com/questions/14141537/change-timezone-in-a-posixct-object
+
 Latex Resources
 ----------------
 
