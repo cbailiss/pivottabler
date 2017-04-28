@@ -1,7 +1,5 @@
-pivottabler 0.1.0.9000
+pivottabler 0.2.0
 ================
-
-Current development version.
 
 Breaking Changes
 ----------------
@@ -25,7 +23,8 @@ Improvements
 Bug Fixes
 ----------------
 
-(none)
+* Various small bug fixes.
+* Shiny vignette examples now working.
 
 pivottabler 0.1.0
 ================
