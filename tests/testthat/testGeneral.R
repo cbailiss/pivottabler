@@ -157,8 +157,7 @@ test_that("smoke tests:  calculation filters", {
 
   # get the date of each train and whether that date is a weekday or weekend
   trains <- bhmtrains %>%
-    mutate(GbttDateTime=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
-                                   origin = "1970-01-01"),
+    mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
            DayNumber=wday(GbttDateTime),
            WeekdayOrWeekend=ifelse(DayNumber %in% c(1,7), "Weekend", "Weekday"))
 
@@ -178,11 +177,15 @@ test_that("smoke tests:  calculation filters", {
   pt$evaluatePivot()
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # cat(paste(as.vector(pt$cells$asMatrix()), sep=", ", collapse=", "))
   # prepStr(as.character(pt$getHtml()))
+  res <- c(26.6320233842157, 23.7480865952329, 18.7892593359564, 24.4240167558762, 22.5823559408465, 17.710843373494, NA, 22.8693181818182, NA, 22.7043390514632, 24.7377845996419, 23.6828332170272, 21.6450216450216, 24.4240167558762, 22.6328992951858)
   html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">26.6 %</td>\n    <td class=\"Cell\">17.7 %</td>\n    <td class=\"Cell\">24.7 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">23.7 %</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">23.7 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">18.8 %</td>\n    <td class=\"Cell\">22.9 %</td>\n    <td class=\"Cell\">21.6 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">24.4 %</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">24.4 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\">22.6 %</td>\n    <td class=\"Cell\">22.7 %</td>\n    <td class=\"Cell\">22.6 %</td>\n  </tr>\n</table>"
 
   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 296.5828)
+  expect_equal(pt$cells$asMatrix(), matrix(res, nrow=5))
   expect_identical(as.character(pt$getHtml()), html)
+
 })
 
 
@@ -567,33 +570,30 @@ test_that("data groups tests:  adding data groups that combine values", {
   expect_identical(as.character(pt$getHtml()), html)
 })
 
-# fails testing on win builder - format codes %B %Y probably mean different things on different machines
-# test_that("data groups tests:  formatting data groups", {
-#
-#   checkDigestAvailable()
-#
-#   library(dplyr)
-#   library(lubridate)
-#   trains <- mutate(bhmtrains,
-#      GbttDate=as.POSIXct(ifelse(is.na(GbttArrival), GbttDeparture, GbttArrival),
-#                          origin = "1970-01-01"),
-#      GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
-#
-#   library(pivottabler)
-#   pt <- PivotTable$new()
-#   pt$addData(trains)
-#   pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
-#   pt$addColumnDataGroups("PowerType")
-#   pt$addRowDataGroups("TOC")
-#   pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-#   pt$evaluatePivot()
-#   # pt$renderPivot()
-#   # sum(pt$cells$asMatrix(), na.rm=TRUE)
-#   # prepStr(as.character(pt$getHtml()))
-#
-#   expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
-#   expect_identical(as.character(pt$getHtml()), html), "2bbed6d4f402fcb465d7b3569aa14e46")
-# })
+test_that("data groups tests:  formatting data groups", {
+
+  library(dplyr)
+  library(lubridate)
+  trains <- mutate(bhmtrains,
+     GbttDate=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+     GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(trains)
+  pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+  pt$addColumnDataGroups("PowerType")
+  pt$addRowDataGroups("TOC")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # prepStr(as.character(pt$getHtml()))
+  html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"4\">December 2016</th>\n    <th class=\"ColumnHeader\" colspan=\"4\">January 2017</th>\n    <th class=\"ColumnHeader\" colspan=\"4\">February 2017</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"ColumnHeader\" colspan=\"1\">DMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">EMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">HST</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">DMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">EMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">HST</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">DMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">EMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">HST</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n    <th class=\"ColumnHeader\" colspan=\"1\"></th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">1291</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">1291</td>\n    <td class=\"Cell\">1402</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">1402</td>\n    <td class=\"Cell\">1216</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">1216</td>\n    <td class=\"Cell\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">7314</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">236</td>\n    <td class=\"Cell\">7550</td>\n    <td class=\"Cell\">7777</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">256</td>\n    <td class=\"Cell\">8033</td>\n    <td class=\"Cell\">7105</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">240</td>\n    <td class=\"Cell\">7345</td>\n    <td class=\"Cell\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">3635</td>\n    <td class=\"Cell\">11967</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">15602</td>\n    <td class=\"Cell\">3967</td>\n    <td class=\"Cell\">13062</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">17029</td>\n    <td class=\"Cell\">3627</td>\n    <td class=\"Cell\">12021</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">15648</td>\n    <td class=\"Cell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">740</td>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">2877</td>\n    <td class=\"Cell\">728</td>\n    <td class=\"Cell\">2276</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">3004</td>\n    <td class=\"Cell\">669</td>\n    <td class=\"Cell\">2044</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">2713</td>\n    <td class=\"Cell\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\">12980</td>\n    <td class=\"Cell\">14104</td>\n    <td class=\"Cell\">236</td>\n    <td class=\"Cell\">27320</td>\n    <td class=\"Cell\">13874</td>\n    <td class=\"Cell\">15338</td>\n    <td class=\"Cell\">256</td>\n    <td class=\"Cell\">29468</td>\n    <td class=\"Cell\">12617</td>\n    <td class=\"Cell\">14065</td>\n    <td class=\"Cell\">240</td>\n    <td class=\"Cell\">26922</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n</table>"
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+  expect_identical(as.character(pt$getHtml()), html)
+})
 
 
 test_that("data groups tests:  sort by group into descending order", {
