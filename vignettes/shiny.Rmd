@@ -211,7 +211,7 @@ The full set of vignettes is:
 4. [Outputs](outputs.html)
 5. [Latex Output](latexoutput.html)
 6. [Styling](styling.html)
-7. [Finding and Formatting](findandformatting.html)
+7. [Finding and Formatting](findingandformatting.html)
 8. [Cell Context](cellcontext.html)
 9. [Irregular Layout](irregularlayout.html)
 10. [Shiny](shiny.html)

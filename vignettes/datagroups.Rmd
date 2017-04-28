@@ -107,7 +107,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-Note that finding total/non-total data groups/cells with the `findRowDataGroups()`, `findColumnDataGroups()` and `findCells()` functions won't work when visual totals are enabled.  See the [Finding and Formatting](findandformatting.html) vignette for more details on these functions.
+Note that finding total/non-total data groups/cells with the `findRowDataGroups()`, `findColumnDataGroups()` and `findCells()` functions won't work when visual totals are enabled.  See the [Finding and Formatting](findingandformatting.html) vignette for more details on these functions.
 
 ### Adding data groups that combine values
 
@@ -321,7 +321,7 @@ The full set of vignettes is:
 4. [Outputs](outputs.html)
 5. [Latex Output](latexoutput.html)
 6. [Styling](styling.html)
-7. [Finding and Formatting](findandformatting.html)
+7. [Finding and Formatting](findingandformatting.html)
 8. [Cell Context](cellcontext.html)
 9. [Irregular Layout](irregularlayout.html)
 10. [Shiny](shiny.html)
