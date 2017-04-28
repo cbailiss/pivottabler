@@ -18,7 +18,9 @@ Improvements
 * Added the asMatrix() function to allow the pivot table contents to be retrieved as a matrix.
 * Added the asDataFrame() and asTidyDataFrame() functions to allow the pivot table contents to be retrieved as a data frame.
 * Five new vignettes added.  Many changes to the existing vignettes.
-* Updated object documentation to wrap lines longer than 80 characters. 
+* Modified the sample data by specifying a time zone (UTC) for all POSIXct data to remove inconsistencies when using the data in different time zones. 
+* Modified the automated tests to no longer use the digest package.
+* Updated object documentation to wrap lines longer than 80 characters.
 
 Bug Fixes
 ----------------
