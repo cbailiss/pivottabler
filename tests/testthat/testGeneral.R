@@ -209,6 +209,25 @@ test_that("smoke tests:  ignoring parent groups", {
 })
 
 
+test_that("smoke tests:  contradictory filters", {
+
+  library(pivottabler)
+  pt <- PivotTable$new()
+  pt$addData(bhmtrains)
+  pt$addColumnDataGroups("TrainCategory")
+  pt$addRowDataGroups("TrainCategory")
+  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+  pt$evaluatePivot()
+  # pt$renderPivot()
+  # sum(pt$cells$asMatrix(), na.rm=TRUE)
+  # prepStr(as.character(pt$getHtml()))
+  html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Express Passenger</th>\n    <td class=\"Cell\">49025</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">49025</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Ordinary Passenger</th>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">34685</td>\n    <td class=\"Cell\">34685</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\">49025</td>\n    <td class=\"Cell\">34685</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n</table>"
+
+  expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+  expect_identical(as.character(pt$getHtml()), html)
+})
+
+
 test_that("basic layout tests:  empty pivot", {
 
   library(pivottabler)

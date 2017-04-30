@@ -50,7 +50,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       private$p_parentPivot$message("PivotBatchCalculator$isFiltersBatchCompatible", "Checked if filter is batch compatible.")
       return(isCompatible)
     },
-    generateBatchesForNamedCalculationEvaluation = function(calculationName=NULL, calculationGroupName=NULL, rowColFilters=NULL) {
+    generateBatchesForNamedCalculationEvaluation = function(calculationName=NULL, calculationGroupName=NULL, workingFilters=NULL) {
 
     },
     generateBatchesForCellEvaluation = function() {
@@ -68,10 +68,11 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       columnCount <- private$p_parentPivot$cells$columnCount
       for(r in 1:rowCount) {
         for(c in 1:columnCount) {
+          # for each cell
           cell <- private$p_parentPivot$cells$getCell(r, c)
-          # get the evaluation filters for this cell
-          filters <- self$getEvaluationFilters(...)
-         }
+          # examine the calculation and filters, generate a new batch or add to an existing batch
+
+        }
       }
       private$p_parentPivot$message("PivotBatchCalculator$new", "Generated batches for cell evaluation.")
     }

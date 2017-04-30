@@ -191,7 +191,16 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      # todo: checking the escaping of the variable names and values below
      # filterCmd is e.g. "data <- filter(data, (", filters[1]$variableName, " %in% filters[1]$values) & (", filters[2]$variableName, " %in% filters[2]$values)"
      # implement the same optimisation inside addLeafDataGroup function - change that code to call this function
-     if (filters$count > 0)
+     if(filters$isNONE) {
+       data <- data[0, ] # returns the structure but no data
+       private$p_parentPivot$message("PivotCalculator$getFilteredDataFrame", "Got filtered data frame.")
+       return(invisible(data))
+     }
+     if(filters$isALL) {
+       private$p_parentPivot$message("PivotCalculator$getFilteredDataFrame", "Got filtered data frame.")
+       return(invisible(data))
+     }
+     if(filters$count > 0)
      {
        filterCmd <- NULL
        filterCount <- 0
@@ -275,7 +284,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      else {
        filters <- rowColFilters$getCopy()
-       if(!is.null(calcFilters)) filters$setFilters(filters=calcFilters)
+       if(!is.null(calcFilters)) filters$setFilters(filters=calcFilters, action="and")
      }
      rf$workingFilters <- filters
      private$p_parentPivot$message("PivotCalculator$getFiltersForSingleValue", "Got filters for single value.")
@@ -294,7 +303,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      else {
        filters <- rowColFilters$getCopy()
-       if(!is.null(calcFilters)) filters$setFilters(filters=calcFilters)
+       if(!is.null(calcFilters)) filters$setFilters(filters=calcFilters, action="and")
      }
      rf$workingFilters <- filters
      private$p_parentPivot$message("PivotCalculator$getFiltersForSummariseExpression", "Got filters for summary expression.")
@@ -313,7 +322,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      else {
        filters <- rowColFilters$getCopy()
-       if(!is.null(calcFilters)) filters$setFilters(filters=calcFilters)
+       if(!is.null(calcFilters)) filters$setFilters(filters=calcFilters, action="and")
      }
      rf$workingFilters <- filters
      private$p_parentPivot$message("PivotCalculator$getFiltersForCalculateFunction", "Got filters for calculation function.")

@@ -112,7 +112,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
   public = list(
    initialize = function(parentGroup=NULL, parentPivot=NULL, rowOrColumn=NULL, caption=NULL, # common properties
                          isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE, # total properties
-                         variableName=NULL, values=NULL, # filter properties
+                         variableName=NULL, filterType="ALL", values=NULL, # filter properties
                          calculationGroupName=NULL, calculationName=NULL) {
      checkArgument("PivotDataGroup", "initialize", parentGroup, missing(parentGroup), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotDataGroup")
      checkArgument("PivotDataGroup", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -122,12 +122,14 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      checkArgument("PivotDataGroup", "initialize", isLevelSubTotal, missing(isLevelSubTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotDataGroup", "initialize", isLevelTotal, missing(isLevelTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotDataGroup", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotDataGroup", "initialize", filterType, missing(filterType), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
      checkArgument("PivotDataGroup", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
      checkArgument("PivotDataGroup", "initialize", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotDataGroup", "initialize", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      private$p_parentPivot <- parentPivot
      private$p_parentPivot$message("PivotDataGroup$new", "Creating new data group...",
-                                   list(rowOrColumn=rowOrColumn, caption=caption, variableName=variableName, values=values,
+                                   list(rowOrColumn=rowOrColumn, caption=caption,
+                                        variableName=variableName, filterType=filterType, values=values,
                                         calculationGroupName=calculationGroupName, calculationName=calculationName))
      if(!(rowOrColumn %in% c("row", "column"))) stop("PivotDataGroup$new(): rowOrColumn must be either row or column", call. = FALSE)
      private$p_parentGroup <- parentGroup
@@ -137,7 +139,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_isTotal <- isTotal
      private$p_isLevelSubTotal <- isLevelSubTotal
      private$p_isLevelTotal <- isLevelTotal
-     private$p_filters <- PivotFilters$new(parentPivot, variableName, values)
+     private$p_filters <- PivotFilters$new(parentPivot, variableName=variableName, type=filterType, values=values)
      private$p_groups <- list() # child groups
      private$p_calculationGroupName <- calculationGroupName
      private$p_calculationName <- calculationName
@@ -230,10 +232,11 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_parentPivot$message("PivotDataGroup$getLevelGroups", "Got level groups", list(count=length(lgs)))
      return(invisible(lgs))
    },
-   addChildGroup = function(variableName=NULL, values=NULL, caption=NULL,
+   addChildGroup = function(variableName=NULL, filterType="ALL", values=NULL, caption=NULL,
                             isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
                             calculationGroupName=NULL, calculationName=NULL) {
      checkArgument("PivotDataGroup", "addChildGroup", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     checkArgument("PivotDataGroup", "addChildGroup", filterType, missing(filterType), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
      checkArgument("PivotDataGroup", "addChildGroup", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
      checkArgument("PivotDataGroup", "addChildGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
      checkArgument("PivotDataGroup", "addChildGroup", isTotal, missing(isTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -249,7 +252,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      grp <- PivotDataGroup$new(parentGroup=self, parentPivot=private$p_parentPivot,
                           rowOrColumn=private$p_rowOrColumn, caption=caption,
                           isTotal=total, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
-                          variableName=variableName, values=values,
+                          variableName=variableName, filterType=filterType, values=values,
                           calculationGroupName=calculationGroupName, calculationName=calculationName)
      index <- length(private$p_groups) + 1
      private$p_groups[[index]] <- grp
@@ -294,7 +297,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      df <- NULL
      topLevelDisinctValues <- NULL
      topLevelCaptions <- NULL
-     topLevelFilter <- NULL
+     allValues <- NULL
      if(fromData==TRUE) {
        # check that a data frame has been specified (or that we have a default data frame)
        if(missing(dataName)||is.null(dataName)) {
@@ -311,9 +314,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if (is.null(explicitListOfValues)) stop("PivotDataGroup$addDataGroups():  explicitListOfValues must not be null when fromData=FALSE", call. = FALSE)
        topLevelDisinctValues <- explicitListOfValues
        topLevelCaptions <- names(explicitListOfValues)
-       fvals <- topLevelDisinctValues
-       if("list" %in% class(topLevelDisinctValues)) { fvals <- unlist(topLevelDisinctValues) }
-       topLevelFilter <- PivotFilter$new(parentPivot=private$p_parentPivot, variableName=variableName, values=fvals)
+       allValues <- topLevelDisinctValues
+       if("list" %in% class(topLevelDisinctValues)) { allValues <- unlist(topLevelDisinctValues) }
      }
      # ignore the filters from the other heading groups?
      if((fromData==TRUE)&&(onlyCombinationsThatExist==FALSE)) {
@@ -326,7 +328,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", variableName, "))")))
        topLevelDisinctValues <- dplyr::collect(data)[[variableName]]
        if("factor" %in% class(topLevelDisinctValues)) { topLevelDisinctValues <- as.character(topLevelDisinctValues) }
-       topLevelFilter <- PivotFilter$new(parentPivot=private$p_parentPivot, variableName=variableName, values=topLevelDisinctValues)
+       allValues=topLevelDisinctValues
      }
      # where are the new groups being added?
      if(is.null(atLevel)) {
@@ -352,8 +354,6 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      }
      # for each group...
      newGroups <- list()
-     if(is.null(topLevelFilter))
-       topLevelFilter <- PivotFilter$new(parentPivot=private$p_parentPivot, variableName=variableName, values=NULL)
      for(i in 1:length(parentGroups))
      {
        grp <- parentGroups[[i]]
@@ -377,7 +377,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        else {
          # get the ancestor groups for this group, starting with the current object
          ancestors <- grp$getAncestorGroups(includeCurrentGroup=TRUE)
-         # construct the parent filter settings using "replace" filter logic
+         # construct the parent filter settings using "and" filter logic
          rowColFilters <- PivotFilters$new(private$p_parentPivot)
          for(j in length(ancestors):1) {
            acs <- ancestors[[j]]
@@ -386,41 +386,43 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            if(filters$count==0) next
            for(k in 1:length(filters$filters)) {
              filter <- filters$filters[[k]]
-             rowColFilters$setFilter(filter, action="replace")
+             rowColFilters$setFilter(filter, action="and")
            }
          }
-         # build a dplyr query
-         data <- df
-         # todo: checking the escaping of the variable names and values below
-         if (rowColFilters$count > 0)
-         {
-           filterCmd <- NULL
-           filterCount <- 0
-           for(j in 1:length(rowColFilters$filters)) {
-             filter <- rowColFilters$filters[[j]]
-             if(is.null(filter$variableName)) stop("PivotCalculator$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
-             if(is.null(filter$values)) next
-             if(length(filter$values)==0) next
-             if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
-             if(length(filter$values)>0) {
-               # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
-               filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% rowColFilters$filters[[", j, "]]$values)")
-               filterCount <- filterCount + 1
+         if(!rowColFilters$isNONE) {
+           # build a dplyr query
+           data <- df
+           # todo: checking the escaping of the variable names and values below
+           if((!rowColFilters$isALL)&&(rowColFilters$count > 0))
+           {
+             filterCmd <- NULL
+             filterCount <- 0
+             for(j in 1:length(rowColFilters$filters)) {
+               filter <- rowColFilters$filters[[j]]
+               if(is.null(filter$variableName)) stop("PivotCalculator$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
+               if(is.null(filter$values)) next
+               if(length(filter$values)==0) next
+               if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
+               if(length(filter$values)>0) {
+                 # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
+                 filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% rowColFilters$filters[[", j, "]]$values)")
+                 filterCount <- filterCount + 1
+               }
+             }
+             if(filterCount > 0) {
+               filterCmd <- paste0("data <- dplyr::filter(data,", filterCmd, ")")
+               eval(parse(text=filterCmd))
              }
            }
-           if(filterCount > 0) {
-             filterCmd <- paste0("data <- dplyr::filter(data,", filterCmd, ")")
-             eval(parse(text=filterCmd))
-           }
+           # get the distinct values for the current variable
+           eval(parse(text=paste0("data <- dplyr::select(data, ", variableName, ")")))
+           data <- dplyr::distinct(data)
+           if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
+           else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", variableName, "))")))
+           distinctValues <- dplyr::collect(data)[[variableName]]
+           if("factor" %in% class(distinctValues)) { distinctValues <- as.character(distinctValues) }
+           allValues <- union(allValues, distinctValues)
          }
-         # get the distinct values for the current variable
-         eval(parse(text=paste0("data <- dplyr::select(data, ", variableName, ")")))
-         data <- dplyr::distinct(data)
-         if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
-         else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", variableName, "))")))
-         distinctValues <- dplyr::collect(data)[[variableName]]
-         if("factor" %in% class(distinctValues)) { distinctValues <- as.character(distinctValues) }
-         topLevelFilter$union(PivotFilter$new(parentPivot=private$p_parentPivot, variableName=variableName, values=distinctValues))
        }
        # todo: potential perf optimisation
        # if the set of distinct values being used in the pivot matches the set of distinct values in the
@@ -432,7 +434,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        # check we have some values
        if(is.null(distinctValues)||(length(distinctValues)==0)) {
          # add a blank group
-         newGrp <- grp$addChildGroup(variableName=variableName, values=NULL, caption="",
+         newGrp <- grp$addChildGroup(variableName=variableName, filterType="NONE", values=NULL, caption="",
                                      calculationGroupName=calculationGroupName,
                                      isTotal=grp$isTotal, isLevelSubTotal=!grp$isLevelTotal, isLevelTotal=grp$isLevelTotal)
          index <- length(newGroups) + 1
@@ -491,12 +493,13 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        }
      }
      # if visual totals are enabled...
-     # get all the totals that are the descendants of this (i.e. self) data group and union in this additional criteria
+     # get all the totals that are the descendants of this (i.e. self) data group and add in this additional criteria
      if(visualTotals==TRUE) {
        descdnts <- self$getDescendantGroups(includeCurrentGroup=TRUE)
+       topLevelFilter <- PivotFilter$new(parentPivot=private$p_parentPivot, variableName=variableName, values=allValues)
        for(i in 1:length(descdnts)) {
          descdnt <- descdnts[[i]]
-         if(descdnt$isTotal) descdnt$filters$setFilter(topLevelFilter, action="union")
+         if(descdnt$isTotal) descdnt$filters$setFilter(topLevelFilter, action="and")
        }
      }
      private$p_parentPivot$message("PivotDataGroup$addDataGroups", "Added groups.", list(count=length(newGroups)))
@@ -599,7 +602,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
              if(filters$count==0) next
              for(l in 1:length(filters$filters)) {
                filter <- filters$filters[[l]]
-               netFilters$setFilter(filter, action="replace")
+               netFilters$setFilter(filter, action="and")
              }
            }
            # calculate the value
@@ -754,7 +757,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if(filters$count==0) next
        for(k in 1:length(filters$filters)) {
          filter <- filters$filters[[k]]
-         netFilters$setFilter(filter, action="replace")
+         netFilters$setFilter(filter, action="and")
        }
      }
      private$p_parentPivot$message("PivotDataGroup$getNetFilters", "Got net filters.")
