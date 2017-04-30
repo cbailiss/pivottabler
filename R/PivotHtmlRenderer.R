@@ -24,9 +24,10 @@
 #'   on the PivotDataGroup class.}
 #'   \item{\code{getTableHtml(styleNamePrefix=NULL, includeHeaderValues=FALSE,
 #'   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
-#'   includeCalculationNames=FALSE, includeRawValue=FALSE,
-#'   includeTotalInfo=FALSE)}}{Get a HTML representation of the pivot table,
-#'   optionally including additional detail for debugging purposes.}
+#'   includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
+#'   includeRawValue=FALSE, includeTotalInfo=FALSE)}}{Get a HTML representation
+#'   of the pivot table, optionally including additional detail for debugging
+#'   purposes.}
 #' }
 
 PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
@@ -54,11 +55,13 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      return(invisible())
    },
    getTableHtml = function(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE,
-                           includeCalculationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE) {
+                           includeCalculationFilters=FALSE, includeEvaluationFilters=FALSE,
+                           includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE) {
      checkArgument("PivotHtmlRenderer", "getTableHtml", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeHeaderValues, missing(includeHeaderValues), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeRCFilters, missing(includeRCFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeCalculationFilters, missing(includeCalculationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     checkArgument("PivotHtmlRenderer", "getTableHtml", includeEvaluationFilters, missing(includeEvaluationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeCalculationNames, missing(includeCalculationNames), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      checkArgument("PivotHtmlRenderer", "getTableHtml", includeTotalInfo, missing(includeTotalInfo), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -211,7 +214,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
          cllstyl <- NULL
          if(!is.null(cell$style)) cllstyl <- cell$style$asCSSRule()
          detail <- list()
-         if(includeRCFilters|includeCalculationFilters|includeCalculationNames|includeRawValue)
+         if(includeRCFilters|includeCalculationFilters|includeEvaluationFilters|includeCalculationNames|includeRawValue)
          {
            if(includeRawValue) {
              detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", paste0("raw value = ", cell$rawValue))
@@ -230,6 +233,10 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
              detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "RC Filters: "),
                                                 htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
            }
+           if(includeCalculationNames) {
+             cstr <- paste0("Calc: ",  cell$calculationGroupName, ": ", cell$calculationName)
+             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", cstr))
+           }
            if(includeCalculationFilters) {
              lst <- NULL
              if(is.null(cell$calculationFilters)) { lst <- "No calculation filters" }
@@ -244,9 +251,19 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
              detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Calc. Filters: "),
                                                 htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
            }
-           if(includeCalculationNames) {
-             cstr <- paste0("Calc: ",  cell$calculationGroupName, ": ", cell$calculationName)
-             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", cstr))
+           if(includeEvaluationFilters) {
+             lst <- NULL
+             if(is.null(cell$evaluationFilters)) { lst <- "No evaluation filters" }
+             else {
+               lst <- list()
+               if(cell$evaluationFilters$count > 0) {
+                 for(i in 1:cell$evaluationFilters$count){
+                   lst[[length(lst)+1]] <- htmltools::tags$li(cell$evaluationFilters$filters[[i]]$asString(seperator=", "))
+                 }
+               }
+             }
+             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Eval. Filters: "),
+                                                htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
            }
            trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, htmltools::tags$p(cell$formattedValue), detail) # todo: check escaping
          }

@@ -31,6 +31,8 @@
 #'   and column headings.
 #' @field calculationFilters The data filters applied to this cell from the
 #'   calculation definition.
+#' @field evaluationFilters The final filters used in the calculation of the
+#'   cell value.
 #' @field isTotal Whether this cell is a total cell.
 #' @field rawValue The numerical calculation result.
 #' @field formattedValue The formatted calculation result (i.e. character data type).
@@ -71,17 +73,18 @@ PivotCell <- R6::R6Class("PivotCell",
      private$p_parentPivot <- parentPivot
      private$p_parentPivot$message("PivotCell$new", "Creating new PivotCell",
                                    list(rowNumber=rowNumber, columnNumber=columnNumber))
-     private$p_parentPivot = parentPivot
-     private$p_rowNumber = rowNumber
-     private$p_columnNumber = columnNumber
-     private$p_calculationName = calculationName
-     private$p_calculationGroupName = calculationGroupName
-     private$p_rowFilters = rowFilters
-     private$p_columnFilters = columnFilters
-     private$p_rowColFilters = rowColFilters
-     private$p_calculationFilters = NULL
-     private$p_rowLeafGroup = rowLeafGroup
-     private$p_columnLeafGroup = columnLeafGroup
+     private$p_parentPivot <- parentPivot
+     private$p_rowNumber <- rowNumber
+     private$p_columnNumber <- columnNumber
+     private$p_calculationName <- calculationName
+     private$p_calculationGroupName <- calculationGroupName
+     private$p_rowFilters <- rowFilters
+     private$p_columnFilters <- columnFilters
+     private$p_rowColFilters <- rowColFilters
+     private$p_calculationFilters <- NULL
+     private$p_evaluationFilters <- NULL
+     private$p_rowLeafGroup <- rowLeafGroup
+     private$p_columnLeafGroup <- columnLeafGroup
      private$p_parentPivot$message("PivotCell$new", "Created new PivotCell")
    },
    getCopy = function() {
@@ -95,6 +98,8 @@ PivotCell <- R6::R6Class("PivotCell",
      if(!is.null(private$p_rowColFilters)) fstr1 <- private$p_rowColFilters$asString()
      if(!is.null(private$p_rowFilters)) fstr2 <- private$p_rowFilters$asString()
      if(!is.null(private$p_columnFilters)) fstr3 <- private$p_columnFilters$asString()
+     if(!is.null(private$p_calculationFilters)) fstr4 <- private$p_calculationFilters$asString()
+     if(!is.null(private$p_evaluationFilters)) fstr5 <- private$p_evaluationFilters$asString()
      lst <- list(
        row=private$p_rowNumber,
        column=private$p_columnNumber,
@@ -103,6 +108,8 @@ PivotCell <- R6::R6Class("PivotCell",
        rowColFilters=fstr1,
        rowFilters=fstr2,
        columnFilters=fstr3,
+       calculationFilters=fstr4,
+       evaluationFilters=fstr5,
        rowLeafCaption=private$p_rowLeafGroup$caption,
        columnLeafCaption=private$p_columnLeafGroup$caption,
        formattedValue=self$formattedValue
@@ -124,6 +131,14 @@ PivotCell <- R6::R6Class("PivotCell",
      else {
        checkArgument("PivotCell", "calculationFilters", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
        private$p_calculationFilters <- value
+       return(invisible())
+     }
+   },
+   evaluationFilters = function(value) {
+     if(missing(value)) { return(invisible(private$p_evaluationFilters)) }
+     else {
+       checkArgument("PivotCell", "evaluationFilters", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+       private$p_evaluationFilters <- value
        return(invisible())
      }
    },
@@ -172,7 +187,8 @@ PivotCell <- R6::R6Class("PivotCell",
     p_rowFilters = NULL,              # an object ref (shared across this row)
     p_columnFilters = NULL,           # an object ref (shared across this column)
     p_rowColFilters = NULL,           # an object ref (unique to this cell)
-    p_calculationFilters = NULL,      # an object ref (unique to this cell)
+    p_calculationFilters = NULL,      # an object ref (shared across this calculation)
+    p_evaluationFilters = NULL,       # an obejct ref (unique to this cell)
     p_rowLeafGroup = NULL,            # an object ref (shared across this row)
     p_columnLeafGroup = NULL,         # an object ref (shared across this column)
     p_rawValue = NULL ,               # a value (unique to this cell)

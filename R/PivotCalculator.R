@@ -81,6 +81,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
    initialize = function(parentPivot=NULL) {
      checkArgument("PivotCalculator", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
      private$p_parentPivot <- parentPivot
+     private$p_batchCalculator <- PivotBatchCalculator$new(private$p_parentPivot)
      private$p_parentPivot$message("PivotCalculator$new", "Creating new Pivot Calculator...")
      private$p_parentPivot$message("PivotCalculator$new", "Created new Pivot Calculator.")
    },
@@ -106,6 +107,16 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      cn <- cg$getCalculation(calculationName)
      private$p_parentPivot$message("PivotCalculator$getCalculation", "Got calculation.")
      return(invisible(cg))
+   },
+   generateBatchesForCellEvaluation = function() {
+     if(private$p_parentPivot$evaluationMode=="sequential") {
+       private$p_parentPivot$message("PivotCalculator$generateBatchesForCellEvaluation", "Pivot table is using sequential evaluation mode, so not creating batches.")
+       return(invisible())
+     }
+     private$p_parentPivot$message("PivotCalculator$generateBatchesForCellEvaluation", "Generating batches for cell evaluation...")
+     res <- private$p_batchCalculator$generateBatchesForCellEvaluation()
+     private$p_parentPivot$message("PivotCalculator$generateBatchesForCellEvaluation", "Generated batches for cell evaluation.")
+     return(invisible(res))
    },
    newFilter = function(variableName=NULL, values=NULL) {
      checkArgument("PivotCalculator", "newFilter", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -233,6 +244,22 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      private$p_parentPivot$message("PivotCalculator$formatValue", "Formated value.")
      return(invisible(value))
    },
+   setEvaluationFilters = function(cell=NULL) {
+     checkArgument("PivotCalculator", "setEvaluationFilters", cell, missing(cell), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotCell")
+     private$p_parentPivot$message("PivotCalculator$setEvaluationFilters", "Setting evaluation filters for cell...")
+     rowNumber <- cell$rowNumber
+     columnNumber <- cell$columnNumber
+     calculationGroupName <- cell$calculationGroupName
+     calculationName <- cell$calculationName
+     rowColFilters <- cell$rowColFilters
+     if(is.null(calculationGroupName)) return(invisible())
+     if(is.null(calculationName)) return(invisible())
+     filters <- self$setFiltersForNamedCalculation(calculationName=calculationName, calculationGroupName=calculationGroupName,
+                                                   rowColFilters=rowColFilters, cell=cell)
+     cell$calculationFilters <- filters[[calculationName]]$calculationFilters
+     cell$evaluationFilters <- filters[[calculationName]]$evaluationFilters
+     private$p_parentPivot$message("PivotCalculator$setEvaluationFilters", "Set evaluation filters for cell.")
+   },
    getSingleValue = function(dataFrame=NULL, valueName=NULL) {
      checkArgument("PivotCalculator", "getSingleValue", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
      checkArgument("PivotCalculator", "getSingleValue", valueName, missing(valueName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -243,16 +270,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
                    " row(s).  There must be a maximum of 1 row for the value after the filters have been applied."))
      if(nrow(data)==0) return(invisible(NULL))
      data <- dplyr::collect(data)
-     # The code below is no longer needed.
-     # Even if data is still a tbl_df, tbl_df[[valueName]] will always return a column as a vector
-     # if("tbl_df" %in% class(data)) {
-     #   data <- as.data.frame(data) # workaround of a possible bug in dplyr? collect seems to still sometimes return a tbl_df
-     #   if("tbl_df" %in% class(data)) {
-     #     stop(paste0("PivotCalculator$getSingleValue(): Unable to coerce the tbl_df back to a data.frame for summary expression '", summaryName, "'.",
-     #               "  This has resulted in a value of data type [", class(data), "] with ", nrow(data), " row(s)."))
-     #   }
-     # }
-     value <- data[[valueName]][1]
+     value <- data[[valueName]][1] # data[[valueName]] will always return a column as a vector (even if data is still a tbl_df)
      private$p_parentPivot$message("PivotCalculator$getSingleValue", "Got single value.")
      return(invisible(value))
    },
@@ -269,16 +287,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        stop(paste0("PivotCalculator$getSummaryValue(): Summary expression '", summaryName, "' has resulted in '", nrow(data),
                    " row(s) and ", ncol(data), " columns.  There must be a maximum of 1 row and 1 column in the result."))
      data <- dplyr::collect(data)
-     # The code below is no longer needed.
-     # Even if data is still a tbl_df, tbl_df[[colIndex]] will always return a column (as a vector) and tbl_df[[colIndex]][rowIndex] will always return a single value
-     # if("tbl_df" %in% class(data)) {
-     #   data <- as.data.frame(data) # workaround of a possible bug in dplyr? collect seems to still sometimes return a tbl_df
-     #   if("tbl_df" %in% class(data)) {
-     #     stop(paste0("PivotCalculator$getSummaryValue(): Unable to coerce the tbl_df back to a data.frame for summary epxression '", summaryName, "'.",
-     #               "  This has resulted in a value of data type [", class(data), "] with ", nrow(data), " row(s) and ", ncol(data), " columns."))
-     #   }
-     # }
-     value <- data[[1]][1]
+     value <- data[[1]][1] # data[[colIndex]] will always return a column as a vector (even if data is still a tbl_df)
      private$p_parentPivot$message("PivotCalculator$getSummaryValue", "Got summary value.")
      return(invisible(value))
    },
@@ -296,6 +305,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      # get the final filter context for this calculation (calcFilters override row/col filters)
      filters <- NULL
      value <- list()
+     value$calculationFilters <- calcFilters
      if(is.null(rowColFilters)) {
        if(!isnull(calcFilters)) filters <- calcFilters$getCopy()
      }
@@ -305,7 +315,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      # if we have some filters, filter the data frame
      if(!is.null(filters)) {
-       value$filters <- filters
+       value$evaluationFilters <- filters
        if(filters$count > 0) {
          data <- self$getFilteredDataFrame(dataFrame=data, filters=filters)
        }
@@ -340,6 +350,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      # get the final filter context for this calculation (calcFilters override row/col filters)
      filters <- NULL
      value <- list()
+     value$calculationFilters <- calcFilters
      if(is.null(rowColFilters)) {
        if(!isnull(calcFilters)) filters <- calcFilters$getCopy()
      }
@@ -349,7 +360,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      # if we have some filters, filter the data frame
      if(!is.null(filters)) {
-       value$filters <- filters
+       value$evaluationFilters <- filters
        if(filters$count > 0) {
          data <- self$getFilteredDataFrame(dataFrame=data, filters=filters)
        }
@@ -413,6 +424,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      # get the final filter context for this calculation (calcFilters override row/col filters)
      filters <- NULL
      value <- list()
+     value$calculationFilters <- calcFilters
      if(is.null(rowColFilters)) {
        if(!isnull(calcFilters)) filters <- calcFilters$getCopy()
      }
@@ -420,8 +432,10 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        filters <- rowColFilters$getCopy()
        if(!is.null(calcFilters)) filters$setFilters(filters=calcFilters)
      }
+     value$evaluationFilters <- filters
      # calculate the value by calling the calculation function
      rv <- calculationFunction(pivotCalculator=self, netFilters=filters, format=format, baseValues=baseValues, cell=cell)
+     value$evaluationFilters <- rv$filters # in case the calculationfunction has updated the filters
      value$rawValue <- rv$rawValue
      value$formattedValue <- rv$formattedValue
      private$p_parentPivot$message("PivotCalculator$evaluateCalculateFunction", "Evaluated calculation function.")
@@ -498,7 +512,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      private$p_parentPivot$message("PivotCalculator$evaluateNamedCalculation", "Evaluated named calculation.")
      return(invisible(results))
    },
-   evaluateCell = function(cell) {
+   evaluateCell = function(cell=NULL) {
      checkArgument("PivotCalculator", "evaluateCell", cell, missing(cell), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotCell")
      private$p_parentPivot$message("PivotCalculator$evaluateCell", "Evaluating cell...")
      rowNumber <- cell$rowNumber
@@ -515,12 +529,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
                    "' not found in cell r=", rowNumber, ", c=", columnNumber), call. = FALSE)
      cell$rawValue <- results[[calculationName]]$rawValue
      cell$formattedValue <- results[[calculationName]]$formattedValue
-     cell$calculationFilters <- results[[calculationName]]$filters
+     cell$calculationFilters <- results[[calculationName]]$calculationFilters
+     cell$evaluationFilters <- results[[calculationName]]$evaluationFilters
      private$p_parentPivot$message("PivotCalculator$evaluateCell", "Evaluated cell.")
    }
   ),
   private = list(
     p_parentPivot = NULL,
+    p_batchCalculator = NULL,
     getNullValue = function() {
      value <- list()
      value$rawValue <- NULL

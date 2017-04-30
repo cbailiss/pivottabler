@@ -13,6 +13,7 @@
 #'   (to ensure uniqueness).
 #' @param includeRCFilters Show/hide filter detail for debugging.
 #' @param includeCalculationFilters Show/hide filter detail for debugging.
+#' @param includeEvaluationFilters Show/hide filter detail for debugging.
 #' @param includeCalculationNames Show/hide filter detail for debugging.
 #' @param includeRawValue Show/hide filter detail for debugging.
 #' @return A HTML widget.
@@ -20,12 +21,14 @@
 #' # See the Shiny vignette in this package for examples.
 pivottabler <- function(pt, width=NULL, height=NULL, styleNamePrefix=NULL,
                    includeRCFilters=FALSE, includeCalculationFilters=FALSE,
-                   includeCalculationNames=FALSE, includeRawValue=FALSE) {
+                   includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
+                   includeRawValue=FALSE) {
   settings <- list() # may need this in the future
   widgetData <- list(
     tableCss = pt$getCss(styleNamePrefix=styleNamePrefix),
     tableHtml = as.character(pt$getHtml(styleNamePrefix=styleNamePrefix,
                                         includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
+                                        includeEvaluationFilters=includeEvaluationFilters,
                                         includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)),
     settings = settings
   )

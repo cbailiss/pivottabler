@@ -118,7 +118,8 @@ pt$evaluatePivot()
 highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FF00"))
 cells <- pt$getCells(rowNumbers=3, columnNumbers=2)
 cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
-pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE, includeCalculationFilters=TRUE, 
+pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE, 
+               includeCalculationFilters=TRUE, includeEvaluationFilters=TRUE,
                includeCalculationNames=TRUE, includeRawValue=TRUE, includeTotalInfo=TRUE)
 ```
 
@@ -150,7 +151,8 @@ pt$defineCalculation(calculationName="WeekendTrainsPercentage",
                      format="%.1f %%",
                      calculationExpression="values$WeekendTrains/values$TotalTrains*100")
 pt$addRowCalculationGroups() 
-pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE, includeCalculationFilters=TRUE,
+pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE, 
+               includeCalculationFilters=TRUE, includeEvaluationFilters=TRUE,
                includeCalculationNames=TRUE, includeRawValue=TRUE, includeTotalInfo=TRUE)
 ```
 

@@ -2,8 +2,6 @@
 ^\.Rproj\.user$
 ^Notes\.txt$
 ^R\Notes\.txt$
-^Template\.R$
-^\Template\.R$
 ^\.travis\.yml$
 ^cran-comments\.md$
 ^README\.Rmd$
@@ -12,3 +10,4 @@
 ^latexexample\.Rmd$
 ^latexexample\.pdf$
 ^devresources\.md$
+^template\.R$
