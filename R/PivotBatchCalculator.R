@@ -50,9 +50,6 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       private$p_parentPivot$message("PivotBatchCalculator$isFiltersBatchCompatible", "Checked if filter is batch compatible.")
       return(isCompatible)
     },
-    getEvaluationFilters = function(cell=NULL) {
-
-    },
     generateBatchesForNamedCalculationEvaluation = function(calculationName=NULL, calculationGroupName=NULL, rowColFilters=NULL) {
 
     },

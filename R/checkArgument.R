@@ -51,6 +51,7 @@ checkArgument <- function(className, methodName, argumentValue, isMissing, # no 
         if(length(argumentValue)>0) {
           for(i in 1:length(argumentValue))
           {
+            if(is.null(argumentValue[[i]])) next
             if(length(allowedListElementClasses)>0) {
               elementTypes <- class(argumentValue[[i]])
               if(length(intersect(allowedListElementClasses, elementTypes)) == 0) { invalidTypes[[length(invalidTypes)+1]] <- elementTypes }

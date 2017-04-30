@@ -35,6 +35,9 @@ the pivot calculations in the pivot table.}
 calculation names will appear (only if multiple calculations are defined
 and visible in the pivot table).}
 
+\item{\code{evaluationMode}}{Either "sequential" or "batch" to specify how summary
+calculations (i.e. where type="summary") are evaluated.}
+
 \item{\code{cells}}{A PivotCells object containing all of the cells in the body of
 the pivot table.}
 
@@ -152,20 +155,22 @@ content for external systems.}
   entire pivot table.}
   \item{\code{getHtml(styleNamePrefix, includeHeaderValues=FALSE,
   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
-  includeCalculationNames=FALSE, includeRawValue=FALSE,
-  includeTotalInfo=FALSE)}}{Get the HTML representation of the pivot table,
-  specifying the CSS style name prefix to use and whether additional debug
-  information should be included in the pivot table.}
+  includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
+  includeRawValue=FALSE, includeTotalInfo=FALSE)}}{Get the HTML
+  representation of the pivot table, specifying the CSS style name prefix to
+  use and whether additional debug information should be included in the
+  pivot table.}
   \item{\code{saveHtml(filePath, fullPageHTML=TRUE, styleNamePrefix,
   includeHeaderValues=FALSE, includeRCFilters=FALSE,
-  includeCalculationFilters=FALSE, includeCalculationNames=FALSE,
-  includeRawValue=FALSE, includeTotalInfo=FALSE)}}{Save the HTML
-  representation of the pivot table to a file.}
+  includeCalculationFilters=FALSE, includeEvaluationFilters=FALSE,
+  includeCalculationNames=FALSE, includeRawValue=FALSE,
+  includeTotalInfo=FALSE)}}{Save the HTML representation of the pivot table
+  to a file.}
   \item{\code{renderPivot(width, height, styleNamePrefix,
   includeHeaderValues=FALSE, includeRCFilters=FALSE,
-  includeCalculationFilters=FALSE, includeCalculationNames=FALSE,
-  includeRawValue=FALSE, includeTotalInfo=FALSE)}}{Render the pivot table as
-  a htmlwidget.}
+  includeCalculationFilters=FALSE, includeEvaluationFilters=FALSE,
+  includeCalculationNames=FALSE, includeRawValue=FALSE,
+  includeTotalInfo=FALSE)}}{Render the pivot table as a htmlwidget.}
   \item{\code{getLatex(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL,
   fromColumn=NULL, toColumn=NULL, boldHeadings=FALSE,
   italicHeadings=FALSE)}}{Get the Latex representation of the pivot table,

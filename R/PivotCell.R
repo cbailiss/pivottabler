@@ -31,8 +31,12 @@
 #'   and column headings.
 #' @field calculationFilters The data filters applied to this cell from the
 #'   calculation definition.
-#' @field evaluationFilters The final filters used in the calculation of the
-#'   cell value.
+#' @field workingFilters The data filters used applied when running calculations
+#'   (including the filters needed for base calculations when calculation
+#'   type="calculation").
+#' @field evaluationFilters The final and actual data filters used in the
+#'   calculation of the cell value (e.g. custom calculation functions can
+#'   override the working filters).
 #' @field isTotal Whether this cell is a total cell.
 #' @field rawValue The numerical calculation result.
 #' @field formattedValue The formatted calculation result (i.e. character data type).
@@ -82,6 +86,7 @@ PivotCell <- R6::R6Class("PivotCell",
      private$p_columnFilters <- columnFilters
      private$p_rowColFilters <- rowColFilters
      private$p_calculationFilters <- NULL
+     private$p_workingFilters <- NULL
      private$p_evaluationFilters <- NULL
      private$p_rowLeafGroup <- rowLeafGroup
      private$p_columnLeafGroup <- columnLeafGroup
@@ -95,11 +100,24 @@ PivotCell <- R6::R6Class("PivotCell",
      fstr1 <- NULL
      fstr2 <- NULL
      fstr3 <- NULL
+     fstr4 <- NULL
+     fstr5 <- NULL
      if(!is.null(private$p_rowColFilters)) fstr1 <- private$p_rowColFilters$asString()
      if(!is.null(private$p_rowFilters)) fstr2 <- private$p_rowFilters$asString()
      if(!is.null(private$p_columnFilters)) fstr3 <- private$p_columnFilters$asString()
      if(!is.null(private$p_calculationFilters)) fstr4 <- private$p_calculationFilters$asString()
      if(!is.null(private$p_evaluationFilters)) fstr5 <- private$p_evaluationFilters$asString()
+     flst <- NULL
+     if(!is.null(private$p_workingFilters)) {
+       flst <- list()
+       if(length(private$p_workingFilters)>0) {
+         for(i in 1:length(private$p_workingFilters)) {
+           fstrW <- NULL
+           if(!is.null(private$p_workingFilters[[i]])) fstrW <- private$p_workingFilters[[i]]$asString()
+           flst[[names(private$p_workingFilters)[i]]] <- fstrW
+         }
+       }
+     }
      lst <- list(
        row=private$p_rowNumber,
        column=private$p_columnNumber,
@@ -109,6 +127,7 @@ PivotCell <- R6::R6Class("PivotCell",
        rowFilters=fstr2,
        columnFilters=fstr3,
        calculationFilters=fstr4,
+       workingFilters=flst,
        evaluationFilters=fstr5,
        rowLeafCaption=private$p_rowLeafGroup$caption,
        columnLeafCaption=private$p_columnLeafGroup$caption,
@@ -131,6 +150,14 @@ PivotCell <- R6::R6Class("PivotCell",
      else {
        checkArgument("PivotCell", "calculationFilters", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
        private$p_calculationFilters <- value
+       return(invisible())
+     }
+   },
+   workingFilters = function(value) {
+     if(missing(value)) { return(invisible(private$p_workingFilters)) }
+     else {
+       checkArgument("PivotCell", "workingFilters", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="PivotFilters")
+       private$p_workingFilters <- value
        return(invisible())
      }
    },
@@ -188,6 +215,7 @@ PivotCell <- R6::R6Class("PivotCell",
     p_columnFilters = NULL,           # an object ref (shared across this column)
     p_rowColFilters = NULL,           # an object ref (unique to this cell)
     p_calculationFilters = NULL,      # an object ref (shared across this calculation)
+    p_workingFilters = NULL,          # a list of object refs (unique to the cell)
     p_evaluationFilters = NULL,       # an obejct ref (unique to this cell)
     p_rowLeafGroup = NULL,            # an object ref (shared across this row)
     p_columnLeafGroup = NULL,         # an object ref (shared across this column)

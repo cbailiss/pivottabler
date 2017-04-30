@@ -603,9 +603,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
              }
            }
            # calculate the value
-           results <- pivotCalculator$evaluateNamedCalculation(calculationName=calculationName,
+           results <- pivotCalculator$evaluateNamedCalculation2(calculationName=calculationName,
                                                                calculationGroupName=calculationGroupName,
-                                                               rowColFilters=netFilters, cell=NULL)
+                                                               rowColFilters=netFilters)
            calcResults <- results[[calculationName]]
            rawValues[[j]] <- calcResults$rawValue
          }

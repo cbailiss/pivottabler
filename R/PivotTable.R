@@ -597,12 +597,18 @@ PivotTable <- R6::R6Class("PivotTable",
     evaluateCells = function() {
       self$message("PivotTable$evaluateCells", "Evaluating cell values...")
       if(is.null(private$p_cells)) stop("PivotTable$evaluateCells():  No cells exist to calculate.", call. = FALSE)
+      rowCount <- private$p_cells$rowCount
+      columnCount <- private$p_cells$columnCount
       calculator <- PivotCalculator$new(self)
+      for(r in 1:rowCount) {
+        for(c in 1:columnCount) {
+          cell <- private$p_cells$getCell(r, c)
+          calculator$setWorkingFilters(cell)
+        }
+      }
       if(private$p_evaluationMode=="batch") {
         calculator$generateBatchesForCellEvaluation()
       }
-      rowCount <- private$p_cells$rowCount
-      columnCount <- private$p_cells$columnCount
       for(r in 1:rowCount) {
         for(c in 1:columnCount) {
           cell <- private$p_cells$getCell(r, c)
