@@ -26,6 +26,14 @@
 #' Chocolate 100g")
 #' # filters now contains criteria for Year, Country and Product
 #' @field parentPivot Owning pivot table.
+#' @field count The number of PivotFilter objects in this PivotFilters object.
+#' @field filters The PivotFilter objects in this PivotFilters object.
+#' @field isALL If TRUE, this PivotFilters object matches all data.
+#' @field isNONE If TRUE, this PivotFilters object matches no data.
+#' @field filteredVariables A list of the variables that are filtered by this
+#'   PivotFilters object.
+#' @field filteredValues A list of the criteria values for each of the variables
+#'   filtered by this PivotFilters object.
 
 #' @section Methods:
 #' \describe{
@@ -277,6 +285,34 @@ PivotFilters <- R6::R6Class("PivotFilters",
         }
         return(FALSE)
       }
+    },
+    filteredVariables = function(value) { # returns a character vector of variable names that are filtered
+      variableNames = NULL
+      if(!is.null(private$p_filters)) {
+        if(length(private$p_filters)>0) {
+          for(i in 1:length(private$p_filters)) {
+            filter <- private$p_filters[[i]]
+            if(filter$type=="VALUES") {
+              variableNames[length(variableNames)+1] <- filter$variableName
+            }
+          }
+        }
+      }
+      return(variableNames)
+    },
+    filteredValues = function(value) { # returns a list of variable names that are filtered plus the filter values
+      values = list()
+      if(!is.null(private$p_filters)) {
+        if(length(private$p_filters)>0) {
+          for(i in 1:length(private$p_filters)) {
+            filter <- private$p_filters[[i]]
+            if(filter$type=="VALUES") {
+              values[[filter$variableName]] <- filter$values
+            }
+          }
+        }
+      }
+      return(values)
     }
   ),
   private = list(

@@ -14,7 +14,8 @@
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
 #' @field parentPivot Owning pivot table.
-
+#' @field batchInfo Get a summary of the batch calculations.
+#'
 #' @section Methods:
 #' \describe{
 #'   \item{Documentation}{For more complete explanations and examples please see
@@ -672,6 +673,11 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      cell$evaluationFilters <- results[[calculationName]]$evaluationFilters
      private$p_parentPivot$message("PivotCalculator$evaluateCell", "Evaluated cell.")
    }
+  ),
+  active = list(
+    batchInfo = function(value) {
+      cstr <- paste0("BATCH INFO:\n\n", private$p_batchCalculator$batchSummary, "\n\nCALC SUMMARY:\n\n", private$p_batchCalculator$calculationSummary)
+    }
   ),
   private = list(
     p_parentPivot = NULL,

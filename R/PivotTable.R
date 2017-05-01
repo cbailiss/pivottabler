@@ -36,6 +36,8 @@
 #'   and visible in the pivot table).
 #' @field evaluationMode Either "sequential" or "batch" to specify how summary
 #'   calculations (i.e. where type="summary") are evaluated.
+#' @field batchInfo Get a text summary of the batch calculations from the last
+#'   evaluation of this pivot table.
 #' @field cells A PivotCells object containing all of the cells in the body of
 #'   the pivot table.
 #' @field theme The name of the theme currently applied to the pivot table.
@@ -170,6 +172,8 @@
 #'   specifying the caption to appear above the table, the label to use when
 #'   referring to the table elsewhere in the document and how headings should be
 #'   styled.}
+#'   \item{\code{showBatchInfo()}}{Show a text summary of the batch calculations
+#'   from the last evaluation of this pivot table.}
 #'   \item{\code{asList()}}{Get a list representation of the pivot table.}
 #'   \item{\code{asJSON()}}{Get a JSON representation of the pivot table.}
 #'   \item{\code{viewJSON()}}{View the JSON representation of the pivot table.}
@@ -201,7 +205,9 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument("PivotTable", "addData", df, missing(df), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
       checkArgument("PivotTable", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       self$message("PivotTable$addData", "Adding data to Pivot Table...")
-      private$p_data$addData(df, dataName=dataName)
+      dn <- dataName
+      if(is.null(dn)) dn <- deparse(substitute(df))
+      private$p_data$addData(df, dataName=dn)
       self$message("PivotTable$addData", "Added data to Pivot Table.")
       return(invisible(private$p_data))
     },
@@ -608,6 +614,7 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_evaluationMode=="batch") {
         calculator$generateBatchesForCellEvaluation()
+        private$p_lastCellBatchInfo <- calculator$batchInfo
       }
       for(r in 1:rowCount) {
         for(c in 1:columnCount) {
@@ -1091,6 +1098,9 @@ PivotTable <- R6::R6Class("PivotTable",
       if(is.null(private$p_messageFile)) { message(msg) }
       else { cat(msg, file=private$p_messageFile, sep="\r\n", append=TRUE)}
     },
+    showBatchInfo = function() {
+      message(self$batchInfo)
+    },
     asList = function() {
       self$message("PivotTable$asList", "Getting list...")
       lst <- list(
@@ -1145,6 +1155,7 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+    batchInfo = function(value) { return(invisible(private$p_lastCellBatchInfo)) },
     cells = function(value) { return(invisible(private$p_cells)) },
     rowCount = function(value) { return(invisible(private$p_cells$rowCount)) },
     columnCount = function(value) { return(invisible(private$p_cells$columnCount)) },
@@ -1198,6 +1209,7 @@ PivotTable <- R6::R6Class("PivotTable",
     p_evaluationMode = "sequential",
     p_evaluated = FALSE,
     p_cells = NULL,
+    p_lastCellBatchInfo = NULL,
     p_htmlRenderer = NULL,
     p_latexRenderer = NULL,
     p_messages = FALSE,
