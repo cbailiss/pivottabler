@@ -14,6 +14,8 @@
 #' @field parentPivot Owning pivot table.
 #' @field batchId A unique integer identifier for this batch.
 #' @field compatibleCount The number of pivot cell calculations that this batch supports.
+#' @field evaluated TRUE if this batch has been evaluated.
+#' @field results The results (a data frame) of the evaluation of this batch.
 #' @field asString A text description of this batch.
 #'
 #' @section Methods:
@@ -26,7 +28,8 @@
 #'   whether the specified data name and combination of variable names are
 #'   compatible with this batch.}
 #'   \item{\code{addCompatible(values=NULL, calculationName=NULL,
-#'   calculationGroupName=NULL){Adds another cell calculation to this batch.}
+#'   calculationGroupName=NULL)}}{Adds another cell calculation to this batch.}
+#'   \item{\code{evaluateBatch()}}{Evaluate this batch.}
 #' }
 
 PivotBatch <- R6::R6Class("PivotBatch",
@@ -49,7 +52,10 @@ PivotBatch <- R6::R6Class("PivotBatch",
       private$p_dataName <- dataName
       private$p_variableNames <- variableNames
       private$p_values <- values
-      private$p_calculations <- list(c(calculationGroupName=calculationGroupName, calculationName=calculationName))
+      private$p_nextCalcId <- 1
+      private$p_calculations <- list(c(calculationGroupName=calculationGroupName, calculationName=calculationName,
+                                       calcInternalName=paste0("calc", sprintf("%06d", private$p_nextCalcId))))
+      private$p_nextCalcId <- 2
       private$p_compatibleCount <- 1
       private$p_parentPivot$message("PivotBatch$new", "Created new Pivot Batch.")
     },
@@ -102,16 +108,53 @@ PivotBatch <- R6::R6Class("PivotBatch",
         }
       }
       if(!bCalcAlreadyExists) {
-        calc <- c(calculationGroupName=calculationGroupName, calculationName=calculationName)
+        calc <- c(calculationGroupName=calculationGroupName, calculationName=calculationName,
+                  calcInternalName=paste0("calc", sprintf("%06d", private$p_nextCalcId)))
+        private$p_nextCalcId <- private$p_nextCalcId+1
         private$p_calculations[[length(private$p_calculations)+1]] <- calc
       }
       private$p_compatibleCount <- private$p_compatibleCount+1
       private$p_parentPivot$message("PivotBatch$addCompatible", "Added compatibile calculation.")
+    },
+    evaluateBatch = function() {
+      private$p_parentPivot$message("PivotBatch$evaluateBatch", "Executing batch...")
+      # get the data frame
+      data <- private$p_parentPivot$data$getData(private$p_dataName)
+      # group by
+      if(!is.null(private$p_variableNames)) {
+        if(length(private$p_variableNames)>0) {
+          groupByVars <- paste(private$p_variableNames, sep="", collapse=", ")
+          groupByCmd <- paste0("data <- dplyr::group_by(data, ", groupByVars, ")")
+          eval(parse(text=groupByCmd))
+        }
+      }
+      # calculations
+      if(is.null(private$p_calculations))
+        stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
+      if(length(private$p_calculations)==0)
+        stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
+      calcStr <- ""
+      for(i in 1:length(private$p_calculations)) {
+        calcNms <- private$p_calculations[[i]]
+        calcInternalName <- calcNms["calcInternalName"]
+        calcGrp <- private$p_parentPivot$calculationGroups$getCalculationGroup(calcNms["calculationGroupName"])
+        calc <- calcGrp$getCalculation(calcNms["calculationName"])
+        if(nchar(calcStr)>0) calcStr <- paste0(calcStr, ", ", calcInternalName, " = ", calc$summariseExpression)
+        else calcStr <- paste0(calcInternalName, " = ", calc$summariseExpression)
+      }
+      summaryCmd <- paste0("data <- dplyr::summarise(data, ", calcStr, ")")
+      eval(parse(text=summaryCmd))
+      data <- dplyr::collect(data)
+      private$p_evaluated <- TRUE
+      private$p_results <- data
+      private$p_parentPivot$message("PivotBatch$evaluateBatch", "Executed batch.")
     }
   ),
   active = list(
     batchId = function(value) { return(invisible(private$p_batchId)) },
     compatibleCount = function(value) { return(invisible(private$p_compatibleCount)) },
+    evaluated = function(value) { return(invisible(private$p_evaluated)) },
+    results = function(value) { return(invisible(private$p_results)) },
     asString = function(value) {
       vstr <- ""
       if(length(private$p_variableNames)==0) {
@@ -140,6 +183,12 @@ PivotBatch <- R6::R6Class("PivotBatch",
                      vstr, ", ",
                      ifelse(calcCount==1, "1 CALC: [", paste0(calcCount, " CALCS: [")), cstr, "] ",
                      " => ", private$p_compatibleCount, " CELL CALC", ifelse(private$p_compatibleCount==1, "", "S"))
+      if(private$p_evaluated) {
+        if(is.null(private$p_results)) bstr <- paste0(bstr, ", RESULTS: (none)")
+        else bstr <- paste0(bstr, ", RESULTS: ", nrow(private$p_results), " row(s) x ", ncol(private$p_results), " col(s), ",
+                            "COL NAMES: ", paste(colnames(private$p_results), sep="", collapse=", "))
+      }
+      else bstr <- paste0(bstr, ", RESULTS: (not evaluated)")
       return(bstr)
     }
   ),
@@ -150,6 +199,9 @@ PivotBatch <- R6::R6Class("PivotBatch",
     p_variableNames = NULL,       # a character vector specifying the grain of the calculation
     p_values = NULL,              # a list, where the element names are variable names, and the elements are lists of values
     p_calculations = NULL,        # a list, where each list element is a two element character vector (vector element names are calculationGroupName and calculationName)
-    p_compatibleCount = 0
+    p_nextCalcId = 0,
+    p_compatibleCount = 0,
+    p_evaluated = FALSE,
+    p_results = NULL
   )
 )

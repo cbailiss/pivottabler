@@ -38,6 +38,9 @@ and visible in the pivot table).}
 \item{\code{evaluationMode}}{Either "sequential" or "batch" to specify how summary
 calculations (i.e. where type="summary") are evaluated.}
 
+\item{\code{batchInfo}}{Get a text summary of the batch calculations from the last
+evaluation of this pivot table.}
+
 \item{\code{cells}}{A PivotCells object containing all of the cells in the body of
 the pivot table.}
 
@@ -177,6 +180,8 @@ content for external systems.}
   specifying the caption to appear above the table, the label to use when
   referring to the table elsewhere in the document and how headings should be
   styled.}
+  \item{\code{showBatchInfo()}}{Show a text summary of the batch calculations
+  from the last evaluation of this pivot table.}
   \item{\code{asList()}}{Get a list representation of the pivot table.}
   \item{\code{asJSON()}}{Get a JSON representation of the pivot table.}
   \item{\code{viewJSON()}}{View the JSON representation of the pivot table.}

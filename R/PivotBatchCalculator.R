@@ -37,6 +37,7 @@
 #'   associated with a cell.}
 #'   \item{\code{generateBatchesForCellEvaluation()}}{Generates one or batches
 #'   for a pivot table cell.}
+#'   \item{\code{evaluateBatches()}}{Evaluates batch calculations.}
 #' }
 
 PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
@@ -149,7 +150,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       calcGrp <- private$p_parentPivot$calculationGroups$getCalculationGroup(calculationGroupName)
       calc <- calcGrp$getCalculation(calculationName)
       # call the inner function as appropriate
-      if((calc$type=="value")||(calc$type=="summary")) {
+      if(calc$type=="summary") {
         filters <- workingFilters[[calculationName]]
         self$generateBatchesForNamedCalculationEvaluation1(dataName=calc$dataName, calculationName=calculationName,
                                                            calculationGroupName=calculationGroupName, workingFilters=filters)
@@ -158,6 +159,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
         if(length(calc$basedOn)>0) {
           for(i in 1:length(calc$basedOn)) {
             baseCalc <- calcGrp$getCalculation(calc$basedOn[i])
+            if(baseCalc$type != "summary") next
             filters <- workingFilters[[baseCalc$calculationName]]
             self$generateBatchesForNamedCalculationEvaluation1(dataName=baseCalc$dataName, calculationName=baseCalc$calculationName,
                                                                calculationGroupName=calculationGroupName, workingFilters=filters)
@@ -195,6 +197,26 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
         }
       }
       private$p_parentPivot$message("PivotBatchCalculator$new", "Generated batches for cell evaluation.")
+    },
+    evaluateBatches = function() {
+      if(private$p_parentPivot$evaluationMode=="sequential") {
+        private$p_parentPivot$message("PivotBatchCalculator$evaluateBatches", "Pivot table is using sequential evaluation mode, so not executing batches.")
+        return(invisible())
+      }
+      private$p_parentPivot$message("PivotBatchCalculator$evaluateBatches", "Evaluating batches...")
+      batchEvalCount <- 0
+      if(!is.null(private$p_batches)) {
+        if(length(private$p_batches)>0) {
+          for(i in 1:length(private$p_batches)) {
+            batch <- private$p_batches[[i]]
+            if(batch$compatibleCount<=1) next
+            batch$evaluateBatch()
+            batchEvalCount <- batchEvalCount+1
+          }
+        }
+      }
+      private$p_parentPivot$message("PivotBatchCalculator$evaluateBatches", "Evaluated batches.")
+      return(invisible(batchEvalCount))
     }
   ),
   active = list(

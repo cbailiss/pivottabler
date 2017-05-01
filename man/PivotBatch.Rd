@@ -20,6 +20,16 @@ that are needed when calculating the values of cells in a pivot table.
 
 \describe{
 \item{\code{parentPivot}}{Owning pivot table.}
+
+\item{\code{batchId}}{A unique integer identifier for this batch.}
+
+\item{\code{compatibleCount}}{The number of pivot cell calculations that this batch supports.}
+
+\item{\code{evaluated}}{TRUE if this batch has been evaluated.}
+
+\item{\code{results}}{The results (a data frame) of the evaluation of this batch.}
+
+\item{\code{asString}}{A text description of this batch.}
 }}
 
 \section{Methods}{
@@ -29,7 +39,12 @@ that are needed when calculating the values of cells in a pivot table.
   the extensive vignettes supplied with this package.}
   \item{\code{new(...)}}{Create a new Pivot Batch.}
 
-  \item{\code{exampleMethod(df, dataName)}}{Example to be removed later.}
+  \item{\code{isCompatible(dataName=NULL, variableNames=NULL)}}{Checks
+  whether the specified data name and combination of variable names are
+  compatible with this batch.}
+  \item{\code{addCompatible(values=NULL, calculationName=NULL,
+  calculationGroupName=NULL)}}{Adds another cell calculation to this batch.}
+  \item{\code{evaluateBatch()}}{Evaluate this batch.}
 }
 }
 

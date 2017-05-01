@@ -33,6 +33,8 @@
 #'   added to the pivot table.}
 #'   \item{\code{generateBatchesForCellEvaluation()}}{Examines the cells in the
 #'   pivot table to generate one or more batch calculations.}
+#'   \item{\code{evaluateBatches()}}{Evaluate batch calculations using the batch
+#'   calculator.}
 #'   \item{\code{newFilter(variableName, values)}}{Creates a new PivotFilter
 #'   object associated with the specified data frame column name and column
 #'   values.}
@@ -137,6 +139,16 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      private$p_parentPivot$message("PivotCalculator$generateBatchesForCellEvaluation", "Generated batches for cell evaluation.")
      return(invisible(res))
    },
+   evaluateBatches = function() {
+     if(private$p_parentPivot$evaluationMode=="sequential") {
+       private$p_parentPivot$message("PivotCalculator$evaluateBatches", "Pivot table is using sequential evaluation mode, so not evaluating batches.")
+       return(invisible())
+     }
+     private$p_parentPivot$message("PivotCalculator$evaluateBatches", "Evaluating batches...")
+     res <- private$p_batchCalculator$evaluateBatches()
+     private$p_parentPivot$message("PivotCalculator$evaluateBatches", "Evaluated batches.")
+     return(invisible(res))
+   },
    newFilter = function(variableName=NULL, values=NULL) {
      checkArgument("PivotCalculator", "newFilter", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      checkArgument("PivotCalculator", "newFilter", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
@@ -207,7 +219,8 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        filterCount <- 0
        for(j in 1:length(filters$filters)) {
          filter <- filters$filters[[j]]
-         if(is.null(filter$variableName)) stop("PivotCalculator$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
+         if(is.null(filter$variableName))
+           stop("PivotCalculator$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
          if(is.null(filter$values)) next
          if(length(filter$values)==0) next
          if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
@@ -415,7 +428,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      data <- dataFrame
      if(nrow(data)>1)
        stop(paste0("PivotCalculator$getSingleValue(): Value '", valueName, "' has resulted in '", nrow(data),
-                   " row(s).  There must be a maximum of 1 row for the value after the filters have been applied."))
+                   " row(s).  There must be a maximum of 1 row for the value after the filters have been applied."), call. = FALSE)
      if(nrow(data)==0) return(invisible(NULL))
      data <- dplyr::collect(data)
      value <- data[[valueName]][1] # data[[valueName]] will always return a column as a vector (even if data is still a tbl_df)
@@ -433,7 +446,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      eval(parse(text=summaryCmd))
      if((nrow(data)>1)||(ncol(data)>1))
        stop(paste0("PivotCalculator$getSummaryValue(): Summary expression '", summaryName, "' has resulted in '", nrow(data),
-                   " row(s) and ", ncol(data), " columns.  There must be a maximum of 1 row and 1 column in the result."))
+                   " row(s) and ", ncol(data), " columns.  There must be a maximum of 1 row and 1 column in the result."), call. = FALSE)
      data <- dplyr::collect(data)
      value <- data[[1]][1] # data[[colIndex]] will always return a column as a vector (even if data is still a tbl_df)
      private$p_parentPivot$message("PivotCalculator$getSummaryValue", "Got summary value.")

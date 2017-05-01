@@ -20,6 +20,8 @@ calculating the value of a cell in a pivot table.
 
 \describe{
 \item{\code{parentPivot}}{Owning pivot table.}
+
+\item{\code{batchInfo}}{Get a summary of the batch calculations.}
 }}
 
 \section{Methods}{
@@ -38,6 +40,10 @@ calculating the value of a cell in a pivot table.
   \item{\code{getCalculation(calculationGroupName, calculationName)}}{Gets a
   calculation with the specified name and group from the calculation groups
   added to the pivot table.}
+  \item{\code{generateBatchesForCellEvaluation()}}{Examines the cells in the
+  pivot table to generate one or more batch calculations.}
+  \item{\code{evaluateBatches()}}{Evaluate batch calculations using the batch
+  calculator.}
   \item{\code{newFilter(variableName, values)}}{Creates a new PivotFilter
   object associated with the specified data frame column name and column
   values.}

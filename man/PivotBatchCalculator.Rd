@@ -20,6 +20,13 @@ the pivot table in one evaluation step.
 
 \describe{
 \item{\code{parentPivot}}{Owning pivot table.}
+
+\item{\code{batchCount}}{The number of batches generated for the pivot table.}
+
+\item{\code{calculationSummary}}{A summary of the batch compatibility for each
+calculation.}
+
+\item{\code{batchSummary}}{A summary of the batches in the pivot table.}
 }}
 
 \section{Methods}{
@@ -29,7 +36,21 @@ the pivot table in one evaluation step.
   the extensive vignettes supplied with this package.}
   \item{\code{new(...)}}{Create a new batch calculator.}
 
-  \item{\code{exampleMethod(df, dataName)}}{Example to be removed later.}
+  \item{\code{reset()}}{Clears any batches that currently exist in the batch
+  calculator.}
+  \item{\code{isFiltersBatchCompatible(filters=NULL)}}{Determines whether a
+  set of filters are compatible with batch calculations.}
+  \item{\code{generateBatchesForNamedCalculationEvaluation1(dataName=NULL,
+  calculationName=NULL, calculationGroupName=NULL,
+  workingFilters=NULL)}}{Generates one or more batches for a named
+  calculation and single working filters object.}
+  \item{\code{generateBatchesForNamedCalculationEvaluation2(calculationName=NULL,
+  calculationGroupName=NULL, workingFilters=NULL)}}{Generates one or more
+  batches for a named calculation and set of working filters objects
+  associated with a cell.}
+  \item{\code{generateBatchesForCellEvaluation()}}{Generates one or batches
+  for a pivot table cell.}
+  \item{\code{evaluateBatches()}}{Evaluates batch calculations.}
 }
 }
 

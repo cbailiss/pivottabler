@@ -21,6 +21,20 @@ contain multiple \code{\link{PivotFilter}} objects.
 
 \describe{
 \item{\code{parentPivot}}{Owning pivot table.}
+
+\item{\code{count}}{The number of PivotFilter objects in this PivotFilters object.}
+
+\item{\code{filters}}{The PivotFilter objects in this PivotFilters object.}
+
+\item{\code{isALL}}{If TRUE, this PivotFilters object matches all data.}
+
+\item{\code{isNONE}}{If TRUE, this PivotFilters object matches no data.}
+
+\item{\code{filteredVariables}}{A list of the variables that are filtered by this
+PivotFilters object.}
+
+\item{\code{filteredValues}}{A list of the criteria values for each of the variables
+filtered by this PivotFilters object.}
 }}
 
 \section{Methods}{
@@ -41,7 +55,7 @@ contain multiple \code{\link{PivotFilter}} objects.
   \item{\code{setFilter(filter=NULL, action="replace")}}{Update the value of this
   PivotFilters object with the specified PivotFilter object, either unioning,
   intersecting or replacing the filter criteria.}
-  \item{\code{setFilterValues(variableName=NULL, values=NULL,
+  \item{\code{setFilterValues(variableName=NULL, type=NULL, values=NULL,
   action="replace")}}{Update the value of this PivotFilters object with the
   specified criteria, either unioning, intersecting or replacing the filter
   criteria.}

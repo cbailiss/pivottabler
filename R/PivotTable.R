@@ -614,7 +614,9 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_evaluationMode=="batch") {
         calculator$generateBatchesForCellEvaluation()
-        private$p_lastCellBatchInfo <- calculator$batchInfo
+        private$p_lastCellBatchInfo <- calculator$batchInfo # get the batch info so far (in case of execution errors)
+        calculator$evaluateBatches()
+        private$p_lastCellBatchInfo <- calculator$batchInfo # get the batch info again (this time with execution stats)
       }
       for(r in 1:rowCount) {
         for(c in 1:columnCount) {
