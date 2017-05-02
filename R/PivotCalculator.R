@@ -195,46 +195,13 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      private$p_parentPivot$message("PivotCalculator$setFilterValues", "Set filter values.")
      return(invisible(copy))
    },
+   # the following function is not needed now, but keeping it to avoid a breaking change
+   # consider deprecating this function in future
    getFilteredDataFrame = function(dataFrame=NULL, filters=NULL) {
      checkArgument("PivotCalculator", "getFilteredDataFrame", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
      checkArgument("PivotCalculator", "getFilteredDataFrame", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
      private$p_parentPivot$message("PivotCalculator$getFilteredDataFrame", "Getting filtered data frame...")
-     # build a dplyr query
-     data <- dataFrame
-     # todo: checking the escaping of the variable names and values below
-     # filterCmd is e.g. "data <- filter(data, (", filters[1]$variableName, " %in% filters[1]$values) & (", filters[2]$variableName, " %in% filters[2]$values)"
-     # implement the same optimisation inside addLeafDataGroup function - change that code to call this function
-     if(filters$isNONE) {
-       data <- data[0, ] # returns the structure but no data
-       private$p_parentPivot$message("PivotCalculator$getFilteredDataFrame", "Got filtered data frame.")
-       return(invisible(data))
-     }
-     if(filters$isALL) {
-       private$p_parentPivot$message("PivotCalculator$getFilteredDataFrame", "Got filtered data frame.")
-       return(invisible(data))
-     }
-     if(filters$count > 0)
-     {
-       filterCmd <- NULL
-       filterCount <- 0
-       for(j in 1:length(filters$filters)) {
-         filter <- filters$filters[[j]]
-         if(is.null(filter$variableName))
-           stop("PivotCalculator$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
-         if(is.null(filter$values)) next
-         if(length(filter$values)==0) next
-         if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
-         if(length(filter$values)>0) {
-           # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
-           filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% filters$filters[[", j, "]]$values)")
-           filterCount <- filterCount + 1
-         }
-       }
-       if(filterCount > 0) {
-         filterCmd <- paste0("data <- dplyr::filter(data,", filterCmd, ")")
-         eval(parse(text=filterCmd))
-       }
-     }
+     data <- filters$getFilteredDataFrame(dataFrame)
      private$p_parentPivot$message("PivotCalculator$getFilteredDataFrame", "Got filtered data frame.")
      return(invisible(data))
    },
@@ -644,6 +611,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      checkArgument("PivotCalculator", "evaluateNamedCalculation2", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      checkArgument("PivotCalculator", "evaluateNamedCalculation2", rowColFilters, missing(rowColFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
      private$p_parentPivot$message("PivotCalculator$evaluateNamedCalculation2", "Evaluating named calculation...")
+     # get the set of working filters for the calculation
      filters <- self$getFiltersForNamedCalculation(calculationName=calculationName,
                                                          calculationGroupName=calculationGroupName,
                                                          rowColFilters=rowColFilters, cell=NULL)
@@ -652,7 +620,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(is.null(filters)) workingFilters <- list()
      else if(length(filters)==0) workingFilters <- list()
      else {
-       # for type=calculation, need the working filters for the base calculations as well
+       # for type=calculation, need the working filters for the base calculations as well, so could have more than one
        lst <- lapply(filters, function(x) { return(x$workingFilters) })
        if(is.null(lst)) workingFilters <- list()
        else if(length(lst)==0) workingFilters <- list()

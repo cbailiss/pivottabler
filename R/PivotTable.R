@@ -34,6 +34,8 @@
 #' @field calculationsPosition "row" or "column" indicating where the
 #'   calculation names will appear (only if multiple calculations are defined
 #'   and visible in the pivot table).
+#' @field filterMode Either "base" (for base R) or "dplyr" to specify how data
+#'   frames are filtered.
 #' @field evaluationMode Either "sequential" or "batch" to specify how summary
 #'   calculations (i.e. where type="summary") are evaluated.
 #' @field batchInfo Get a text summary of the batch calculations from the last
@@ -614,9 +616,8 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_evaluationMode=="batch") {
         calculator$generateBatchesForCellEvaluation()
-        private$p_lastCellBatchInfo <- calculator$batchInfo # get the batch info so far (in case of execution errors)
         calculator$evaluateBatches()
-        private$p_lastCellBatchInfo <- calculator$batchInfo # get the batch info again (this time with execution stats)
+        private$p_lastCellBatchInfo <- calculator$batchInfo
       }
       for(r in 1:rowCount) {
         for(c in 1:columnCount) {
@@ -1147,6 +1148,16 @@ PivotTable <- R6::R6Class("PivotTable",
         }
       }
     },
+    filterMode = function(value) {
+      if(missing(value)) {
+        return(private$p_filterMode)
+      }
+      else {
+        checkArgument("PivotTable", "filterMode", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("base", "dplyr"))
+        private$p_filterMode <- value
+        return(invisible())
+      }
+    },
     evaluationMode = function(value) {
       if(missing(value)) {
         return(private$p_evaluationMode)
@@ -1208,6 +1219,7 @@ PivotTable <- R6::R6Class("PivotTable",
     p_columnGroup = NULL,
     p_calculationsPosition = NULL,
     p_calculationGroups = NULL,
+    p_filterMode = "dplyr",
     p_evaluationMode = "sequential",
     p_evaluated = FALSE,
     p_cells = NULL,
