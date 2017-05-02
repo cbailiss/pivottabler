@@ -58,8 +58,9 @@
 #'   criteria.}
 #'   \item{\code{addFilter()}}{Directly add a PivotFilter object to this
 #'   PivotFilters object.}
-#'   \item{\code{getFilteredDataFrame(dataFrame=NULL)}}{Filters the specified
-#'   data frame and returns the results as another data frame.}
+#'   \item{\code{getFilteredDataFrame(dataFrame=NULL, filterMode=NULL)}}{Filters
+#'   the specified data frame and returns the results as another data frame,
+#'   optionally overriding the filterMode set for the pivot table.}
 #'   \item{\code{getCopy()}}{Get a copy of this set of filters.}
 #'   \item{\code{asList()}}{Get a list representation of this PivotFilters
 #'   object.}
@@ -227,8 +228,9 @@ PivotFilters <- R6::R6Class("PivotFilters",
       private$p_parentPivot$message("PivotFilters$addFilter", "Added filter.")
       return(invisible())
     },
-    getFilteredDataFrame = function(dataFrame=NULL) {
+    getFilteredDataFrame = function(dataFrame=NULL, filterMode=NULL) {
       checkArgument("PivotFilters", "getFilteredDataFrame", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+      checkArgument("PivotFilters", "getFilteredDataFrame", filterMode, missing(filterMode), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("base", "dplyr"))
       private$p_parentPivot$message("PivotFilters$getFilteredDataFrame", "Getting filtered data frame...")
       # use data
       data <- dataFrame
@@ -243,7 +245,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
         return(invisible(data))
       }
       # check the filtering mode
-      filterMode <- private$p_parentPivot$filterMode
+      if(is.null(filterMode)) filterMode <- private$p_parentPivot$filterMode
       if(filterMode=="base") {
         # build a subsetting query
         # todo: checking the escaping of the variable names and values below

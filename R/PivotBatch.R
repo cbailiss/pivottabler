@@ -116,6 +116,28 @@ PivotBatch <- R6::R6Class("PivotBatch",
       private$p_compatibleCount <- private$p_compatibleCount+1
       private$p_parentPivot$message("PivotBatch$addCompatible", "Added compatibile calculation.")
     },
+    getCalculationInternalName = function(calculationName=NULL, calculationGroupName=NULL) {
+      checkArgument("PivotBatch", "getCalculationInternalName", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      checkArgument("PivotBatch", "getCalculationInternalName", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      private$p_parentPivot$message("PivotBatch$getCalculationInternalName", "Getting calculation internal name...")
+      calcInternalName <- NULL
+      if(length(private$p_calculations)>0) {
+        for(i in 1:length(private$p_calculations)) {
+          calc <- private$p_calculations[[i]]
+          if(calc["calculationGroupName"]==calculationGroupName) {
+            if(calc["calculationName"]==calculationName) {
+              calcInternalName <- calc["calcInternalName"]
+              break
+            }
+          }
+        }
+      }
+      if(is.null(calcInternalName))
+        stop(paste0("PivotTable$getCalculationInternalName:  Unable to find a calculation named ",
+                    calculationGroupName, ":", calculationName, " in this batch."), call. = FALSE)
+      private$p_parentPivot$message("PivotBatch$getCalculationInternalName", "Got calculation internal name.")
+      return(calcInternalName)
+    },
     evaluateBatch = function() {
       private$p_parentPivot$message("PivotBatch$evaluateBatch", "Executing batch...")
       # get the data frame
@@ -148,6 +170,65 @@ PivotBatch <- R6::R6Class("PivotBatch",
       private$p_evaluated <- TRUE
       private$p_results <- data
       private$p_parentPivot$message("PivotBatch$evaluateBatch", "Executed batch.")
+      return(invisible())
+    },
+    getSummaryValueFromBatch = function(filters=NULL, calculationName=NULL, calculationGroupName=NULL) {
+      checkArgument("PivotBatch", "getSummaryValueFromBatch", filters, missing(filters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+      checkArgument("PivotBatch", "getSummaryValueFromBatch", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      checkArgument("PivotBatch", "getSummaryValueFromBatch", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      private$p_parentPivot$message("PivotBatch$getSummaryValueFromBatch", "Getting value from batch...")
+      # check evaluated
+      if(!private$p_evaluated)
+        stop("PivotTable$getSummaryValueFromBatch:  Attempt to get a value from a batch that has not been evaluated.", call. = FALSE)
+      # return value
+      value <- NULL
+      # get the internal name of this calculation
+      calculationInternalName <- self$getCalculationInternalName(calculationName=calculationName,
+                                                                 calculationGroupName=calculationGroupName)
+      # filters matching ALL?
+      bIsALL <- FALSE
+      if(is.null(filters)) bIsALL <- TRUE
+      else bIsALL <- filters$isALL
+      # get the value
+      if(is.null(private$p_results)) {
+        # no value
+      }
+      else if(bIsALL==TRUE) {
+        if(nrow(private$p_results)==0) {
+          # no value
+        }
+        else if(nrow(private$p_results)==1) {
+          value <- private$p_results[[calculationInternalName]][1]
+        }
+        else {
+          stop(paste0("PivotTable$getSummaryValueFromBatch:  An 'ALL' Filters object has matched ",
+                      nrow(private$p_results), " row(s).  Should have matched at most one row."), call. = FALSE)
+        }
+      }
+      else if(filters$isNONE==FALSE) {
+        if(nrow(private$p_results)==0) {
+          # no value
+        }
+        else {
+          # summary is more than likely a small data frame, so use base filtering
+          row <- filters$getFilteredDataFrame(private$p_results, filterMode="base")
+          if(is.null(row)) {
+            # no value
+          }
+          else if(nrow(row)==0) {
+            # no value
+          }
+          else if(nrow(row)==1) {
+            value <- row[[calculationInternalName]][1]
+          }
+          else {
+            stop(paste0("PivotTable$getSummaryValueFromBatch:  A 'VALUE' Filters object has matched ",
+                        nrow(private$p_results), " row(s).  Should have matched at most one row."), call. = FALSE)
+          }
+        }
+      }
+      private$p_parentPivot$message("PivotBatch$getSummaryValueFromBatch", "Got value from batch.")
+      return(invisible(value))
     }
   ),
   active = list(
@@ -189,7 +270,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
                             "COL NAMES: ", paste(colnames(private$p_results), sep="", collapse=", "))
       }
       else bstr <- paste0(bstr, ", RESULTS: (not evaluated)")
-      return(bstr)
+      return(invisible(bstr))
     }
   ),
   private = list(
@@ -198,7 +279,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
     p_dataName = NULL,            # the name of the data frame
     p_variableNames = NULL,       # a character vector specifying the grain of the calculation
     p_values = NULL,              # a list, where the element names are variable names, and the elements are lists of values
-    p_calculations = NULL,        # a list, where each list element is a two element character vector (vector element names are calculationGroupName and calculationName)
+    p_calculations = NULL,        # a list, where each list element is a three element character vector (vector element names are: calculationGroupName, calculationName, calcInternalName)
     p_nextCalcId = 0,
     p_compatibleCount = 0,
     p_evaluated = FALSE,

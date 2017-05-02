@@ -451,15 +451,67 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      private$p_parentPivot$message("PivotCalculator$evaluateSingleValue", "Evaluated single value.")
      return(invisible(value))
    },
-   evaluateSummariseExpression = function(dataFrame=NULL, workingFilters=NULL, summaryName=NULL, summariseExpression=NULL, format=NULL, noDataValue=NULL, noDataCaption=NULL) {
-     checkArgument("PivotCalculator", "evaluateSummariseExpression", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
-     checkArgument("PivotCalculator", "evaluateSummariseExpression", workingFilters, missing(workingFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
-     checkArgument("PivotCalculator", "evaluateSummariseExpression", summaryName, missing(summaryName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-     checkArgument("PivotCalculator", "evaluateSummariseExpression", summariseExpression, missing(summariseExpression), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-     checkArgument("PivotCalculator", "evaluateSummariseExpression", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
-     checkArgument("PivotCalculator", "evaluateSummariseExpression", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
-     checkArgument("PivotCalculator", "evaluateSummariseExpression", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-     private$p_parentPivot$message("PivotCalculator$evaluateSummariseExpression", "Evaluating summary expression...")
+   evaluateSummariseExpression2 = function(dataName=NULL, dataFrame=NULL, workingFilters=NULL,
+                                          calculationName=NULL, calculationGroupName=NULL,
+                                          summaryName=NULL, summariseExpression=NULL, format=NULL, noDataValue=NULL, noDataCaption=NULL) {
+     checkArgument("PivotCalculator", "evaluateSummariseExpression2", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     checkArgument("PivotCalculator", "evaluateSummariseExpression2", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+     checkArgument("PivotCalculator", "evaluateSummariseExpression2", workingFilters, missing(workingFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
+     checkArgument("PivotCalculator", "evaluateSummariseExpression2", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     checkArgument("PivotCalculator", "evaluateSummariseExpression2", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     checkArgument("PivotCalculator", "evaluateSummariseExpression2", summaryName, missing(summaryName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     checkArgument("PivotCalculator", "evaluateSummariseExpression2", summariseExpression, missing(summariseExpression), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     checkArgument("PivotCalculator", "evaluateSummariseExpression2", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
+     checkArgument("PivotCalculator", "evaluateSummariseExpression2", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+     checkArgument("PivotCalculator", "evaluateSummariseExpression2", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     private$p_parentPivot$message("PivotCalculator$evaluateSummariseExpression2", "Evaluating summary expression...")
+     # top level vars
+     value <- list()
+     valFromBatch <- FALSE
+     # if in batch mode, try and get the value from a batch calculation
+     if(private$p_parentPivot$evaluationMode=="batch") {
+       batchValue <- private$p_batchCalculator$getSummaryValueFromBatch(dataName=dataName, calculationName=calculationName,
+                                                                        calculationGroupName=calculationGroupName, workingFilters=workingFilters)
+       if(batchValue$isBatchCompatible==FALSE) {
+         # fall through to sequential evaluation
+       }
+       else if(batchValue$batchEvaluated==FALSE) {
+         # fall through to sequential evaluation
+       }
+       else {
+         # no data?
+         if(is.null(batchValue$value)) {
+           value$rawValue <- noDataValue
+           if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
+           else value$formattedValue <- self$formatValue(noDataValue, format=format)
+         }
+         else {
+           # format the value
+           value$rawValue <- batchValue$value
+           value$formattedValue <- self$formatValue(batchValue$value, format=format)
+         }
+         valFromBatch <- TRUE
+       }
+     }
+     # if not in batch mode, or was unable to get the value from a batch calculation, then calculate the old fashioned way
+     if(valFromBatch==FALSE) {
+       value <- self$evaluateSummariseExpression1(dataFrame=dataFrame, workingFilters=workingFilters,
+                                                  summaryName=summaryName, summariseExpression=summariseExpression,
+                                                  format=format, noDataValue=noDataValue, noDataCaption=noDataCaption)
+     }
+     private$p_parentPivot$message("PivotCalculator$evaluateSummariseExpression2", "Evaluated summary expression.")
+     return(invisible(value))
+   },
+   evaluateSummariseExpression1 = function(dataFrame=NULL, workingFilters=NULL, summaryName=NULL, summariseExpression=NULL, format=NULL, noDataValue=NULL, noDataCaption=NULL) {
+     # no need to check all these again
+     # checkArgument("PivotCalculator", "evaluateSummariseExpression1", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+     # checkArgument("PivotCalculator", "evaluateSummariseExpression1", workingFilters, missing(workingFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
+     # checkArgument("PivotCalculator", "evaluateSummariseExpression1", summaryName, missing(summaryName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     # checkArgument("PivotCalculator", "evaluateSummariseExpression1", summariseExpression, missing(summariseExpression), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     # checkArgument("PivotCalculator", "evaluateSummariseExpression1", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
+     # checkArgument("PivotCalculator", "evaluateSummariseExpression1", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+     # checkArgument("PivotCalculator", "evaluateSummariseExpression1", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     private$p_parentPivot$message("PivotCalculator$evaluateSummariseExpression1", "Evaluating summary expression (sequential)...")
      data <- dataFrame
      value <- list()
      # if we have some filters, filter the data frame
@@ -481,7 +533,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        value$rawValue <- rv
        value$formattedValue <- self$formatValue(rv, format=format)
      }
-     private$p_parentPivot$message("PivotCalculator$evaluateSummariseExpression", "Evaluated summary expression.")
+     private$p_parentPivot$message("PivotCalculator$evaluateSummariseExpression1", "Evaluated summary expression (sequential).")
      return(invisible(value))
    },
    evaluateCalculationExpression = function(values=NULL, calculationExpression=NULL, format=NULL, noDataValue=NULL, noDataCaption=NULL) {
@@ -557,9 +609,10 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          if((!is.null(cell))&&(cell$isTotal==TRUE)) {
            if(is.null(calc$summariseExpression)) { value <- private$getNullValue() }
            else {
-             value <- self$evaluateSummariseExpression(dataFrame=df, workingFilters=filters,
-                                                       summaryName=calc$calculationName, summariseExpression=calc$summariseExpression,
-                                                       format=calc$format, noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
+             value <- self$evaluateSummariseExpression2(dataName=calc$dataName, dataFrame=df, workingFilters=filters,
+                                                        calculationName=calc$calculationName, calculationGroupName=calculationGroupName,
+                                                        summaryName=calc$calculationName, summariseExpression=calc$summariseExpression,
+                                                        format=calc$format, noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
            }
          }
          else {
@@ -571,9 +624,10 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        }
        else if(calc$type=="summary") {
          df <- self$getDataFrame(calc$dataName)
-         value <- self$evaluateSummariseExpression(dataFrame=df, workingFilters=filters,
-                                              summaryName=calc$calculationName, summariseExpression=calc$summariseExpression,
-                                              format=calc$format, noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
+         value <- self$evaluateSummariseExpression2(dataName=calc$dataName, dataFrame=df, workingFilters=filters,
+                                                    calculationName=calc$calculationName, calculationGroupName=calculationGroupName,
+                                                    summaryName=calc$calculationName, summariseExpression=calc$summariseExpression,
+                                                    format=calc$format, noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
          results[[calc$calculationName]] <- value
        }
        else if(calc$type=="calculation") {

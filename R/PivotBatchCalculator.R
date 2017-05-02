@@ -84,6 +84,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       checkArgument("PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       checkArgument("PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", workingFilters, missing(workingFilters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
       private$p_parentPivot$message("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1", "Generating batches for named calculation evaluation...")
+      # very similar code to the below is present in the getSummaryValueFromBatch function below
       # batch generation depends on the filter type
       bIsBatchCompatible <- FALSE
       if(is.null(workingFilters)) {
@@ -190,6 +191,8 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
         for(c in 1:columnCount) {
           # for each cell
           cell <- private$p_parentPivot$cells$getCell(r, c)
+          if(is.null(cell$calculationName)) next
+          if(is.null(cell$calculationGroupName)) next
           # examine the calculation and filters, generate a new batch or add to an existing batch
           self$generateBatchesForNamedCalculationEvaluation2(calculationName=cell$calculationName,
                                                              calculationGroupName=cell$calculationGroupName,
@@ -217,6 +220,74 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       }
       private$p_parentPivot$message("PivotBatchCalculator$evaluateBatches", "Evaluated batches.")
       return(invisible(batchEvalCount))
+    },
+    getSummaryValueFromBatch = function(dataName=NULL, calculationName=NULL,
+                                        calculationGroupName=NULL, workingFilters=NULL) {
+      checkArgument("PivotBatchCalculator", "getSummaryValueFromBatch", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      checkArgument("PivotBatchCalculator", "getSummaryValueFromBatch", workingFilters, missing(workingFilters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+      checkArgument("PivotBatchCalculator", "getSummaryValueFromBatch", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      checkArgument("PivotBatchCalculator", "getSummaryValueFromBatch", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      private$p_parentPivot$message("PivotBatchCalculator$getSummaryValueFromBatch", "Getting value from batch...")
+      # very similar code to the below is present in the generateBatchesForNamedCalculationEvaluation1 function above
+      # batch generation depends on the filter type
+      bIsBatchCompatible <- FALSE
+      if(is.null(workingFilters)) {
+        # no filters means ALL, i.e. so always compatible
+        private$p_statistics$incrementCompatible(calculationName=calculationName, calculationGroupName=calculationGroupName)
+        bIsBatchCompatible <- TRUE
+      }
+      else if(workingFilters$isALL) {
+        # ALL filters have no criteria, so are always compatible
+        private$p_statistics$incrementCompatible(calculationName=calculationName, calculationGroupName=calculationGroupName)
+        bIsBatchCompatible <- TRUE
+      }
+      else if(workingFilters$isNONE) {
+        # NONE filters result in no data
+        private$p_statistics$incrementNoData(calculationName=calculationName, calculationGroupName=calculationGroupName)
+      }
+      else {
+        if(self$isFiltersBatchCompatible(workingFilters)) {
+          private$p_statistics$incrementCompatible(calculationName=calculationName, calculationGroupName=calculationGroupName)
+          bIsBatchCompatible <- TRUE
+        }
+        else {
+          private$p_statistics$incrementIncompatible(calculationName=calculationName, calculationGroupName=calculationGroupName)
+        }
+      }
+      # finish here if not batch compatible
+      if(!bIsBatchCompatible) {
+        private$p_parentPivot$message("PivotBatchCalculator$getSummaryValueFromBatch", "Unable to get value from batch as incompatible.")
+        return(list(isBatchCompatible=FALSE, batchEvaluated=FALSE, value=NULL))
+      }
+      # find the matching batch:  first get the distinct list of variables and variable values
+      variableNames <- workingFilters$filteredVariables
+      values <- workingFilters$filteredValues
+      # find the matching batch
+      bMatched <- FALSE
+      matchingBatch <- NULL
+      if(length(private$p_batches)>0) {
+        for(i in 1:length(private$p_batches)) {
+          batch <- private$p_batches[[i]]
+          if(batch$isCompatible(dataName=dataName, variableNames=variableNames)) {
+            matchingBatch <- batch
+            bMatched <- TRUE
+            break
+          }
+        }
+      }
+      if(bMatched==FALSE) {
+        stop("PivotTable$getSummaryValueFromBatch:  Unable to find a matching batch when is supposedly batch compatible.", call. = FALSE)
+      }
+      # was the batch evaluated?
+      if(matchingBatch$evaluated==FALSE) {
+        private$p_parentPivot$message("PivotBatchCalculator$getSummaryValueFromBatch", "Unable to get value from batch as batch not evaluated.")
+        return(list(isBatchCompatible=TRUE, batchEvaluated=FALSE, value=NULL))
+      }
+      # get the value
+      value <- batch$getSummaryValueFromBatch(filters=workingFilters,
+                                              calculationName=calculationName, calculationGroupName=calculationGroupName)
+      private$p_parentPivot$message("PivotBatch$getSummaryValueFromBatch", "Got value from batch.")
+      return(list(isBatchCompatible=TRUE, batchEvaluated=TRUE, value=value))
     }
   ),
   active = list(
