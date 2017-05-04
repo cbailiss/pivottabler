@@ -77,9 +77,16 @@
 #'   \item{\code{evaluateSingleValue(dataFrame, workingFilters,
 #'   valueName, format, noDataValue, noDataCaption)}}{A wrapper for
 #'   getSingleValue() which performs filtering and handles edge cases.}
-#'   \item{\code{evaluateSummariseExpression(dataFrame, workingFilters, summaryName, summariseExpression, format, noDataValue,
-#'   noDataCaption)}}{A wrapper for getSummaryValue() which performs filtering
-#'   and handles edge cases.}
+#'   \item{\code{evaluateSummariseExpression2(dataName=NULL, dataFrame=NULL,
+#'   workingFilters=NULL, calculationName=NULL, calculationGroupName=NULL,
+#'   summaryName=NULL, summariseExpression=NULL, format=NULL, noDataValue=NULL,
+#'   noDataCaption=NULL)}}{Calculate a summary value, either using a batch or
+#'   sequential calculation.}
+#'   \item{\code{evaluateSummariseExpression1(dataFrame=NULL,
+#'   workingFilters=NULL, summaryName=NULL, summariseExpression=NULL,
+#'   format=NULL, noDataValue=NULL, noDataCaption=NULL)}}{A wrapper for
+#'   getSummaryValue() which performs filtering and handles edge cases for
+#'   sequential evaluation.}
 #'   \item{\code{evaluateCalculationExpression(values, calculationExpression,
 #'   format, noDataValue, noDataCaption)}}{Evaluates an R expression in order to
 #'   combine the results of other calculations.}

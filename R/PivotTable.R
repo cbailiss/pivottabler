@@ -47,6 +47,10 @@
 #'   pivot table.
 #' @field allowExternalStyles Enable support for external styles, when producing
 #'   content for external systems.
+#' @field allTimings The time taken for various activities related to
+#'   constructing the pivot table.
+#' @field significantTimings The time taken for various activities related to
+#'   constructing the pivot table, where the elapsed time > 0.1 seconds.
 
 #' @section Methods:
 #' \describe{
@@ -200,10 +204,12 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_cells <- PivotCells$new(self)
       private$p_htmlRenderer <- PivotHtmlRenderer$new(parentPivot=self)
       private$p_latexRenderer <- PivotLatexRenderer$new(parentPivot=self)
+      private$p_timings <- list()
       self$message("PivotTable$new", "Created new Pivot Table.")
       return(invisible())
     },
     addData = function(df=NULL, dataName=NULL) {
+      timeStart <- proc.time()
       checkArgument("PivotTable", "addData", df, missing(df), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
       checkArgument("PivotTable", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       self$message("PivotTable$addData", "Adding data to Pivot Table...")
@@ -211,6 +217,7 @@ PivotTable <- R6::R6Class("PivotTable",
       if(is.null(dn)) dn <- deparse(substitute(df))
       private$p_data$addData(df, dataName=dn)
       self$message("PivotTable$addData", "Added data to Pivot Table.")
+      private$addTiming(paste0("addData(", dn, ")"), timeStart)
       return(invisible(private$p_data))
     },
     getTopColumnGroups = function() {
@@ -230,6 +237,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                    dataName=NULL, dataSortOrder="asc", dataFormat=NULL, onlyCombinationsThatExist=TRUE,
                                    explicitListOfValues=NULL, calculationGroupName=NULL,
                                    expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total") {
+      timeStart <- proc.time()
       checkArgument("PivotTable", "addColumnDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       checkArgument("PivotTable", "addColumnDataGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
       checkArgument("PivotTable", "addColumnDataGroups", fromData, missing(fromData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -260,16 +268,20 @@ PivotTable <- R6::R6Class("PivotTable",
                                                  expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                                                  visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption)
       self$message("PivotTable$addColumnDataGroups", "Added column groups.")
+      private$addTiming(paste0("addColumnDataGroups(", variableName, ")"), timeStart)
       return(invisible(grp))
     },
     normaliseColumnGroups = function() {
+      timeStart <- proc.time()
       self$message("PivotTable$normaliseColumnGroups", "Normalising column groups...")
       self$resetCells()
       groupsAdded <- private$p_columnGroup$normaliseDataGroup()
       self$message("PivotTable$normaliseColumnGroups", "Normalised column groups.", list(groupsAdded = groupsAdded))
+      private$addTiming("normaliseColumnGroups", timeStart)
       return(invisible())
     },
     sortColumnDataGroups = function(levelNumber=1, orderBy="calculation", sortOrder="desc", calculationGroupName="default", calculationName=NULL) {
+      timeStart <- proc.time()
       checkArgument("PivotTable", "sortColumnDataGroups", levelNumber, missing(levelNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
       checkArgument("PivotTable", "sortColumnDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value","caption","calculation"))
       checkArgument("PivotTable", "sortColumnDataGroups", sortOrder, missing(sortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc","desc"))
@@ -282,6 +294,7 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_columnGroup$sortDataGroups(levelNumber=levelNumber-1, orderBy=orderBy, sortOrder=sortOrder,
                                            calculationGroupName=calculationGroupName, calculationName=calculationName)
       self$message("PivotTable$sortColumnDataGroups", "Sorted column data groups.")
+      private$addTiming("sortColumnDataGroups", timeStart)
       return(invisible())
     },
     getTopRowGroups = function() {
@@ -301,6 +314,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                    dataName=NULL, dataSortOrder="asc", dataFormat=NULL, onlyCombinationsThatExist=TRUE,
                                    explicitListOfValues=NULL, calculationGroupName=NULL,
                                    expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total") {
+     timeStart <- proc.time()
      checkArgument("PivotTable", "addRowDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      checkArgument("PivotTable", "addRowDataGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
      checkArgument("PivotTable", "addRowDataGroups", fromData, missing(fromData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -331,16 +345,20 @@ PivotTable <- R6::R6Class("PivotTable",
                                                expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                                                visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption)
       self$message("PivotTable$addRowDataGroups", "Added row groups.")
+      private$addTiming(paste0("addRowDataGroups(", variableName, ")"), timeStart)
       return(invisible(grps))
     },
     normaliseRowGroups = function() {
+      timeStart <- proc.time()
       self$message("PivotTable$normaliseRowGroups", "Normalising row groups...")
       self$resetCells()
       groupsAdded <- private$p_rowGroup$normaliseDataGroup()
       self$message("PivotTable$normaliseRowGroups", "Normalised row groups.", list(groupsAdded = groupsAdded))
+      private$addTiming("normaliseRowGroups", timeStart)
       return(invisible())
     },
     sortRowDataGroups = function(levelNumber=1, orderBy="calculation", sortOrder="desc", calculationGroupName="default", calculationName=NULL) {
+      timeStart <- proc.time()
       checkArgument("PivotTable", "sortRowDataGroups", levelNumber, missing(levelNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
       checkArgument("PivotTable", "sortRowDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value","caption","calculation"))
       checkArgument("PivotTable", "sortRowDataGroups", sortOrder, missing(sortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc","desc"))
@@ -353,20 +371,24 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_rowGroup$sortDataGroups(levelNumber=levelNumber-1, orderBy=orderBy, sortOrder=sortOrder,
                                            calculationGroupName=calculationGroupName, calculationName=calculationName)
       self$message("PivotTable$sortRowDataGroups", "Sorted row data groups.")
+      private$addTiming("sortRowDataGroups", timeStart)
       return(invisible())
     },
     addCalculationGroup = function(calculationGroupName=NULL) {
+      timeStart <- proc.time()
       checkArgument("PivotTable", "addCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       self$message("PivotTable$addCalculationGroup", "Adding calculation group...", list(calculationGroupName=calculationGroupName))
       self$resetCells()
       calculationGroup <- private$p_calculationGroups$addCalculationGroup(calculationGroupName)
       self$message("PivotTable$addCalculationGroup", "Added calculation group.")
+      private$addTiming("addCalculationGroup", timeStart)
       return(invisible(calculationGroup))
     },
     defineCalculation = function(calculationGroupName="default", calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
                          filters=NULL, format=NULL, dataName=NULL, type="summary",
                          valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
                          noDataValue=NULL, noDataCaption=NULL) {
+      timeStart <- proc.time()
       checkArgument("PivotTable", "defineCalculation", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
       checkArgument("PivotTable", "defineCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       checkArgument("PivotTable", "defineCalculation", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -407,12 +429,13 @@ PivotTable <- R6::R6Class("PivotTable",
                          calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn,
                          noDataValue=noDataValue, noDataCaption=noDataCaption)
       self$message("PivotTable$defineCalculation", "Defined calculation.")
+      private$addTiming(paste0("defineCalculation(", calculationGroupName, ":", calculationName, ")"), timeStart)
       return(invisible(calculation))
     },
     addColumnCalculationGroups = function(calculationGroupName="default", atLevel=NULL) { # atLevel=1 is the top level, (since 1 is the top level as visible to the user)
       checkArgument("PivotTable", "addColumnCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
       checkArgument("PivotTable", "addColumnCalculationGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
-     self$message("PivotTable$addColumnCalculationGroups", "Adding column calculation groups...",
+      self$message("PivotTable$addColumnCalculationGroups", "Adding column calculation groups...",
                    list(calculationGroupName=calculationGroupName, atLevel=atLevel))
       self$resetCells()
       levelsBelow <- NULL
@@ -424,7 +447,7 @@ PivotTable <- R6::R6Class("PivotTable",
     addRowCalculationGroups = function(calculationGroupName="default", atLevel=NULL) { # atLevel=1 is the top level, (since 1 is the top level as visible to the user)
       checkArgument("PivotTable", "addRowCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
       checkArgument("PivotTable", "addRowCalculationGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
-     self$message("PivotTable$addRowCalculationGroups", "Adding row calculation groups...",
+      self$message("PivotTable$addRowCalculationGroups", "Adding row calculation groups...",
                    list(calculationGroupName=calculationGroupName, atLevel=atLevel))
       self$resetCells()
       levelsBelow <- NULL
@@ -456,6 +479,7 @@ PivotTable <- R6::R6Class("PivotTable",
       return(invisible(style))
     },
     generateCellStructure = function() {
+      timeStart <- proc.time()
       self$message("PivotTable$generateCellStructure", "Generating cell structure...")
       # clear any existing PivotCells
       private$p_cells$reset()
@@ -590,43 +614,56 @@ PivotTable <- R6::R6Class("PivotTable",
         }
       }
       self$message("PivotTable$generateCellStructure", "Generated cell structure.")
+      private$addTiming("generateCellStructure", timeStart)
       return(invisible(private$cells))
     },
     resetCells = function() {
       self$message("PivotTable$resetCells", "Resetting cells...")
       if(private$p_evaluated==TRUE){
+        timeStart <- proc.time()
         private$p_cells$reset()
         private$p_evaluated <- FALSE
         private$p_latexRenderer$resetVisibleRange()
+        private$addTiming("resetCells", timeStart)
       }
       self$message("PivotTable$resetCells", "Reset cells.")
       return(invisible())
     },
     evaluateCells = function() {
+      timeStartT <- proc.time()
       self$message("PivotTable$evaluateCells", "Evaluating cell values...")
       if(is.null(private$p_cells)) stop("PivotTable$evaluateCells():  No cells exist to calculate.", call. = FALSE)
       rowCount <- private$p_cells$rowCount
       columnCount <- private$p_cells$columnCount
       calculator <- PivotCalculator$new(self)
+      timeStart1 <- proc.time()
       for(r in 1:rowCount) {
         for(c in 1:columnCount) {
           cell <- private$p_cells$getCell(r, c)
           calculator$setWorkingFilters(cell)
         }
       }
+      private$addTiming("evaluateCells:setWorkingFilters", timeStart1)
       if(private$p_evaluationMode=="batch") {
+        timeStart1 <- proc.time()
         calculator$generateBatchesForCellEvaluation()
+        private$addTiming("evaluateCells:generateBatchesForCellEvaluation", timeStart1)
+        timeStart1 <- proc.time()
         calculator$evaluateBatches()
+        private$addTiming("evaluateCells:evaluateBatches", timeStart1)
         private$p_lastCellBatchInfo <- calculator$batchInfo
       }
+      timeStart1 <- proc.time()
       for(r in 1:rowCount) {
         for(c in 1:columnCount) {
           cell <- private$p_cells$getCell(r, c)
           calculator$evaluateCell(cell)
         }
       }
+      private$addTiming("evaluateCells:evaluateCell", timeStart1)
       private$p_evaluated <- TRUE
       self$message("PivotTable$evaluateCells", "Evaluated cell values.")
+      private$addTiming("evaluateCells:total", timeStartT)
       return(invisible())
     },
     evaluatePivot = function() {
@@ -937,6 +974,7 @@ PivotTable <- R6::R6Class("PivotTable",
       return(invisible(as.data.frame(df)))
     },
     getCss = function(styleNamePrefix=NULL) {
+      timeStart <- proc.time()
       checkArgument("PivotTable", "getCss", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       self$message("PivotTable$getCss", "Getting Styles...")
       if(is.null(private$p_styles)) return("")
@@ -948,11 +986,13 @@ PivotTable <- R6::R6Class("PivotTable",
         styles <- paste0(styles, style$asNamedCSSStyle(styleNamePrefix=styleNamePrefix), "\r\n")
       }
       self$message("PivotTable$getCss", "Got Styles.")
+      private$addTiming("getCss", timeStart)
       return(invisible(styles))
     },
     getHtml = function(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE,
                        includeCalculationFilters=FALSE, includeEvaluationFilters=FALSE,
                        includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE) {
+      timeStart <- proc.time()
       checkArgument("PivotTable", "getHtml", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       checkArgument("PivotTable", "getHtml", includeHeaderValues, missing(includeHeaderValues), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument("PivotTable", "getHtml", includeRCFilters, missing(includeRCFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -969,6 +1009,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                                    includeEvaluationFilters=includeEvaluationFilters, includeCalculationNames=includeCalculationNames,
                                                    includeRawValue=includeRawValue, includeTotalInfo=includeTotalInfo)
       self$message("PivotTable$getHtml", "Got HTML.")
+      private$addTiming("getHtml", timeStart)
       return(invisible(htmlTable))
     },
     saveHtml = function(filePath=NULL, fullPageHTML=TRUE, styleNamePrefix=NULL, includeHeaderValues=FALSE,
@@ -1060,6 +1101,7 @@ PivotTable <- R6::R6Class("PivotTable",
     },
     getLatex = function(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL, fromColumn=NULL, toColumn=NULL,
                         boldHeadings=FALSE, italicHeadings=FALSE) {
+      timeStart <- proc.time()
       checkArgument("PivotTable", "getLatex", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       checkArgument("PivotTable", "getLatex", label, missing(label), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       checkArgument("PivotTable", "getLatex", fromRow, missing(fromRow), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
@@ -1077,6 +1119,7 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_latexRenderer$setVisibleRange(fromRow=fromRow, toRow=toRow, fromColumn=fromColumn, toColumn=toColumn)
       ltx <- private$p_latexRenderer$getTableLatex(caption=caption, label=label, boldHeadings=boldHeadings, italicHeadings=italicHeadings)
       self$message("PivotTable$getLatex", "Got Latex.")
+      private$addTiming("getLatex", timeStart)
       return(ltx)
     },
     message = function(methodName, desc, detailList=NULL) {
@@ -1203,6 +1246,18 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+    allTimings = function(value) {
+      descriptions <- sapply(private$p_timings, function(x) { return(ifelse(is.null(x$desc), NA, x$desc)) })
+      user <- sapply(private$p_timings, function(x) { return(ifelse(is.null(x$time["user.self"]), NA, x$time["user.self"])) })
+      system <- sapply(private$p_timings, function(x) { return(ifelse(is.null(x$time["sys.self"]), NA, x$time["sys.self"])) })
+      elapsed <- sapply(private$p_timings, function(x) { return(ifelse(is.null(x$time["elapsed"]), NA, x$time["elapsed"])) })
+      return(data.frame(action=descriptions, user=user, system=system, elapsed=elapsed))
+    },
+    significantTimings = function(value) {
+      df <- self$allTimings
+      df <- df[df$elapsed>0.1, ]
+      return(df)
+    },
     messages = function(value) {
       if(missing(value)) return(invisible(private$p_messages))
       else {
@@ -1228,6 +1283,7 @@ PivotTable <- R6::R6Class("PivotTable",
     p_latexRenderer = NULL,
     p_messages = FALSE,
     p_messageFile = NULL,
+    p_timings = NULL,
     clearIsRenderedFlags = function() {
       self$message("PivotTable$clearIsRenderedFlags", "Clearing isRendered flags...")
       clearFlags <- function(dg) {
@@ -1243,6 +1299,12 @@ PivotTable <- R6::R6Class("PivotTable",
       lapply(columnGroups, clearFlags)
       self$message("PivotTable$clearIsRenderedFlags", "Cleared isRendered flags...")
       return(invisible())
+    },
+    # simple mechanism to track the activities/time taken to construct the pivot table
+    # should only be tracking top-level actions (i.e. methods on the pivot table) not functions which return a value (as these could be called multiple times)
+    addTiming = function(descr, timeStart) {
+      timeEnd <- proc.time()
+      private$p_timings[[length(private$p_timings)+1]] <- list(descr=descr, time=timeEnd-timeStart)
     }
   )
 )

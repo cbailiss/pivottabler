@@ -34,9 +34,9 @@ checkArgument <- function(className, methodName, argumentValue, isMissing, # no 
   argumentName <- substitute(argumentValue)
   if(isMissing&(!allowMissing)) stop(paste0(className, "$", methodName, "():  ", argumentName, " must be specified"), call. = FALSE)
   if(is.null(argumentValue)&&(!allowNull)) stop(paste0(className, "$", methodName, "():  ", argumentName, " must not be null"), call. = FALSE)
-  if((!is.null(argumentValue))&&(!is.null(allowedClasses))) {
+  if((!is.null(argumentValue))&&(!is.null(allowedClasses))&&(length(allowedClasses)>0)) {
     if(length(intersect(allowedClasses, class(argumentValue))) == 0) {
-      if(length(allowedClasses) > 0) {
+      if(length(allowedClasses) > 1) {
         stop(paste0(className, "$", methodName, "():  ", argumentName, " must be one of the following types: [",
                     paste(allowedClasses, collapse = ", "), "].  Type encountered: [", paste(class(argumentValue), collapse=", "), "]"), call. = FALSE)
       }
