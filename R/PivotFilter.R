@@ -53,7 +53,7 @@ PivotFilter <- R6::R6Class("PivotFilter",
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilter", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
      }
      private$p_parentPivot <- parentPivot
-     private$p_parentPivot$message("PivotFilter$new", "Creating new Pivot Filter...", list(variableName=variableName, values=values))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$new", "Creating new Pivot Filter...", list(variableName=variableName, values=values))
      private$p_variableName <- variableName
      if(is.null(values)) {
        if(type=="VALUES")
@@ -70,13 +70,13 @@ PivotFilter <- R6::R6Class("PivotFilter",
          if(is.factor(values)) { private$p_values <- as.character(values) }
        }
      }
-     private$p_parentPivot$message("PivotFilter$new", "Created new Pivot Filter.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$new", "Created new Pivot Filter.")
    },
    and = function(filter) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "and", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
      }
-     private$p_parentPivot$message("PivotFilter$union", "ANDing filter...", list(filter=filter$asString()))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "ANDing filter...", list(filter=filter$asString()))
      if(private$p_variableName != filter$variableName)
        stop(paste0("PivotFilter$and():  filter variable name mismatch. ",
                    "Expected: ", private$p_variableName, " Encountered: ", filter$variableName), call. = FALSE)
@@ -126,14 +126,14 @@ PivotFilter <- R6::R6Class("PivotFilter",
        else stop(paste0("PivotFilter$and():  Invalid filter$type (C): ", filter$type), call. = FALSE)
      }
      else stop(paste0("PivotFilter$and():  Invalid type (D): ", private$p_type), call. = FALSE)
-     private$p_parentPivot$message("PivotFilter$union", "ANDed filter.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "ANDed filter.")
      return(invisible())
    },
    or = function(filter) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "or", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
      }
-     private$p_parentPivot$message("PivotFilter$union", "ORing filter...", list(filter=filter$asString()))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "ORing filter...", list(filter=filter$asString()))
      if(private$p_variableName != filter$variableName)
        stop(paste0("PivotFilter$or():  filter variable name mismatch. ",
                    "Expected: ", private$p_variableName, " Encountered: ", filter$variableName), call. = FALSE)
@@ -176,21 +176,21 @@ PivotFilter <- R6::R6Class("PivotFilter",
        else stop(paste0("PivotFilter$or():  Invalid filter$type (C): ", filter$type), call. = FALSE)
      }
      else stop(paste0("PivotFilter$or():  Invalid type (D): ", private$p_type), call. = FALSE)
-     private$p_parentPivot$message("PivotFilter$union", "ORed filter.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "ORed filter.")
      return(invisible())
    },
    replace = function(filter) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "replace", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
      }
-     private$p_parentPivot$message("PivotFilter$replace", "Replacing filter...", list(filter=filter$asString()))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$replace", "Replacing filter...", list(filter=filter$asString()))
 
      if(private$p_variableName != filter$variableName)
        stop(paste0("PivotFilter$replace():  filter variable name mismatch. ",
                    "Expected: ", private$p_variableName, " Encountered: ", filter$variableName), call. = FALSE)
      private$p_type <- filter$type
      private$p_values <- filter$values
-     private$p_parentPivot$message("PivotFilter$union", "Replaced filter.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "Replaced filter.")
      return(invisible())
    },
    getCopy = function() {

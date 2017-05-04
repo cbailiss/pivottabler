@@ -51,32 +51,32 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "initialize", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       }
       private$p_parentPivot <- parentPivot
-      private$p_parentPivot$message("PivotCalculationGroup$new", "Creating new Pivot Calculation Group...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$new", "Creating new Pivot Calculation Group...")
       private$p_name <- calculationGroupName
       private$p_calculations <- list()
-      private$p_parentPivot$message("PivotCalculationGroup$new", "Created new Pivot Calculation Group.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$new", "Created new Pivot Calculation Group.")
     },
     isExistingCalculation = function(calculationName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "isExistingCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       }
-      private$p_parentPivot$message("PivotCalculationGroup$isExistingCalculation", "Checking calculation exists...",
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$isExistingCalculation", "Checking calculation exists...",
                                     list(calculationName=calculationName))
       calcExists <- calculationName %in% names(private$p_calculations)
-      private$p_parentPivot$message("PivotCalculationGroup$isExistingCalculation", "Checked calculation exists.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$isExistingCalculation", "Checked calculation exists.")
       return(invisible(calcExists))
     },
     getCalculation = function(calculationName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "getCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       }
-      private$p_parentPivot$message("PivotCalculationGroup$getCalculation", "Getting calculation...",
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$getCalculation", "Getting calculation...",
                                     list(calculationName=calculationName))
       calculation <- private$p_calculations[[calculationName]]
       if(is.null(calculation)) {
         stop(paste0("PivotCalculationGroups$getCalculation(): No calculation exists with the name '", calculationName, "'"), call. = FALSE)
       }
-      private$p_parentPivot$message("PivotCalculationGroup$getCalculation", "Got calculation.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$getCalculation", "Got calculation.")
       return(invisible(calculation))
     },
     defineCalculation = function(calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
@@ -100,7 +100,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       }
-      private$p_parentPivot$message("PivotCalculationGroup$defineCalculation", "Defining calculation...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$defineCalculation", "Defining calculation...")
       if(calculationName %in% names(private$p_calculations)) {
         stop(paste0("PivotCalculationGroup$defineCalculation():  A Calculation already exists",
                     " in the Calculation Group with the name '", calculationName, "'.  calculationName must unique."), call. = FALSE)
@@ -113,7 +113,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
                                           noDataValue=noDataValue, noDataCaption=noDataCaption)
       private$p_calculations[[calculationName]] <- calculation
       if(is.null(private$p_defaultCalculation)) private$p_defaultCalculation <- calculationName
-      private$p_parentPivot$message("PivotCalculationGroup$defineCalculation", "Defined calculation.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$defineCalculation", "Defined calculation.")
       return(invisible(calculation))
     },
     asList = function() {

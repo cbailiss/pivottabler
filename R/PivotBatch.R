@@ -54,7 +54,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatch", "initialize", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       }
       private$p_parentPivot <- parentPivot
-      private$p_parentPivot$message("PivotBatch$new", "Creating new Pivot Batch...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$new", "Creating new Pivot Batch...")
       private$p_batchId <- batchId
       private$p_dataName <- dataName
       private$p_variableNames <- variableNames
@@ -64,14 +64,14 @@ PivotBatch <- R6::R6Class("PivotBatch",
                                        calcInternalName=paste0("calc", sprintf("%06d", private$p_nextCalcId))))
       private$p_nextCalcId <- 2
       private$p_compatibleCount <- 1
-      private$p_parentPivot$message("PivotBatch$new", "Created new Pivot Batch.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$new", "Created new Pivot Batch.")
     },
     isCompatible = function(dataName=NULL, variableNames=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "isCompatible", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "isCompatible", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       }
-      private$p_parentPivot$message("PivotBatch$isCompatible", "Checking batch compatibility...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$isCompatible", "Checking batch compatibility...")
       bIsCompatible <- FALSE
       if(private$p_dataName==dataName) {
         if(is.null(private$p_variableNames)&&is.null(variableNames)) {
@@ -86,7 +86,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
           }
         }
       }
-      private$p_parentPivot$message("PivotBatch$isCompatible", "Checked batch compatibility.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$isCompatible", "Checked batch compatibility.")
       return(bIsCompatible)
     },
     addCompatible = function(values=NULL, calculationName=NULL, calculationGroupName=NULL) {
@@ -95,7 +95,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "addCompatible", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "addCompatible", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       }
-      private$p_parentPivot$message("PivotBatch$addCompatible", "Adding compatibile calculation...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$addCompatible", "Adding compatibile calculation...")
       if(!is.null(values)) {
         if(length(values)>0) {
           nms <- names(values)
@@ -125,14 +125,14 @@ PivotBatch <- R6::R6Class("PivotBatch",
         private$p_calculations[[length(private$p_calculations)+1]] <- calc
       }
       private$p_compatibleCount <- private$p_compatibleCount+1
-      private$p_parentPivot$message("PivotBatch$addCompatible", "Added compatibile calculation.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$addCompatible", "Added compatibile calculation.")
     },
     getCalculationInternalName = function(calculationName=NULL, calculationGroupName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "getCalculationInternalName", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "getCalculationInternalName", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       }
-      private$p_parentPivot$message("PivotBatch$getCalculationInternalName", "Getting calculation internal name...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$getCalculationInternalName", "Getting calculation internal name...")
       calcInternalName <- NULL
       if(length(private$p_calculations)>0) {
         for(i in 1:length(private$p_calculations)) {
@@ -148,11 +148,11 @@ PivotBatch <- R6::R6Class("PivotBatch",
       if(is.null(calcInternalName))
         stop(paste0("PivotTable$getCalculationInternalName:  Unable to find a calculation named ",
                     calculationGroupName, ":", calculationName, " in this batch."), call. = FALSE)
-      private$p_parentPivot$message("PivotBatch$getCalculationInternalName", "Got calculation internal name.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$getCalculationInternalName", "Got calculation internal name.")
       return(calcInternalName)
     },
     evaluateBatch = function() {
-      private$p_parentPivot$message("PivotBatch$evaluateBatch", "Executing batch...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$evaluateBatch", "Executing batch...")
       # get the data frame
       data <- private$p_parentPivot$data$getData(private$p_dataName)
       # group by
@@ -182,7 +182,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
       data <- dplyr::collect(data)
       private$p_evaluated <- TRUE
       private$p_results <- data
-      private$p_parentPivot$message("PivotBatch$evaluateBatch", "Executed batch.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$evaluateBatch", "Executed batch.")
       return(invisible())
     },
     getSummaryValueFromBatch = function(filters=NULL, calculationName=NULL, calculationGroupName=NULL) {
@@ -191,7 +191,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "getSummaryValueFromBatch", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "getSummaryValueFromBatch", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       }
-      private$p_parentPivot$message("PivotBatch$getSummaryValueFromBatch", "Getting value from batch...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$getSummaryValueFromBatch", "Getting value from batch...")
       # check evaluated
       if(!private$p_evaluated)
         stop("PivotTable$getSummaryValueFromBatch:  Attempt to get a value from a batch that has not been evaluated.", call. = FALSE)
@@ -242,7 +242,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
           }
         }
       }
-      private$p_parentPivot$message("PivotBatch$getSummaryValueFromBatch", "Got value from batch.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$getSummaryValueFromBatch", "Got value from batch.")
       return(invisible(value))
     }
   ),

@@ -80,21 +80,21 @@ PivotFilters <- R6::R6Class("PivotFilters",
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilters", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
       }
       private$p_parentPivot <- parentPivot
-      private$p_parentPivot$message("PivotFilters$new", "Creating new Pivot Filters...", list(variableName=variableName, values=values))
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$new", "Creating new Pivot Filters...", list(variableName=variableName, values=values))
 
       private$p_filters <- list()
       if(!missing(variableName)&&!is.null(variableName)) {
         self$setFilterValues(variableName=variableName, type=type, values=values, action="replace")
       }
-      private$p_parentPivot$message("PivotFilters$new", "Created new Pivot Filters.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$new", "Created new Pivot Filters.")
     },
     getFilter = function(variableName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       }
-      private$p_parentPivot$message("PivotFilters$getFilter", "Getting filter...", list(variableName=variableName))
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilter", "Getting filter...", list(variableName=variableName))
       filter <- private$p_filters[[variableName]]
-      private$p_parentPivot$message("PivotFilters$getFilter", "Got filter.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilter", "Got filter.")
       return(invisible(filter))
     },
     isFilterMatch = function(matchMode="simple", variableNames=NULL, variableValues=NULL) {
@@ -103,7 +103,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "isFilterMatch", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "isFilterMatch", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
       }
-      private$p_parentPivot$message("PivotFilters$isFilterMatch", "Checking if is filter match...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$isFilterMatch", "Checking if is filter match...")
       # Summary
       # variableNames can be a vector (i.e. more than one item specified)
       # variableValues can be a vector (i.e. more than one item specified)
@@ -184,7 +184,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
           }
         }
       }
-      private$p_parentPivot$message("PivotFilters$isFilterMatch", "Checked if is filter match.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$isFilterMatch", "Checked if is filter match.")
       if(matchMode=="simple") return(invisible(FALSE))
       else return(invisible(TRUE))
     },
@@ -193,13 +193,13 @@ PivotFilters <- R6::R6Class("PivotFilters",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
       }
-      private$p_parentPivot$message("PivotFilters$setFilters", "Setting filters...", list(action=action, filters=filters$asString()))
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilters", "Setting filters...", list(action=action, filters=filters$asString()))
       if(length(filters$filters)>0) {
         for(i in 1:length(filters$filters)) {
           self$setFilter(filters$filters[[i]], action=action)
         }
       }
-      private$p_parentPivot$message("PivotFilters$setFilters", "Set filters.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilters", "Set filters.")
       return(invisible())
     },
     setFilter = function(filter=NULL, action="replace") {
@@ -207,9 +207,9 @@ PivotFilters <- R6::R6Class("PivotFilters",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
       }
-      private$p_parentPivot$message("PivotFilters$setFilters", "Setting filter...", list(action=action, filter=filter$asString()))
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilters", "Setting filter...", list(action=action, filter=filter$asString()))
       self$setFilterValues(variableName=filter$variableName, type=filter$type, values=filter$values, action=action)
-      private$p_parentPivot$message("PivotFilters$setFilter", "Set filter.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilter", "Set filter.")
       return(invisible())
     },
     setFilterValues = function(variableName=NULL, type="ALL", values=NULL, action="replace") {
@@ -219,7 +219,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
       }
-      private$p_parentPivot$message("PivotFilters$setFilterValues", "Setting filter values...",
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilterValues", "Setting filter values...",
                                     list(action=action, variableName=variableName, type=type, values=values))
       filter <- PivotFilter$new(private$p_parentPivot, variableName=variableName, type=type, values=values)
       variablesNames <- names(private$p_filters)
@@ -230,16 +230,16 @@ PivotFilters <- R6::R6Class("PivotFilters",
       else if(action=="replace") {
         private$p_filters[[variableName]] <- filter
       }
-      private$p_parentPivot$message("PivotFilters$setFilterValues", "Set filter values.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilterValues", "Set filter values.")
       return(invisible())
     },
     addFilter = function(filter=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "addFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
       }
-      private$p_parentPivot$message("PivotFilters$addFilter", "Adding filter...", list(filter=filter$asString()))
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$addFilter", "Adding filter...", list(filter=filter$asString()))
       private$p_filters[[filter$variableName]] <- filter
-      private$p_parentPivot$message("PivotFilters$addFilter", "Added filter.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$addFilter", "Added filter.")
       return(invisible())
     },
     getFilteredDataFrame = function(dataFrame=NULL, filterMode=NULL) {
@@ -247,17 +247,17 @@ PivotFilters <- R6::R6Class("PivotFilters",
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilters", "getFilteredDataFrame", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilters", "getFilteredDataFrame", filterMode, missing(filterMode), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("base", "dplyr"))
       }
-      private$p_parentPivot$message("PivotFilters$getFilteredDataFrame", "Getting filtered data frame...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilteredDataFrame", "Getting filtered data frame...")
       # use data
       data <- dataFrame
       # short circuiting where possible
       if(self$isNONE) {
         data <- data[0, ] # returns the structure but no data
-        private$p_parentPivot$message("PivotFilters$getFilteredDataFrame", "Got filtered data frame (NO DATA).")
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilteredDataFrame", "Got filtered data frame (NO DATA).")
         return(invisible(data))
       }
       if(self$isALL) {
-        private$p_parentPivot$message("PivotFilters$getFilteredDataFrame", "Got filtered data frame (ALL DATA).")
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilteredDataFrame", "Got filtered data frame (ALL DATA).")
         return(invisible(data))
       }
       # check the filtering mode
@@ -317,7 +317,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
         }
       }
       else stop(paste0("PivotTable$generateCellStructure(): Unknown filterMode encountered: ", filterMode), call. = FALSE)
-      private$p_parentPivot$message("PivotFilters$getFilteredDataFrame", "Got filtered data frame (SOME DATA).")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilteredDataFrame", "Got filtered data frame (SOME DATA).")
       return(invisible(data))
     },
     getCopy = function() {

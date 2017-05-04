@@ -84,13 +84,13 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
        if (!("PivotFilters" %in% class(filters))) stop("PivotCalculation$new(): filters must be of type PivotFilters", call. = FALSE)
        fstr <- filters$asString()
      }
-     private$p_parentPivot$message("PivotCalculation$new", "Creating new Pivot Calculation...",
-                                   list(calculationName=calculationName, caption=caption, visible=visible,
-                                   displayOrder=displayOrder, filters=fstr, format=format, dataName=dataName,
-                                   valueName=valueName, summariseExpression=summariseExpression,
-                                   calculationExpression=calculationExpression,
-                                   calculationFunctionIsNull=is.null(calculationFunction), basedOn=basedOn,
-                                   noDataValue=noDataValue, noDataCaption=noDataCaption))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculation$new", "Creating new Pivot Calculation...",
+                                                                             list(calculationName=calculationName, caption=caption, visible=visible,
+                                                                             displayOrder=displayOrder, filters=fstr, format=format, dataName=dataName,
+                                                                             valueName=valueName, summariseExpression=summariseExpression,
+                                                                             calculationExpression=calculationExpression,
+                                                                             calculationFunctionIsNull=is.null(calculationFunction), basedOn=basedOn,
+                                                                             noDataValue=noDataValue, noDataCaption=noDataCaption))
      if(missing(caption)||is.null(caption)) caption <- calculationName
      if((!(missing(dataName)))&&(!is.null(dataName))) {
        if(!private$p_parentPivot$data$isKnownData(dataName))
@@ -136,7 +136,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
      private$p_basedOn <- basedOn
      private$p_noDataValue <- noDataValue
      private$p_noDataCaption <- noDataCaption
-     private$p_parentPivot$message("PivotCalculation$new", "Created new Pivot Calculation")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculation$new", "Created new Pivot Calculation")
    },
    asList = function() {
      lst <- list(

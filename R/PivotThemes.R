@@ -16,7 +16,7 @@ getTheme <- function(parentPivot, themeName=NULL) {
   if(themeName=="default") return(getDefaultTheme(parentPivot=parentPivot))
   else if(themeName=="largeplain") return(getLargePlainTheme(parentPivot=parentPivot))
   else if(themeName=="compact") return(getCompactTheme(parentPivot=parentPivot))
-  else stop(paste0("getTheme(): Theme '", themeName, "' is not a recognised theme."))
+  else stop(paste0("getTheme(): Theme '", themeName, "' is not a recognised theme."), call.=FALSE)
 }
 
 #' Get the default theme for styling a pivot table.

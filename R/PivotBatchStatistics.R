@@ -33,12 +33,12 @@ PivotBatchStatistics <- R6::R6Class("PivotBatchStatistics",
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
       }
       private$p_parentPivot <- parentPivot
-      private$p_parentPivot$message("PivotBatchStatistics$new", "Creating new batch statistics...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchStatistics$new", "Creating new batch statistics...")
       self$reset()
-      private$p_parentPivot$message("PivotBatchStatistics$new", "Created new batch statistics.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchStatistics$new", "Created new batch statistics.")
     },
     reset = function() {
-      private$p_parentPivot$message("PivotBatchStatistics$new", "Resetting batch statistics...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchStatistics$new", "Resetting batch statistics...")
       private$p_statistics <- list()
       calcGrps <- private$p_parentPivot$calculationGroups
       if(!is.null(calcGrps)) {
@@ -60,7 +60,7 @@ PivotBatchStatistics <- R6::R6Class("PivotBatchStatistics",
           }
         }
       }
-      private$p_parentPivot$message("PivotBatchStatistics$new", "Reset batch statistics.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchStatistics$new", "Reset batch statistics.")
     },
     incrementNoData = function(calculationName=NULL, calculationGroupName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {

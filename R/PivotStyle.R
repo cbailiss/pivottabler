@@ -51,7 +51,7 @@ PivotStyle <- R6::R6Class("PivotStyle",
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotStyle", "initialize", declarations, missing(declarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="character")
      }
      private$p_parentPivot <- parentPivot
-     private$p_parentPivot$message("PivotStyle$new", "Creating new Pivot Style...", list())
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$new", "Creating new Pivot Style...", list())
      private$p_declarations <- list()
      private$p_name <- styleName
      if(!is.null(declarations)) {
@@ -66,23 +66,23 @@ PivotStyle <- R6::R6Class("PivotStyle",
          }
        }
      }
-     private$p_parentPivot$message("PivotStyle$new", "Created new Pivot Style")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$new", "Created new Pivot Style")
    },
    setPropertyValue = function(property=NULL, value=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "setPropertyValue", property, missing(property), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "setPropertyValue", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      }
-     private$p_parentPivot$message("PivotStyle$setPropertyValue", "Setting property value...", list(property=property, value=value))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$setPropertyValue", "Setting property value...", list(property=property, value=value))
      private$p_declarations[[property]] <- value
-     private$p_parentPivot$message("PivotStyle$setPropertyValue", "Set property value.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$setPropertyValue", "Set property value.")
      return(invisible())
    },
    setPropertyValues = function(declarations=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "initialize", declarations, missing(declarations), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="character")
      }
-     private$p_parentPivot$message("PivotStyle$setPropertyValues", "Setting property values...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$setPropertyValues", "Setting property values...")
      nms <- names(declarations)
      if(length(nms)==0) return(invisible())
      for(i in 1:length(nms)) {
@@ -91,23 +91,23 @@ PivotStyle <- R6::R6Class("PivotStyle",
        value <- declarations[[i]]
        private$p_declarations[[property]] <- value
      }
-     private$p_parentPivot$message("PivotStyle$setPropertyValues", "Set property values.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$setPropertyValues", "Set property values.")
      return(invisible())
    },
    getPropertyValue = function(property=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "getPropertyValue", property, missing(property), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      }
-     private$p_parentPivot$message("PivotStyle$getPropertyValue", "Getting property value...", list(property=property))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$getPropertyValue", "Getting property value...", list(property=property))
      val <- private$p_declarations[[property]]
-     private$p_parentPivot$message("PivotStyle$getPropertyValue", "Got property value.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$getPropertyValue", "Got property value.")
      return(invisible(val))
    },
    asCSSRule = function(selector=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "asCSSRule", selector, missing(selector), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
-     private$p_parentPivot$message("PivotStyle$asCSSRule", "Getting CSS rule...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$asCSSRule", "Getting CSS rule...")
      cssRule <- NULL
      if(!is.null(selector)) cssRule <- paste0(selector, " {")
      nms <- names(private$p_declarations)
@@ -116,18 +116,18 @@ PivotStyle <- R6::R6Class("PivotStyle",
        cssRule <- paste0(cssRule, nms[i], ": ", private$p_declarations[[i]], "; ")
      }
      if(!is.null(selector)) cssRule <- paste0(cssRule, "}")
-     private$p_parentPivot$message("PivotStyle$asCSSRule", "Got CSS rule.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$asCSSRule", "Got CSS rule.")
      return(invisible(cssRule))
    },
    asNamedCSSStyle = function(styleNamePrefix=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "asNamedCSSStyle", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
-     private$p_parentPivot$message("PivotStyle$asCSSRule", "Getting named CSS rule...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$asCSSRule", "Getting named CSS rule...")
      if(is.null(styleNamePrefix)) { selector <- paste0(".", private$p_name) }
      else { selector <- paste0(".", styleNamePrefix, private$p_name) }
      cssRule <- self$asCSSRule(selector=selector)
-     private$p_parentPivot$message("PivotStyle$asNamedCSSStyle", "Got named CSS rule.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$asNamedCSSStyle", "Got named CSS rule.")
      return(invisible(cssRule))
    },
    getCopy = function(newStyleName=NULL) {

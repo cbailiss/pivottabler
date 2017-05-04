@@ -129,7 +129,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
      private$p_parentPivot <- parentPivot
-     private$p_parentPivot$message("PivotDataGroup$new", "Creating new data group...",
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$new", "Creating new data group...",
                                    list(rowOrColumn=rowOrColumn, caption=caption,
                                         variableName=variableName, filterType=filterType, values=values,
                                         calculationGroupName=calculationGroupName, calculationName=calculationName))
@@ -145,17 +145,17 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_groups <- list() # child groups
      private$p_calculationGroupName <- calculationGroupName
      private$p_calculationName <- calculationName
-     private$p_parentPivot$message("PivotDataGroup$new", "Created new data group.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$new", "Created new data group.")
    },
    getLevelNumber = function() {
-     private$p_parentPivot$message("PivotDataGroup$getLevelNumber", "Getting level number...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getLevelNumber", "Getting level number...")
      levelNumber <- 0
      grp <- self
      while(!is.null(grp$parentGroup)) {
        levelNumber <- levelNumber + 1
        grp <- grp$parentGroup
      }
-     private$p_parentPivot$message("PivotDataGroup$getLevelNumber", "Got level number.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getLevelNumber", "Got level number.")
      return(invisible(levelNumber))
    },
    getAncestorGroups = function(ancestors=NULL, includeCurrentGroup=FALSE) {
@@ -163,7 +163,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getAncestorGroups", ancestors, missing(ancestors), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getAncestorGroups", includeCurrentGroup, missing(includeCurrentGroup), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
      }
-     private$p_parentPivot$message("PivotDataGroup$getAncestorGroups", "Getting ancestors...",
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getAncestorGroups", "Getting ancestors...",
                                    list(ancestorCount=length(ancestors), includeCurrentGroup=includeCurrentGroup))
      acs <- NULL
      if(missing(ancestors)||is.null(ancestors)) {
@@ -176,7 +176,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        acs[[index]] <- private$p_parentGroup
        acs <- private$p_parentGroup$getAncestorGroups(acs)
      }
-     private$p_parentPivot$message("PivotDataGroup$getAncestorGroups", "Got ancestors.", list(count=length(acs)))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getAncestorGroups", "Got ancestors.", list(count=length(acs)))
      return(invisible(acs)) # note the top-most parent will be at the bottom of the return list
    },
    getDescendantGroups = function(descendants=NULL, includeCurrentGroup=FALSE) {
@@ -184,7 +184,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getDescendantGroups", descendants, missing(descendants), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getDescendantGroups", includeCurrentGroup, missing(includeCurrentGroup), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
      }
-     private$p_parentPivot$message("PivotDataGroup$getDescendantGroups", "Getting descendant groups...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getDescendantGroups", "Getting descendant groups...")
      dgs <- NULL
      if(missing(descendants)||is.null(descendants)) { dgs <- list() }
      else { dgs <- descendants }
@@ -197,14 +197,14 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          dgs <- private$p_groups[[i]]$getDescendantGroups(dgs, includeCurrentGroup=TRUE)
        }
      }
-     private$p_parentPivot$message("PivotDataGroup$getDescendantGroups", "Got descendant groups", list(count=length(dgs)))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getDescendantGroups", "Got descendant groups", list(count=length(dgs)))
      return(invisible(dgs))
    },
    getLeafGroups = function(leafGroups=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getLeafGroups", leafGroups, missing(leafGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
      }
-     private$p_parentPivot$message("PivotDataGroup$getLeafGroups", "Getting leaf groups...", list(leafGroupCount=length(leafGroups)))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getLeafGroups", "Getting leaf groups...", list(leafGroupCount=length(leafGroups)))
      lgs <- NULL
      if(missing(leafGroups)||is.null(leafGroups)) { lgs <- list() }
      else { lgs <- leafGroups }
@@ -217,7 +217,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        index <- length(lgs) + 1
        lgs[[index]] <- self
      }
-     private$p_parentPivot$message("PivotDataGroup$getLeafGroups", "Got leaf groups", list(count=length(lgs)))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getLeafGroups", "Got leaf groups", list(count=length(lgs)))
      return(invisible(lgs))
    },
    getLevelGroups = function(level=NULL, levelGroups=NULL) { #level=0 is the current data group
@@ -225,7 +225,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getLevelGroups", level, missing(level), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getLevelGroups", levelGroups, missing(levelGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
      }
-     private$p_parentPivot$message("PivotDataGroup$getLevelGroups", "Getting level groups...",
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getLevelGroups", "Getting level groups...",
                                    list(level=level, levelGroupCount=length(levelGroups)))
      lgs <- NULL
      if(missing(levelGroups)||is.null(levelGroups)) { lgs <- list() }
@@ -239,7 +239,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          lgs <- private$p_groups[[i]]$getLevelGroups(level-1, lgs)
        }
      }
-     private$p_parentPivot$message("PivotDataGroup$getLevelGroups", "Got level groups", list(count=length(lgs)))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getLevelGroups", "Got level groups", list(count=length(lgs)))
      return(invisible(lgs))
    },
    addChildGroup = function(variableName=NULL, filterType="ALL", values=NULL, caption=NULL,
@@ -256,7 +256,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
-     private$p_parentPivot$message("PivotDataGroup$addChildGroup", "Adding child group...",
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addChildGroup", "Adding child group...",
                                    list(caption=caption, isTotal=isTotal, variableName=variableName, values=values,
                                    calculationGroupName=calculationGroupName, calculationName=calculationName))
      private$p_parentPivot$resetCells()
@@ -268,7 +268,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                           calculationGroupName=calculationGroupName, calculationName=calculationName)
      index <- length(private$p_groups) + 1
      private$p_groups[[index]] <- grp
-     private$p_parentPivot$message("PivotDataGroup$addChildGroup", "Added child group.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addChildGroup", "Added child group.")
      return(invisible(grp))
    },
    # permutations:
@@ -298,7 +298,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "addDataGroups", totalPosition, missing(totalPosition), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("before", "after"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "addDataGroups", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
      }
-     private$p_parentPivot$message("PivotDataGroup$addDataGroups", "Adding data groups...",
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addDataGroups", "Adding data groups...",
                                    list(variableName=variableName, atLevel=atLevel, fromData=fromData,
                                         dataName=dataName, dataSortOrder=dataSortOrder, dataFormat=dataFormat,
                                         onlyCombinationsThatExist=onlyCombinationsThatExist,
@@ -516,7 +516,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          if(descdnt$isTotal) descdnt$filters$setFilter(topLevelFilter, action="and")
        }
      }
-     private$p_parentPivot$message("PivotDataGroup$addDataGroups", "Added groups.", list(count=length(newGroups)))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addDataGroups", "Added groups.", list(count=length(newGroups)))
      return(invisible(newGroups))
    },
    sortDataGroups = function(levelNumber=1, orderBy="calculation", sortOrder="desc", calculationGroupName="default", calculationName=NULL) {
@@ -527,7 +527,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "sortDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "sortDataGroups", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
-     private$p_parentPivot$message("PivotDataGroup$sortDataGroups", "Sorting data groups...",
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$sortDataGroups", "Sorting data groups...",
                                    list(levelNumber=levelNumber, orderBy=orderBy, sortOrder=sortOrder,
                                         calculationGroupName=calculationGroupName, calculationName=calculationName))
      private$p_parentPivot$resetCells()
@@ -647,7 +647,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                               calculationGroupName=calculationGroupName, calculationName=calculationName)
        }
      }
-     private$p_parentPivot$message("PivotDataGroup$sortDataGroups", "Sorted data groups.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$sortDataGroups", "Sorted data groups.")
      return(invisible())
    },
    addCalculationGroups = function(calculationGroupName=NULL, atLevel=NULL) {
@@ -655,7 +655,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addCalculationGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
      }
-     private$p_parentPivot$message("PivotDataGroup$addCalculationGroups", "Adding calculation groups...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addCalculationGroups", "Adding calculation groups...")
      private$p_parentPivot$resetCells()
      private$p_parentPivot$calculationsPosition <- private$p_rowOrColumn # will throw an error if trying to add calcs to one axis when already present on the other axis
      if(missing(calculationGroupName)) stop("PivotDataGroup$addCalculationGroups():  calculationGroupName must be specified.", call. = FALSE)
@@ -718,14 +718,14 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          }
        }
      }
-     private$p_parentPivot$message("PivotDataGroup$addCalculationGroups", "Added calculation groups.", list(count=length(newGroups)))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addCalculationGroups", "Added calculation groups.", list(count=length(newGroups)))
      return(invisible(newGroups))
    },
    getLevelCount = function(includeCurrentLevel=FALSE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getLevelCount", includeCurrentLevel, missing(includeCurrentLevel), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
-     private$p_parentPivot$message("PivotDataGroup$levelCount", "Counting levels...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$levelCount", "Counting levels...")
      # get the leaf level groups
      leafGroups <- self$getLeafGroups()
      # get the maximum number of parents of each group
@@ -735,11 +735,11 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        ancestors <- leafGroups[[i]]$getAncestorGroups(includeCurrentGroup=includeCurrentLevel)
        maxParents <- max(maxParents, length(ancestors))
      }
-     private$p_parentPivot$message("PivotDataGroup$levelCount", "Counted levels.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$levelCount", "Counted levels.")
      return(invisible(maxParents))
    },
    normaliseDataGroup = function() {
-     private$p_parentPivot$message("PivotDataGroup$normaliseDataGroup", "Normalising data group...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$normaliseDataGroup", "Normalising data group...")
      private$p_parentPivot$resetCells()
      # get the leaf level groups
      leafGroups <- self$getLeafGroups()
@@ -763,11 +763,11 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          }
        }
      }
-     private$p_parentPivot$message("PivotDataGroup$normaliseDataGroup", "Normalised data group.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$normaliseDataGroup", "Normalised data group.")
      return(invisible())
    },
    getNetFilters = function() { # start at the root and apply the filter criteria that gets set at each lower level
-     private$p_parentPivot$message("PivotDataGroup$getNetFilters", "Getting net filters...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getNetFilters", "Getting net filters...")
      ancestors <- self$getAncestorGroups(includeCurrentGroup=TRUE)
      netFilters <- PivotFilters$new(private$p_parentPivot)
      for(j in length(ancestors):1) {
@@ -780,17 +780,17 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          netFilters$setFilter(filter, action="and")
        }
      }
-     private$p_parentPivot$message("PivotDataGroup$getNetFilters", "Got net filters.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getNetFilters", "Got net filters.")
      return(invisible(netFilters))
    },
    getNetCalculationName = function() { # start at the current node and work upwards until the first calculation is encountered
-     private$p_parentPivot$message("PivotDataGroup$getNetCalculationName", "Getting net calculation...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getNetCalculationName", "Getting net calculation...")
      grp <- self
      while (!is.null(grp)) {
        if(!is.null(grp$calculationName)) return(invisible(grp$calculationName))
        grp <- grp$parentGroup
      }
-     private$p_parentPivot$message("PivotDataGroup$getNetCalculationName", "Got net calculation.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getNetCalculationName", "Got net calculation.")
      return(invisible())
    },
    isFindMatch = function(matchMode="simple", variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL) {
@@ -801,7 +801,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
-     private$p_parentPivot$message("PivotDataGroup$isFindMatch", "Checking if matches criteria...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$isFindMatch", "Checking if matches criteria...")
      # a) check the filter match
      if((!is.null(variableNames))||(!is.null(variableValues))) {
        if(matchMode=="simple") filters <- private$p_filters
@@ -820,7 +820,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if(is.null(calcName)) return(invisible(FALSE))
        if(!(calcName %in% calculationNames)) return(invisible(FALSE))
      }
-     private$p_parentPivot$message("PivotDataGroup$isFindMatch", "Checked if matches criteria.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$isFindMatch", "Checked if matches criteria.")
      return(invisible(TRUE))
    },
    findDataGroups = function(matchMode="simple", variableNames=NULL, variableValues=NULL,
@@ -833,7 +833,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
-     private$p_parentPivot$message("PivotDataGroup$findDataGroups", "Finding data groups...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$findDataGroups", "Finding data groups...")
      # clear the isMatch flag across all descendants
      clearFlags <- function(dg) {
        dg$isMatch <- FALSE
@@ -900,7 +900,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        grp <- grps[[i]]
        if(grp$isMatch) matches[[length(matches)+1]] <- grp
      }
-     private$p_parentPivot$message("PivotDataGroup$findDataGroups", "Found data groups.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$findDataGroups", "Found data groups.")
      return(invisible(matches))
    },
    asList = function() {
@@ -1098,7 +1098,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric", "character", "factor", "logical", "Date", "POSIXct", "POSIXlt"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
      }
-     private$p_parentPivot$message("PivotDataGroup$formatValue", "Formatting value...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$formatValue", "Formatting value...")
      if(is.null(value)) return(invisible(NULL))
      if(is.null(format)) return(value)
      clsv <- class(value)
@@ -1123,7 +1123,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      }
      else if ("factor" %in% clsv) value <- as.character(value)
      else if("logical" %in% clsv) value <- as.character(value)
-     private$p_parentPivot$message("PivotDataGroup$formatValue", "Formated value.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$formatValue", "Formated value.")
      return(invisible(value))
    }
   )

@@ -77,7 +77,7 @@ PivotCell <- R6::R6Class("PivotCell",
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCell", "initialize", columnLeafGroup, missing(columnLeafGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
      }
      private$p_parentPivot <- parentPivot
-     private$p_parentPivot$message("PivotCell$new", "Creating new PivotCell",
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCell$new", "Creating new PivotCell",
                                    list(rowNumber=rowNumber, columnNumber=columnNumber))
      private$p_parentPivot <- parentPivot
      private$p_rowNumber <- rowNumber
@@ -92,7 +92,7 @@ PivotCell <- R6::R6Class("PivotCell",
      private$p_evaluationFilters <- NULL
      private$p_rowLeafGroup <- rowLeafGroup
      private$p_columnLeafGroup <- columnLeafGroup
-     private$p_parentPivot$message("PivotCell$new", "Created new PivotCell")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCell$new", "Created new PivotCell")
    },
    getCopy = function() {
      copy <- list()

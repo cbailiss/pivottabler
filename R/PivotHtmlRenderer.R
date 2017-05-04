@@ -37,11 +37,11 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
      }
      private$p_parentPivot <- parentPivot
-     private$p_parentPivot$message("PivotHtmlRenderer$new", "Creating new Html Renderer...")
-     private$p_parentPivot$message("PivotHtmlRenderer$new", "Created new Html Renderer.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$new", "Creating new Html Renderer...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$new", "Created new Html Renderer.")
    },
    clearIsRenderedFlags = function() {
-     private$p_parentPivot$message("PivotHtmlRenderer$clearIsRenderedFlags", "Clearing isRendered flags...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$clearIsRenderedFlags", "Clearing isRendered flags...")
      clearFlags <- function(dg) {
        grp <- dg
        while(!is.null(grp)) {
@@ -53,7 +53,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      lapply(rowGroups, clearFlags)
      columnGroups <- private$p_parentPivot$columnGroup$getDescendantGroups(includeCurrentGroup=TRUE)
      lapply(columnGroups, clearFlags)
-     private$p_parentPivot$message("PivotHtmlRenderer$clearIsRenderedFlags", "Cleared isRendered flags...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$clearIsRenderedFlags", "Cleared isRendered flags...")
      return(invisible())
    },
    getTableHtml = function(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE,
@@ -69,7 +69,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", includeTotalInfo, missing(includeTotalInfo), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
-     private$p_parentPivot$message("PivotHtmlRenderer$getTableHtml", "Getting table HTML...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$getTableHtml", "Getting table HTML...")
      # get the style names
      styles <- names(private$p_parentPivot$styles$styles)
      defaultTableStyle = private$p_parentPivot$styles$tableStyle
@@ -277,7 +277,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        trows[[length(trows)+1]] <- htmltools::tags$tr(trow)
      }
      tbl <- htmltools::tags$table(class=tableStyle, trows)
-     private$p_parentPivot$message("PivotHtmlRenderer$getTableHtml", "Got table HTML.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$getTableHtml", "Got table HTML.")
      return(invisible(tbl))
    }
   ),

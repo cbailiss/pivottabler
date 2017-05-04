@@ -51,18 +51,18 @@ PivotCells <- R6::R6Class("PivotCells",
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCells", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
      }
      private$p_parentPivot <- parentPivot
-     private$p_parentPivot$message("PivotCells$new", "Creating new PivotCells...")
-     private$p_parentPivot$message("PivotCells$new", "Created new PivotCells.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$new", "Creating new PivotCells...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$new", "Created new PivotCells.")
    },
    reset = function() {
-     private$p_parentPivot$message("PivotCells$resetCells", "Resetting cells...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$resetCells", "Resetting cells...")
      private$p_rowGroups <- NULL
      private$p_columnGroups <- NULL
      private$p_rows <- NULL
-     private$p_parentPivot$message("PivotCells$resetCells", "Reset cells.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$resetCells", "Reset cells.")
    },
    setGroups = function(rowGroups=NULL, columnGroups=NULL) {
-     private$p_parentPivot$message("PivotCells$setGroups", "Creating new PivotCells...",
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$setGroups", "Creating new PivotCells...",
                                    list(rowCount=length(rowGroups), columnCount=length(columnGroups)))
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "setGroups", rowGroups, missing(rowGroups), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="PivotDataGroup")
@@ -74,7 +74,7 @@ PivotCells <- R6::R6Class("PivotCells",
      for(r in 1:length(rowGroups)) {
        private$p_rows[[r]] <- list()
      }
-     private$p_parentPivot$message("PivotCells$setGroups", "Created new PivotCells.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$setGroups", "Created new PivotCells.")
    },
    getCell = function(r=NULL, c=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
@@ -114,7 +114,7 @@ PivotCells <- R6::R6Class("PivotCells",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", columnNumbers, missing(columnNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
       }
-      private$p_parentPivot$message("PivotCells$getCells", "Getting cells...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Getting cells...")
       # if no rows or columns specified, return all cells
       cells <- list()
       if(is.null(rowNumbers)&&is.null(columnNumbers)) {
@@ -129,7 +129,7 @@ PivotCells <- R6::R6Class("PivotCells",
             }
           }
         }
-        private$p_parentPivot$message("PivotCells$getCells", "Got cells.")
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
         return(invisible(cells))
       }
       # rows but not columns
@@ -148,7 +148,7 @@ PivotCells <- R6::R6Class("PivotCells",
             }
           }
         }
-        private$p_parentPivot$message("PivotCells$getCells", "Got cells.")
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
         return(invisible(cells))
       }
       # columns but not rows
@@ -171,7 +171,7 @@ PivotCells <- R6::R6Class("PivotCells",
             }
           }
         }
-        private$p_parentPivot$message("PivotCells$getCells", "Got cells.")
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
         return(invisible(cells))
       }
       # lengths of the two arguments must be equal
@@ -179,7 +179,7 @@ PivotCells <- R6::R6Class("PivotCells",
         stop(paste0("PivotCells$getCells(): The lengths of the rowNumbers and columnNumbers vectors should be equal (or one/both vectors should be NULL)."), call. = FALSE)
       }
       if(length(rowNumbers)==0) {
-        private$p_parentPivot$message("PivotCells$getCells", "Got cells.")
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
         return(invisible(cells))
       }
       for(i in 1:length(rowNumbers)) {
@@ -226,7 +226,7 @@ PivotCells <- R6::R6Class("PivotCells",
         cell <- private$p_rows[[r]][[c]]
         cells[[length(cells)+1]] <- cell
       }
-      private$p_parentPivot$message("PivotCells$getCells", "Got cells.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
       return(invisible(cells))
     },
    findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
@@ -242,7 +242,7 @@ PivotCells <- R6::R6Class("PivotCells",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", includeNull, missing(includeNull), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", includeNA, missing(includeNA), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
-     private$p_parentPivot$message("PivotCells$findCells", "Finding cells...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findCells", "Finding cells...")
      matches <- list()
      if(length(private$p_rows) > 0) {
        for(r in 1:length(private$p_rows)) {
@@ -300,7 +300,7 @@ PivotCells <- R6::R6Class("PivotCells",
          }
        }
      }
-     private$p_parentPivot$message("PivotCells$findCells", "Found cells.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findCells", "Found cells.")
      return(invisible(matches))
    },
    asMatrix = function(rawValue=TRUE) {

@@ -50,17 +50,17 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
       }
       private$p_parentPivot <- parentPivot
-      private$p_parentPivot$message("PivotBatchCalculator$new", "Creating new Pivot Batch Calculator...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$new", "Creating new Pivot Batch Calculator...")
       private$p_batches <- list()
       private$p_statistics <- PivotBatchStatistics$new(parentPivot)
-      private$p_parentPivot$message("PivotBatchCalculator$new", "Created new Pivot Batch Calculator.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$new", "Created new Pivot Batch Calculator.")
     },
     reset = function() {
-      private$p_parentPivot$message("PivotBatchCalculator$reset", "Resetting batches...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$reset", "Resetting batches...")
       private$p_batches <- list()
       private$p_nextBatchId <- 1
       private$p_statistics$reset()
-      private$p_parentPivot$message("PivotBatchCalculator$reset", "Reset batches.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$reset", "Reset batches.")
     },
     isFiltersBatchCompatible = function(filters=NULL) {
       # only filters that specify zero or one value for each variable are compatible with batch evaluation
@@ -70,7 +70,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "isFiltersBatchCompatible", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
       }
-      private$p_parentPivot$message("PivotBatchCalculator$isFiltersBatchCompatible", "Checking if filter is batch compatible...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$isFiltersBatchCompatible", "Checking if filter is batch compatible...")
       isCompatible <- TRUE
       for (i in 1:length(filters$filters)) {
         filter <- filters$filters[[i]]
@@ -81,7 +81,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
           break
         }
       }
-      private$p_parentPivot$message("PivotBatchCalculator$isFiltersBatchCompatible", "Checked if filter is batch compatible.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$isFiltersBatchCompatible", "Checked if filter is batch compatible.")
       return(isCompatible)
     },
     generateBatchesForNamedCalculationEvaluation1 = function(dataName=NULL, calculationName=NULL,
@@ -92,7 +92,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", workingFilters, missing(workingFilters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
       }
-      private$p_parentPivot$message("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1", "Generating batches for named calculation evaluation...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1", "Generating batches for named calculation evaluation...")
       # very similar code to the below is present in the getSummaryValueFromBatch function below
       # batch generation depends on the filter type
       bIsBatchCompatible <- FALSE
@@ -121,7 +121,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       }
       # finish here if not batch compatible
       if(!bIsBatchCompatible) {
-        private$p_parentPivot$message("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1", "Generated 0 batches for named calculation evaluation.")
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1", "Generated 0 batches for named calculation evaluation.")
         return(invisible())
       }
       # add to the batches:  first get the distinct list of variables and variable values
@@ -147,7 +147,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
                                 calculationName=calculationName, calculationGroupName=calculationGroupName)
         private$p_batches[[length(private$p_batches)+1]] <- batch
       }
-      private$p_parentPivot$message("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1", "Generated batches for named calculation evaluation.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1", "Generated batches for named calculation evaluation.")
       return(invisible())
     },
     # this function looks at the different types of calculation (type="calculation" will have basedOn calcs that each need examining)
@@ -157,7 +157,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation2", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation2", workingFilters, missing(workingFilters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotFilters")
       }
-      private$p_parentPivot$message("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation2", "Generating batches for named calculation evaluation...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation2", "Generating batches for named calculation evaluation...")
       # get the calculation
       calcGrp <- private$p_parentPivot$calculationGroups$getCalculationGroup(calculationGroupName)
       calc <- calcGrp$getCalculation(calculationName)
@@ -178,7 +178,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
           }
         }
       }
-      private$p_parentPivot$message("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation2", "Generated batches for named calculation evaluation.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation2", "Generated batches for named calculation evaluation.")
       return(invisible())
     },
     generateBatchesForCellEvaluation = function() {
@@ -186,10 +186,10 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       # 1) type=summary and visible=TRUE
       # 2) type=calculation where specified in basedOn
       if(private$p_parentPivot$evaluationMode=="sequential") {
-        private$p_parentPivot$message("PivotBatchCalculator$generateBatchesForCellEvaluation", "Pivot table is using sequential evaluation mode, so not creating batches.")
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$generateBatchesForCellEvaluation", "Pivot table is using sequential evaluation mode, so not creating batches.")
         return(invisible())
       }
-      private$p_parentPivot$message("PivotBatchCalculator$new", "Generating batches for cell evaluation...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$new", "Generating batches for cell evaluation...")
       if(is.null(private$p_parentPivot$cells)) stop("PivotBatchCalculator$generateBatchesForCellEvaluation():  No cells exist to process.", call. = FALSE)
       # reset
       self$reset()
@@ -210,14 +210,14 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
                                                              workingFilters=cell$workingFilters)
         }
       }
-      private$p_parentPivot$message("PivotBatchCalculator$new", "Generated batches for cell evaluation.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$new", "Generated batches for cell evaluation.")
     },
     evaluateBatches = function() {
       if(private$p_parentPivot$evaluationMode=="sequential") {
-        private$p_parentPivot$message("PivotBatchCalculator$evaluateBatches", "Pivot table is using sequential evaluation mode, so not executing batches.")
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$evaluateBatches", "Pivot table is using sequential evaluation mode, so not executing batches.")
         return(invisible())
       }
-      private$p_parentPivot$message("PivotBatchCalculator$evaluateBatches", "Evaluating batches...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$evaluateBatches", "Evaluating batches...")
       batchEvalCount <- 0
       if(!is.null(private$p_batches)) {
         if(length(private$p_batches)>0) {
@@ -229,7 +229,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
           }
         }
       }
-      private$p_parentPivot$message("PivotBatchCalculator$evaluateBatches", "Evaluated batches.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$evaluateBatches", "Evaluated batches.")
       return(invisible(batchEvalCount))
     },
     getSummaryValueFromBatch = function(dataName=NULL, calculationName=NULL,
@@ -240,7 +240,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
       }
-      private$p_parentPivot$message("PivotBatchCalculator$getSummaryValueFromBatch", "Getting value from batch...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$getSummaryValueFromBatch", "Getting value from batch...")
       # very similar code to the below is present in the generateBatchesForNamedCalculationEvaluation1 function above
       # batch generation depends on the filter type
       bIsBatchCompatible <- FALSE
@@ -269,7 +269,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       }
       # finish here if not batch compatible
       if(!bIsBatchCompatible) {
-        private$p_parentPivot$message("PivotBatchCalculator$getSummaryValueFromBatch", "Unable to get value from batch as incompatible.")
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$getSummaryValueFromBatch", "Unable to get value from batch as incompatible.")
         return(list(isBatchCompatible=FALSE, batchEvaluated=FALSE, value=NULL))
       }
       # find the matching batch:  first get the distinct list of variables and variable values
@@ -293,13 +293,13 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       }
       # was the batch evaluated?
       if(matchingBatch$evaluated==FALSE) {
-        private$p_parentPivot$message("PivotBatchCalculator$getSummaryValueFromBatch", "Unable to get value from batch as batch not evaluated.")
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$getSummaryValueFromBatch", "Unable to get value from batch as batch not evaluated.")
         return(list(isBatchCompatible=TRUE, batchEvaluated=FALSE, value=NULL))
       }
       # get the value
       value <- batch$getSummaryValueFromBatch(filters=workingFilters,
                                               calculationName=calculationName, calculationGroupName=calculationGroupName)
-      private$p_parentPivot$message("PivotBatch$getSummaryValueFromBatch", "Got value from batch.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$getSummaryValueFromBatch", "Got value from batch.")
       return(list(isBatchCompatible=TRUE, batchEvaluated=TRUE, value=value))
     }
   ),
