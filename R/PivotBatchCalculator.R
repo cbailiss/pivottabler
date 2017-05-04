@@ -46,7 +46,9 @@
 PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
   public = list(
     initialize = function(parentPivot=NULL) {
-      checkArgument("PivotBatchCalculator", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+      if(parentPivot$argumentCheckMode > 0) {
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+      }
       private$p_parentPivot <- parentPivot
       private$p_parentPivot$message("PivotBatchCalculator$new", "Creating new Pivot Batch Calculator...")
       private$p_batches <- list()
@@ -65,7 +67,9 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       # (A filter that matches more than one value (a) would need a derived column calculating, (b) the specified values
       # could partially overlap with other cells and (c) the value that represents the "combined" value could collide with
       # existing values in the column).  Bottom line:  Sequential mode is slower and more flexible.  Batch is faster but stricter.
-      checkArgument("PivotBatchCalculator", "isFiltersBatchCompatible", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "isFiltersBatchCompatible", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
+      }
       private$p_parentPivot$message("PivotBatchCalculator$isFiltersBatchCompatible", "Checking if filter is batch compatible...")
       isCompatible <- TRUE
       for (i in 1:length(filters$filters)) {
@@ -82,10 +86,12 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
     },
     generateBatchesForNamedCalculationEvaluation1 = function(dataName=NULL, calculationName=NULL,
                                                             calculationGroupName=NULL, workingFilters=NULL) {
-      checkArgument("PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", workingFilters, missing(workingFilters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation1", workingFilters, missing(workingFilters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+      }
       private$p_parentPivot$message("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1", "Generating batches for named calculation evaluation...")
       # very similar code to the below is present in the getSummaryValueFromBatch function below
       # batch generation depends on the filter type
@@ -146,9 +152,11 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
     },
     # this function looks at the different types of calculation (type="calculation" will have basedOn calcs that each need examining)
     generateBatchesForNamedCalculationEvaluation2 = function(calculationName=NULL, calculationGroupName=NULL, workingFilters=NULL) {
-      checkArgument("PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation2", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation2", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation2", workingFilters, missing(workingFilters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotFilters")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation2", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation2", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation2", workingFilters, missing(workingFilters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotFilters")
+      }
       private$p_parentPivot$message("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation2", "Generating batches for named calculation evaluation...")
       # get the calculation
       calcGrp <- private$p_parentPivot$calculationGroups$getCalculationGroup(calculationGroupName)
@@ -226,10 +234,12 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
     },
     getSummaryValueFromBatch = function(dataName=NULL, calculationName=NULL,
                                         calculationGroupName=NULL, workingFilters=NULL) {
-      checkArgument("PivotBatchCalculator", "getSummaryValueFromBatch", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatchCalculator", "getSummaryValueFromBatch", workingFilters, missing(workingFilters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
-      checkArgument("PivotBatchCalculator", "getSummaryValueFromBatch", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatchCalculator", "getSummaryValueFromBatch", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", workingFilters, missing(workingFilters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      }
       private$p_parentPivot$message("PivotBatchCalculator$getSummaryValueFromBatch", "Getting value from batch...")
       # very similar code to the below is present in the generateBatchesForNamedCalculationEvaluation1 function above
       # batch generation depends on the filter type

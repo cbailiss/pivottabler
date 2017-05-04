@@ -24,7 +24,9 @@
 (classname) <- R6::R6Class("(classname)",
   public = list(
     initialize = function(parentPivot=NULL) {
-      checkArgument("(classname)", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+      if(parentPivot$argumentCheckMode > 0) {
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "(classname)", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+      }
       private$p_parentPivot <- parentPivot
       private$p_parentPivot$message("(classname)$new", "Creating new Pivot XYZ...")
       private$p_data <- list()

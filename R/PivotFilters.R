@@ -72,11 +72,13 @@
 
 PivotFilters <- R6::R6Class("PivotFilters",
   public = list(
-    initialize = function(parentPivot, variableName=NULL, type="ALL", values=NULL) {
-      checkArgument("PivotFilters", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-      checkArgument("PivotFilters", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-      checkArgument("PivotFilters", "initialize", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
-      checkArgument("PivotFilters", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
+    initialize = function(parentPivot=NULL, variableName=NULL, type="ALL", values=NULL) {
+      if(parentPivot$argumentCheckMode > 0) {
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilters", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilters", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilters", "initialize", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilters", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
+      }
       private$p_parentPivot <- parentPivot
       private$p_parentPivot$message("PivotFilters$new", "Creating new Pivot Filters...", list(variableName=variableName, values=values))
 
@@ -87,16 +89,20 @@ PivotFilters <- R6::R6Class("PivotFilters",
       private$p_parentPivot$message("PivotFilters$new", "Created new Pivot Filters.")
     },
     getFilter = function(variableName=NULL) {
-      checkArgument("PivotFilters", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      }
       private$p_parentPivot$message("PivotFilters$getFilter", "Getting filter...", list(variableName=variableName))
       filter <- private$p_filters[[variableName]]
       private$p_parentPivot$message("PivotFilters$getFilter", "Got filter.")
       return(invisible(filter))
     },
     isFilterMatch = function(matchMode="simple", variableNames=NULL, variableValues=NULL) {
-      checkArgument("PivotFilters", "isFilterMatch", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
-      checkArgument("PivotFilters", "isFilterMatch", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-      checkArgument("PivotFilters", "isFilterMatch", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "isFilterMatch", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "isFilterMatch", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "isFilterMatch", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+      }
       private$p_parentPivot$message("PivotFilters$isFilterMatch", "Checking if is filter match...")
       # Summary
       # variableNames can be a vector (i.e. more than one item specified)
@@ -183,8 +189,10 @@ PivotFilters <- R6::R6Class("PivotFilters",
       else return(invisible(TRUE))
     },
     setFilters = function(filters=NULL, action="replace") {
-      checkArgument("PivotFilters", "setFilters", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
-      checkArgument("PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
+      }
       private$p_parentPivot$message("PivotFilters$setFilters", "Setting filters...", list(action=action, filters=filters$asString()))
       if(length(filters$filters)>0) {
         for(i in 1:length(filters$filters)) {
@@ -195,18 +203,22 @@ PivotFilters <- R6::R6Class("PivotFilters",
       return(invisible())
     },
     setFilter = function(filter=NULL, action="replace") {
-      checkArgument("PivotFilters", "setFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
-      checkArgument("PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
+      }
       private$p_parentPivot$message("PivotFilters$setFilters", "Setting filter...", list(action=action, filter=filter$asString()))
       self$setFilterValues(variableName=filter$variableName, type=filter$type, values=filter$values, action=action)
       private$p_parentPivot$message("PivotFilters$setFilter", "Set filter.")
       return(invisible())
     },
     setFilterValues = function(variableName=NULL, type="ALL", values=NULL, action="replace") {
-      checkArgument("PivotFilters", "setFilterValues", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotFilters", "setFilterValues", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
-      checkArgument("PivotFilters", "setFilterValues", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
-      checkArgument("PivotFilters", "setFilterValues", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
+      }
       private$p_parentPivot$message("PivotFilters$setFilterValues", "Setting filter values...",
                                     list(action=action, variableName=variableName, type=type, values=values))
       filter <- PivotFilter$new(private$p_parentPivot, variableName=variableName, type=type, values=values)
@@ -222,15 +234,19 @@ PivotFilters <- R6::R6Class("PivotFilters",
       return(invisible())
     },
     addFilter = function(filter=NULL) {
-      checkArgument("PivotFilters", "addFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "addFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+      }
       private$p_parentPivot$message("PivotFilters$addFilter", "Adding filter...", list(filter=filter$asString()))
       private$p_filters[[filter$variableName]] <- filter
       private$p_parentPivot$message("PivotFilters$addFilter", "Added filter.")
       return(invisible())
     },
     getFilteredDataFrame = function(dataFrame=NULL, filterMode=NULL) {
-      checkArgument("PivotFilters", "getFilteredDataFrame", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
-      checkArgument("PivotFilters", "getFilteredDataFrame", filterMode, missing(filterMode), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("base", "dplyr"))
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilters", "getFilteredDataFrame", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilters", "getFilteredDataFrame", filterMode, missing(filterMode), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("base", "dplyr"))
+      }
       private$p_parentPivot$message("PivotFilters$getFilteredDataFrame", "Getting filtered data frame...")
       # use data
       data <- dataFrame
@@ -324,18 +340,20 @@ PivotFilters <- R6::R6Class("PivotFilters",
     },
     asJSON = function() { return(jsonlite::toJSON(self$asList())) },
     asString = function(includeVariableName=TRUE, seperator=", ") {
-       checkArgument("PivotFilters", "asString", includeVariableName, missing(includeVariableName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-       checkArgument("PivotFilters", "asString", seperator, missing(seperator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-       fstr <- ""
-       if(length(private$p_filters)>0) {
-         for(i in 1:length(private$p_filters)) {
-           f <- private$p_filters[[i]]
-           sep <- ""
-           if(i > 1) { sep <- seperator }
-           fstr <- paste0(fstr, sep, f$asString(includeVariableName=includeVariableName))
-         }
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "asString", includeVariableName, missing(includeVariableName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "asString", seperator, missing(seperator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
        }
-       return(fstr)
+      fstr <- ""
+      if(length(private$p_filters)>0) {
+       for(i in 1:length(private$p_filters)) {
+         f <- private$p_filters[[i]]
+         sep <- ""
+         if(i > 1) { sep <- seperator }
+         fstr <- paste0(fstr, sep, f$asString(includeVariableName=includeVariableName))
+       }
+      }
+      return(fstr)
     }
   ),
   active = list(

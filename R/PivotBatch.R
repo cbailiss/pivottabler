@@ -44,13 +44,15 @@ PivotBatch <- R6::R6Class("PivotBatch",
     initialize = function(parentPivot=NULL, batchId=0, dataName=NULL,
                           variableNames=NULL, values=NULL, # values(varName1=values1, varName2=values2, ...)
                           calculationName=NULL, calculationGroupName=NULL) {
-      checkArgument("PivotBatch", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-      checkArgument("PivotBatch", "initialize", batchId, missing(batchId), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("numeric", "integer"))
-      checkArgument("PivotBatch", "initialize", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatch", "initialize", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-      checkArgument("PivotBatch", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
-      checkArgument("PivotBatch", "initialize", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatch", "initialize", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      if(parentPivot$argumentCheckMode > 0) {
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatch", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatch", "initialize", batchId, missing(batchId), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("numeric", "integer"))
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatch", "initialize", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatch", "initialize", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatch", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatch", "initialize", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatch", "initialize", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      }
       private$p_parentPivot <- parentPivot
       private$p_parentPivot$message("PivotBatch$new", "Creating new Pivot Batch...")
       private$p_batchId <- batchId
@@ -65,8 +67,10 @@ PivotBatch <- R6::R6Class("PivotBatch",
       private$p_parentPivot$message("PivotBatch$new", "Created new Pivot Batch.")
     },
     isCompatible = function(dataName=NULL, variableNames=NULL) {
-      checkArgument("PivotBatch", "isCompatible", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatch", "isCompatible", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "isCompatible", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "isCompatible", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      }
       private$p_parentPivot$message("PivotBatch$isCompatible", "Checking batch compatibility...")
       bIsCompatible <- FALSE
       if(private$p_dataName==dataName) {
@@ -86,9 +90,11 @@ PivotBatch <- R6::R6Class("PivotBatch",
       return(bIsCompatible)
     },
     addCompatible = function(values=NULL, calculationName=NULL, calculationGroupName=NULL) {
-      checkArgument("PivotBatch", "addCompatible", values, missing(values), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
-      checkArgument("PivotBatch", "addCompatible", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatch", "addCompatible", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "addCompatible", values, missing(values), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "addCompatible", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "addCompatible", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      }
       private$p_parentPivot$message("PivotBatch$addCompatible", "Adding compatibile calculation...")
       if(!is.null(values)) {
         if(length(values)>0) {
@@ -122,8 +128,10 @@ PivotBatch <- R6::R6Class("PivotBatch",
       private$p_parentPivot$message("PivotBatch$addCompatible", "Added compatibile calculation.")
     },
     getCalculationInternalName = function(calculationName=NULL, calculationGroupName=NULL) {
-      checkArgument("PivotBatch", "getCalculationInternalName", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatch", "getCalculationInternalName", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "getCalculationInternalName", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "getCalculationInternalName", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      }
       private$p_parentPivot$message("PivotBatch$getCalculationInternalName", "Getting calculation internal name...")
       calcInternalName <- NULL
       if(length(private$p_calculations)>0) {
@@ -178,9 +186,11 @@ PivotBatch <- R6::R6Class("PivotBatch",
       return(invisible())
     },
     getSummaryValueFromBatch = function(filters=NULL, calculationName=NULL, calculationGroupName=NULL) {
-      checkArgument("PivotBatch", "getSummaryValueFromBatch", filters, missing(filters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
-      checkArgument("PivotBatch", "getSummaryValueFromBatch", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatch", "getSummaryValueFromBatch", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "getSummaryValueFromBatch", filters, missing(filters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "getSummaryValueFromBatch", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "getSummaryValueFromBatch", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      }
       private$p_parentPivot$message("PivotBatch$getSummaryValueFromBatch", "Getting value from batch...")
       # check evaluated
       if(!private$p_evaluated)

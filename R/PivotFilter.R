@@ -46,10 +46,12 @@
 PivotFilter <- R6::R6Class("PivotFilter",
   public = list(
    initialize = function(parentPivot, variableName=NULL, type="ALL", values=NULL) {
-     checkArgument("PivotFilter", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-     checkArgument("PivotFilter", "initialize", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-     checkArgument("PivotFilter", "initialize", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
-     checkArgument("PivotFilter", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
+     if(parentPivot$argumentCheckMode > 0) {
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilter", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilter", "initialize", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilter", "initialize", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilter", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
+     }
      private$p_parentPivot <- parentPivot
      private$p_parentPivot$message("PivotFilter$new", "Creating new Pivot Filter...", list(variableName=variableName, values=values))
      private$p_variableName <- variableName
@@ -71,7 +73,9 @@ PivotFilter <- R6::R6Class("PivotFilter",
      private$p_parentPivot$message("PivotFilter$new", "Created new Pivot Filter.")
    },
    and = function(filter) {
-     checkArgument("PivotFilter", "and", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "and", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+     }
      private$p_parentPivot$message("PivotFilter$union", "ANDing filter...", list(filter=filter$asString()))
      if(private$p_variableName != filter$variableName)
        stop(paste0("PivotFilter$and():  filter variable name mismatch. ",
@@ -126,7 +130,9 @@ PivotFilter <- R6::R6Class("PivotFilter",
      return(invisible())
    },
    or = function(filter) {
-     checkArgument("PivotFilter", "or", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "or", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+     }
      private$p_parentPivot$message("PivotFilter$union", "ORing filter...", list(filter=filter$asString()))
      if(private$p_variableName != filter$variableName)
        stop(paste0("PivotFilter$or():  filter variable name mismatch. ",
@@ -174,7 +180,9 @@ PivotFilter <- R6::R6Class("PivotFilter",
      return(invisible())
    },
    replace = function(filter) {
-     checkArgument("PivotFilter", "replace", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "replace", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+     }
      private$p_parentPivot$message("PivotFilter$replace", "Replacing filter...", list(filter=filter$asString()))
 
      if(private$p_variableName != filter$variableName)
@@ -200,8 +208,10 @@ PivotFilter <- R6::R6Class("PivotFilter",
    },
    asJSON = function() { return(jsonlite::toJSON(self$asList())) },
    asString = function(includeVariableName=TRUE, seperator=" ") {
-     checkArgument("PivotFilter", "asString", includeVariableName, missing(includeVariableName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     checkArgument("PivotFilter", "asString", seperator, missing(seperator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "asString", includeVariableName, missing(includeVariableName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "asString", seperator, missing(seperator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+     }
      vs <- NULL
      if(private$p_type=="ALL") vs <- "ALL"
      else if(private$p_type=="VALUES") vs <- paste(private$p_values, collapse=seperator)

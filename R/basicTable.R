@@ -22,9 +22,9 @@
 #' renderBasicTable(matrix(c(1:12), nrow=3))
 
 renderBasicTable <- function(matrix=NULL, stylePrefix=NULL, rowNamesAsHeader=FALSE) {
-  checkArgument("", "renderBasicTable", matrix, missing(matrix), allowMissing=FALSE, allowNull=FALSE, allowedClasses="matrix")
-  checkArgument("", "renderBasicTable", stylePrefix, missing(stylePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-  checkArgument("", "renderBasicTable", rowNamesAsHeader, missing(rowNamesAsHeader), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+  checkArgument(4, TRUE, "", "renderBasicTable", matrix, missing(matrix), allowMissing=FALSE, allowNull=FALSE, allowedClasses="matrix")
+  checkArgument(4, TRUE, "", "renderBasicTable", stylePrefix, missing(stylePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+  checkArgument(4, TRUE, "", "renderBasicTable", rowNamesAsHeader, missing(rowNamesAsHeader), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
   trows <- list()
   if(is.null(matrix)) return()
   rowCount <- nrow(matrix)

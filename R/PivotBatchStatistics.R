@@ -29,7 +29,9 @@
 PivotBatchStatistics <- R6::R6Class("PivotBatchStatistics",
   public = list(
     initialize = function(parentPivot=NULL) {
-      checkArgument("PivotBatchStatistics", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+      if(parentPivot$argumentCheckMode > 0) {
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+      }
       private$p_parentPivot <- parentPivot
       private$p_parentPivot$message("PivotBatchStatistics$new", "Creating new batch statistics...")
       self$reset()
@@ -61,20 +63,26 @@ PivotBatchStatistics <- R6::R6Class("PivotBatchStatistics",
       private$p_parentPivot$message("PivotBatchStatistics$new", "Reset batch statistics.")
     },
     incrementNoData = function(calculationName=NULL, calculationGroupName=NULL) {
-      checkArgument("PivotBatchStatistics", "incrementNoData", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatchStatistics", "incrementNoData", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "incrementNoData", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "incrementNoData", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      }
       private$p_statistics[[calculationGroupName]][[calculationName]]["noData"] <- private$p_statistics[[calculationGroupName]][[calculationName]]["noData"]+1
       private$p_statistics[[calculationGroupName]][[calculationName]]["total"] <- private$p_statistics[[calculationGroupName]][[calculationName]]["total"]+1
     },
     incrementCompatible = function(calculationName=NULL, calculationGroupName=NULL) {
-      checkArgument("PivotBatchStatistics", "incrementCompatible", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatchStatistics", "incrementCompatible", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "incrementCompatible", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "incrementCompatible", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      }
       private$p_statistics[[calculationGroupName]][[calculationName]]["compatible"] <- private$p_statistics[[calculationGroupName]][[calculationName]]["compatible"]+1
       private$p_statistics[[calculationGroupName]][[calculationName]]["total"] <- private$p_statistics[[calculationGroupName]][[calculationName]]["total"]+1
     },
     incrementIncompatible = function(calculationName=NULL, calculationGroupName=NULL) {
-      checkArgument("PivotBatchStatistics", "incrementIncompatible", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-      checkArgument("PivotBatchStatistics", "incrementIncompatible", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "incrementIncompatible", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "incrementIncompatible", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      }
       private$p_statistics[[calculationGroupName]][[calculationName]]["incompatible"] <- private$p_statistics[[calculationGroupName]][[calculationName]]["incompatible"]+1
       private$p_statistics[[calculationGroupName]][[calculationName]]["total"] <- private$p_statistics[[calculationGroupName]][[calculationName]]["total"]+1
     }

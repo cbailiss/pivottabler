@@ -64,16 +64,18 @@ PivotCell <- R6::R6Class("PivotCell",
                          calculationName=NULL, calculationGroupName=NULL,
                          rowFilters=NULL, columnFilters=NULL, rowColFilters=NULL,
                          rowLeafGroup=NULL, columnLeafGroup=NULL) {
-     checkArgument("PivotCell", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-     checkArgument("PivotCell", "initialize", rowNumber, missing(rowNumber), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
-     checkArgument("PivotCell", "initialize", columnNumber, missing(columnNumber), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
-     checkArgument("PivotCell", "initialize", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-     checkArgument("PivotCell", "initialize", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-     checkArgument("PivotCell", "initialize", rowFilters, missing(rowFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
-     checkArgument("PivotCell", "initialize", columnFilters, missing(columnFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
-     checkArgument("PivotCell", "initialize", rowColFilters, missing(rowColFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
-     checkArgument("PivotCell", "initialize", rowLeafGroup, missing(rowLeafGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
-     checkArgument("PivotCell", "initialize", columnLeafGroup, missing(columnLeafGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+     if(parentPivot$argumentCheckMode > 0) {
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCell", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCell", "initialize", rowNumber, missing(rowNumber), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCell", "initialize", columnNumber, missing(columnNumber), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCell", "initialize", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCell", "initialize", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCell", "initialize", rowFilters, missing(rowFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCell", "initialize", columnFilters, missing(columnFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCell", "initialize", rowColFilters, missing(rowColFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCell", "initialize", rowLeafGroup, missing(rowLeafGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCell", "initialize", columnLeafGroup, missing(columnLeafGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+     }
      private$p_parentPivot <- parentPivot
      private$p_parentPivot$message("PivotCell$new", "Creating new PivotCell",
                                    list(rowNumber=rowNumber, columnNumber=columnNumber))
@@ -148,7 +150,9 @@ PivotCell <- R6::R6Class("PivotCell",
    calculationFilters = function(value) {
      if(missing(value)) { return(invisible(private$p_calculationFilters)) }
      else {
-       checkArgument("PivotCell", "calculationFilters", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+       if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "calculationFilters", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+       }
        private$p_calculationFilters <- value
        return(invisible())
      }
@@ -156,7 +160,9 @@ PivotCell <- R6::R6Class("PivotCell",
    workingFilters = function(value) {
      if(missing(value)) { return(invisible(private$p_workingFilters)) }
      else {
-       checkArgument("PivotCell", "workingFilters", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="PivotFilters")
+       if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "workingFilters", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="PivotFilters")
+       }
        private$p_workingFilters <- value
        return(invisible())
      }
@@ -164,7 +170,9 @@ PivotCell <- R6::R6Class("PivotCell",
    evaluationFilters = function(value) {
      if(missing(value)) { return(invisible(private$p_evaluationFilters)) }
      else {
-       checkArgument("PivotCell", "evaluationFilters", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+       if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "evaluationFilters", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+       }
        private$p_evaluationFilters <- value
        return(invisible())
      }
@@ -175,7 +183,9 @@ PivotCell <- R6::R6Class("PivotCell",
    rawValue = function(value) {
      if(missing(value)) return(invisible(private$p_rawValue))
      else {
-       checkArgument("PivotCell", "rawValue", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+       if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "rawValue", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+       }
        private$p_rawValue <- value
        return(invisible())
      }
@@ -183,7 +193,9 @@ PivotCell <- R6::R6Class("PivotCell",
    formattedValue = function(value) {
      if(missing(value)) return(invisible(private$p_formattedValue))
      else {
-       checkArgument("PivotCell", "formattedValue", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric", "character"))
+       if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "formattedValue", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric", "character"))
+       }
        private$p_formattedValue <- value
        return(invisible())
      }
@@ -191,7 +203,9 @@ PivotCell <- R6::R6Class("PivotCell",
    baseStyleName = function(value) {
      if(missing(value)) { return(invisible(private$p_baseStyleName)) }
      else {
-       checkArgument("PivotCell", "baseStyleName", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+       if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "baseStyleName", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+       }
        private$p_baseStyleName <- value
        return(invisible())
      }
@@ -199,7 +213,9 @@ PivotCell <- R6::R6Class("PivotCell",
    style = function(value) {
      if(missing(value)) { return(invisible(private$p_style)) }
      else {
-       checkArgument("PivotCell", "style", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotStyle")
+       if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "style", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotStyle")
+       }
        private$p_style <- value
        return(invisible())
      }

@@ -7,8 +7,12 @@
 #' @param themeName The name of the theme to retrieve.
 #' @return A PivotStyles object.
 getTheme <- function(parentPivot, themeName=NULL) {
-  checkArgument("", "getTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-  checkArgument("", "getTheme", themeName, missing(themeName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+  if(R6::is.R6Class(parentPivot)&&(parentPivot$classname=="PivotTable")) argumentCheckMode <- parentPivot$argumentCheckMode
+  else argumentCheckMode <- 4
+  if(argumentCheckMode > 0) {
+    checkArgument(argumentCheckMode, TRUE, "", "getTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+    checkArgument(argumentCheckMode, TRUE, "", "getTheme", themeName, missing(themeName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+  }
   if(themeName=="default") return(getDefaultTheme(parentPivot=parentPivot))
   else if(themeName=="largeplain") return(getLargePlainTheme(parentPivot=parentPivot))
   else if(themeName=="compact") return(getCompactTheme(parentPivot=parentPivot))
@@ -22,8 +26,12 @@ getTheme <- function(parentPivot, themeName=NULL) {
 #' @param themeName The name to use as the new theme name.
 #' @return A PivotStyles object.
 getDefaultTheme <- function(parentPivot, themeName="default") {
-  checkArgument("", "getPlainTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-  checkArgument("", "getPlainTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  if(R6::is.R6Class(parentPivot)&&(parentPivot$classname=="PivotTable")) argumentCheckMode <- parentPivot$argumentCheckMode
+  else argumentCheckMode <- 4
+  if(argumentCheckMode > 0) {
+    checkArgument(argumentCheckMode, TRUE, "", "getPlainTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+    checkArgument(argumentCheckMode, TRUE, "", "getPlainTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  }
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
       "border-collapse"="collapse"
@@ -68,8 +76,12 @@ getDefaultTheme <- function(parentPivot, themeName="default") {
 #' @param themeName The name to use as the new theme name.
 #' @return A PivotStyles object.
 getLargePlainTheme <- function(parentPivot, themeName="largeplain") {
-  checkArgument("", "getPlainTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-  checkArgument("", "getPlainTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  if(R6::is.R6Class(parentPivot)&&(parentPivot$classname=="PivotTable")) argumentCheckMode <- parentPivot$argumentCheckMode
+  else argumentCheckMode <- 4
+  if(argumentCheckMode > 0) {
+    checkArgument(argumentCheckMode, TRUE, "", "getPlainTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+    checkArgument(argumentCheckMode, TRUE, "", "getPlainTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  }
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
       "border-collapse"="collapse"
@@ -115,8 +127,12 @@ getLargePlainTheme <- function(parentPivot, themeName="largeplain") {
 #' @param themeName The name to use as the new theme name.
 #' @return A PivotStyles object.
 getCompactTheme <- function(parentPivot, themeName="compact") {
-  checkArgument("", "getPlainTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-  checkArgument("", "getPlainTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  if(R6::is.R6Class(parentPivot)&&(parentPivot$classname=="PivotTable")) argumentCheckMode <- parentPivot$argumentCheckMode
+  else argumentCheckMode <- 4
+  if(argumentCheckMode > 0) {
+    checkArgument(argumentCheckMode, TRUE, "", "getPlainTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+    checkArgument(argumentCheckMode, TRUE, "", "getPlainTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  }
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
       "border-collapse"="collapse"
@@ -165,10 +181,14 @@ getCompactTheme <- function(parentPivot, themeName="compact") {
 #' @param fontName The name of the font to use, or a comma separated list (for font-fall-back).
 #' @return A PivotStyles object.
 getSimpleColoredTheme <- function(parentPivot, themeName="coloredTheme", colors, fontName) {
-  checkArgument("", "getSimpleColoredTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-  checkArgument("", "getSimpleColoredTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-  checkArgument("", "getSimpleColoredTheme", colors, missing(colors), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="character")
-  checkArgument("", "getSimpleColoredTheme", fontName, missing(fontName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  if(R6::is.R6Class(parentPivot)&&(parentPivot$classname=="PivotTable")) argumentCheckMode <- parentPivot$argumentCheckMode
+  else argumentCheckMode <- 4
+  if(argumentCheckMode > 0) {
+    checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+    checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+    checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", colors, missing(colors), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="character")
+    checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", fontName, missing(fontName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  }
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
       "border-collapse"="collapse",

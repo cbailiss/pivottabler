@@ -37,7 +37,9 @@
 PivotData <- R6::R6Class("PivotData",
   public = list(
    initialize = function(parentPivot=NULL) {
-     checkArgument("PivotData", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+     if(parentPivot$argumentCheckMode > 0) {
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotData", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+     }
      private$p_parentPivot <- parentPivot
      private$p_parentPivot$message("PivotData$new", "Creating new Pivot Data...")
      private$p_data <- list()
@@ -45,8 +47,10 @@ PivotData <- R6::R6Class("PivotData",
      private$p_parentPivot$message("PivotData$new", "Created new Pivot Data.")
    },
    addData = function(df=NULL, dataName=NULL) {
-     checkArgument("PivotData", "addData", df, missing(df), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
-     checkArgument("PivotData", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", df, missing(df), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     }
      private$p_parentPivot$message("PivotData$addData", "Adding data...", list(dataName=dataName, df=private$getDfStr(df)))
      dn <- dataName
      if(is.null(dn)) dn <- deparse(substitute(df))
@@ -61,7 +65,9 @@ PivotData <- R6::R6Class("PivotData",
      return(invisible())
    },
    getData = function(dataName=NULL) {
-     checkArgument("PivotData", "getData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "getData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     }
      private$p_parentPivot$message("PivotData$getData", "Getting data...", list(dataName=dataName))
      if (!(dataName %in% names(private$p_data))) stop(paste0("PivotData$getData(): dataName '", dataName, "' not found."), call. = FALSE)
      data <- private$p_data[[dataName]]
@@ -69,7 +75,9 @@ PivotData <- R6::R6Class("PivotData",
      return(invisible(data))
    },
    isKnownData = function(dataName=NULL) {
-     checkArgument("PivotData", "isKnownData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "isKnownData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+     }
      private$p_parentPivot$message("PivotData$isKnownData", "Checking dataName...", list(dataName=dataName))
      if (!(dataName %in% names(private$p_data))) return(invisible(FALSE))
      private$p_parentPivot$message("PivotData$isKnownData", "Checked dataName.")
