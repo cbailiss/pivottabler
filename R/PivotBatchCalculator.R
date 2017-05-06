@@ -39,7 +39,7 @@
 #'   for a pivot table cell.}
 #'   \item{\code{evaluateBatches()}}{Evaluates batch calculations.}
 #'   \item{\code{getSummaryValueFromBatch(batchName=NULL, calculationName=NULL,
-#'   calculationGroupName=NULL, workingFilters=NULL)}}{Retrieve a value from a
+#'   calculationGroupName=NULL, workingFilters=NULL)}}{Retrieve2 a value from a
 #'   batch that has already been evaluated.}
 #' }
 
