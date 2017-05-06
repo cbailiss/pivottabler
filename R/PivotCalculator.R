@@ -66,7 +66,7 @@
 #'   \item{\code{getFiltersForNamedCalculation = function(calculationName=NULL,
 #'   calculationGroupName=NULL, rowColFilters=NULL, cell=NULL)}}{Get the working
 #'   filters for a custom calculation.}
-#'   \item{\code{setWorkingFilters = function(cell=NULL)}}{Set the working
+#'   \item{\code{setWorkingData = function(cell=NULL)}}{Set the working
 #'   filters for a cell.}
 #'   \item{\code{getSingleValue(dataFrame, valueName)}}{Gets a single value from
 #'   a data frame.  Essentially the same as the getSummaryValue() function but
@@ -395,11 +395,11 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getFiltersForNamedCalculation", "Got filters for named calculation.")
      return(invisible(filters))
    },
-   setWorkingFilters = function(cell=NULL) {
+   setWorkingData = function(cell=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setWorkingFilters", cell, missing(cell), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotCell")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setWorkingData", cell, missing(cell), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotCell")
      }
-     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setWorkingFilters", "Setting working filters for cell...")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setWorkingData", "Setting working data for cell...")
      rowNumber <- cell$rowNumber
      columnNumber <- cell$columnNumber
      calculationGroupName <- cell$calculationGroupName
@@ -411,21 +411,23 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
                                                    rowColFilters=rowColFilters, cell=cell)
      if(is.null(filters)) {
        cell$calculationFilters <- NULL
-       cell$workingFilters <- list()
+       cell$workingData <- list()
      }
      else if(length(filters)==0) {
        cell$calculationFilters <- NULL
-       cell$workingFilters <- list()
+       cell$workingData <- list()
      }
      else {
        cell$calculationFilters <- filters[[calculationName]]$calculationFilters
-       # for type=calculation, need the working filters for the base calculations as well
-       lst <- lapply(filters, function(x) { return(x$workingFilters) })
-       if(is.null(lst)) cell$workingFilters <- list()
-       else if(length(lst)==0) cell$workingFilters <- list()
-       else cell$workingFilters <- lst
+       # workingData is a list().  There is an element in the list for each calculation in the calculation group.
+       # i.e. for type=calculation, there is a set of working data for each of the base calculations (can be more than 1 base calc.)
+       # Each list element in workingData is itself a list, where the elements are the workingFilters (and later batchName) for each calculation.
+       workingData <- lapply(filters, function(x) { return(list(workingFilters=x$workingFilters)) })
+       if(is.null(workingData)) cell$workingData <- list()
+       else if(length(workingData)==0) cell$workingData <- list()
+       else cell$workingData <- workingData
      }
-     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setWorkingFilters", "Set working filters for cell.")
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setWorkingData", "Set working data for cell.")
    },
    getSingleValue = function(dataFrame=NULL, valueName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
@@ -496,13 +498,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSingleValue", "Evaluated single value.")
      return(invisible(value))
    },
-   evaluateSummariseExpression2 = function(dataName=NULL, dataFrame=NULL, workingFilters=NULL,
+   evaluateSummariseExpression2 = function(dataName=NULL, dataFrame=NULL, workingFilters=NULL, batchName=NULL,
                                           calculationName=NULL, calculationGroupName=NULL,
                                           summaryName=NULL, summariseExpression=NULL, format=NULL, noDataValue=NULL, noDataCaption=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression2", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression2", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression2", workingFilters, missing(workingFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression2", batchName, missing(batchName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression2", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression2", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression2", summaryName, missing(summaryName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -517,27 +520,31 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      valFromBatch <- FALSE
      # if in batch mode, try and get the value from a batch calculation
      if(private$p_parentPivot$evaluationMode=="batch") {
-       batchValue <- private$p_batchCalculator$getSummaryValueFromBatch(dataName=dataName, calculationName=calculationName,
-                                                                        calculationGroupName=calculationGroupName, workingFilters=workingFilters)
-       if(batchValue$isBatchCompatible==FALSE) {
-         # fall through to sequential evaluation
-       }
-       else if(batchValue$batchEvaluated==FALSE) {
+       if(is.null(batchName)) {
          # fall through to sequential evaluation
        }
        else {
-         # no data?
-         if(is.null(batchValue$value)) {
-           value$rawValue <- noDataValue
-           if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
-           else value$formattedValue <- self$formatValue(noDataValue, format=format)
+         # try to get the value from a batch calculation
+         batchValue <- private$p_batchCalculator$getSummaryValueFromBatch(batchName=batchName, calculationName=calculationName,
+                                                                          calculationGroupName=calculationGroupName, workingFilters=workingFilters)
+         # was the batch evaluated?
+         if(!batchValue$batchEvaluated) {
+           # fall through to sequential evaluation
          }
          else {
-           # format the value
-           value$rawValue <- batchValue$value
-           value$formattedValue <- self$formatValue(batchValue$value, format=format)
+           # no data?
+           if(is.null(batchValue$value)) {
+             value$rawValue <- noDataValue
+             if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
+             else value$formattedValue <- self$formatValue(noDataValue, format=format)
+           }
+           else {
+             # format the value
+             value$rawValue <- batchValue$value
+             value$formattedValue <- self$formatValue(batchValue$value, format=format)
+           }
+           valFromBatch <- TRUE
          }
-         valFromBatch <- TRUE
        }
      }
      # if not in batch mode, or was unable to get the value from a batch calculation, then calculate the old fashioned way
@@ -636,11 +643,12 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateCalculateFunction", "Evaluated calculation function.")
      return(invisible(value))
    },
-   evaluateNamedCalculation1 = function(calculationName=NULL, calculationGroupName=NULL, workingFilters=NULL, cell=NULL) {
+   evaluateNamedCalculation1 = function(calculationName=NULL, calculationGroupName=NULL, workingData=NULL, cell=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateNamedCalculation1", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateNamedCalculation1", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateNamedCalculation1", workingFilters, missing(workingFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotFilters")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateNamedCalculation1", workingData, missing(workingData), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
+       if(private$p_parentPivot$argumentCheckMode==4) private$p_batchCalculator$checkValidWorkingData(workingData=workingData)
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateNamedCalculation1", cell, missing(cell), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotCell")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateNamedCalculation1", "Evaluating named calculation...")
@@ -656,13 +664,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      results <- list() # each item in the list is a list of three items (rawValue, formattedValue, filters)
      for(i in 1:length(execOrder)) {
        calc <- calcs[[execOrder[i]]]
-       filters <- workingFilters[[calc$calculationName]]
+       filters <- workingData[[calc$calculationName]]$workingFilters
        if(calc$type=="value") {
          df <- self$getDataFrame(calc$dataName)
          if((!is.null(cell))&&(cell$isTotal==TRUE)) {
            if(is.null(calc$summariseExpression)) { value <- private$getNullValue() }
            else {
-             value <- self$evaluateSummariseExpression2(dataName=calc$dataName, dataFrame=df, workingFilters=filters,
+             batchName <- workingData[[calc$calculationName]]$batchName
+             value <- self$evaluateSummariseExpression2(dataName=calc$dataName, dataFrame=df, workingFilters=filters, batchName=batchName,
                                                         calculationName=calc$calculationName, calculationGroupName=calculationGroupName,
                                                         summaryName=calc$calculationName, summariseExpression=calc$summariseExpression,
                                                         format=calc$format, noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
@@ -677,7 +686,8 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        }
        else if(calc$type=="summary") {
          df <- self$getDataFrame(calc$dataName)
-         value <- self$evaluateSummariseExpression2(dataName=calc$dataName, dataFrame=df, workingFilters=filters,
+         batchName <- workingData[[calc$calculationName]]$batchName
+         value <- self$evaluateSummariseExpression2(dataName=calc$dataName, dataFrame=df, workingFilters=filters, batchName=batchName,
                                                     calculationName=calc$calculationName, calculationGroupName=calculationGroupName,
                                                     summaryName=calc$calculationName, summariseExpression=calc$summariseExpression,
                                                     format=calc$format, noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
@@ -726,19 +736,18 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
                                                          rowColFilters=rowColFilters, cell=NULL)
      # get the working filters from filters (code taken from PivotCalculator$setWorkingFilters)
      workingFilters <- NULL
-     if(is.null(filters)) workingFilters <- list()
-     else if(length(filters)==0) workingFilters <- list()
+     if(is.null(filters)) workingData <- list()
+     else if(length(filters)==0) workingData <- list()
      else {
        # for type=calculation, need the working filters for the base calculations as well, so could have more than one
-       lst <- lapply(filters, function(x) { return(x$workingFilters) })
-       if(is.null(lst)) workingFilters <- list()
-       else if(length(lst)==0) workingFilters <- list()
-       else workingFilters <- lst
+       workingData <- lapply(filters, function(x) { return(list(workingFilters=x$workingFilters)) })
+       if(is.null(workingData)) workingData <- list()
+       else if(length(workingData)==0) workingData <- list()
      }
      # calculate the value
      results <- self$evaluateNamedCalculation1(calculationName=calculationName,
                                                calculationGroupName=calculationGroupName,
-                                               workingFilters=workingFilters, cell=NULL)
+                                               workingData=workingData, cell=NULL)
      # returns a list of named results
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateNamedCalculation1", "Evaluated named calculation.")
      return(invisible(results))
@@ -754,9 +763,8 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      calculationName <- cell$calculationName
      if(is.null(calculationGroupName)) return(invisible())
      if(is.null(calculationName)) return(invisible())
-     workingFilters <- cell$workingFilters
      results <- self$evaluateNamedCalculation1(calculationName=calculationName, calculationGroupName=calculationGroupName,
-                                              workingFilters=workingFilters, cell=cell)
+                                               workingData=cell$workingData, cell=cell)
      if(!(calculationName %in% names(results)))
        stop(paste0("PivotCalculator$evaluateCell():  calculation result for '", calculationName,
                    "' not found in cell r=", rowNumber, ", c=", columnNumber), call. = FALSE)

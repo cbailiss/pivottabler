@@ -96,8 +96,9 @@ PivotBatchStatistics <- R6::R6Class("PivotBatchStatistics",
         for(i in 1:length(private$p_statistics)) {
           calcGrp <- private$p_statistics[[i]]
           if(is.null(calcGrp)) next
+          if(length(calcGrp)==0) next
           calcNms <- names(private$p_statistics[[i]])
-          for(j in 1:length(private$p_statistics)) {
+          for(j in 1:length(calcGrp)) {
             calc <- private$p_statistics[[i]][[j]]
             if(is.null(calc)) next
             noData <- calc["noData"]

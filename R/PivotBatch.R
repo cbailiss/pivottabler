@@ -56,6 +56,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
       private$p_parentPivot <- parentPivot
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$new", "Creating new Pivot Batch...")
       private$p_batchId <- batchId
+      private$p_batchName <- paste0("batch", sprintf("%06d", batchId))
       private$p_dataName <- dataName
       private$p_variableNames <- variableNames
       private$p_values <- values
@@ -248,6 +249,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
   ),
   active = list(
     batchId = function(value) { return(invisible(private$p_batchId)) },
+    batchName = function(value) { return(invisible(private$p_batchName)) },
     compatibleCount = function(value) { return(invisible(private$p_compatibleCount)) },
     evaluated = function(value) { return(invisible(private$p_evaluated)) },
     results = function(value) { return(invisible(private$p_results)) },
@@ -291,6 +293,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
   private = list(
     p_parentPivot = NULL,
     p_batchId = 0,
+    p_batchName = NULL,
     p_dataName = NULL,            # the name of the data frame
     p_variableNames = NULL,       # a character vector specifying the grain of the calculation
     p_values = NULL,              # a list, where the element names are variable names, and the elements are lists of values
