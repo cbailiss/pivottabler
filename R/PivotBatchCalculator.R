@@ -39,8 +39,8 @@
 #'   for a pivot table cell.}
 #'   \item{\code{evaluateBatches()}}{Evaluates batch calculations.}
 #'   \item{\code{getSummaryValueFromBatch(batchName=NULL, calculationName=NULL,
-#'   calculationGroupName=NULL, workingFilters=NULL)}}{Retrieve2 a value from a
-#'   batch that has already been evaluated.}
+#'   calculationGroupName=NULL, workingFilters=NULL)}}{Retrieve a value from a
+#'   the results of a batch that has been evaluated.}
 #' }
 
 PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
