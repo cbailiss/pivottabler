@@ -672,10 +672,10 @@ PivotTable <- R6::R6Class("PivotTable",
       for(r in 1:rowCount) {
         for(c in 1:columnCount) {
           cell <- private$p_cells$getCell(r, c)
-          calculator$setWorkingFilters(cell)
+          calculator$setWorkingData(cell)
         }
       }
-      private$addTiming("evaluateCells:setWorkingFilters", timeStart1)
+      private$addTiming("evaluateCells:setWorkingData", timeStart1)
       if(private$p_evaluationMode=="batch") {
         timeStart1 <- proc.time()
         calculator$generateBatchesForCellEvaluation()

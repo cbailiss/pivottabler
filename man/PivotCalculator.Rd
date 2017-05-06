@@ -75,7 +75,7 @@ calculating the value of a cell in a pivot table.
   \item{\code{getFiltersForNamedCalculation = function(calculationName=NULL,
   calculationGroupName=NULL, rowColFilters=NULL, cell=NULL)}}{Get the working
   filters for a custom calculation.}
-  \item{\code{setWorkingFilters = function(cell=NULL)}}{Set the working
+  \item{\code{setWorkingData = function(cell=NULL)}}{Set the working
   filters for a cell.}
   \item{\code{getSingleValue(dataFrame, valueName)}}{Gets a single value from
   a data frame.  Essentially the same as the getSummaryValue() function but
@@ -86,9 +86,16 @@ calculating the value of a cell in a pivot table.
   \item{\code{evaluateSingleValue(dataFrame, workingFilters,
   valueName, format, noDataValue, noDataCaption)}}{A wrapper for
   getSingleValue() which performs filtering and handles edge cases.}
-  \item{\code{evaluateSummariseExpression(dataFrame, workingFilters, summaryName, summariseExpression, format, noDataValue,
-  noDataCaption)}}{A wrapper for getSummaryValue() which performs filtering
-  and handles edge cases.}
+  \item{\code{evaluateSummariseExpression2(dataName=NULL, dataFrame=NULL,
+  workingFilters=NULL, calculationName=NULL, calculationGroupName=NULL,
+  summaryName=NULL, summariseExpression=NULL, format=NULL, noDataValue=NULL,
+  noDataCaption=NULL)}}{Calculate a summary value, either using a batch or
+  sequential calculation.}
+  \item{\code{evaluateSummariseExpression1(dataFrame=NULL,
+  workingFilters=NULL, summaryName=NULL, summariseExpression=NULL,
+  format=NULL, noDataValue=NULL, noDataCaption=NULL)}}{A wrapper for
+  getSummaryValue() which performs filtering and handles edge cases for
+  sequential evaluation.}
   \item{\code{evaluateCalculationExpression(values, calculationExpression,
   format, noDataValue, noDataCaption)}}{Evaluates an R expression in order to
   combine the results of other calculations.}

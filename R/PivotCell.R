@@ -31,9 +31,9 @@
 #'   and column headings.
 #' @field calculationFilters The data filters applied to this cell from the
 #'   calculation definition.
-#' @field workingFilters The data filters used applied when running calculations
-#'   (including the filters needed for base calculations when calculation
-#'   type="calculation").
+#' @field workingData The data filters and batchNames used applied when running
+#'   calculations (including the filters needed for base calculations when
+#'   calculation type="calculation").
 #' @field evaluationFilters The final and actual data filters used in the
 #'   calculation of the cell value (e.g. custom calculation functions can
 #'   override the working filters).
@@ -88,7 +88,7 @@ PivotCell <- R6::R6Class("PivotCell",
      private$p_columnFilters <- columnFilters
      private$p_rowColFilters <- rowColFilters
      private$p_calculationFilters <- NULL
-     private$p_workingFilters <- NULL
+     private$p_workingData <- NULL
      private$p_evaluationFilters <- NULL
      private$p_rowLeafGroup <- rowLeafGroup
      private$p_columnLeafGroup <- columnLeafGroup
@@ -109,14 +109,17 @@ PivotCell <- R6::R6Class("PivotCell",
      if(!is.null(private$p_columnFilters)) fstr3 <- private$p_columnFilters$asString()
      if(!is.null(private$p_calculationFilters)) fstr4 <- private$p_calculationFilters$asString()
      if(!is.null(private$p_evaluationFilters)) fstr5 <- private$p_evaluationFilters$asString()
-     flst <- NULL
-     if(!is.null(private$p_workingFilters)) {
-       flst <- list()
-       if(length(private$p_workingFilters)>0) {
-         for(i in 1:length(private$p_workingFilters)) {
+     wdlst <- NULL
+     if(!is.null(private$p_workingData)) {
+       wdlst <- list()
+       if(length(private$p_workingData)>0) {
+         for(i in 1:length(private$p_workingData)) {
+           clst <- list()
            fstrW <- NULL
-           if(!is.null(private$p_workingFilters[[i]])) fstrW <- private$p_workingFilters[[i]]$asString()
-           flst[[names(private$p_workingFilters)[i]]] <- fstrW
+           if(!is.null(private$p_workingData[[i]]$workingFilters)) fstrW <- private$p_workingData[[i]]$workingFilters$asString()
+           clst$workingFilters <- fstrW
+           clst$batchName <- private$p_workingData[[i]]$batchName
+           wdlst[[names(private$p_workingData)[i]]] <- clst
          }
        }
      }
@@ -129,7 +132,7 @@ PivotCell <- R6::R6Class("PivotCell",
        rowFilters=fstr2,
        columnFilters=fstr3,
        calculationFilters=fstr4,
-       workingFilters=flst,
+       workingData=wdlst,
        evaluationFilters=fstr5,
        rowLeafCaption=private$p_rowLeafGroup$caption,
        columnLeafCaption=private$p_columnLeafGroup$caption,
@@ -157,13 +160,13 @@ PivotCell <- R6::R6Class("PivotCell",
        return(invisible())
      }
    },
-   workingFilters = function(value) {
-     if(missing(value)) { return(invisible(private$p_workingFilters)) }
+   workingData = function(value) {
+     if(missing(value)) { return(invisible(private$p_workingData)) }
      else {
        if(private$p_parentPivot$argumentCheckMode > 0) {
-         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "workingFilters", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="PivotFilters")
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "workingData", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list")
        }
-       private$p_workingFilters <- value
+       private$p_workingData <- value
        return(invisible())
      }
    },
@@ -231,7 +234,7 @@ PivotCell <- R6::R6Class("PivotCell",
     p_columnFilters = NULL,           # an object ref (shared across this column)
     p_rowColFilters = NULL,           # an object ref (unique to this cell)
     p_calculationFilters = NULL,      # an object ref (shared across this calculation)
-    p_workingFilters = NULL,          # a list of object refs (unique to the cell)
+    p_workingData = NULL,             # a list:  element = calculationName, value = a list of two elements (workingFilters & batchId) for the calculation
     p_evaluationFilters = NULL,       # an obejct ref (unique to this cell)
     p_rowLeafGroup = NULL,            # an object ref (shared across this row)
     p_columnLeafGroup = NULL,         # an object ref (shared across this column)

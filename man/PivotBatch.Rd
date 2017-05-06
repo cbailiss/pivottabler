@@ -44,7 +44,12 @@ that are needed when calculating the values of cells in a pivot table.
   compatible with this batch.}
   \item{\code{addCompatible(values=NULL, calculationName=NULL,
   calculationGroupName=NULL)}}{Adds another cell calculation to this batch.}
+  \item{\code{getCalculationInternalName(calculationName=NULL,
+  calculationGroupName=NULL)}}{Find the internal name for this calculation.}
   \item{\code{evaluateBatch()}}{Evaluate this batch.}
+  \item{\code{getSummaryValueFromBatch(filters=NULL, calculationName=NULL,
+  calculationGroupName=NULL)}}{Retrieve a value from a batch that has already
+  been evaluated.}
 }
 }
 

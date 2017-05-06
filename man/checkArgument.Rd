@@ -4,13 +4,20 @@
 \alias{checkArgument}
 \title{Perform basic checks on a function argument.}
 \usage{
-checkArgument(className, methodName, argumentValue, isMissing,
-  allowMissing = FALSE, allowNull = FALSE, allowedClasses = NULL,
-  mustBeAtomic = FALSE, allowedListElementClasses = NULL,
-  listElementsMustBeAtomic = FALSE, allowedValues = NULL, minValue = NULL,
-  maxValue = NULL, maxLength = NULL)
+checkArgument(argumentCheckMode, checkDataTypes, className, methodName,
+  argumentValue, isMissing, allowMissing = FALSE, allowNull = FALSE,
+  allowedClasses = NULL, mustBeAtomic = FALSE,
+  allowedListElementClasses = NULL, listElementsMustBeAtomic = FALSE,
+  allowedValues = NULL, minValue = NULL, maxValue = NULL,
+  maxLength = NULL)
 }
 \arguments{
+\item{argumentCheckMode}{A number between 0 and 4 specifying the checks to
+perform.}
+
+\item{checkDataTypes}{A logical value specifiying whether the data types
+should be checked when argumentCheckMode=3}
+
 \item{className}{The name of the calling class, for inclusion in error
 messages.}
 

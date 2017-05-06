@@ -49,9 +49,9 @@ and column headings.}
 \item{\code{calculationFilters}}{The data filters applied to this cell from the
 calculation definition.}
 
-\item{\code{workingFilters}}{The data filters used applied when running calculations
-(including the filters needed for base calculations when calculation
-type="calculation").}
+\item{\code{workingData}}{The data filters and batchNames used applied when running
+calculations (including the filters needed for base calculations when
+calculation type="calculation").}
 
 \item{\code{evaluationFilters}}{The final and actual data filters used in the
 calculation of the cell value (e.g. custom calculation functions can

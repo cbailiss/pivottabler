@@ -45,12 +45,15 @@ calculation.}
   workingFilters=NULL)}}{Generates one or more batches for a named
   calculation and single working filters object.}
   \item{\code{generateBatchesForNamedCalculationEvaluation2(calculationName=NULL,
-  calculationGroupName=NULL, workingFilters=NULL)}}{Generates one or more
-  batches for a named calculation and set of working filters objects
+  calculationGroupName=NULL, workingData=NULL)}}{Generates one or more
+  batches for a named calculation and set of working working data
   associated with a cell.}
   \item{\code{generateBatchesForCellEvaluation()}}{Generates one or batches
   for a pivot table cell.}
   \item{\code{evaluateBatches()}}{Evaluates batch calculations.}
+  \item{\code{getSummaryValueFromBatch(dataName=NULL, calculationName=NULL,
+  calculationGroupName=NULL, workingData=NULL)}}{Retrieve a value from a
+  batch that has already been evaluated.}
 }
 }
 

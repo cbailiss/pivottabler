@@ -19,6 +19,9 @@ constructing and interacting with the pivot table.
 \section{Fields}{
 
 \describe{
+\item{\code{argumentCheckMode}}{A number (0-4 meaning none, minimal, basic,
+balanced, full) indicating the argument checking level.}
+
 \item{\code{data}}{A PivotData object containing the data frames used to populate
 the pivot table.}
 
@@ -34,6 +37,9 @@ the pivot calculations in the pivot table.}
 \item{\code{calculationsPosition}}{"row" or "column" indicating where the
 calculation names will appear (only if multiple calculations are defined
 and visible in the pivot table).}
+
+\item{\code{filterMode}}{Either "base" (for base R) or "dplyr" to specify how data
+frames are filtered.}
 
 \item{\code{evaluationMode}}{Either "sequential" or "batch" to specify how summary
 calculations (i.e. where type="summary") are evaluated.}
@@ -51,6 +57,12 @@ pivot table.}
 
 \item{\code{allowExternalStyles}}{Enable support for external styles, when producing
 content for external systems.}
+
+\item{\code{allTimings}}{The time taken for various activities related to
+constructing the pivot table.}
+
+\item{\code{significantTimings}}{The time taken for various activities related to
+constructing the pivot table, where the elapsed time > 0.1 seconds.}
 }}
 
 \section{Methods}{
@@ -58,7 +70,7 @@ content for external systems.}
 \describe{
   \item{Documentation}{For more complete explanations and examples please see
   the extensive vignettes supplied with this package.}
-  \item{\code{new(messages=FALSE, messageFile=NULL)}}{Create a new pivot
+  \item{\code{new(traceEnabled=FALSE, traceFile=NULL)}}{Create a new pivot
   table, including optionally enabling debug logging.}
 
   \item{\code{addData(df, dataName)}}{Add a data frame with the specified
