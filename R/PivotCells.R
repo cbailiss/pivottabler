@@ -71,8 +71,10 @@ PivotCells <- R6::R6Class("PivotCells",
      private$p_rowGroups <- rowGroups
      private$p_columnGroups <- columnGroups
      private$p_rows <- list() # a list of rows, each containing a list of values in the row
+     private$p_rows[[length(rowGroups)]] <- NA # this pre-sizes the list (seems to save around 1 second for a 1500 cell table)
      for(r in 1:length(rowGroups)) {
        private$p_rows[[r]] <- list()
+       private$p_rows[[r]][[length(columnGroups)]] <- NA # this pre-sizes the list (seems to save around 1 second for a 1500 cell table)
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$setGroups", "Created new PivotCells.")
    },

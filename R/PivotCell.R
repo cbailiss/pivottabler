@@ -79,7 +79,6 @@ PivotCell <- R6::R6Class("PivotCell",
      private$p_parentPivot <- parentPivot
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCell$new", "Creating new PivotCell",
                                    list(rowNumber=rowNumber, columnNumber=columnNumber))
-     private$p_parentPivot <- parentPivot
      private$p_rowNumber <- rowNumber
      private$p_columnNumber <- columnNumber
      private$p_calculationName <- calculationName
