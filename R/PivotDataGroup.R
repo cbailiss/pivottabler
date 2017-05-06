@@ -306,7 +306,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                         expandExistingTotals=expandExistingTotals, addTotal=addTotal, visualTotals=visualTotals,
                                         totalPosition=totalPosition, totalCaption=totalCaption))
      private$p_parentPivot$resetCells()
-     if(missing(variableName)||is.null(variableName)) stop("PivotDataGroup$addDataGroups(): variableName must be specified", call. = FALSE)
+     if(missing(variableName)||is.null(variableName)) stop("PivotDataGroup$addDataGroups(): variableName must be specified.", call. = FALSE)
      if(addTotal==TRUE){ private$p_visualTotals <- visualTotals }
      df <- NULL
      topLevelDisinctValues <- NULL
@@ -317,10 +317,22 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if(missing(dataName)||is.null(dataName)) {
          if (private$p_parentPivot$data$count < 1) stop("PivotDataGroup$addDataGroups():  No data frames.  Specify data before calling addLeafGroup.", call. = FALSE)
          df <- private$p_parentPivot$data$defaultData
+         if(!is.null(df)) {
+           if(!(variableName %in% colnames(df))) {
+             dn <- paste0("'", private$p_parentPivot$data$defaultName, "'")
+             if(is.null(dn)) dn <- "default"
+             stop(paste0("PivotDataGroup$addDataGroups():  Column name '", variableName, "' not found in ", dn, " data frame."), call. = FALSE)
+           }
+         }
        }
        else {
          df <- private$p_parentPivot$data$getData(dataName)
          if(is.null(df)) stop(paste0("PivotDataGroup$addDataGroups():  No data frame found in PivotTable with name '", dataName, "'."), call. = FALSE)
+         if(!is.null(df)) {
+           if(!(variableName %in% colnames(df))) {
+             stop(paste0("PivotDataGroup$addDataGroups():  Column name '", variableName, "' not found in '", dataName, "' data frame."), call. = FALSE)
+           }
+         }
        }
      }
      else {
@@ -407,26 +419,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            # build a dplyr query
            data <- df
            # todo: checking the escaping of the variable names and values below
-           if((!rowColFilters$isALL)&&(rowColFilters$count > 0))
-           {
-             filterCmd <- NULL
-             filterCount <- 0
-             for(j in 1:length(rowColFilters$filters)) {
-               filter <- rowColFilters$filters[[j]]
-               if(is.null(filter$variableName)) stop("PivotCalculator$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
-               if(is.null(filter$values)) next
-               if(length(filter$values)==0) next
-               if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
-               if(length(filter$values)>0) {
-                 # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
-                 filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% rowColFilters$filters[[", j, "]]$values)")
-                 filterCount <- filterCount + 1
-               }
-             }
-             if(filterCount > 0) {
-               filterCmd <- paste0("data <- dplyr::filter(data,", filterCmd, ")")
-               eval(parse(text=filterCmd))
-             }
+           if((!rowColFilters$isALL)&&(rowColFilters$count > 0)) {
+             data <- rowColFilters$getFilteredDataFrame(dataFrame=data)
            }
            # get the distinct values for the current variable
            eval(parse(text=paste0("data <- dplyr::select(data, ", variableName, ")")))
@@ -438,12 +432,6 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            allValues <- union(allValues, distinctValues)
          }
        }
-       # todo: potential perf optimisation
-       # if the set of distinct values being used in the pivot matches the set of distinct values in the
-       # data frame, then the additional filtering being done in the total column is wasted effort.  So,
-       # if the generating the row/column groups for a particular variable (E.g. Gender) from the data frame
-       # then switch visual totals off (if only M and F in the data, and M and F columns are added to the pivot, then
-       # having a total column with a filter of M or F is pointless)
 
        # check we have some values
        if(is.null(distinctValues)||(length(distinctValues)==0)) {
