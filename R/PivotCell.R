@@ -233,7 +233,7 @@ PivotCell <- R6::R6Class("PivotCell",
     p_columnFilters = NULL,           # an object ref (shared across this column)
     p_rowColFilters = NULL,           # an object ref (unique to this cell)
     p_calculationFilters = NULL,      # an object ref (shared across this calculation)
-    p_workingData = NULL,             # a list:  element = calculationName, value = a list of two elements (workingFilters & batchId) for the calculation
+    p_workingData = NULL,             # a list:  element = calculationName, value = a list of two elements (workingFilters & batchName) for the calculation
     p_evaluationFilters = NULL,       # an obejct ref (unique to this cell)
     p_rowLeafGroup = NULL,            # an object ref (shared across this row)
     p_columnLeafGroup = NULL,         # an object ref (shared across this column)

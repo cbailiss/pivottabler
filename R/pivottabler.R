@@ -13,6 +13,7 @@
 #'   (to ensure uniqueness).
 #' @param includeRCFilters Show/hide filter detail for debugging.
 #' @param includeCalculationFilters Show/hide filter detail for debugging.
+#' @param includeWorkingData Show/hide working data detail for debugging.
 #' @param includeEvaluationFilters Show/hide filter detail for debugging.
 #' @param includeCalculationNames Show/hide filter detail for debugging.
 #' @param includeRawValue Show/hide filter detail for debugging.
@@ -21,6 +22,7 @@
 #' # See the Shiny vignette in this package for examples.
 pivottabler <- function(pt, width=NULL, height=NULL, styleNamePrefix=NULL,
                    includeRCFilters=FALSE, includeCalculationFilters=FALSE,
+                   includeWorkingData=FALSE,
                    includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
                    includeRawValue=FALSE) {
   settings <- list() # may need this in the future
@@ -28,6 +30,7 @@ pivottabler <- function(pt, width=NULL, height=NULL, styleNamePrefix=NULL,
     tableCss = pt$getCss(styleNamePrefix=styleNamePrefix),
     tableHtml = as.character(pt$getHtml(styleNamePrefix=styleNamePrefix,
                                         includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
+                                        includeWorkingData=includeWorkingData,
                                         includeEvaluationFilters=includeEvaluationFilters,
                                         includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)),
     settings = settings
