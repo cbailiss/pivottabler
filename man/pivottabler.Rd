@@ -6,8 +6,8 @@
 \usage{
 pivottabler(pt, width = NULL, height = NULL, styleNamePrefix = NULL,
   includeRCFilters = FALSE, includeCalculationFilters = FALSE,
-  includeEvaluationFilters = FALSE, includeCalculationNames = FALSE,
-  includeRawValue = FALSE)
+  includeWorkingData = FALSE, includeEvaluationFilters = FALSE,
+  includeCalculationNames = FALSE, includeRawValue = FALSE)
 }
 \arguments{
 \item{pt}{The pivot table to render.}
@@ -22,6 +22,8 @@ pivottabler(pt, width = NULL, height = NULL, styleNamePrefix = NULL,
 \item{includeRCFilters}{Show/hide filter detail for debugging.}
 
 \item{includeCalculationFilters}{Show/hide filter detail for debugging.}
+
+\item{includeWorkingData}{Show/hide working data detail for debugging.}
 
 \item{includeEvaluationFilters}{Show/hide filter detail for debugging.}
 
