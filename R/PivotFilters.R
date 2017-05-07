@@ -204,7 +204,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
     },
     setFilter = function(filter=NULL, action="replace") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilters", "Setting filter...", list(action=action, filter=filter$asString()))

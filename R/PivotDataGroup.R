@@ -80,8 +80,9 @@
 #'   dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
 #'   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
 #'   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-#'   totalCaption="Total")}}{Generate new data groups based on the distinct
-#'   values in a data frame or using explicitly specified data values.}
+#'   totalCaption="Total", preGroupData=TRUE)}}{Generate new data groups based
+#'   on the distinct values in a data frame or using explicitly specified data
+#'   values.}
 #'   \item{\code{sortDataGroups(levelNumber=1, orderBy="calculation",
 #'   sortOrder="desc", calculationGroupName="default", calculationName)}}{Sort
 #'   data groups either by the data group data value, caption or based on
@@ -279,9 +280,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    # single pivot table row/column to represent multiple values)
    # atLevel is the number of levels below the current level
    addDataGroups = function(variableName=NULL, atLevel=NULL, fromData=TRUE, # atLevel=0 is the current level, 1 = one level below, etc
-                                dataName=NULL, dataSortOrder="asc", dataFormat=NULL, onlyCombinationsThatExist=TRUE,
-                                explicitListOfValues=NULL, calculationGroupName=NULL,
-                                expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total") {
+                            dataName=NULL, dataSortOrder="asc", dataFormat=NULL, onlyCombinationsThatExist=TRUE,
+                            explicitListOfValues=NULL, calculationGroupName=NULL,
+                            expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
+                            preGroupData=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "addDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "addDataGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
@@ -297,6 +299,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "addDataGroups", visualTotals, missing(visualTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "addDataGroups", totalPosition, missing(totalPosition), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("before", "after"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "addDataGroups", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "addDataGroups", preGroupData, missing(preGroupData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addDataGroups", "Adding data groups...",
                                    list(variableName=variableName, atLevel=atLevel, fromData=fromData,
@@ -304,7 +307,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                         onlyCombinationsThatExist=onlyCombinationsThatExist,
                                         explicitListOfValues=explicitListOfValues, calculationGroupName=calculationGroupName,
                                         expandExistingTotals=expandExistingTotals, addTotal=addTotal, visualTotals=visualTotals,
-                                        totalPosition=totalPosition, totalCaption=totalCaption))
+                                        totalPosition=totalPosition, totalCaption=totalCaption, preGroupData=preGroupData))
      private$p_parentPivot$resetCells()
      if(missing(variableName)||is.null(variableName)) stop("PivotDataGroup$addDataGroups(): variableName must be specified.", call. = FALSE)
      if(addTotal==TRUE){ private$p_visualTotals <- visualTotals }
@@ -376,6 +379,23 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if((is.null(parentGroups))||(length(parentGroups)==0)) {
          parentGroups <- list()
          parentGroups[[1]] <- self
+       }
+     }
+     # pre-group the data?
+     if((fromData==TRUE)&&(onlyCombinationsThatExist==TRUE)&&(preGroupData==TRUE)) {
+       ascGroups <- self$getAncestorGroups(includeCurrentGroup=TRUE)
+       descGroups <- self$getDescendantGroups(includeCurrentGroup=FALSE)
+       varNamesInUse1 <- lapply(ascGroups, function(grp) { grp$filters$filteredVariables })
+       varNamesInUse1 <- unlist(varNamesInUse1[!sapply(varNamesInUse1, is.null)])
+       varNamesInUse2 <- lapply(descGroups, function(grp) { grp$filters$filteredVariables })
+       varNamesInUse2 <- unlist(varNamesInUse2[!sapply(varNamesInUse2, is.null)])
+       varNamesInUse3 <- union(union(varNamesInUse1, varNamesInUse2), variableName)
+       if(length(varNamesInUse3)>0) {
+         # build a dplyr query
+         # todo: checking the escaping of the variable names and values below
+         # get the distinct values for these variables
+         eval(parse(text=paste0("df <- dplyr::distinct(df, ", paste(varNamesInUse3, sep="", collapse=", "), ")")))
+         df <- dplyr::collect(df)
        }
      }
      # for each group...
