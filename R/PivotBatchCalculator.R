@@ -64,12 +64,13 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
     },
     checkValidWorkingData = function(workingData=NULL) {
       if(private$p_parentPivot$argumentCheckMode != 4) return()
-      checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "isValidWorkingData", workingData, missing(workingData), allowMissing=FALSE, allowNull=TRUE, allowedClasses="list")
+      checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "checkValidWorkingData", workingData, missing(workingData), allowMissing=FALSE, allowNull=TRUE, allowedClasses="list")
       if(is.null(workingData)) return()
       workingFilters <- lapply(workingData, function(x) { return(x$workingFilters) })
-      checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "isValidWorkingData", workingFilters, missing(workingData), allowMissing=FALSE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotFilters")
-      batchNames <- sapply(workingData, function(x) { return(ifelse(is.null(x$batchName), NA, x$batchName)) })
-      checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "isValidWorkingData", batchNames, missing(workingData), allowMissing=FALSE, allowNull=TRUE, allowedClasses="character")
+      checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "checkValidWorkingData", workingFilters, missing(workingData), allowMissing=FALSE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="PivotFilters")
+      batchNames <- lapply(workingData, function(x) { return(x$batchName) })
+      batchNames <- unlist(batchNames[!sapply(batchNames, is.null)])
+      checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "checkValidWorkingData", batchNames, missing(workingData), allowMissing=FALSE, allowNull=TRUE, allowedClasses="character")
     },
     isFiltersBatchCompatible = function(filters=NULL) {
       # only filters that specify zero or one value for each variable are compatible with batch evaluation
@@ -256,7 +257,7 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
     },
     getSummaryValueFromBatch = function(batchName=NULL, calculationName=NULL, calculationGroupName=NULL, workingFilters=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", batchName, missing(batchName), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("numeric", "integer"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", batchName, missing(batchName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", workingFilters, missing(workingFilters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")

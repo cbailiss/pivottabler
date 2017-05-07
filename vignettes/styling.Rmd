@@ -40,7 +40,7 @@ Currently, `pivottabler` renders pivot tables only to HTML.  For HTML tables, th
 
 An example of defining a `pivottabler` style is:
 
-```{r, warning=FALSE, eval=FALSE}
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
 pivotStyles$addStyle(styleName="ColumnHeader", list(
     font="0.75em arial",
     padding="2px",
@@ -61,7 +61,7 @@ If multiple pivot tables are being output together (e.g. into a single HTML page
 
 The `pivottabler` package includes three basic themes:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # basic theme
 library(pivottabler)
 pt <- PivotTable$new()
@@ -73,7 +73,7 @@ pt$theme <- "default"  # this theme is already the default, so this line isn't r
 pt$renderPivot(styleNamePrefix="t0")
 ```
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # compact theme
 library(pivottabler)
 pt <- PivotTable$new()
@@ -85,7 +85,7 @@ pt$theme <- "compact"
 pt$renderPivot(styleNamePrefix="t1")
 ```
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # large plain theme
 library(pivottabler)
 pt <- PivotTable$new()
@@ -101,7 +101,7 @@ pt$renderPivot(styleNamePrefix="t2")
 
 The `pivottabler` package includes the `getSimpleColoredTheme()` function that helps define basic new themes quickly.  Several examples of using this function are shown below. 
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # define the colours
 blue1Colors <- list(
   headerBackgroundColor = "rgb(68, 114, 196)",
@@ -125,7 +125,7 @@ pt$theme <- theme
 pt$renderPivot(styleNamePrefix="t3")
 ```
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # define the colours
 grayColors <- list(
   headerBackgroundColor = "rgb(128, 128, 128)",
@@ -149,7 +149,7 @@ pt$theme <- theme
 pt$renderPivot(styleNamePrefix="t4")
 ```
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # define the colours
 orangeColors <- list(
   headerBackgroundColor = "rgb(237, 125, 49)",
@@ -173,7 +173,7 @@ pt$theme <- theme
 pt$renderPivot(styleNamePrefix="t5")
 ```
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # define the colours
 greenColors <- list(
   headerBackgroundColor = "rgb(112, 173, 71)",
@@ -197,7 +197,7 @@ pt$theme <- theme
 pt$renderPivot(styleNamePrefix="t6")
 ```
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # define the colours
 yellowColors <- list(
   headerBackgroundColor = "rgb(255, 192, 0)",
@@ -233,7 +233,7 @@ Since a theme is a collection of styles they can be relatively easily created.  
 
 E.g. creating a custom theme that displays a mixture of bright colours (a rather ugly bubble-gum theme):
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # define the theme and styles
 createCustomTheme <- function(parentPivot=NULL, themeName="myCustomTheme") {
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
@@ -308,7 +308,7 @@ pt$renderPivot(styleNamePrefix="t8")
 
 The individual cells in the pivot table can have their appearance changed by retrieving the cell then applying a style to the cell.  These styles typically apply in addition to the styles coming from the underlying theme, e.g. highlighting a cell:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # define the colours
 orangeColors <- list(
   headerBackgroundColor = "rgb(237, 125, 49)",

@@ -38,7 +38,7 @@ Sometimes it is desirable to retrieve the pivot table results as a more standard
 
 The following pivot table is used as the basis of the examples in the rest of this vignette:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -60,7 +60,7 @@ For outputting as a htmlwidget in a Shiny application, use `pivottabler(pt)`.
 
 To retrieve the HTML of a pivot table, use `pt$getHtml()`.  This returns a list of html tag objects built using the htmltools package.  This object can be converted to a simple character variable using `as.character()` or as illustrated below.  The CSS declarations for a pivot table can be retrieved using `pt$getCss()` - also illustrated below.
 
-```{r, warning=FALSE, comment=""}
+```{r, message=FALSE, warning=FALSE, comment=""}
 library(pivottabler)
 library(htmltools)
 pt <- PivotTable$new()
@@ -81,7 +81,7 @@ Please see the [Latex Output](latexoutput.html) vignette.
 
 Converting a pivot table to a matrix can be accomplished as follows:
 
-```{r, warning=FALSE, eval=TRUE, comment=""}
+```{r, message=FALSE, warning=FALSE, eval=TRUE, comment=""}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -96,7 +96,7 @@ If only the cell values are required, the headings can be removed from the matri
 
 The `rawValue` parameter specifies that the matrix should contain the numerical result values, not the formatted values.
 
-```{r, warning=FALSE, eval=TRUE, comment=""}
+```{r, message=FALSE, warning=FALSE, eval=TRUE, comment=""}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -109,7 +109,7 @@ pt$asMatrix(includeHeaders=FALSE, rawValue=TRUE)
 
 When there are multiple levels of headers, by default the column headers are not repeated:
 
-```{r, warning=FALSE, comment=""}
+```{r, message=FALSE, warning=FALSE, comment=""}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -123,7 +123,7 @@ pt$asMatrix()
 
 However, the `repeatHeaders` parameter can be used to specify repeating headings:
 
-```{r, warning=FALSE, comment=""}
+```{r, message=FALSE, warning=FALSE, comment=""}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -145,7 +145,7 @@ Examples of both functions are given below.
 
 The example pivot table converts as follows:
 
-```{r, warning=FALSE, eval=TRUE, comment=""}
+```{r, message=FALSE, warning=FALSE, eval=TRUE, comment=""}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -160,7 +160,7 @@ str(df)
 
 Data frames can have at most one name for each row and column.  Therefore, when there are multiple levels of headers in the pivot table, the captions are concatenated into a single value for each row and column:
 
-```{r, warning=FALSE, comment=""}
+```{r, message=FALSE, warning=FALSE, comment=""}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -174,7 +174,7 @@ pt$asDataFrame()
 
 The space character is the default character used to combine headers as seen above.  This can easily be changed, e.g. to a pipe character:
 
-```{r, warning=FALSE, comment=""}
+```{r, message=FALSE, warning=FALSE, comment=""}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -190,7 +190,7 @@ pt$asDataFrame(separator="|")
 
 The example pivot table converts as follows:
 
-```{r, warning=FALSE, eval=TRUE, comment=""}
+```{r, message=FALSE, warning=FALSE, eval=TRUE, comment=""}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)

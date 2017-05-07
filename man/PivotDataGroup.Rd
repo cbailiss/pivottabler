@@ -109,8 +109,9 @@ group (used as part of the rendering routines).}
   dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-  totalCaption="Total")}}{Generate new data groups based on the distinct
-  values in a data frame or using explicitly specified data values.}
+  totalCaption="Total", preGroupData=TRUE)}}{Generate new data groups based
+  on the distinct values in a data frame or using explicitly specified data
+  values.}
   \item{\code{sortDataGroups(levelNumber=1, orderBy="calculation",
   sortOrder="desc", calculationGroupName="default", calculationName)}}{Sort
   data groups either by the data group data value, caption or based on

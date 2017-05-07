@@ -26,7 +26,7 @@ This vignette provides some more information about the workings of `pivottabler`
 
 The following pivot table is used as the basis of the examples in the rest of this vignette:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -47,7 +47,7 @@ For example, in the pivot table below, the cell highlighted in green (value 3379
 
 i.e. the "Ordinary Passenger" and "London Midland" row/column headings provide context that define the data filters for the cell.
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -65,7 +65,7 @@ pt$renderPivot()
 
 For illustrative purposes, it is possible to display the context/filters in a pivot table using the `includeHeaderValues` and `includeRCFilters` parameters when rendering a pivot table:
 
-```{r, warning=FALSE, message=FALSE}
+```{r, message=FALSE, warning=FALSE, message=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)

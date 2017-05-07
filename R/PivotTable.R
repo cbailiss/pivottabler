@@ -190,11 +190,18 @@
 
 PivotTable <- R6::R6Class("PivotTable",
   public = list(
-    initialize = function(traceEnabled=FALSE, traceFile=NULL, argumentCheckMode="balanced") {
+    initialize = function(traceEnabled=FALSE, traceFile=NULL, argumentCheckMode="auto") {
       checkArgument(4, TRUE, "PivotTable", "initialize", traceEnabled, missing(traceEnabled), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument(4, TRUE, "PivotTable", "initialize", traceFile, missing(traceFile), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-      checkArgument(4, TRUE, "PivotTable", "initialize", argumentCheckMode, missing(argumentCheckMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("none", "minimal", "basic", "balanced", "full"))
-      if(argumentCheckMode=="none") private$p_argumentCheckMode <- 0
+      checkArgument(4, TRUE, "PivotTable", "initialize", argumentCheckMode, missing(argumentCheckMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("auto", "none", "minimal", "basic", "balanced", "full"))
+      if(argumentCheckMode=="auto") {
+        if (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3) {
+          message("Development version detected: Using argumentCheckMode=full.\nThis may reduce performance. To override specify the argumentCheckMode explicitly.\nargumentCheckMode values: none, minimal, basic, balanced (the normal default), full.")
+          private$p_argumentCheckMode <- 4
+        }
+        else private$p_argumentCheckMode <- 3
+      }
+      else if(argumentCheckMode=="none") private$p_argumentCheckMode <- 0
       else if(argumentCheckMode=="minimal") private$p_argumentCheckMode <- 1
       else if(argumentCheckMode=="basic") private$p_argumentCheckMode <- 2
       else if(argumentCheckMode=="balanced") private$p_argumentCheckMode <- 3

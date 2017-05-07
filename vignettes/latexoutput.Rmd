@@ -25,7 +25,7 @@ Latex is used to write documents.  Latex documents are written in plain-text tha
 
 A trivial example of a Latex document is:
 
-```{r, warning=FALSE, comment="", echo=FALSE}
+```{r, message=FALSE, warning=FALSE, comment="", echo=FALSE}
 s <- "\\documentclass{article}\n\\begin{document}\nHello World!\n\\end{document}"
 cat(s)
 ```
@@ -38,7 +38,7 @@ A helpful reference for understanding the structure of Latex pivot tables can be
 
 The following pivot table is used as the basis of the examples in the rest of this vignette:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -52,7 +52,7 @@ pt$renderPivot()
 
 A `pivottabler` pivot table can be output in Latex using the `pt$getLatex()` function.  The Latex for the example pivot table above is:
 
-```{r, warning=FALSE, comment="", echo=FALSE}
+```{r, message=FALSE, warning=FALSE, comment="", echo=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)

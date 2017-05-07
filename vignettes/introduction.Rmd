@@ -57,7 +57,7 @@ The latest version of the pivottabler package can be obtained directly from the 
 
 An example of a pivot table showing numbers of trains operated by different train companies is:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -85,7 +85,7 @@ Pivot tables can be found in everyday use within many commercial and non-commerc
 
 To build a series of example pivot tables, we will use the `bhmtrains` data frame.  This contains all 83,710 trains that arrived into and/or departed from [Birmingham New Street railway station](https://en.wikipedia.org/wiki/Birmingham_New_Street_station) between 1st December 2016 and 28th February 2017. As an example, the following are four trains that arrived into Birmingham New Street at the very start of this time period - note the data has been transposed (otherwise the table would be very wide).
 
-```{r, echo=FALSE}
+```{r, message=FALSE, echo=FALSE}
 library(pivottabler)
 renderBasicTable(t(bhmtrains[1:4,]),rowNamesAsHeader=TRUE)
 ```
@@ -117,7 +117,7 @@ The following code will generate the relevant pivot table:
 ## vector but of type 'NULL', so ignored
 i.e. disable the renderBasicTable() call and the warning disappears - very odd.
 --> 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -141,7 +141,7 @@ Each line above works as follows:
 
 The following examples show how each line in the above example constructs the pivot table.  To improve readability, each code change is highlighted.
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # produces no pivot table
 library(pivottabler)
 pt <- PivotTable$new()
@@ -149,7 +149,7 @@ pt$addData(bhmtrains)
 pt$renderPivot()
 ```
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # specify the column headings
 library(pivottabler)
 pt <- PivotTable$new()
@@ -158,7 +158,7 @@ pt$addColumnDataGroups("TrainCategory")   #    << **** LINE ADDED **** <<
 pt$renderPivot()
 ```
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # specify the row headings
 library(pivottabler)
 pt <- PivotTable$new()
@@ -168,7 +168,7 @@ pt$addRowDataGroups("TOC")                #    << **** LINE ADDED **** <<
 pt$renderPivot()
 ```
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # specifying a calculation
 library(pivottabler)
 pt <- PivotTable$new()
@@ -185,7 +185,7 @@ There follows below a progressive series of changes to the basic pivot table sho
 
 First, adding an additional column data group to sub-divide each "TrainCategory" by "PowerType":
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -198,7 +198,7 @@ pt$renderPivot()
 
 By default, the new data group does not expand the existing "TrainCategory" total.  However, an additional argument allows the total column to also be expanded:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -211,7 +211,7 @@ pt$renderPivot()
 
 Instead of adding "PowerType" as columns, it can also be added as rows:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -224,7 +224,7 @@ pt$renderPivot()
 
 It is possible to continue adding additional data groups.  The pivottabler does not enforce a maximum depth of data groups.  For example, adding the maximum scheduled speed to the rows:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -238,7 +238,7 @@ pt$renderPivot()
 
 As more data groups are added, the pivot table can seem overwhelmed with totals.  It is possible to selectively show/hide totals using the `addTotal` argument.  Totals can be renamed using the `totalCaption` argument.  Both of these options are demonstrated below.
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -366,7 +366,7 @@ See the [Calculations](calculations.html) vignette for more details.
 
 ### Results as a Matrix
 
-```{r, warning=FALSE, eval=TRUE, comment="", echo=FALSE}
+```{r, message=FALSE, warning=FALSE, eval=TRUE, comment="", echo=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -387,7 +387,7 @@ See the [Latex Output](latexoutput.html) vignette for more details.
 
 ### Styling
 
-```{r, warning=FALSE, echo=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 # define the colours
 blue1Colors <- list(
   headerBackgroundColor = "rgb(68, 114, 196)",
@@ -415,7 +415,7 @@ See the [Styling](styling.html) vignette for more details.
 
 ### Finding and Formatting Data Groups
 
-```{r, warning=FALSE, echo=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -435,7 +435,7 @@ See the [Finding and Formatting](findingandformatting.html) vignette for more de
 
 ### Finding and Formatting Cells
 
-```{r, warning=FALSE, echo=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -454,7 +454,7 @@ See the [Finding and Formatting](findingandformatting.html) vignette for more de
 
 ### Conditional Formatting
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+```{r, message=FALSE, warning=FALSE, message=FALSE, echo=FALSE}
 # calculate arrival delay information
 library(dplyr)
 library(lubridate)
@@ -554,7 +554,7 @@ See the [Finding and Formatting](findingandformatting.html) vignette for more de
 
 ### Irregular Layout
 
-```{r, warning=FALSE, echo=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)

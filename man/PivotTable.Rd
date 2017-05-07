@@ -83,9 +83,9 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   dataName, dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-  totalCaption="Total")}}{Generate new column heading data groups based on
-  the distinct values in a data frame or using explicitly specified data
-  values.}
+  totalCaption="Total", preGroupData=TRUE)}}{Generate new column heading data
+  groups based on the distinct values in a data frame or using explicitly
+  specified data values.}
   \item{\code{normaliseColumnGroups() }}{Normalise the column heading data
   group hierachy so that all branches have the same number of levels -
   accomplished by adding empty child data groups where needed.}
@@ -101,8 +101,9 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   dataName, dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-  totalCaption="Total")}}{Generate new row heading data groups based on the
-  distinct values in a data frame or using explicitly specified data values.}
+  totalCaption="Total", preGroupData=TRUE)}}{Generate new row heading data
+  groups based on the distinct values in a data frame or using explicitly
+  specified data values.}
   \item{\code{normaliseRowGroups()}}{Normalise the row heading data group
   hierachy so that all branches have the same number of levels - accomplished
   by adding empty child data groups where needed.}

@@ -24,7 +24,7 @@ vignette: >
 
 Data groups form the column headers and row headers in a pivot table.  Typically, the distinct values of a variable form a set of headings (i.e. a set of data groups).  Consider the following pivot table:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -64,7 +64,7 @@ By default, when adding additional levels to a pivot table after the first level
 
 Sometimes, a more uniform layout is preferred, i.e. in the above example, we would like "HST" to be present underneath "Ordinary Passenger" as well.  This can be accomplished by setting the argument `onlyCombinationsThatExist` to `FALSE`.
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -79,7 +79,7 @@ pt$renderPivot()
 
 It is also possible to add data values explicitly, by passing a **list** of values as the `explicitListOfValues` argument.  When an explicit list of values is specified, the pivot table does not sort the values.  For example, if we wished to ignore the "HST" power type completely:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -96,7 +96,7 @@ In the above example, some of the totals now do not appear to reconcile, e.g. "C
 
 If it is desirable for the totals to reconcile, then visual totals can be enabled using the `visualTotals` argument:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -113,7 +113,7 @@ Note that finding total/non-total data groups/cells with the `findRowDataGroups(
 
 By specifying values explicitly, it is also possible to combine multiple values into one data group.  For example, if the primary focus of an analysis is the two train operating companies operating the most trains ("London Midland" and "CrossCountry"), then "Arrival Trains Wales" and "Virgin" can be combined:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -127,7 +127,7 @@ pt$renderPivot()
 
 Should an alternative caption be preferred for the combined group, it can be specified by setting the name of the list element.  Following the example above, they could simply be labelled as "Other":
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -226,7 +226,7 @@ pt$renderPivot()
 
 By default, data groups are sorted into ascending order based on the data group value, e.g.:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -241,7 +241,7 @@ In the above example the train operating companies are sorted into ascending ord
 
 The data groups can be sorted into descending order using `dataSortOrder` argument, e.g. to reverse the order of the train operating companies:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -260,7 +260,7 @@ The data groups can also be sorted using the `sortColumnDataGroups` or `sortRowD
 
 For example, to sort the train operating companies into descending order by the total number of trains:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -278,7 +278,7 @@ Since the pivot table above only contains one calculation, it was not necessary 
 
 When sorting the headings at the second, third, etc. level, the sort does not break the structure coming from the parent data groups, i.e. a separate sort is performed within each parent group, e.g.
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -294,7 +294,7 @@ In the example above, one sort was carried out for the power type groups under "
 
 The `sortColumnDataGroups` or `sortRowDataGroups` can also be used to reset the sort order back to an alphabetic order based on the value of each of the groups, e.g.
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)

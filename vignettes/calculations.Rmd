@@ -50,7 +50,7 @@ Calculations are added to the pivot table using the `defineCalculation()` functi
 
 The most common way to calculate the pivot table is to provide an expression that describes how to summarise the data, e.g. defining a calculation that counts the number of trains:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -316,7 +316,7 @@ With this approach, the pivot table performs little or no calculations.  The val
 
 Returning to the original simple example of the number of trains operated by each train operating company:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -328,7 +328,7 @@ pt$renderPivot()
 
 In the example above, `pivottabler` calculated the values in each pivot table cell.  We can alternatively calculate the values explicitly in R code and instead just use the pivot table to display them:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 
 # perform the aggregation in R code explicitly
@@ -353,7 +353,7 @@ In the current version of `pivottabler` there is no way to explicitly pre-calcul
 
 ### Hiding the totals
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 
 # perform the aggregation in R code explicitly
@@ -373,7 +373,7 @@ pt$renderPivot()
 
 ### Calculating the totals
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 
 # perform the aggregation in R code explicitly
@@ -411,7 +411,7 @@ It is also worth noting that only the first data frame added to the pivot table 
 
 The example below illustrates using two data frames with a single pivot table:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 library(dplyr)
 
@@ -454,7 +454,7 @@ Sometimes it is necessary to calculate a value based on a subset of the data.  F
 2. Count the total number of trains (i.e. irrespective of weekday or weekend),
 3. Calculate the percentage.
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(dplyr)
 library(lubridate)
 library(pivottabler)
@@ -509,7 +509,7 @@ If the requirement is only to display a different value when there is no data, t
 
 ### noDataValue Example
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -521,7 +521,7 @@ pt$renderPivot()
 
 ### noDataCaption Example
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -539,7 +539,7 @@ For large data frames, the current approach can significantly increase the time 
 
 For example, duplicating the `bhmtrains` sample data frame to create a larger data set.
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # create a larger data frame
 manytrains <- rbind(bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains, 
                     bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains)

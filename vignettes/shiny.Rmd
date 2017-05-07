@@ -35,7 +35,7 @@ To use each of these examples, create a new single-file Shiny web application in
 
 ## Example 1:  Minimal Example
 
-```{r, warning=FALSE, eval=FALSE}
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
 library(shiny)
 library(htmlwidgets)
 library(pivottabler)
@@ -84,7 +84,7 @@ shinyApp(ui = ui, server = server)
 
 ## Example 2:  Comparing pairs of variables
 
-```{r, warning=FALSE, eval=FALSE}
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
 library(shiny)
 library(htmlwidgets)
 library(pivottabler)

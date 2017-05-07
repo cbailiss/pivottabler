@@ -29,7 +29,7 @@ This is a more advanced topic.  It requires a good understanding of the material
 
 Let's start by talking about regular layout.  The  following is an example pivot table that has appeared in previous vignettes:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -58,7 +58,7 @@ Constructing pivot tables that have an irregular layout typically requires more 
 
 For example, consider we are only interested in the number of express trains (i.e. TrainCategory="Express Passenger") and the number of DMU trains (i.e. PowerType="DMU"), for each train operating company.  Since these requirements relate to two different variables, we need to construct an irregular layout.  To do this, these two data groups are added individually to the root column group: 
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -77,7 +77,7 @@ No totals column is added to the above pivot table.  This wouldn't make sense fo
 
 Showing the cell context, as described in the [Cell Context](cellcontext.html) vignette, makes the irregularity clearer:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -94,7 +94,7 @@ Further data groups can be added to the pivot table.  These data groups can be r
 
 If a regular level is desired, this can simply be added using the regular `addColumnDataGroups()` and `addRowDataGroups()` functions, for example adding the train status:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -108,7 +108,7 @@ pt$renderPivot()
 
 The `addChildGroup()` function returns the new data group that has been added.  The `addChildGroup()` function can be called on each of these groups to add further groups underneath:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -124,7 +124,7 @@ pt$renderPivot()
 
 Instead of adding groups one at a time, the `addDataGroups()` function can be called on these data groups to add different data groups for different variables underneath each:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -141,7 +141,7 @@ pt$renderPivot()
 
 The `addColumnDataGroups()`, `addRowDataGroups()` and `addDataGroups()` functions^[Use the `addColumnDataGroups()` and `addRowDataGroups()` functions against the pivot table.  Use the `addDataGroups()` function against data groups.] all return zero, one or multiple data groups, in the form of an R list.  This list can be iterated or used with functions such as `lapply()` in the usual ways:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -159,7 +159,7 @@ pt$renderPivot()
 
 Each data group has a set of properties that can be used to determine whether/how to add the child groups.  For example, to skip adding the status groups to the totals:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -191,7 +191,7 @@ Sometimes when constructing irregular layouts, it is desirable to insert an "emp
 
 Sometimes it is desirable to use different calculations in different parts of the pivot table.  Returning to the initial irregular example:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -204,7 +204,7 @@ pt$renderPivot()
  
 Suppose we require the number of express trains but the maximum scheduled speed of the DMU trains.  We might naively try the following R:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -220,7 +220,7 @@ This has replicated both calculations across the whole pivot table, which is not
 
 Instead the solution is to define an additional^[Every pivot table has a default calculation group named "default".] calculation group, then explicitly add the two calculation groups to the relvant parts of the pivot table:
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -239,7 +239,7 @@ Pivot tables like the above are quite likely to cause confusion.  Either the cap
 
 ### Changing the data group captions
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -256,7 +256,7 @@ pt$renderPivot()
 
 ### Adding empty data groups
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
