@@ -630,7 +630,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
              }
            }
            # calculate the value
-           results <- pivotCalculator$evaluateNamedCalculation2(calculationName=calculationName,
+           results <- pivotCalculator$evaluateNamedCalculation(calculationName=calculationName,
                                                                calculationGroupName=calculationGroupName,
                                                                rowColFilters=netFilters)
            calcResults <- results[[calculationName]]
