@@ -22,6 +22,9 @@ constructing and interacting with the pivot table.
 \item{\code{argumentCheckMode}}{A number (0-4 meaning none, minimal, basic,
 balanced, full) indicating the argument checking level.}
 
+\item{\code{processingLibrary}}{A character value indicating the processing library
+being used (base, dplyr, data.table).}
+
 \item{\code{data}}{A PivotData object containing the data frames used to populate
 the pivot table.}
 
@@ -37,9 +40,6 @@ the pivot calculations in the pivot table.}
 \item{\code{calculationsPosition}}{"row" or "column" indicating where the
 calculation names will appear (only if multiple calculations are defined
 and visible in the pivot table).}
-
-\item{\code{filterMode}}{Either "base" (for base R) or "dplyr" to specify how data
-frames are filtered.}
 
 \item{\code{evaluationMode}}{Either "sequential" or "batch" to specify how summary
 calculations (i.e. where type="summary") are evaluated.}
@@ -70,8 +70,9 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
 \describe{
   \item{Documentation}{For more complete explanations and examples please see
   the extensive vignettes supplied with this package.}
-  \item{\code{new(traceEnabled=FALSE, traceFile=NULL)}}{Create a new pivot
-  table, including optionally enabling debug logging.}
+  \item{\code{new(processingLibrary="auto", traceEnabled=FALSE,
+  traceFile=NULL, argumentCheckMode="auto")}}{Create a new pivot table,
+  including optionally enabling debug logging.}
 
   \item{\code{addData(df, dataName)}}{Add a data frame with the specified
   name to the pivot table.}

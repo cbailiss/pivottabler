@@ -5,6 +5,7 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
+#' @importFrom data.table data.table is.data.table
 #' @return Object of \code{\link{R6Class}} with properties and methods that help
 #'   to (do xyz).
 #' @format \code{\link{R6Class}} object.
@@ -156,31 +157,70 @@ PivotBatch <- R6::R6Class("PivotBatch",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$evaluateBatch", "Executing batch...")
       # get the data frame
       data <- private$p_parentPivot$data$getData(private$p_dataName)
-      # group by
-      if(!is.null(private$p_variableNames)) {
-        if(length(private$p_variableNames)>0) {
-          groupByVars <- paste(private$p_variableNames, sep="", collapse=", ")
-          groupByCmd <- paste0("data <- dplyr::group_by(data, ", groupByVars, ")")
-          eval(parse(text=groupByCmd))
+      # dplyr calculation
+      if(private$p_parentPivot$processingLibrary=="dplyr") {
+        # group by
+        if(!is.null(private$p_variableNames)) {
+          if(length(private$p_variableNames)>0) {
+            groupByVars <- paste(private$p_variableNames, sep="", collapse=", ")
+            groupByCmd <- paste0("data <- dplyr::group_by(data, ", groupByVars, ")")
+            eval(parse(text=groupByCmd))
+          }
         }
+        # calculations
+        if(is.null(private$p_calculations))
+          stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
+        if(length(private$p_calculations)==0)
+          stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
+        calcStr <- ""
+        for(i in 1:length(private$p_calculations)) {
+          calcNms <- private$p_calculations[[i]]
+          calcInternalName <- calcNms["calcInternalName"]
+          calcGrp <- private$p_parentPivot$calculationGroups$getCalculationGroup(calcNms["calculationGroupName"])
+          calc <- calcGrp$getCalculation(calcNms["calculationName"])
+          if(nchar(calcStr)>0) calcStr <- paste0(calcStr, ", ", calcInternalName, " = ", calc$summariseExpression)
+          else calcStr <- paste0(calcInternalName, " = ", calc$summariseExpression)
+        }
+        summaryCmd <- paste0("data <- dplyr::summarise(data, ", calcStr, ")")
+        eval(parse(text=summaryCmd))
+        data <- dplyr::collect(data)
       }
-      # calculations
-      if(is.null(private$p_calculations))
-        stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
-      if(length(private$p_calculations)==0)
-        stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
-      calcStr <- ""
-      for(i in 1:length(private$p_calculations)) {
-        calcNms <- private$p_calculations[[i]]
-        calcInternalName <- calcNms["calcInternalName"]
-        calcGrp <- private$p_parentPivot$calculationGroups$getCalculationGroup(calcNms["calculationGroupName"])
-        calc <- calcGrp$getCalculation(calcNms["calculationName"])
-        if(nchar(calcStr)>0) calcStr <- paste0(calcStr, ", ", calcInternalName, " = ", calc$summariseExpression)
-        else calcStr <- paste0(calcInternalName, " = ", calc$summariseExpression)
+      # data.table calculation
+      else if(private$p_parentPivot$processingLibrary=="data.table") {
+        # check is a data table
+        if(private$p_parentPivot$argumentCheckMode == 4) {
+          if(!data.table::is.data.table(data))
+            stop(paste0("PivotBatch$evaluateBatch(): A data.table was expected but the following was encountered: ",
+                        paste(class(data), sep="", collapse=", ")), call. = FALSE)
+        }
+        # group by
+        groupByVars <- NULL
+        if(!is.null(private$p_variableNames)) {
+          if(length(private$p_variableNames)>0) {
+            groupByVars <- paste0(", by=.(", paste(private$p_variableNames, sep="", collapse=", "), ")")
+          }
+        }
+        # calculations
+        if(is.null(private$p_calculations))
+          stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
+        if(length(private$p_calculations)==0)
+          stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
+        calcStr <- ""
+        for(i in 1:length(private$p_calculations)) {
+          calcNms <- private$p_calculations[[i]]
+          calcInternalName <- calcNms["calcInternalName"]
+          calcGrp <- private$p_parentPivot$calculationGroups$getCalculationGroup(calcNms["calculationGroupName"])
+          calc <- calcGrp$getCalculation(calcNms["calculationName"])
+          if(nchar(calcStr)>0) calcStr <- paste0(calcStr, ", ", calcInternalName, " = ", calc$summariseExpression)
+          else calcStr <- paste0(calcInternalName, " = ", calc$summariseExpression)
+        }
+        calcStr <- paste0(".(", calcStr, ")")
+        # data.table query
+        dtqry <- paste0("data <- data[, ", calcStr, groupByVars, "]")
+        eval(parse(text=dtqry))
       }
-      summaryCmd <- paste0("data <- dplyr::summarise(data, ", calcStr, ")")
-      eval(parse(text=summaryCmd))
-      data <- dplyr::collect(data)
+      else stop(paste0("PivotBatch$evaluateBatch(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
+      # return the results
       private$p_evaluated <- TRUE
       private$p_results <- data
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$evaluateBatch", "Executed batch.")
@@ -227,7 +267,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
         }
         else {
           # summary is more than likely a small data frame, so use base filtering
-          row <- filters$getFilteredDataFrame(private$p_results, filterMode="base")
+          row <- filters$getFilteredDataFrame(private$p_results)
           if(is.null(row)) {
             # no value
           }

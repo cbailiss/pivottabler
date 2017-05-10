@@ -5,6 +5,7 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
+#' @importFrom data.table data.table is.data.table
 #' @import htmlwidgets
 #' @import htmltools
 #' @import jsonlite
@@ -25,6 +26,8 @@
 #' pt$renderPivot()
 #' @field argumentCheckMode A number (0-4 meaning none, minimal, basic,
 #'   balanced, full) indicating the argument checking level.
+#' @field processingLibrary A character value indicating the processing library
+#'   being used (base, dplyr, data.table).
 #' @field data A PivotData object containing the data frames used to populate
 #'   the pivot table.
 #' @field rowGroup The top PivotDataGroup in the parent-child hierarchy of row
@@ -36,8 +39,6 @@
 #' @field calculationsPosition "row" or "column" indicating where the
 #'   calculation names will appear (only if multiple calculations are defined
 #'   and visible in the pivot table).
-#' @field filterMode Either "base" (for base R) or "dplyr" to specify how data
-#'   frames are filtered.
 #' @field evaluationMode Either "sequential" or "batch" to specify how summary
 #'   calculations (i.e. where type="summary") are evaluated.
 #' @field batchInfo Get a text summary of the batch calculations from the last
@@ -58,8 +59,9 @@
 #' \describe{
 #'   \item{Documentation}{For more complete explanations and examples please see
 #'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(traceEnabled=FALSE, traceFile=NULL)}}{Create a new pivot
-#'   table, including optionally enabling debug logging.}
+#'   \item{\code{new(processingLibrary="auto", traceEnabled=FALSE,
+#'   traceFile=NULL, argumentCheckMode="auto")}}{Create a new pivot table,
+#'   including optionally enabling debug logging.}
 #'
 #'   \item{\code{addData(df, dataName)}}{Add a data frame with the specified
 #'   name to the pivot table.}
@@ -191,10 +193,12 @@
 
 PivotTable <- R6::R6Class("PivotTable",
   public = list(
-    initialize = function(traceEnabled=FALSE, traceFile=NULL, argumentCheckMode="auto") {
+    initialize = function(processingLibrary="auto", evaluationMode="batch", argumentCheckMode="auto", traceEnabled=FALSE, traceFile=NULL) {
+      checkArgument(4, TRUE, "PivotTable", "initialize", processingLibrary, missing(processingLibrary), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("auto", "dplyr", "data.table"))
+      checkArgument(4, TRUE, "PivotTable", "initialize", evaluationMode, missing(evaluationMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("batch", "sequential"))
+      checkArgument(4, TRUE, "PivotTable", "initialize", argumentCheckMode, missing(argumentCheckMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("auto", "none", "minimal", "basic", "balanced", "full"))
       checkArgument(4, TRUE, "PivotTable", "initialize", traceEnabled, missing(traceEnabled), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument(4, TRUE, "PivotTable", "initialize", traceFile, missing(traceFile), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-      checkArgument(4, TRUE, "PivotTable", "initialize", argumentCheckMode, missing(argumentCheckMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("auto", "none", "minimal", "basic", "balanced", "full"))
       if(argumentCheckMode=="auto") {
         if (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3) {
           message("Development version detected: Using argumentCheckMode=full.\nThis may reduce performance. To override specify the argumentCheckMode explicitly.\nargumentCheckMode values: none, minimal, basic, balanced (the normal default), full.")
@@ -213,6 +217,25 @@ PivotTable <- R6::R6Class("PivotTable",
         private$p_traceFile <- file(traceFile, open="w")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$new", "Creating new Pivot Table...")
+      if(processingLibrary=="auto") {
+        if(requireNamespace(package="dplyr", quietly=TRUE)==TRUE) private$p_processingLibrary <- "dplyr"
+        else if(requireNamespace(package="data.table", quietly=TRUE)==TRUE) private$p_processingLibrary <- "data.table"
+        else stop("PivotTable$initialize():  No suitable processing library found.  Please install either the dplyr package or the data.table package.", call. = FALSE)
+      }
+      else if(processingLibrary=="data.table") {
+        if(requireNamespace(package="data.table", quietly=TRUE)==FALSE) {
+          stop("PivotTable$initialize():  data.table package cannot be loaded.  Please check the package is installed and working.", call. = FALSE)
+        }
+        private$p_processingLibrary <- "data.table"
+      }
+      else if(processingLibrary=="dplyr") {
+        if(requireNamespace(package="dplyr", quietly=TRUE)==FALSE) {
+          stop("PivotTable$initialize():  dplyr package cannot be loaded.  Please check the package is installed and working.", call. = FALSE)
+        }
+        private$p_processingLibrary <- "dplyr"
+      }
+      else stop("PivotTable$initialize():  Unknown processingLibrary encountered.", call. = FALSE)
+      private$p_evaluationMode <- evaluationMode
       # Create the basic parts of the pivot table
       private$p_data <- PivotData$new(parentPivot=self)
       private$p_styles <- getTheme(parentPivot=self, themeName="default")
@@ -227,16 +250,16 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$new", "Created new Pivot Table.")
       return(invisible())
     },
-    addData = function(df=NULL, dataName=NULL) {
+    addData = function(dataFrame=NULL, dataName=NULL) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
-        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addData", df, missing(df), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addData", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addData", "Adding data to Pivot Table...")
       dn <- dataName
-      if(is.null(dn)) dn <- deparse(substitute(df))
-      private$p_data$addData(df, dataName=dn)
+      if(is.null(dn)) dn <- deparse(substitute(dataFrame))
+      private$p_data$addData(dataFrame, dataName=dn)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addData", "Added data to Pivot Table.")
       private$addTiming(paste0("addData(", dn, ")"), timeStart)
       return(invisible(private$p_data))
@@ -1262,6 +1285,7 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+    processingLibrary = function(value) { return(private$p_processingLibrary) },
     data = function(value) { return(private$p_data) },
     rowGroup = function(value) { return(invisible(private$p_rowGroup ))},
     columnGroup = function(value) { return(invisible(private$p_columnGroup ))},
@@ -1278,18 +1302,6 @@ PivotTable <- R6::R6Class("PivotTable",
                         private$p_calculationsPosition, "' and cannot be changed."), call. = FALSE)
           return(invisible())
         }
-      }
-    },
-    filterMode = function(value) {
-      if(missing(value)) {
-        return(private$p_filterMode)
-      }
-      else {
-        if(private$p_argumentCheckMode > 0) {
-          checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "filterMode", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("base", "dplyr"))
-        }
-        private$p_filterMode <- value
-        return(invisible())
       }
     },
     evaluationMode = function(value) {
@@ -1361,13 +1373,13 @@ PivotTable <- R6::R6Class("PivotTable",
   private = list(
     p_argumentCheckMode = 4,
     p_traceEnabled = FALSE,
+    p_processingLibrary = NULL,
     p_data = NULL,
     p_styles = NULL,
     p_rowGroup = NULL,
     p_columnGroup = NULL,
     p_calculationsPosition = NULL,
     p_calculationGroups = NULL,
-    p_filterMode = "dplyr",
     p_evaluationMode = "batch",
     p_evaluated = FALSE,
     p_cells = NULL,

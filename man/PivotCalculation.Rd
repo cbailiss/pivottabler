@@ -47,8 +47,8 @@ this calculation.}
 \item{\code{valueName}}{For type="value", the name of the column containing the
 value to display in the pivot table.}
 
-\item{\code{summariseExpression}}{For type="summary", the dplyr expression to use
-with dplyr::summarise().}
+\item{\code{summariseExpression}}{For type="summary", either the dplyr expression to
+use with dplyr::summarise() or a data.table calculation expression.}
 
 \item{\code{calculationExpression}}{For type="calculation", an expression to combine
 aggregate values.}

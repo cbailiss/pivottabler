@@ -61,9 +61,8 @@ filtered by this PivotFilters object.}
   criteria.}
   \item{\code{addFilter()}}{Directly add a PivotFilter object to this
   PivotFilters object.}
-  \item{\code{getFilteredDataFrame(dataFrame=NULL, filterMode=NULL)}}{Filters
-  the specified data frame and returns the results as another data frame,
-  optionally overriding the filterMode set for the pivot table.}
+  \item{\code{getFilteredDataFrame(dataFrame=NULL)}}{Filters the specified
+  data frame and returns the results as another data frame.}
   \item{\code{getCopy()}}{Get a copy of this set of filters.}
   \item{\code{asList()}}{Get a list representation of this PivotFilters
   object.}

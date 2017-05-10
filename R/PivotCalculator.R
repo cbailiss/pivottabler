@@ -5,6 +5,7 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
+#' @importFrom data.table data.table is.data.table
 #' @import dplyr
 #' @import jsonlite
 #' @return Object of \code{\link{R6Class}} with properties and methods that help
@@ -227,10 +228,27 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getDistinctValues", "Getting filtered data frame...")
      # build a dplyr query
      data <- dataFrame
-     eval(parse(text=paste0("data <- dplyr::select(data, ", variableName, ")")))
-     data <- dplyr::distinct(data)
-     eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
-     distinctValues <- dplyr::collect(data)[[variableName]]
+     if(private$p_parentPivot$processingLibrary=="dplyr") {
+       eval(parse(text=paste0("data <- dplyr::select(data, ", variableName, ")")))
+       data <- dplyr::distinct(data)
+       eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
+       distinctValues <- dplyr::collect(data)[[variableName]]
+       if(is.factor(distinctValues)) distinctValues <- as.character(distinctValues)
+     }
+     else if (private$p_parentPivot$processingLibrary=="data.table") {
+       # check is a data table
+       if(private$p_parentPivot$argumentCheckMode == 4) {
+         if(!data.table::is.data.table(data))
+           stop(paste0("PivotCalculator$getDistinctValues(): A data.table was expected but the following was encountered: ",
+                       paste(class(data), sep="", collapse=", ")), call. = FALSE)
+       }
+       # seem to need a dummy row count in order to get the distinct values
+       rcName <- "rc"
+       if(variableName==rcName) rcName <- "rowCount"
+       eval(parse(text=paste0("distinctValues <- data[order(", variableName, "), .(", rcName, "=.N), by=.(", variableName, ")][, ", variableName, "]")))
+       if(is.factor(distinctValues)) distinctValues <- as.character(distinctValues)
+     }
+     else stop(paste0("PivotCalculator$getDistinctValues(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getDistinctValues", "Got filtered data frame.")
      return(invisible(distinctValues))
    },
@@ -430,29 +448,36 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSingleValue", "Evaluating single value...")
      data <- dataFrame
      value <- list()
-     # if we have some filters, filter the data frame
-     if(!is.null(workingFilters)) {
-       value$evaluationFilters <- workingFilters
-       if(workingFilters$count > 0) {
-         data <- self$getFilteredDataFrame(dataFrame=data, filters=workingFilters)
-       }
-     }
-     # no data?
-     if(nrow(data)==0) {
+     if(workingFilters$isNONE) {
        value$rawValue <- noDataValue
        if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
        else value$formattedValue <- self$formatValue(noDataValue, format=format)
      }
      else {
-       # calculate the value
-       if(nrow(data)>1)
-         stop(paste0("PivotCalculator$evaluateSingleValue(): Value '", valueName, "' has resulted in '", nrow(data),
-                     " row(s).  There must be a maximum of 1 row for the value after the filters have been applied."), call. = FALSE)
-       if(nrow(data)==0) return(invisible(NULL))
-       data <- dplyr::collect(data)
-       rv <- data[[valueName]][1] # data[[valueName]] will always return a column as a vector (even if data is still a tbl_df)
-       value$rawValue <- rv
-       value$formattedValue <- self$formatValue(rv, format=format)
+       # if we have some filters, filter the data frame
+       if(!is.null(workingFilters)) {
+         value$evaluationFilters <- workingFilters
+         if(workingFilters$count > 0) {
+           data <- self$getFilteredDataFrame(dataFrame=data, filters=workingFilters)
+         }
+       }
+       # no data?
+       if(nrow(data)==0) {
+         value$rawValue <- noDataValue
+         if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
+         else value$formattedValue <- self$formatValue(noDataValue, format=format)
+       }
+       else {
+         # calculate the value
+         if(nrow(data)>1)
+           stop(paste0("PivotCalculator$evaluateSingleValue(): Value '", valueName, "' has resulted in '", nrow(data),
+                       " row(s).  There must be a maximum of 1 row for the value after the filters have been applied."), call. = FALSE)
+         if(nrow(data)==0) return(invisible(NULL))
+         data <- dplyr::collect(data)
+         rv <- data[[valueName]][1] # data[[valueName]] will always return a column as a vector (even if data is still a tbl_df)
+         value$rawValue <- rv
+         value$formattedValue <- self$formatValue(rv, format=format)
+       }
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSingleValue", "Evaluated single value.")
      return(invisible(value))
@@ -478,64 +503,119 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      value <- list()
      valFromBatch <- FALSE
      # if in batch mode, try and get the value from a batch calculation
-     if(private$p_parentPivot$evaluationMode=="batch") {
-       if(is.null(batchName)) {
-         # fall through to sequential evaluation
-       }
-       else {
-         # try to get the value from a batch calculation
-         batchValue <- private$p_batchCalculator$getSummaryValueFromBatch(batchName=batchName, calculationName=calculationName,
-                                                                          calculationGroupName=calculationGroupName, workingFilters=workingFilters)
-         # was the batch evaluated?
-         if(!batchValue$batchEvaluated) {
+     if(workingFilters$isNONE) {
+       value$rawValue <- noDataValue
+       if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
+       else value$formattedValue <- self$formatValue(noDataValue, format=format)
+     }
+     else {
+       if(private$p_parentPivot$evaluationMode=="batch") {
+         if(is.null(batchName)) {
            # fall through to sequential evaluation
          }
          else {
+           # try to get the value from a batch calculation
+           batchValue <- private$p_batchCalculator$getSummaryValueFromBatch(batchName=batchName, calculationName=calculationName,
+                                                                            calculationGroupName=calculationGroupName, workingFilters=workingFilters)
+           # was the batch evaluated?
+           if(!batchValue$batchEvaluated) {
+             # fall through to sequential evaluation
+           }
+           else {
+             # no data?
+             if(is.null(batchValue$value)) {
+               value$rawValue <- noDataValue
+               if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
+               else value$formattedValue <- self$formatValue(noDataValue, format=format)
+             }
+             else {
+               # format the value
+               value$rawValue <- batchValue$value
+               value$formattedValue <- self$formatValue(batchValue$value, format=format)
+             }
+             valFromBatch <- TRUE
+           }
+         }
+       }
+       # if not in batch mode, or was unable to get the value from a batch calculation, then calculate using the original (sequential) method
+       if(valFromBatch==FALSE) {
+         data <- dataFrame
+         value <- list()
+         if(private$p_parentPivot$processingLibrary=="dplyr") {
+           # if we have some filters, filter the data frame
+           if(!is.null(workingFilters)) {
+             value$evaluationFilters <- workingFilters
+             if(workingFilters$count > 0) {
+               data <- self$getFilteredDataFrame(dataFrame=data, filters=workingFilters)
+             }
+           }
            # no data?
-           if(is.null(batchValue$value)) {
+           if(nrow(data)==0) {
              value$rawValue <- noDataValue
              if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
              else value$formattedValue <- self$formatValue(noDataValue, format=format)
            }
            else {
-             # format the value
-             value$rawValue <- batchValue$value
-             value$formattedValue <- self$formatValue(batchValue$value, format=format)
+             # calculate the value
+             # todo: escaping below
+             if(nrow(data)==0) return(invisible(NULL))
+             summaryCmd <- paste0("data <- dplyr::summarise(data, ", summaryName, " = ", summariseExpression, ")")
+             eval(parse(text=summaryCmd))
+             if((nrow(data)>1)||(ncol(data)>1))
+               stop(paste0("PivotCalculator$evaluateSummariseExpression(): Summary expression '", summaryName, "' has resulted in '", nrow(data),
+                           " row(s) and ", ncol(data), " columns.  There must be a maximum of 1 row and 1 column in the result."), call. = FALSE)
+             data <- dplyr::collect(data)
+             rv <- data[[1]][1] # data[[colIndex]] will always return a column as a vector (even if data is still a tbl_df)
+             value$rawValue <- rv
+             value$formattedValue <- self$formatValue(rv, format=format)
            }
-           valFromBatch <- TRUE
          }
-       }
-     }
-     # if not in batch mode, or was unable to get the value from a batch calculation, then calculate using the original (sequential) method
-     if(valFromBatch==FALSE) {
-       data <- dataFrame
-       value <- list()
-       # if we have some filters, filter the data frame
-       if(!is.null(workingFilters)) {
-         value$evaluationFilters <- workingFilters
-         if(workingFilters$count > 0) {
-           data <- self$getFilteredDataFrame(dataFrame=data, filters=workingFilters)
+         else if(private$p_parentPivot$processingLibrary=="data.table") {
+           # check is a data table
+           if(private$p_parentPivot$argumentCheckMode == 4) {
+             if(!data.table::is.data.table(data))
+               stop(paste0("PivotCalculator$evaluateSummariseExpression(): A data.table was expected but the following was encountered: ",
+                           paste(class(data), sep="", collapse=", ")), call. = FALSE)
+           }
+           # filters
+           filterCmd <- NULL
+           filterCount <- 0
+           if(length(workingFilters$filters) > 0)
+           {
+             for(j in 1:length(workingFilters$filters)) {
+               filter <- workingFilters$filters[[j]]
+               if(is.null(filter$variableName))
+                 stop("PivotCalculator$evaluateSummariseExpression(): filter$variableName must not be null", call. = FALSE)
+               if(is.null(filter$values)) next
+               if(length(filter$values)==0) next
+               if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
+               if(length(filter$values)>0) {
+                 # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
+                 filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% workingFilters$filters[[", j, "]]$values)")
+                 filterCount <- filterCount + 1
+               }
+             }
+           }
+           # first check we have some data - otherwise aggregate functions like min() and max() produce warnings like the following:
+           # Warning message:
+           #   In max(SchedSpeedMPH, na.rm = TRUE) :
+           #   no non-missing arguments to max; returning -Inf
+           dtqry <- paste0("checkCount <- data[", filterCmd, ", .N]")
+           eval(parse(text=dtqry))
+           if(checkCount==0) {
+             value$rawValue <- noDataValue
+             if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
+             else value$formattedValue <- self$formatValue(noDataValue, format=format)
+           }
+           else {
+             # data.table query 2
+             dtqry <- paste0("rv <- data[", filterCmd, ", ", summariseExpression, "]")
+             eval(parse(text=dtqry))
+             value$rawValue <- rv
+             value$formattedValue <- self$formatValue(rv, format=format)
+           }
          }
-       }
-       # no data?
-       if(nrow(data)==0) {
-         value$rawValue <- noDataValue
-         if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
-         else value$formattedValue <- self$formatValue(noDataValue, format=format)
-       }
-       else {
-         # calculate the value
-         # todo: escaping below
-         if(nrow(data)==0) return(invisible(NULL))
-         summaryCmd <- paste0("data <- dplyr::summarise(data, ", summaryName, " = ", summariseExpression, ")")
-         eval(parse(text=summaryCmd))
-         if((nrow(data)>1)||(ncol(data)>1))
-           stop(paste0("PivotCalculator$evaluateSummariseExpression(): Summary expression '", summaryName, "' has resulted in '", nrow(data),
-                       " row(s) and ", ncol(data), " columns.  There must be a maximum of 1 row and 1 column in the result."), call. = FALSE)
-         data <- dplyr::collect(data)
-         rv <- data[[1]][1] # data[[colIndex]] will always return a column as a vector (even if data is still a tbl_df)
-         value$rawValue <- rv
-         value$formattedValue <- self$formatValue(rv, format=format)
+         else stop(paste0("PivotBatch$evaluateBatch(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
        }
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSummariseExpression", "Evaluated summary expression.")

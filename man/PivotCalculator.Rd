@@ -92,7 +92,7 @@ calculating the value of a cell in a pivot table.
   format, baseValues, cell)}}{Invokes a user-provided custom R function to
   aggregate data and perform calculations.}
   \item{\code{evaluateNamedCalculationWD(calculationName,
-  calculationGroupName, workingFilters, cell)}}{Invokes the relevant
+  calculationGroupName, workingData, cell)}}{Invokes the relevant
   calculation function based upon the calculation type.}
   \item{\code{evaluateNamedCalculation(calculationName,
   calculationGroupName, rowColFilters)}}{Determines the working filters and

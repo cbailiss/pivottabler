@@ -5,6 +5,7 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
+#' @importFrom data.table data.table is.data.table
 #' @import jsonlite
 #' @return Object of \code{\link{R6Class}} with properties and methods that help
 #'   quickly storing and retrieving data frames.
@@ -46,21 +47,23 @@ PivotData <- R6::R6Class("PivotData",
      private$p_defaultData <- NULL
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$new", "Created new Pivot Data.")
    },
-   addData = function(df=NULL, dataName=NULL) {
+   addData = function(dataFrame=NULL, dataName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", df, missing(df), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addData", "Adding data...", list(dataName=dataName, df=private$getDfStr(df)))
+     if(private$p_parentPivot$processingLibrary=="data.table") data <- data.table::as.data.table(dataFrame)
+     else data <- dataFrame
      dn <- dataName
-     if(is.null(dn)) dn <- deparse(substitute(df))
+     if(is.null(dn)) dn <- deparse(substitute(dataFrame))
      if(is.null(dn)) stop("PivotData$addData(): Please specify a name for the data frame.", call. = FALSE)
      if(length(dn)==0) stop("PivotData$addData(): Please specify a name for the data frame.", call. = FALSE)
      if(is.null(private$p_defaultData)) {
-       private$p_defaultData <- df
+       private$p_defaultData <- data
        private$p_defaultName <- dn
      }
-     private$p_data[[dn]] <- df
+     private$p_data[[dn]] <- data
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addData", "Added data.")
      return(invisible())
    },

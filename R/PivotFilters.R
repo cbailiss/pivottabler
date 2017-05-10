@@ -6,6 +6,7 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
+#' @importFrom data.table data.table is.data.table
 #' @import jsonlite
 #' @export
 #' @return Object of \code{\link{R6Class}} with properties and methods that
@@ -58,9 +59,8 @@
 #'   criteria.}
 #'   \item{\code{addFilter()}}{Directly add a PivotFilter object to this
 #'   PivotFilters object.}
-#'   \item{\code{getFilteredDataFrame(dataFrame=NULL, filterMode=NULL)}}{Filters
-#'   the specified data frame and returns the results as another data frame,
-#'   optionally overriding the filterMode set for the pivot table.}
+#'   \item{\code{getFilteredDataFrame(dataFrame=NULL)}}{Filters the specified
+#'   data frame and returns the results as another data frame.}
 #'   \item{\code{getCopy()}}{Get a copy of this set of filters.}
 #'   \item{\code{asList()}}{Get a list representation of this PivotFilters
 #'   object.}
@@ -242,10 +242,9 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$addFilter", "Added filter.")
       return(invisible())
     },
-    getFilteredDataFrame = function(dataFrame=NULL, filterMode=NULL) {
+    getFilteredDataFrame = function(dataFrame=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilters", "getFilteredDataFrame", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
-        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilters", "getFilteredDataFrame", filterMode, missing(filterMode), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("base", "dplyr"))
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilteredDataFrame", "Getting filtered data frame...")
       # use data
@@ -261,35 +260,36 @@ PivotFilters <- R6::R6Class("PivotFilters",
         return(invisible(data))
       }
       # check the filtering mode
-      if(is.null(filterMode)) filterMode <- private$p_parentPivot$filterMode
-      if(filterMode=="base") {
-        # build a subsetting query
-        # todo: checking the escaping of the variable names and values below
-        # filterCmd is e.g. "data <- data[(", filters[1]$variableName, " %in% filters[1]$values) & (", filters[2]$variableName, " %in% filters[2]$values), ]"
-        if(length(private$p_filters) > 0)
-        {
-          filterCmd <- NULL
-          filterCount <- 0
-          for(j in 1:length(private$p_filters)) {
-            filter <- private$p_filters[[j]]
-            if(is.null(filter$variableName))
-              stop("PivotFilters$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
-            if(is.null(filter$values)) next
-            if(length(filter$values)==0) next
-            if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
-            if(length(filter$values)>0) {
-              # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
-              filterCmd <- paste0(filterCmd, "(data$", filter$variableName, " %in% private$p_filters[[", j, "]]$values)")
-              filterCount <- filterCount + 1
-            }
-          }
-          if(filterCount > 0) {
-            filterCmd <- paste0("data <- data[", filterCmd, ", ]")
-            eval(parse(text=filterCmd))
-          }
-        }
-      }
-      else if(filterMode=="dplyr") {
+      filterMode <- private$p_parentPivot$processingLibrary
+      # if(filterMode=="base") {
+      #   # build a subsetting query
+      #   # todo: checking the escaping of the variable names and values below
+      #   # filterCmd is e.g. "data <- data[(", filters[1]$variableName, " %in% filters[1]$values) & (", filters[2]$variableName, " %in% filters[2]$values), ]"
+      #   if(length(private$p_filters) > 0)
+      #   {
+      #     filterCmd <- NULL
+      #     filterCount <- 0
+      #     for(j in 1:length(private$p_filters)) {
+      #       filter <- private$p_filters[[j]]
+      #       if(is.null(filter$variableName))
+      #         stop("PivotFilters$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
+      #       if(is.null(filter$values)) next
+      #       if(length(filter$values)==0) next
+      #       if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
+      #       if(length(filter$values)>0) {
+      #         # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
+      #         filterCmd <- paste0(filterCmd, "(data$", filter$variableName, " %in% private$p_filters$values)")
+      #         filterCount <- filterCount + 1
+      #       }
+      #     }
+      #     if(filterCount > 0) {
+      #       filterCmd <- paste0("data <- data[", filterCmd, ", ]")
+      #       eval(parse(text=filterCmd))
+      #     }
+      #   }
+      # }
+      # else
+      if(filterMode=="dplyr") {
         # build a dplyr query
         # todo: checking the escaping of the variable names and values below
         # filterCmd is e.g. "data <- filter(data, (", filters[1]$variableName, " %in% filters[1]$values) & (", filters[2]$variableName, " %in% filters[2]$values)"
@@ -316,7 +316,41 @@ PivotFilters <- R6::R6Class("PivotFilters",
           }
         }
       }
-      else stop(paste0("PivotTable$generateCellStructure(): Unknown filterMode encountered: ", filterMode), call. = FALSE)
+      else if(filterMode=="data.table") {
+        # build a data.table query
+        # todo: checking the escaping of the variable names and values below
+        # filterCmd is e.g. "data <- data[", filters[1]$variableName, " %in% filters[1]$values & ", filters[2]$variableName, " %in% filters[2]$values)]"
+        if(length(private$p_filters) > 0)
+        {
+          filterCmd <- NULL
+          filterCount <- 0
+          for(j in 1:length(private$p_filters)) {
+            filter <- private$p_filters[[j]]
+            if(is.null(filter$variableName))
+              stop("PivotFilters$getFilteredDataFrame(): filter$variableName must not be null", call. = FALSE)
+            if(is.null(filter$values)) next
+            if(length(filter$values)==0) next
+            if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
+            if(length(filter$values)>0) {
+              # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
+              filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% private$p_filters[[", j, "]]$values)")
+              filterCount <- filterCount + 1
+            }
+          }
+          if(filterCount > 0) {
+            # check is a data table
+            if(private$p_parentPivot$argumentCheckMode == 4) {
+              if(!data.table::is.data.table(data))
+                stop(paste0("PivotFilters$getFilteredDataFrame(): A data.table was expected but the following was encountered: ",
+                            paste(class(data), sep="", collapse=", ")), call. = FALSE)
+            }
+            # apply the filter
+            filterCmd <- paste0("data <- data[", filterCmd, "]")
+            eval(parse(text=filterCmd))
+          }
+        }
+      }
+      else stop(paste0("PivotFilters$getFilteredDataFrame(): Unknown filterMode encountered: ", filterMode), call. = FALSE)
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilteredDataFrame", "Got filtered data frame (SOME DATA).")
       return(invisible(data))
     },
