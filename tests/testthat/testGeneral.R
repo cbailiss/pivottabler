@@ -71,7 +71,7 @@ for(i in 1:length(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- pivottabler::PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("TOC")
