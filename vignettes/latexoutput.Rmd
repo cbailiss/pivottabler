@@ -91,8 +91,6 @@ When multiple row/column groups are present, additional lines are drawn within t
 
 Styling Latex has a great many differences compared to styling HTML.  Therefore the HTML-based approaches to styling a `pivottabler` pivot table, as described in the [Styling](styling.html) vignette, do not apply to tables generated in Latex.
 
-It is expected that under many scenarios when creating Latex documents, styling will be carried out by-hand, i.e. editing the Latex code directly.  Therefore the `pivottabler` package does not offer many styling capabilities for Latex pivot tables.
-
 A couple of basic options for styling the pivot table headers are offered, controlled by setting either/both of the `boldHeadings` and/or `italicHeadings` arguments to `TRUE` when calling `pt$getLatex()`.  For example, specifying `italicHeadings=TRUE`:
 
 ![Italic Headings](latex4.png)

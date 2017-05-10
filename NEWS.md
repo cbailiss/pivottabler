@@ -11,10 +11,11 @@ Breaking Changes
 Improvements
 ----------------
 
-* Pivot table now calculates cell values in batches in order to reduce the calculation time required for larger data frames.
+* pivottabler now calculates cell values in batches in order to reduce the calculation time required for larger data frames.  For large pivot tables based on large data frames this typically results in a big performance improvement, e.g. for a pivot table of 1000 cells based on a data frame with 10 million rows the rendering time is around 7 seconds in version 0.3.0 compared to over 480 seconds in version 0.2.0.  See the new Performance vignette for more details.
+* pivottabler now also supports the data.table package for performing pivot table summary/aggregation calculations.  dplyr remains the default however data.table offers a moderate performance improvement for large data frames (10 million rows and above).  See the Calculations vignette for more details.
 * addRowDataGroups and addColumnDataGroups functions pre-group the data to reduce the time required for larger data frames.
-* New argumentCheckMode parameter added to pivot table initialiser to provide options to reduce time required to create larger pivot tables.
-* Internal pivot filters class differentiates between all, some and none match cases for more robust filtering and early elimination of some calculations.
+* New argumentCheckMode parameter added to pivot table initialiser to provide an additional option to reduce the time required to create larger pivot tables.
+* Internal pivot filters class differentiates between 'all', 'some' and 'none' match cases for more robust filtering and early elimination of some cell calculations.
 
 Bug Fixes
 ----------------

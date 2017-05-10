@@ -201,7 +201,7 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument(4, TRUE, "PivotTable", "initialize", traceFile, missing(traceFile), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       if(argumentCheckMode=="auto") {
         if (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3) {
-          message("Development version detected: Using argumentCheckMode=full.\nThis may reduce performance. To override specify the argumentCheckMode explicitly.\nargumentCheckMode values: none, minimal, basic, balanced (the normal default), full.")
+          message("Development version of pivottabler detected: Using argumentCheckMode=full.\nThis may reduce performance. To override, specify the argumentCheckMode explicitly.\nargumentCheckMode values: none, minimal, basic, balanced (the normal default), full.")
           private$p_argumentCheckMode <- 4
         }
         else private$p_argumentCheckMode <- 3

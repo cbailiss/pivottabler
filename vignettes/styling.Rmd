@@ -21,7 +21,11 @@ vignette: >
 
 ## Styles and Themes
 
-The appearance of `pivottabler` pivot tables can be changed using styles and themes:
+`pivottabler` can render pivot tables in HTML and Latex.  The focus of this vignette is styling when rendering to HTML.  
+
+`pivottabler` offers only limited styling options when rendering to Latex.  Please see the [Latex Output](latexoutput.html) vignette for details.
+
+When rendered to HTML, the appearance of `pivottabler` pivot tables can be changed using styles and themes:
 
 * A style defines the appearance of a cell in the pivot table.
     + A cell here is a general term that covers row/column headings, values in the body of the pivot table and totals.
@@ -34,9 +38,7 @@ The `pivottabler` package is supplied with some basic themes.  Additional themes
 
 ## Styles and CSS
 
-A style is a collection of name-value pairs.  
-
-Currently, `pivottabler` renders pivot tables only to HTML.  For HTML tables, the name-value pairs used to specify styles are simply Cascading Style Sheet properties and values.  A full introduction and reference for CSS can be found on the [w3schools](https://www.w3schools.com/css/default.asp) website.
+A style is a collection of name-value pairs.  The name-value pairs used to specify styles are simply Cascading Style Sheet properties and values.  A full introduction and reference for CSS can be found on the [w3schools](https://www.w3schools.com/css/default.asp) website.
 
 An example of defining a `pivottabler` style is:
 

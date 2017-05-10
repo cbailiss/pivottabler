@@ -119,11 +119,11 @@ highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FF0
 cells <- pt$getCells(rowNumbers=3, columnNumbers=2)
 cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
 pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE, 
-               includeCalculationFilters=TRUE, includeEvaluationFilters=TRUE,
+               includeCalculationFilters=TRUE, includeWorkingData=TRUE, includeEvaluationFilters=TRUE,
                includeCalculationNames=TRUE, includeRawValue=TRUE, includeTotalInfo=TRUE)
 ```
 
-The calculation filters shown in each cell are the actual filters that were used when calculating the cell value.  These are typically the same as the row-column filters.  One notable exception is When filters are also specified as part of a calculation definition.  For example, calculating the percentage of trains that ran at the weekend (where only the "Arriva Trains Wales" train operating company is shown to reduce the size of the pivot table):
+The evaluation filters shown in each cell are the actual filters that were used when calculating the cell value.  These are typically the same as the row-column filters.  One notable exception is When filters are also specified as part of a calculation definition, i.e. when calculation filters are present.  For example, calculating the percentage of trains that ran at the weekend (where only the "Arriva Trains Wales" train operating company is shown to reduce the size of the pivot table):
 
 ```{r, warning=FALSE, message=FALSE}
 library(dplyr)
@@ -152,7 +152,7 @@ pt$defineCalculation(calculationName="WeekendTrainsPercentage",
                      calculationExpression="values$WeekendTrains/values$TotalTrains*100")
 pt$addRowCalculationGroups() 
 pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE, 
-               includeCalculationFilters=TRUE, includeEvaluationFilters=TRUE,
+               includeCalculationFilters=TRUE, includeWorkingData=TRUE, includeEvaluationFilters=TRUE,
                includeCalculationNames=TRUE, includeRawValue=TRUE, includeTotalInfo=TRUE)
 ```
 
