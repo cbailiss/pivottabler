@@ -6,7 +6,7 @@ Current development version.
 Breaking Changes
 ----------------
 
-* Pivot table initialiser parameters renamed from messages and messageFile to traceEnabled and traceFile respectively.  
+* Pivot table initialiser parameters renamed from messages and messageFile to traceEnabled and traceFile respectively. 
 
 Improvements
 ----------------
@@ -16,11 +16,17 @@ Improvements
 * addRowDataGroups and addColumnDataGroups functions pre-group the data to reduce the time required for larger data frames.
 * New argumentCheckMode parameter added to pivot table initialiser to provide an additional option to reduce the time required to create larger pivot tables.
 * Internal pivot filters class differentiates between 'all', 'some' and 'none' match cases for more robust filtering and early elimination of some cell calculations.
+* The getCells() function has been made more intuitive to use when getting specific cells by using a new cellCoordinates argument.  See the Finding and Formatting vignette for details.
 
 Bug Fixes
 ----------------
 
 * Various small bug fixes.
+
+Upcoming Changes
+----------------
+
+* The previous usage of the arguments for the getCells() function is still supported (and is still the default) however the new argument usage will be made the default in a future version.  For now, a message is displayed noting the upcoming change.
 
 pivottabler 0.2.0:  New Output/Conversion Options, New Find Options
 ================

@@ -445,7 +445,7 @@ pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$evaluatePivot()
 highlight <- PivotStyle$new(pt, "cellHighlight", list("background-color"="#00FF00"))
-cells <- pt$getCells(rowNumbers=c(2, NA, 5), columnNumbers=c(NA, 4, 7))
+cells <- pt$getCells(specifyCellsAsList=TRUE, rowNumbers=2, columnNumbers=4, cellCoordinates=list(c(5, 7)))
 cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
 pt$renderPivot()
 ```

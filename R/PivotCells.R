@@ -29,9 +29,9 @@
 #'   column coordinates in the pivot table.}
 #'   \item{\code{setCell(r, c, cell))}}{Set the PivotCell at the specified row
 #'   and column coordinates in the pivot table.}
-#'   \item{\code{getCells = function(rowNumbers=NULL,
-#'   columnNumbers=NULL)}}{Retrieve cells by a combination of row and/or column
-#'   numbers.}
+#'   \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
+#'   columnNumbers=NULL, cellCoordinates=NULL)}}{Retrieve cells by a combination
+#'   of row and/or column numbers.}
 #'   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
 #'   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
 #'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells matching
@@ -109,126 +109,120 @@ PivotCells <- R6::R6Class("PivotCells",
      private$p_rows[[r]][[c]] <- cell
      return(invisible())
    },
-   getCells = function(rowNumbers=NULL, columnNumbers=NULL) {
-      if(private$p_parentPivot$argumentCheckMode > 0) {
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", columnNumbers, missing(columnNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
-      }
-      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Getting cells...")
-      # if no rows or columns specified, return all cells
-      cells <- list()
-      if(is.null(rowNumbers)&&is.null(columnNumbers)) {
-        if(length(private$p_rows) > 0) {
-          for(r in 1:length(private$p_rows)) {
-            if(length(private$p_rows[[r]]) > 0) {
-              for(c in 1:length(private$p_rows[[r]])) {
-                if(length(private$p_rows[[r]]) < c) next
-                cell <- private$p_rows[[r]][[c]]
-                cells[[length(cells)+1]] <- cell
-              }
-            }
-          }
-        }
-        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
-        return(invisible(cells))
-      }
-      # rows but not columns
-      if((!is.null(rowNumbers))&&(is.null(columnNumbers))) {
-        for(i in 1:length(rowNumbers)) {
-          r <- rowNumbers[i]
-          if(r < 1)
-            stop(paste0("PivotCells$getCells(): rowNumber (", r, ") must be must be greater than or equal to 1."), call. = FALSE)
-          if(r > self$rowCount)
-            stop(paste0("PivotCells$getCells(): rowNumber (", r, ") must be less than or equal to rowCount (", self$rowCount, ")."), call. = FALSE)
-          if(length(private$p_rows[[r]]) > 0) {
-            for(c in 1:length(private$p_rows[[r]])) {
-              if(length(private$p_rows[[r]]) < c) next
-              cell <- private$p_rows[[r]][[c]]
-              cells[[length(cells)+1]] <- cell
-            }
-          }
-        }
-        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
-        return(invisible(cells))
-      }
-      # columns but not rows
-      if((is.null(rowNumbers))&&(!is.null(columnNumbers))) {
-        for(i in 1:length(columnNumbers)) {
-          c <- columnNumbers[i]
-          if(c < 1)
-            stop(paste0("PivotCells$getCells(): columnNumber (", c, ") must be must be greater than or equal to 1."), call. = FALSE)
-          if(c > self$columnCount)
-            stop(paste0("PivotCells$getCells(): columnNumber (", c, ") must be less than or equal to columnCount (", self$columnCount, ")."), call. = FALSE)
-          if(length(private$p_rows) > 0) {
-            for(r in 1:length(private$p_rows)) {
-              if(length(private$p_rows[[r]]) > 0) {
-                if(c <= length(private$p_rows[[r]])) {
-                  if(length(private$p_rows[[r]]) < c) next
-                  cell <- private$p_rows[[r]][[c]]
-                  cells[[length(cells)+1]] <- cell
-                }
-              }
-            }
-          }
-        }
-        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
-        return(invisible(cells))
-      }
-      # lengths of the two arguments must be equal
-      if(length(rowNumbers)!=length(columnNumbers)) {
-        stop(paste0("PivotCells$getCells(): The lengths of the rowNumbers and columnNumbers vectors should be equal (or one/both vectors should be NULL)."), call. = FALSE)
-      }
-      if(length(rowNumbers)==0) {
-        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
-        return(invisible(cells))
-      }
-      for(i in 1:length(rowNumbers)) {
-        r <- rowNumbers[i]
-        c <- columnNumbers[i]
-        # both NA (ignored)
-        if(is.na(r)&&is.na(c)) next
-        # whole row?
-        if(is.na(c)) {
-          if(r < 1)
-            stop(paste0("PivotCells$getCells(): rowNumber (", r, ") must be must be greater than or equal to 1."), call. = FALSE)
-          if(r > self$rowCount)
-            stop(paste0("PivotCells$getCells(): rowNumber (", r, ") must be less than or equal to rowCount (", self$rowCount, ")."), call. = FALSE)
-          if(length(private$p_rows[[r]]) > 0) {
-            for(c in 1:length(private$p_rows[[r]])) {
-              if(length(private$p_rows[[r]]) < c) next
-              cell <- private$p_rows[[r]][[c]]
-              cells[[length(cells)+1]] <- cell
-            }
-          }
-          next
-        }
-        # whole column?
-        if(is.na(r)) {
-          if(c < 1)
-            stop(paste0("PivotCells$getCells(): columnNumber (", c, ") must be must be greater than or equal to 1."), call. = FALSE)
-          if(c > self$columnCount)
-            stop(paste0("PivotCells$getCells(): columnNumber (", c, ") must be less than or equal to columnCount (", self$columnCount, ")."), call. = FALSE)
-          if(length(private$p_rows) > 0) {
-            for(r in 1:length(private$p_rows)) {
-              if(length(private$p_rows[[r]]) > 0) {
-                if(c <= length(private$p_rows[[r]])) {
-                  if(length(private$p_rows[[r]]) < c) next
-                  cell <- private$p_rows[[r]][[c]]
-                  cells[[length(cells)+1]] <- cell
-                }
-              }
-            }
-          }
-          next
-        }
-        # specific cell
-        if(length(private$p_rows[[r]]) < c) next
-        cell <- private$p_rows[[r]][[c]]
-        cells[[length(cells)+1]] <- cell
-      }
-      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
-      return(invisible(cells))
-    },
+   getCells = function(specifyCellsAsList=FALSE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL) {
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", specifyCellsAsList, missing(specifyCellsAsList), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", columnNumbers, missing(columnNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", cellCoordinates, missing(cellCoordinates), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Getting cells...")
+     # warning of impending change to default parameter value
+     if((!private$p_getCellsWarning)&&(!specifyCellsAsList)&&missing(specifyCellsAsList)) {
+       message("getCells():  The default value of the specifyCellsAsList argument will be changed to TRUE in a future version of the pivottabler package.\nPlease specify the value of this argument explicitly to avoid being impacted when this change occurs.")
+       private$p_getCellsWarning <- TRUE
+     }
+     if(specifyCellsAsList==FALSE) {
+       # NA is allowed in rowNumbers or columnNumbers
+       # cells are specified as in the rowNumbers and columnNumbers
+       if((!is.null(cellCoordinates))&&(length(cellCoordinates)>0)) {
+         stop("PivotCells$getCells():  When specifyCellsAsList=FALSE, cell coordinates should be specified using the rowNumbers and columnNumbers arguments.  Please see the \"Finding and Formatting\" vignette for more details.", call. = FALSE)
+       }
+       # pre-processing to put the arguments into the same structure as-if specifyCellsAsList==TRUE
+       newRowNumbers <- NULL
+       newColumnNumbers <- NULL
+       newCellCoordinates <- list()
+       rmax <- length(rowNumbers)
+       cmax <- length(columnNumbers)
+       imax <- max(rmax, cmax)
+       if(imax>0) {
+         for(i in 1:imax) {
+           if((i<=rmax)&&(i<=cmax)) {
+             if(rowNumbers[i] %in% NA) {
+               if(columnNumbers[i] %in% NA) next
+               else newColumnNumbers[length(newColumnNumbers)+1] <- columnNumbers[i]
+             }
+             else if(columnNumbers[i] %in% NA) newRowNumbers[length(newRowNumbers)+1] <- rowNumbers[i]
+             else newCellCoordinates[[length(newCellCoordinates)+1]] <- c(rowNumbers[i], columnNumbers[i])
+           }
+           else if(i<=rmax) {
+             if(!(rowNumbers[i] %in% NA)) newRowNumbers[length(newRowNumbers)+1] <- rowNumbers[i]
+           }
+           else if(i<=cmax) {
+             if(!(columnNumbers[i] %in% NA)) newColumnNumbers[length(newColumnNumbers)+1] <- columnNumbers[i]
+           }
+           else stop("PivotCells$getCells():  argument pre-processing logic failure.", call. = FALSE)
+         }
+       }
+       rowNumbers <- newRowNumbers
+       columnNumbers <- newColumnNumbers
+       cellCoordinates <- newCellCoordinates
+       if((length(rowNumbers[rowNumbers %in% NA])>0)||(length(columnNumbers[columnNumbers %in% NA])>0)) {
+         stop("PivotCells$getCells():  Pre-processing of the row and column numbers has failed to remove the NA values.", call. = FALSE)
+       }
+     }
+     else {
+       # NA is not allowed in rowNumbers or columnNumbers
+       # cells are specified as a list in the cellCoordinates parameter
+       if((length(rowNumbers[rowNumbers %in% NA])>0)||(length(columnNumbers[columnNumbers %in% NA])>0)) {
+         stop("PivotCells$getCells():  When specifyCellsAsList=TRUE, rowNumbers/columnNumbers should not contain NA and cell coordinates should be specified using the specifyCellsAsList argument.  Please see the \"Finding and Formatting\" vignette for more details.", call. = FALSE)
+       }
+     }
+     # if no rows, columns or cells specified, then return all cells
+     cells <- list()
+     if(is.null(rowNumbers)&&is.null(columnNumbers)&&(length(cellCoordinates)==0)) {
+       if(length(private$p_rows) > 0) {
+         for(r in 1:length(private$p_rows)) {
+           if(length(private$p_rows[[r]]) > 0) {
+             for(c in 1:length(private$p_rows[[r]])) {
+               if(length(private$p_rows[[r]]) < c) next
+               cell <- private$p_rows[[r]][[c]]
+               cells[[length(cells)+1]] <- cell
+             }
+           }
+         }
+       }
+       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
+       return(invisible(cells))
+     }
+     # check the row and column coordinates
+     if(length(rowNumbers[rowNumbers > self$rowCount])>0) {
+       stop("PivotCells$getCells():  All rowNumbers should be less than or equal to the row count in the pivot table.", call. = FALSE)
+     }
+     if(length(columnNumbers[columnNumbers > self$columnCount])>0) {
+       stop("PivotCells$getCells():  All columnNumbers should be less than or equal to the column count in the pivot table.", call. = FALSE)
+     }
+     cellRowNumbers <- sapply(cellCoordinates, function(x) { return(x[1]) })
+     cellColumnNumbers <- sapply(cellCoordinates, function(x) { return(x[2]) })
+     if((length(cellRowNumbers[cellRowNumbers %in% NA])>0)||(length(cellColumnNumbers[cellColumnNumbers %in% NA])>0)) {
+       stop("PivotCells$getCells():  Each element in the cellCoordinates list must be a vector of length two (i.e. c(rowNumber, columnNumber)).", call. = FALSE)
+     }
+     if(length(cellRowNumbers[cellRowNumbers > self$rowCount])>0) {
+       stop("PivotCells$getCells():  All row numbers in cellCoordinates should be less than or equal to the row count in the pivot table.", call. = FALSE)
+     }
+     if(length(cellColumnNumbers[cellColumnNumbers > self$columnCount])>0) {
+       stop("PivotCells$getCells():  All column numbers in cellCoordinates should be less than or equal to the column count in the pivot table.", call. = FALSE)
+     }
+     # iterate the cells and return
+     if(length(private$p_rows) > 0) {
+       for(r in 1:length(private$p_rows)) {
+         if(length(private$p_rows[[r]]) > 0) {
+           for(c in 1:length(private$p_rows[[r]])) {
+             if(length(private$p_rows[[r]]) < c) next
+             rowMatch <- sum(r==rowNumbers) > 0
+             columnMatch <- sum(c==columnNumbers) > 0
+             cellMatch <- sum((r==cellRowNumbers)&(c==cellColumnNumbers)) > 0
+             if(rowMatch||columnMatch||cellMatch) {
+               cell <- private$p_rows[[r]][[c]]
+               cells[[length(cells)+1]] <- cell
+             }
+           }
+         }
+       }
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
+     return(invisible(cells))
+   },
    findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
                         minValue=NULL, maxValue=NULL, exactValues=NULL, includeNull=TRUE, includeNA=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
@@ -353,6 +347,7 @@ PivotCells <- R6::R6Class("PivotCells",
     p_parentPivot = NULL,
     p_rowGroups = NULL,
     p_columnGroups = NULL,
-    p_rows = NULL
+    p_rows = NULL,
+    p_getCellsWarning = FALSE
   )
 )

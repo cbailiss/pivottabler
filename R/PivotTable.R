@@ -141,9 +141,9 @@
 #'   variableValues=NULL, totals="include", calculationNames=NULL,
 #'   includeDescendantGroups=FALSE)}}{Find column data groups matching the
 #'   specified criteria.}
-#'   \item{\code{getCells = function(rowNumbers=NULL,
-#'   columnNumbers=NULL)}}{Retrieve cells by a combination of row and/or column
-#'   numbers.}
+#'   \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
+#'   columnNumbers=NULL, cellCoordinates=NULL)}}{Retrieve cells by a combination
+#'   of row and/or column numbers.}
 #'   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
 #'   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
 #'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells in the
@@ -779,15 +779,23 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findColumnDataGroups", "Found column data groups.")
       return(invisible(grps))
     },
-    getCells = function(rowNumbers=NULL, columnNumbers=NULL) {
+    getCells = function(specifyCellsAsList=FALSE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL) {
       if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", specifyCellsAsList, missing(specifyCellsAsList), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", columnNumbers, missing(columnNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", cellCoordinates, missing(cellCoordinates), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getCells", "Getting cells...")
       if(!private$p_evaluated) stop("PivotTable$getCells():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$getCells():  No cells exist to retrieve.", call. = FALSE)
-      cells <- private$p_cells$getCells(rowNumbers=rowNumbers, columnNumber=columnNumbers)
+      # need to miss the specifyCellsAsList argument out if it is missing here, so the warning message is generated
+      if(missing(specifyCellsAsList)) {
+        cells <- private$p_cells$getCells(rowNumbers=rowNumbers, columnNumber=columnNumbers, cellCoordinates=cellCoordinates)
+      }
+      else {
+        cells <- private$p_cells$getCells(specifyCellsAsList=specifyCellsAsList, rowNumbers=rowNumbers, columnNumber=columnNumbers, cellCoordinates=cellCoordinates)
+      }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getCells", "Got cells.")
       return(invisible(cells))
     },

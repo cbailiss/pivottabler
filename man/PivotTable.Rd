@@ -152,9 +152,9 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   variableValues=NULL, totals="include", calculationNames=NULL,
   includeDescendantGroups=FALSE)}}{Find column data groups matching the
   specified criteria.}
-  \item{\code{getCells = function(rowNumbers=NULL,
-  columnNumbers=NULL)}}{Retrieve cells by a combination of row and/or column
-  numbers.}
+  \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
+  columnNumbers=NULL, cellCoordinates=NULL)}}{Retrieve cells by a combination
+  of row and/or column numbers.}
   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells in the
