@@ -21,6 +21,7 @@ vignette: >
 * Data size
 * Processing library
 * Argument check mode
+* Other factors influencing performance
 * Performance Comparison
 * Limits of performance
 * Summary
@@ -240,7 +241,17 @@ pt <- PivotTable$new(argumentCheckMode="none")
 # ...
 ```
 
-Generally speaking, it is recommended to use the default argument check mode of `balanced` unless generating very large pivot tables when `none` may offer a small performance benefit.  Even then, should an error occur, the first check should be revert to the `balanced` mode and re-run to see if this provides a clearer indication of the cause of the problem (e.g. if an illegal argument value was specified).   
+Generally speaking, it is recommended to use the default argument check mode of `balanced` unless generating very large pivot tables when `none` may offer a small performance benefit.  Even then, should an error occur, the first check should be revert to the `balanced` mode and re-run to see if this provides a clearer indication of the cause of the problem (e.g. if an illegal argument value was specified).
+
+## Other factors influencing performance
+
+Several other factors can influence performance:
+
+* Data distribution - cells with no data are require less CPU work to calculate, so pivot tables where many combinations of row and column groups have no data will require less time to create.
+* Formatting - some formatting options will require more CPU work, e.g. custom formatting functions can be quite slow.
+* Summary calculations used - some aggregate calculations may require a little more  CPU work, though in practice the common aggregation functions are already optimised.
+
+The above factors are mostly fixed by the data and/or pivot table requirements so can't easily be changed to improve performance. 
 
 ## Performance Comparison
 
@@ -468,7 +479,6 @@ Displaying the same chart again, but setting the y-axis maximum to be around 80 
 
 ```{r, eval=FALSE}
 library(ggplot2)
-library(pivottabler)
 colors <- c("#A5E9A5","#33CC33", "#99CCFF","#0066FF")
 
 ggplot(scenarios, aes(x = testName, y = elapsedTimeAvg)) +
@@ -504,7 +514,6 @@ Finally, displaying the same chart again, but setting the y-axis maximum to be a
 
 ```{r, eval=FALSE}
 library(ggplot2)
-library(pivottabler)
 colors <- c("#A5E9A5","#33CC33", "#99CCFF","#0066FF")
 
 ggplot(scenarios, aes(x = testName, y = elapsedTimeAvg)) +

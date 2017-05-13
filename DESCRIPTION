@@ -17,6 +17,7 @@ Imports:
     htmltools(>= 0.3.5),
     htmlwidgets (>= 0.8)
 Suggests:
+    ggplot2 (>= 2.2.0),
     lubridate (>= 1.5.0),
     listviewer (>= 1.4.0),
     shiny,

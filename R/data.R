@@ -101,8 +101,8 @@
 #'   \item{description}{A description of this test case.}
 #'   \item{completed}{A logical value indicating whether this test case completed.}
 #'   \item{userTime}{The user time for this test case.}
-#'   \item{systemTimeAvg}{The system time for this test case.}
-#'   \item{elapsedTimeAvg}{The elapsed time for this test case.}
+#'   \item{systemTime}{The system time for this test case.}
+#'   \item{elapsedTime}{The elapsed time for this test case.}
 #' }
 "pvtperfresults"
 

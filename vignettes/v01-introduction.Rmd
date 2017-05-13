@@ -12,7 +12,6 @@ vignette: >
 ## In This Vignette
 
 * Introducing pivottabler
-* pivottabler Development Status
 * Pivot Tables
     + Quick Example
     + Definition
@@ -26,16 +25,13 @@ vignette: >
 
 ## Introducing pivottabler
 
-### In one sentence
-
 The `pivottabler` package enables pivot tables to be created with just a few lines of R.
 
-### In a few sentences
+Pivot tables are constructed natively in R, via a series of R commands that gradually build a pivot table to meet your needs. 
 
-The pivottabler package:
+The `pivottabler` package:
 
-- enables pivot tables to be constructed natively in R, via a series of R commands that gradually build a pivot table to meet your needs. 
-- provides a simple framework for specifying and aggregating data, based on the dplyr package.  
+- provides a simple framework for specifying and aggregating data, based on either the dplyr package or the data.table package.  
 - provides optional hooks for specifying custom calculations/aggregations for more complex scenarios
     + This allows a wide-range of R functions, including custom functions written in R, to be used in the calculation logic.
 - does not require the user to specify low-level layout logic.
@@ -45,17 +41,13 @@ Since pivot tables are primarily visualisation tools, the pivottabler package of
 
 Output can be rendered as HTML, including via the htmlwidgets framework, or rendered in Latex to PDF.  The generated HTML and Latex can also be easily retrieved, e.g. to be used outside of R.
 
-## pivottabler Development Status
-
-The pivottabler package has developed quite rapidly.  Some rough edges exist.  Possibly some bugs too.
-
 The latest version of the pivottabler package can be obtained directly from the [package repository](https://github.com/cbailiss/pivottabler/).  Please log any questions not answered by the vignettes or any bug reports [here](https://github.com/cbailiss/pivottabler/issues).
 
 ## Pivot Tables
 
 ### Quick Example
 
-An example of a pivot table showing numbers of trains operated by different train companies is:
+An example of a pivot table showing the number of trains operated by different train companies is:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -67,7 +59,9 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-This example pivot table is explained in more detail later in this vignette.
+This example pivot table is explained in more detail later in this vignette.  
+
+Examples of pivot tables containing other types of calculation can be found in the examples gallery later in the vignette. 
 
 ### Definition
 
@@ -134,7 +128,7 @@ Each line above works as follows:
 3. Specify the data frame that contains the data for the pivot table.
 4. Add the distinct values from the TrainCategory column in the data frame as columns in the pivot table.
 5. Add the distinct values from the TOC column in the data frame as rows in the pivot table.
-6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function^[See the [dplyr cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) for other summary functions.].
+6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function^[See the [dplyr cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) for other summary functions.].  `pivottabler` also supports data.table - see the [Performance](v10-performance.html) vignette for more details.
 7. Generate the pivot table.
 
 ## Constructing the Basic Pivot Table

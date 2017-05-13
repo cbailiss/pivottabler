@@ -600,16 +600,20 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
            # Warning message:
            #   In max(SchedSpeedMPH, na.rm = TRUE) :
            #   no non-missing arguments to max; returning -Inf
-           dtqry <- paste0("checkCount <- data[", filterCmd, ", .N]")
+           # another option here would be to change the code as highlighted in the ("opt") comments below
+           # this would avoid the effort of filtering the data table twice, but would result in duplicates being created, which could be very large
+           # this option would probaby be faster but could use a lot more memory.
+           # since data.table is intended for usage on very large data frames, don't use this option
+           dtqry <- paste0("checkCount <- data[", filterCmd, ", .N]")  # opt:  dtqry <- paste0("data <- data[", filterCmd, "]")
            eval(parse(text=dtqry))
-           if(checkCount==0) {
+           if(checkCount==0) {                                         # opt: if(nrow(data)==0) {
              value$rawValue <- noDataValue
              if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
              else value$formattedValue <- self$formatValue(noDataValue, format=format)
            }
            else {
              # data.table query 2
-             dtqry <- paste0("rv <- data[", filterCmd, ", ", summariseExpression, "]")
+             dtqry <- paste0("rv <- data[", filterCmd, ", ", summariseExpression, "]")    # opt: dtqry <- paste0("rv <- data[, ", summariseExpression, "]")
              eval(parse(text=dtqry))
              value$rawValue <- rv
              value$formattedValue <- self$formatValue(rv, format=format)

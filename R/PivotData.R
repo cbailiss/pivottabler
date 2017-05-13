@@ -53,8 +53,14 @@ PivotData <- R6::R6Class("PivotData",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addData", "Adding data...", list(dataName=dataName, df=private$getDfStr(df)))
-     if(private$p_parentPivot$processingLibrary=="data.table") data <- data.table::as.data.table(dataFrame)
-     else data <- dataFrame
+     if(private$p_parentPivot$processingLibrary=="data.table") {
+       if(data.table::is.data.table(dataFrame)) data <- dataFrame
+       else data <- data.table::as.data.table(dataFrame)
+     }
+     else {
+       if(is.data.frame(dataFrame)) data <- dataFrame
+       else stop("PivotData$addData():  The specified data is not a data frame.", call. = FALSE)
+     }
      dn <- dataName
      if(is.null(dn)) dn <- deparse(substitute(dataFrame))
      if(is.null(dn)) stop("PivotData$addData(): Please specify a name for the data frame.", call. = FALSE)
