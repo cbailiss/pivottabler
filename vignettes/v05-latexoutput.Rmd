@@ -89,7 +89,7 @@ When multiple row/column groups are present, additional lines are drawn within t
 
 ## Styling a Pivot Table in Latex
 
-Styling Latex has a great many differences compared to styling HTML.  Therefore the HTML-based approaches to styling a `pivottabler` pivot table, as described in the [Styling](styling.html) vignette, do not apply to tables generated in Latex.
+Styling Latex has a great many differences compared to styling HTML.  Therefore the HTML-based approaches to styling a `pivottabler` pivot table, as described in the [Styling](v06-styling.html) vignette, do not apply to tables generated in Latex.
 
 A couple of basic options for styling the pivot table headers are offered, controlled by setting either/both of the `boldHeadings` and/or `italicHeadings` arguments to `TRUE` when calling `pt$getLatex()`.  For example, specifying `italicHeadings=TRUE`:
 
@@ -114,13 +114,14 @@ Integer numbers should be specified for these arguments.  The numbers are 1-base
 
 The full set of vignettes is:
 
-1. [Introduction](introduction.html)
-2. [Data Groups](datagroups.html)
-3. [Calculations](calculations.html)
-4. [Outputs](outputs.html)
-5. [Latex Output](latexoutput.html)
-6. [Styling](styling.html)
-7. [Finding and Formatting](findingandformatting.html)
-8. [Cell Context](cellcontext.html)
-9. [Irregular Layout](irregularlayout.html)
-10. [Shiny](shiny.html)
+1. [Introduction](v01-introduction.html)
+2. [Data Groups](v02-datagroups.html)
+3. [Calculations](v03-calculations.html)
+4. [Outputs](v04-outputs.html)
+5. [Latex Output](v05-latexoutput.html)
+6. [Styling](v06-styling.html)
+7. [Finding and Formatting](v07-findingandformatting.html)
+8. [Cell Context](v08-cellcontext.html)
+9. [Irregular Layout](v09-irregularlayout.html)
+10. [Performance](v10-performance.html)
+11. [Shiny](v11-shiny.html)

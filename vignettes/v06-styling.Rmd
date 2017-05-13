@@ -23,7 +23,7 @@ vignette: >
 
 `pivottabler` can render pivot tables in HTML and Latex.  The focus of this vignette is styling when rendering to HTML.  
 
-`pivottabler` offers only limited styling options when rendering to Latex.  Please see the [Latex Output](latexoutput.html) vignette for details.
+`pivottabler` offers only limited styling options when rendering to Latex.  Please see the [Latex Output](v05-latexoutput.html) vignette for details.
 
 When rendered to HTML, the appearance of `pivottabler` pivot tables can be changed using styles and themes:
 
@@ -341,19 +341,20 @@ cells[[1]]$style <- PivotStyle$new(pt, "cellHighlight", list("background-color"=
 pt$renderPivot(styleNamePrefix="t5")
 ```
 
-For many more examples of styling parts of a pivot table, see the [Finding and Formatting](findingandformatting.html) vignette.
+For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v07-findingandformatting.html) vignette.
 
 ## Further Reading
 
 The full set of vignettes is:
 
-1. [Introduction](introduction.html)
-2. [Data Groups](datagroups.html)
-3. [Calculations](calculations.html)
-4. [Outputs](outputs.html)
-5. [Latex Output](latexoutput.html)
-6. [Styling](styling.html)
-7. [Finding and Formatting](findingandformatting.html)
-8. [Cell Context](cellcontext.html)
-9. [Irregular Layout](irregularlayout.html)
-10. [Shiny](shiny.html)
+1. [Introduction](v01-introduction.html)
+2. [Data Groups](v02-datagroups.html)
+3. [Calculations](v03-calculations.html)
+4. [Outputs](v04-outputs.html)
+5. [Latex Output](v05-latexoutput.html)
+6. [Styling](v06-styling.html)
+7. [Finding and Formatting](v07-findingandformatting.html)
+8. [Cell Context](v08-cellcontext.html)
+9. [Irregular Layout](v09-irregularlayout.html)
+10. [Performance](v10-performance.html)
+11. [Shiny](v11-shiny.html)

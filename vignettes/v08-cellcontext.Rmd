@@ -81,7 +81,7 @@ pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE)
 
 ## Cell Context and Calculations
 
-There are four different ways a cell value can be calculated, as explained in the [Data Groups](datagroups.html) vignette.  The calculation steps for each of these (and where the cell context fits in) are described below.
+There are four different ways a cell value can be calculated, as explained in the [Data Groups](v02-datagroups.html) vignette.  The calculation steps for each of these (and where the cell context fits in) are described below.
 
 ### Method 1:  Summarising Values
 
@@ -91,13 +91,13 @@ This is the simplest case.  The data frame is filtered using the cell filters.  
 
 The cell filters are not applied to these calculations.  They are applied as part of the calculation of the summarised values that this derived value calculation is based on.  
 
-For example, in the "Method 2" example in the [Data Groups](datagroups.html) vignette, the cell filters are applied as part of the "Trains Arr. 5+ Mins Late" and "Total Trains" calculations (which are both "Method 1" summary calculations), but not as part of the "% Trains Arr. 5+ Mins Late" derived value calculation.
+For example, in the "Method 2" example in the [Data Groups](v02-datagroups.html) vignette, the cell filters are applied as part of the "Trains Arr. 5+ Mins Late" and "Total Trains" calculations (which are both "Method 1" summary calculations), but not as part of the "% Trains Arr. 5+ Mins Late" derived value calculation.
 
 ### Method 3:  Custom calculation functions
 
 The cell filters are explicitly applied in code as part of the custom function definition.  The author of the custom function has full control over if and when the cell filters are applied.
 
-For example, in the "Method 3" example in the [Data Groups](datagroups.html) vignette, the cell filters are explicitly applied by the line `filteredTrains <- pivotCalculator$getFilteredDataFrame(trains, netFilters)`.  Here, the `netFilters` parameter is a `PivotFilters` object that contains the filters for the current cell.  Remember, the custom function is invoked once for each cell in the pivot table.
+For example, in the "Method 3" example in the [Data Groups](v02-datagroups.html) vignette, the cell filters are explicitly applied by the line `filteredTrains <- pivotCalculator$getFilteredDataFrame(trains, netFilters)`.  Here, the `netFilters` parameter is a `PivotFilters` object that contains the filters for the current cell.  Remember, the custom function is invoked once for each cell in the pivot table.
 
 ### Method 4:  Showing a value (no calculation)
 
@@ -162,13 +162,14 @@ In the above example, for the WeekendTrains calculation, the calculation filters
 
 The full set of vignettes is:
 
-1. [Introduction](introduction.html)
-2. [Data Groups](datagroups.html)
-3. [Calculations](calculations.html)
-4. [Outputs](outputs.html)
-5. [Latex Output](latexoutput.html)
-6. [Styling](styling.html)
-7. [Finding and Formatting](findingandformatting.html)
-8. [Cell Context](cellcontext.html)
-9. [Irregular Layout](irregularlayout.html)
-10. [Shiny](shiny.html)
+1. [Introduction](v01-introduction.html)
+2. [Data Groups](v02-datagroups.html)
+3. [Calculations](v03-calculations.html)
+4. [Outputs](v04-outputs.html)
+5. [Latex Output](v05-latexoutput.html)
+6. [Styling](v06-styling.html)
+7. [Finding and Formatting](v07-findingandformatting.html)
+8. [Cell Context](v08-cellcontext.html)
+9. [Irregular Layout](v09-irregularlayout.html)
+10. [Performance](v10-performance.html)
+11. [Shiny](v11-shiny.html)

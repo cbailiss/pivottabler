@@ -81,3 +81,59 @@
 #' }
 #' @source \url{http://www.recenttraintimes.co.uk/}
 "trainstations"
+
+
+
+
+#' Performance Comparison Results
+#'
+#' A reference dataset containing the full results of an example performance
+#' comparison for different pivot table test cases.
+#'
+#' @format A data frame with 216 rows and  11 variables:
+#' \describe{
+#'   \item{id}{A unique identifier for this test case.}
+#'   \item{evaluationMode}{The pivot table evaluation mode used for this test case.}
+#'   \item{rowCount}{The number of rows in the data frame used for this test case.}
+#'   \item{cellCount}{The number of cells in the pivot table used for this test case.}
+#'   \item{argumentCheckMode}{The pivot table argument check mode used this test case.}
+#'   \item{processingLibrary}{The pivot table processing library used this test case.}
+#'   \item{description}{A description of this test case.}
+#'   \item{completed}{A logical value indicating whether this test case completed.}
+#'   \item{userTime}{The user time for this test case.}
+#'   \item{systemTimeAvg}{The system time for this test case.}
+#'   \item{elapsedTimeAvg}{The elapsed time for this test case.}
+#' }
+"pvtperfresults"
+
+
+
+
+#' Performance Comparison Summary
+#'
+#' A reference dataset containing summary results of an example performance
+#' comparison for different pivot table test cases.
+#'
+#' @format A data frame with 36 rows and  18 variables:
+#' \describe{
+#'   \item{id}{A unique identifier for this test case.}
+#'   \item{evaluationMode}{The pivot table evaluation mode used for this test case.}
+#'   \item{rowCount}{The number of rows in the data frame used for this test case.}
+#'   \item{cellCount}{The number of cells in the pivot table used for this test case.}
+#'   \item{argumentCheckMode}{The pivot table argument check mode used this test case.}
+#'   \item{processingLibrary}{The pivot table processing library used this test case.}
+#'   \item{description}{A description of this test case.}
+#'   \item{userTimeAvg}{The average user time for this test case.}
+#'   \item{systemTimeAvg}{The average system time for this test case.}
+#'   \item{elapsedTimeAvg}{The average elapsed time for this test case.}
+#'   \item{userTimeMin}{The minimum user time for this test case.}
+#'   \item{userTimeMax}{The maximum user time for this test case.}
+#'   \item{systemTimeMin}{The minimum system time for this test case.}
+#'   \item{systemTimeMax}{The maximum system time for this test case.}
+#'   \item{elapsedTimeMin}{The minimum elapsed time for this test case.}
+#'   \item{elapsedTimeMax}{The maximum elapsed time for this test case.}
+#'   \item{testName}{A short name for this test case.}
+#'   \item{testIndex}{An index for this test case.}
+#' }
+"pvtperfsummary"
+

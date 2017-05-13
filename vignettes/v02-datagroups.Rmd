@@ -107,7 +107,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-Note that finding total/non-total data groups/cells with the `findRowDataGroups()`, `findColumnDataGroups()` and `findCells()` functions won't work when visual totals are enabled.  See the [Finding and Formatting](findingandformatting.html) vignette for more details on these functions.
+Note that finding total/non-total data groups/cells with the `findRowDataGroups()`, `findColumnDataGroups()` and `findCells()` functions won't work when visual totals are enabled.  See the [Finding and Formatting](v07-findingandformatting.html) vignette for more details on these functions.
 
 ### Adding data groups that combine values
 
@@ -141,8 +141,7 @@ pt$renderPivot()
 
 ### More complex layouts of data groups
 
-Adding data groups one-at-a-time for complete fine-grained control will be possible in a future version.
-<!-- This is  more involved and is described separately in the [Custom Layouts](customlayouts.html) vignette. -->
+Adding data groups one-at-a-time for fine-grained control to create a pivot table with an irregular layout is also possible.  See the [Irregular Layout](v09-irregularlayout.html) vignette for more details.
 
 ## Formatting data groups
 
@@ -315,14 +314,14 @@ This can be useful when building a pivot table interactively, to quickly reset t
 
 The full set of vignettes is:
 
-1. [Introduction](introduction.html)
-2. [Data Groups](datagroups.html)
-3. [Calculations](calculations.html)
-4. [Outputs](outputs.html)
-5. [Latex Output](latexoutput.html)
-6. [Styling](styling.html)
-7. [Finding and Formatting](findingandformatting.html)
-8. [Cell Context](cellcontext.html)
-9. [Irregular Layout](irregularlayout.html)
-10. [Shiny](shiny.html)
-	
+1. [Introduction](v01-introduction.html)
+2. [Data Groups](v02-datagroups.html)
+3. [Calculations](v03-calculations.html)
+4. [Outputs](v04-outputs.html)
+5. [Latex Output](v05-latexoutput.html)
+6. [Styling](v06-styling.html)
+7. [Finding and Formatting](v07-findingandformatting.html)
+8. [Cell Context](v08-cellcontext.html)
+9. [Irregular Layout](v09-irregularlayout.html)
+10. [Performance](v10-performance.html)
+11. [Shiny](v11-shiny.html)

@@ -1,10 +1,10 @@
 ---
-title: "01. Introduction to pivottabler"
+title: "01. Introduction"
 author: "Chris Bailiss"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{01. Introduction to pivottabler}
+  %\VignetteIndexEntry{01. Introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -275,7 +275,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-See the [Data Groups](datagroups.html) vignette for more details.
+See the [Data Groups](v02-datagroups.html) vignette for more details.
 
 ### Multiple Calculations & Calculations on Rows
 
@@ -312,7 +312,7 @@ pt$addRowCalculationGroups()                             #  << ***** CODE CHANGE
 pt$renderPivot()
 ```
 
-See the [Calculations](calculations.html) vignette for more details.
+See the [Calculations](v03-calculations.html) vignette for more details.
 
 ### Custom Calculations
 
@@ -362,7 +362,7 @@ pt$defineCalculation(calculationName="WorstSingleDayDelay", format="%.1f %%",
 pt$renderPivot()
 ```
 
-See the [Calculations](calculations.html) vignette for more details.
+See the [Calculations](v03-calculations.html) vignette for more details.
 
 ### Results as a Matrix
 
@@ -377,7 +377,7 @@ pt$evaluatePivot()
 pt$asMatrix()
 ```
 
-See the [Outputs](outputs.html) vignette for more details, including other conversion options such as converting a pivot table to a data frame.
+See the [Outputs](v04-outputs.html) vignette for more details, including other conversion options such as converting a pivot table to a data frame.
 
 ### Latex Output
 
@@ -411,7 +411,7 @@ pt$theme <- theme
 pt$renderPivot(styleNamePrefix="t3")
 ```
 
-See the [Styling](styling.html) vignette for more details.
+See the [Styling](v06-styling.html) vignette for more details.
 
 ### Finding and Formatting Data Groups
 
@@ -431,7 +431,7 @@ groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
 pt$renderPivot()
 ```
 
-See the [Finding and Formatting](findingandformatting.html) vignette for more details.
+See the [Finding and Formatting](v07-findingandformatting.html) vignette for more details.
 
 ### Finding and Formatting Cells
 
@@ -450,7 +450,7 @@ cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
 pt$renderPivot()
 ```
 
-See the [Finding and Formatting](findingandformatting.html) vignette for more details.
+See the [Finding and Formatting](v07-findingandformatting.html) vignette for more details.
 
 ### Conditional Formatting
 
@@ -550,7 +550,7 @@ for(i in 1:length(cells)) {
 pt$renderPivot()
 ```
 
-See the [Finding and Formatting](findingandformatting.html) vignette for more details.
+See the [Finding and Formatting](v07-findingandformatting.html) vignette for more details.
 
 ### Irregular Layout
 
@@ -571,19 +571,20 @@ cg4$addCalculationGroups("calcGrp2")
 pt$renderPivot()
 ```
 
-See the [Irregular Layout](irregularlayout.html) vignette for more details.
+See the [Irregular Layout](v09-irregularlayout.html) vignette for more details.
 
 ## Further Reading
 
 The full set of vignettes is:
 
-1. [Introduction](introduction.html)
-2. [Data Groups](datagroups.html)
-3. [Calculations](calculations.html)
-4. [Outputs](outputs.html)
-5. [Latex Output](latexoutput.html)
-6. [Styling](styling.html)
-7. [Finding and Formatting](findingandformatting.html)
-8. [Cell Context](cellcontext.html)
-9. [Irregular Layout](irregularlayout.html)
-10. [Shiny](shiny.html)
+1. [Introduction](v01-introduction.html)
+2. [Data Groups](v02-datagroups.html)
+3. [Calculations](v03-calculations.html)
+4. [Outputs](v04-outputs.html)
+5. [Latex Output](v05-latexoutput.html)
+6. [Styling](v06-styling.html)
+7. [Finding and Formatting](v07-findingandformatting.html)
+8. [Cell Context](v08-cellcontext.html)
+9. [Irregular Layout](v09-irregularlayout.html)
+10. [Performance](v10-performance.html)
+11. [Shiny](v11-shiny.html)

@@ -33,13 +33,13 @@ Within a `pivottabler` pivot table, calculations always belong to a Calculation 
 
 Every pivot table always has a default calculation group (called `default`).  This is sufficient for most scenarios and calculations groups are not referred to again in this vignette.  All the calculations defined in this vignette sit in the `default` calculation group.  
 
-Creating additional calculation groups is only necessary for some advanced pivot table layouts.
+Creating additional calculation groups is only necessary for some advanced pivot table layouts - see the [Irregular Layout](v09-irregularlayout.html) vignette for an example.
 
 ## Calculation Types
 
 The pivottabler package supports several different ways of calculating the values to display in the cells of the pivot table:
 
-1. Summarise values (dplyr summarise)
+1. Summarise values (dplyr summarise or data.table calculate expression)
 2. Deriving values from other summarised values
 3. Custom calculation functions
 4. Show a value (no calculation)
@@ -60,7 +60,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-The pivottabler package uses the dplyr package.  The summariseExpression is an expression that can be used with the dplyr `summarise()` function.  The following shows several different example expressions:
+The pivottabler package uses the dplyr package by default.  The summariseExpression is therefore an expression that can be used with the dplyr `summarise()` function.  The following shows several different example expressions:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -92,6 +92,8 @@ pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev."
                      summariseExpression="sd(ArrivalDelay, na.rm=TRUE)", format="%.1f")
 pt$renderPivot()
 ```
+
+The data.table package can also be used - see the [Performance](v10-performance.html) for details.  Note that the "count" summarise expression is specified as ".N" when using data.table, not as "n()".
 
 ### Displaying calculations on rows
 
@@ -491,9 +493,9 @@ A number of different approaches to formatting are supported:
 * If `format` is a list, then pivottabler invokes `base::format()`, where the elements in the list become arguments in the function call.
 * If `format` is an R function, then this is invoked for each value.
 
-The above are the same approaches used when formatting data groups.  See the [Data Groups](datagroups.html) vignette for more details.
+The above are the same approaches used when formatting data groups.  See the [Data Groups](v02-datagroups.html) vignette for more details.
 
-Examples of the first two approaches above can be found in previous examples in this vignette.  An example of the third approach can be found in the [Data Groups](datagroups.html) vignette.
+Examples of the first two approaches above can be found in previous examples in this vignette.  An example of the third approach can be found in the [Data Groups](v02-datagroups.html) vignette.
 
 ## Empty cells
 
@@ -533,54 +535,24 @@ pt$renderPivot()
 
 ## Performance considerations
 
-In the current version of the `pivottabler` package, each cell in the pivot table is calculated independently and sequentially.  Batch execution of cells is under consideration for a future version.
+The `pivottabler` package supports two different evaluation modes for computing cell values: `batch` and `sequential`.  The `batch` evaluation mode offers much higher performance, especially for large pivot tables.
 
-For large data frames, the current approach can significantly increase the time required to calculate the pivot table cell values.  In such cases, aggregating the data explicitly in R code (where this is possible) before creating the pivot table can reduce the overall time required.
+The `pivottabler` package is also able to use two different packages when carrying out summarising cell calculations (method 1 calculations as described above in this vignette): dplyr and data.table.  data.table offers slightly higher performance when used with large data frames (over ten million rows) with `batch` evaluation mode.
 
-For example, duplicating the `bhmtrains` sample data frame to create a larger data set.
-
-```{r, message=FALSE, warning=FALSE}
-# create a larger data frame
-manytrains <- rbind(bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains, 
-                    bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains, bhmtrains)
-paste0("manytrains consists of ", nrow(manytrains), " rows and is ", format(object.size(manytrains), units="auto"), " in size.")
-
-# function for generating a pivot
-library(pivottabler)
-generatePivot <- function(data) {
-  pt <- PivotTable$new()
-  pt$addData(data)
-  pt$addColumnDataGroups("TrainCategory")
-  pt$addRowDataGroups("TOC")
-  pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-  pt$evaluatePivot() 
-}
-
-# time creating a pivot table (without aggregating the data first)
-system.time(replicate(10, generatePivot(manytrains))) / 10
-
-# aggregate the larger data frame
-library(dplyr)
-aggmanytrains <- manytrains %>%
-  group_by(TrainCategory, TOC) %>%
-  summarise(TotalTrains=n()) %>%
-  ungroup()
-
-# time creating a pivot table (using the pre-aggregated data frame)
-system.time(replicate(10, generatePivot(aggmanytrains))) / 10
-```
+Please see the [Performance](v10-performance.html) for more information about `pivottabler` performance.
 
 ## Further Reading
 
 The full set of vignettes is:
 
-1. [Introduction](introduction.html)
-2. [Data Groups](datagroups.html)
-3. [Calculations](calculations.html)
-4. [Outputs](outputs.html)
-5. [Latex Output](latexoutput.html)
-6. [Styling](styling.html)
-7. [Finding and Formatting](findingandformatting.html)
-8. [Cell Context](cellcontext.html)
-9. [Irregular Layout](irregularlayout.html)
-10. [Shiny](shiny.html)
+1. [Introduction](v01-introduction.html)
+2. [Data Groups](v02-datagroups.html)
+3. [Calculations](v03-calculations.html)
+4. [Outputs](v04-outputs.html)
+5. [Latex Output](v05-latexoutput.html)
+6. [Styling](v06-styling.html)
+7. [Finding and Formatting](v07-findingandformatting.html)
+8. [Cell Context](v08-cellcontext.html)
+9. [Irregular Layout](v09-irregularlayout.html)
+10. [Performance](v10-performance.html)
+11. [Shiny](v11-shiny.html)
