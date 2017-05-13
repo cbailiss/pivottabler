@@ -1,7 +1,7 @@
 pivottabler 0.2.0.9000:  Performance Improvements
 ================
 
-Current development version.
+Current development version and 0.3.0-rc (CRAN submission May 30th).
 
 Breaking Changes
 ----------------
