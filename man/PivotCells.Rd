@@ -47,6 +47,8 @@ in the pivot table.}
   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells matching
   the specified criteria.}
+  \item{\code{getColumnWidths())}}{Retrieve the width of the longest value
+  (in characters) in each column.}
   \item{\code{asMatrix(rawValue=TRUE))}}{Get a matrix containing all of the
   numerical values from the body of the pivot table (for rawValue=TRUE) or
   all of the formatted (i.e. character) values (for rawValue=FALSE).}

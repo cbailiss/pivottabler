@@ -13,7 +13,7 @@ The `pivottabler` package aims to:
 
 All calculations for the pivot tables take place inside R, enabling the use of a wide-range of R functions in the calculation logic.
 
-Pivot tables are rendered as htmlwidgets or as Latex. The HTML/Latex can be exported for use outside of R.
+Pivot tables are rendered as htmlwidgets, Latex or plain text. The HTML/Latex/text can be exported for use outside of R.
 
 Pivot tables can also be converted to a standard R matrix or data frame.
 
@@ -35,7 +35,59 @@ devtools::install_github("cbailiss/pivottabler", build_vignettes = TRUE)
 
 ### Example
 
+`pivottabler` has many styling and formatting capabilities when rendering pivot tables as htmlwidgets using `pt$renderPivot()`, however the most basic output is simply as plain text using `pt`.
+
+#### Plain Text Output
+
 A simple example of creating a pivot table - summarising the types of trains run by different train companies:
+
+``` r
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains) # bhmtrains is a data frame with columns TrainCategory, TOC, etc.
+pt$addColumnDataGroups("TrainCategory") # e.g. Express Passenger
+pt$addRowDataGroups("TOC") # TOC = Train Operating Company e.g. Arriva Trains Wales
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt
+```
+
+                         Express Passenger  Ordinary Passenger  Total  
+    Arriva Trains Wales               3079                 830   3909  
+    CrossCountry                     22865                  63  22928  
+    London Midland                   14487               33792  48279  
+    Virgin Trains                     8594                       8594  
+    Total                            49025               34685  83710  
+
+Multiple levels can be added to the pivot table row or column headings, e.g. looking at combinations of TOC and PowerType:
+
+``` r
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains) # bhmtrains is a data frame with columns TrainCategory, TOC, etc.
+pt$addColumnDataGroups("TrainCategory") # e.g. Express Passenger
+pt$addRowDataGroups("TOC") # TOC = Train Operating Company e.g. Arriva Trains Wales
+pt$addRowDataGroups("PowerType") # D/EMU = Diesel/Electric Multiple Unit, HST=High Speed Train
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt
+```
+
+                                Express Passenger  Ordinary Passenger  Total  
+    Arriva Trains Wales  DMU                 3079                 830   3909  
+                         Total               3079                 830   3909  
+    CrossCountry         DMU                22133                  63  22196  
+                         HST                  732                        732  
+                         Total              22865                  63  22928  
+    London Midland       DMU                 5638                5591  11229  
+                         EMU                 8849               28201  37050  
+                         Total              14487               33792  48279  
+    Virgin Trains        DMU                 2137                       2137  
+                         EMU                 6457                       6457  
+                         Total               8594                       8594  
+    Total                                   49025               34685  83710  
+
+#### HTML Output
 
 ``` r
 library(pivottabler)
@@ -46,6 +98,8 @@ pt$addRowDataGroups("TOC") # TOC = Train Operating Company e.g. Arriva Trains Wa
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
+
+Unfortunately the HTML output cannot be included in this README due to markdown/Github complexities. However, many examples can be found in the package vignettes.
 
 ### More Information
 
@@ -59,5 +113,3 @@ vignette(topic="v01-introduction", package="pivottabler")
 ```
 
 The vignettes can also be read on CRAN at: <https://cran.r-project.org/package=pivottabler>
-
-The Introduction vignette includes an examples gallery.

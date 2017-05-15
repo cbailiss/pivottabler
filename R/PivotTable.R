@@ -148,6 +148,8 @@
 #'   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
 #'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells in the
 #'   body of the pivot table matching the specified criteria.}
+#'   \item{\code{print(asCharacter=FALSE)}}{Either print the pivot table to the
+#'   console or retrieve it as a character value.}
 #'   \item{\code{asMatrix(includeHeaders=TRUE, repeatHeaders=FALSE,
 #'   rawValue=FALSE)}}{Gets the pivot table as a matrix, with or without
 #'   headings.}
@@ -696,6 +698,7 @@ PivotTable <- R6::R6Class("PivotTable",
         private$p_cells$reset()
         private$p_evaluated <- FALSE
         private$p_latexRenderer$resetVisibleRange()
+        private$p_fixedWidthSized <- FALSE
         private$addTiming("resetCells", timeStart)
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$resetCells", "Reset cells.")
@@ -819,6 +822,175 @@ PivotTable <- R6::R6Class("PivotTable",
                                          minValue=minValue, maxValue=maxValue, exactValues=exactValues, includeNull=includeNull, includeNA=includeNA)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findCells", "Found cells.")
       return(invisible(cells))
+    },
+    print = function(asCharacter=FALSE) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "print", asCharacter, missing(asCharacter), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$print", "Printing matrix...")
+      lineIndex <- 0
+      if(asCharacter==TRUE) returnLines <- vector("list", self$rowCount + private$p_columnGroup$getLevelCount())
+      else returnLines <- NULL
+      # constant
+      columnPadding <- 2 # characters
+      # clearing rendered flags
+      private$clearIsRenderedFlags()
+      # get the leaf groups
+      columnLeafGroups <- private$p_columnGroup$getLeafGroups()
+      if(!is.null(columnLeafGroups)) {
+        if(length(columnLeafGroups)>0)
+          for(c in 1:length(columnLeafGroups))
+            columnLeafGroups[[c]]$fixedWidthSize <- 0
+      }
+      # get the data widths
+      columnWidths <- NULL
+      if(private$p_evaluated) {
+        if(!is.null(private$p_cells)) {
+          columnWidths <- private$p_cells$getColumnWidths()
+          if(length(columnWidths)!=length(columnLeafGroups)) stop("PivotTable$print():  Column count - column widths mismatch!", call. = FALSE)
+          for(c in 1:length(columnWidths)) {
+            columnLeafGroups[[c]]$fixedWidthSize <- columnWidths[[c]] + columnPadding
+          }
+        }
+      }
+      # work up from the leaf groups setting the data group widths
+      columnLevelCount <- private$p_columnGroup$getLevelCount()
+      if(columnLevelCount>0) {
+        for(l in columnLevelCount:1) {
+          levelGroups <- private$p_columnGroup$getLevelGroups(l)
+          for(c in 1:length(levelGroups)) {
+            grp <- levelGroups[[c]]
+            if(is.null(grp$caption)) captionWidth <- columnPadding
+            else captionWidth <- nchar(grp$caption) + columnPadding
+            if(length(grp$childGroups)==0) {
+              # at the leaf level
+              # group width is the wider of the caption width of data width
+              if(captionWidth > grp$fixedWidthSize) grp$fixedWidthSize <- captionWidth
+            }
+            else if(length(grp$childGroups)>0) {
+              # not at the leaf level (somewhere above)
+              # group width is either the caption width or the sum of the child widths - whichever is larger
+              totalChildWidth <- 0
+              for(cg in 1:length(grp$childGroups)) {
+                cgrp <- grp$childGroups[[cg]]
+                totalChildWidth <- totalChildWidth + cgrp$fixedWidthSize
+              }
+              if(totalChildWidth>=captionWidth) grp$fixedWidthSize <- totalChildWidth
+              else {
+                # pad the child widths to match the caption width
+                grp$fixedWidthSize <- captionWidth
+                while (totalChildWidth < captionWidth) {
+                  for(cg in 1:length(grp$childGroups)) {
+                    cgrp <- grp$childGroups[[cg]]
+                    cgrp$fixedWidthSize <- cgrp$fixedWidthSize + 1
+                    totalChildWidth <- totalChildWidth + 1
+                    if(totalChildWidth==captionWidth) break
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      # calculate the widths of the row headings
+      rowLevelCount <- private$p_rowGroup$getLevelCount()
+      rowLevelWidths <- vector("integer", rowLevelCount)
+      if(rowLevelCount>0) {
+        for(l in 1:rowLevelCount) {
+          levelGroups <- private$p_rowGroup$getLevelGroups(l)
+          maxWidth <- 0
+          for(r in 1:length(levelGroups)) {
+            grp <- levelGroups[[r]]
+            maxWidth <- max(maxWidth, nchar(grp$caption))
+          }
+          rowLevelWidths[l] <- maxWidth + columnPadding
+        }
+      }
+      # quick functions
+      repStr <- function(string, times) {
+        return(paste(rep(string, times), collapse = ""))
+      }
+      padStr <- function(str, len, side){
+        if(is.null(str)) return(repStr(" ", len))
+        thisLength <- nchar(str)
+        padLength <- len - thisLength
+        if(side=="left") return(paste0(repStr(" ", padLength), str))
+        else return(paste0(str, repStr(" ", padLength)))
+      }
+      # print the output string
+      if(columnLevelCount>0) {
+        # column headings
+        for(cl in 1:columnLevelCount) {
+          currentLine <- NULL
+          # empty cells at top left
+          if(rowLevelCount==0) currentLine <- paste0(currentLine, "  ")
+          else {
+            for(rl in 1:rowLevelCount) {
+              currentLine <- paste0(currentLine, repStr(" ", rowLevelWidths[rl]))
+            }
+          }
+          # column headings at this level
+          levelGroups <- private$p_columnGroup$getLevelGroups(cl)
+          for(cg in 1:length(levelGroups)) {
+            cgrp <- levelGroups[[cg]]
+            if(is.null(cgrp$caption)) currentLine <- paste0(currentLine, repStr(" ", cgrp$fixedWidthSize))
+            if(is.na(cgrp$caption)) currentLine <- paste0(currentLine, repStr(" ", cgrp$fixedWidthSize))
+            else currentLine <- paste0(currentLine, cgrp$caption, repStr(" ", cgrp$fixedWidthSize - nchar(cgrp$caption)))
+          }
+          # print this line
+          if(asCharacter==TRUE) {
+            lineIndex <- lineIndex + 1
+            returnLines[[lineIndex]] <- currentLine
+          }
+          else cat(paste0(currentLine, "\n"))
+        }
+      }
+      # row headings and data
+      rowLeafGroups <- private$p_rowGroup$getLeafGroups()
+      columnWidths <- sapply(columnLeafGroups, function(grp) { return(grp$fixedWidthSize) })
+      for(r in 1:length(rowLeafGroups)) {
+        currentLine <- NULL
+        # row headings
+        rgrp <- rowLeafGroups[[r]]
+        rancs <- rgrp$getAncestorGroups(includeCurrentGroup=TRUE)
+        if(rowLevelCount != (length(rancs)-1)) stop("PivotTable$print():  Row level count - leaf group ancestor count mismatch!", call. = FALSE)
+        if(rowLevelCount==0) {
+          currentLine <- paste0(currentLine, "  ")
+        }
+        else if(rowLevelCount>0) {
+          for(rl in 1:rowLevelCount) {
+            rg <- rancs[[rowLevelCount-rl+1]]
+            if(rg$isRendered==TRUE) {
+              currentLine <- paste0(currentLine, repStr(" ", rowLevelWidths[rl]))
+            }
+            else {
+              if(is.null(rg$caption)) currentLine <- paste0(currentLine, repStr(" ", rowLevelWidths[rl]))
+              if(is.na(rg$caption)) currentLine <- paste0(currentLine, repStr(" ", rowLevelWidths[rl]))
+              else currentLine <- paste0(currentLine, rg$caption, repStr(" ", rowLevelWidths[rl] - nchar(rg$caption)))
+              rg$isRendered <- TRUE
+            }
+          }
+        }
+        # data
+        if(private$p_evaluated) {
+          if(!is.null(private$p_cells)) {
+            for(c in 1:self$columnCount) {
+              cell <- private$p_cells$getCell(r, c)
+              if(is.null(cell$formattedValue)) currentLine <- paste0(currentLine, repStr(" ", columnWidths[c]))
+              else if(is.na(cell$formattedValue)) currentLine <- paste0(currentLine, repStr(" ", columnWidths[c]))
+              else currentLine <- paste0(currentLine, repStr(" ", columnWidths[c] - 2 - nchar(cell$formattedValue)), cell$formattedValue, "  ")
+            }
+          }
+        }
+        # print this line
+        if(asCharacter==TRUE) {
+          lineIndex <- lineIndex + 1
+          returnLines[[lineIndex]] <- currentLine
+        }
+        else cat(paste0(currentLine, "\n"))
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$print", "Printed matrix.")
+      return(invisible(paste0(returnLines, sep="", collapse="\n")))
     },
     asMatrix = function(includeHeaders=TRUE, repeatHeaders=FALSE, rawValue=FALSE) {
       if(private$p_argumentCheckMode > 0) {
@@ -1236,7 +1408,10 @@ PivotTable <- R6::R6Class("PivotTable",
     trace = function(methodName, desc, detailList=NULL) {
       if(!private$p_traceEnabled) return()
       stackdepth <- length(sys.calls())
-      indent <- strrep(" ", (stackdepth - 1) *2)
+      repStr <- function(string, times) {
+        return(paste(rep(string, times), collapse = ""))
+      }
+      indent <- repStr(" ", (stackdepth - 1) *2)
       msg <- paste0(indent, methodName, ":  ", desc)
       if(length(detailList)>0) {
         nms <- names(detailList)
@@ -1324,7 +1499,8 @@ PivotTable <- R6::R6Class("PivotTable",
         else stop("PivotTable$fixedWidthSized: value must be logical (TRUE, FALSE, T, F)", call. = FALSE)
         return(invisible())
       }
-    }
+    },
+    asCharacter = function() { return(self$print(asCharacter=TRUE)) },
     theme = function(value) {
       if(missing(value)) {
         if(is.null(private$p_styles)) return(invisible(NULL))
@@ -1389,23 +1565,17 @@ PivotTable <- R6::R6Class("PivotTable",
     p_evaluated = FALSE,
     p_cells = NULL,
     p_lastCellBatchInfo = NULL,
+    p_fixedWidthSized = FALSE,
     p_htmlRenderer = NULL,
     p_latexRenderer = NULL,
     p_traceFile = NULL,
     p_timings = NULL,
     clearIsRenderedFlags = function() {
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$clearIsRenderedFlags", "Clearing isRendered flags...")
-      clearFlags <- function(dg) {
-        grp <- dg
-        while(!is.null(grp)) {
-          grp$isRendered <- FALSE
-          grp <- grp$parentGroup
-        }
-      }
       rowGroups <- self$rowGroup$getDescendantGroups(includeCurrentGroup=TRUE)
-      lapply(rowGroups, clearFlags)
+      lapply(rowGroups, function(grp) { grp$isRendered <- FALSE })
       columnGroups <- self$columnGroup$getDescendantGroups(includeCurrentGroup=TRUE)
-      lapply(columnGroups, clearFlags)
+      lapply(columnGroups, function(grp) { grp$isRendered <- FALSE })
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$clearIsRenderedFlags", "Cleared isRendered flags...")
       return(invisible())
     },

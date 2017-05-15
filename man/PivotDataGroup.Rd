@@ -59,6 +59,9 @@ where it exists in the pivot table.}
 this row/column heading).  The style must exist in the PivotStyles object
 associated with the PivotTable.}
 
+\item{\code{fixedWidthSize}}{the width of this data group in characters.  Only
+applies to column data groups, not row data groups.}
+
 \item{\code{style}}{A PivotStyle object that can apply overrides to the base style
 for this data group.}
 
@@ -99,6 +102,8 @@ group (used as part of the rendering routines).}
   data group in the parent-child data group hierarchy.}
   \item{\code{getLeafGroups(leafGroups)}}{Get all of the data groups across
   the bottom level of the data group hierarchy.}
+  \item{\code{getLevelCount(includeCurrentLevel=FALSE)}}{Count the number of
+  levels in the data group hierarchy.}
   \item{\code{getLevelGroups(level, levelGroups)}}{Get all of the data groups
   at a specific level in the data group hierarchy.}
   \item{\code{addChildGroup(variableName, values, caption, isTotal=FALSE,
@@ -118,8 +123,6 @@ group (used as part of the rendering routines).}
   calculation result values.}
   \item{\code{addCalculationGroups(calculationGroupName, atLevel)}}{Add a
   calculation group to the data group hierarchy.}
-  \item{\code{getLevelCount(includeCurrentLevel=FALSE)}}{Count the number of
-  levels in the data group hierarchy.}
   \item{\code{normaliseDataGroup()}}{Normalise the data group hierachy so
   that all branches have the same number of levels - accomplished by adding
   empty child data groups where needed.}

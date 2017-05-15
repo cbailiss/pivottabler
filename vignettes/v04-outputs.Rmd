@@ -13,6 +13,7 @@ vignette: >
 
 * Results of Pivot Calculations
 * Example Pivot Table
+* Results as Plain Text
 * Results as HTML
 * Results as Latex
 * Results as an R Matrix
@@ -31,6 +32,7 @@ The `pivottabler` package supports outputing a pivot table in a number of differ
     + `pt$getHtml()` to retrieve a character variable containing HTML, or
     + `pt$saveHtml()` to save the HTML to a file.
 - As Latex - using `pt$getLatex()` to retrieve a character variable containing Latex.
+- As plain text - using `pt` to output to the console or `pt$asCharacter` to retrieve as a character value.
 
 Sometimes it is desirable to retrieve the pivot table results as a more standard data type that is easier to work with in R code.  A pivot table can be converted to either a matrix or a data frame.  Neither data type is a perfect representation of a pivot table - which option is better will depend upon your use case.
 
@@ -46,6 +48,35 @@ pt$addColumnDataGroups("PowerType")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
+```
+
+## Results as Plain Text
+
+A pivot table is outputted to the console as plain text simply by using `pt`:
+
+```{r, message=FALSE, warning=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt
+```
+
+Alternatively, the plain text representation of the pivot table can be retrieved as a character value using `pt$asCharacter`.
+
+`pt` and `pt$asString` show the current state of the pivot table.  If the pivot table has not been evaluated (either by using `pt$evaluatePivot()` or `pt$renderPivot()`) then `pt` and `pt$asCharacter` will return the headings only:
+
+```{r, message=FALSE, warning=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt
 ```
 
 ## Results as HTML

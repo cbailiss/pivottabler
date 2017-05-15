@@ -39,6 +39,8 @@
 #' @field baseStyleName The name of the style applied to this data group (i.e.
 #'   this row/column heading).  The style must exist in the PivotStyles object
 #'   associated with the PivotTable.
+#' @field fixedWidthSize the width of this data group in characters.  Only
+#'   applies to column data groups, not row data groups.
 #' @field style A PivotStyle object that can apply overrides to the base style
 #'   for this data group.
 #' @field isMatch Whether or not this data group matches the criteria of the
@@ -71,6 +73,8 @@
 #'   data group in the parent-child data group hierarchy.}
 #'   \item{\code{getLeafGroups(leafGroups)}}{Get all of the data groups across
 #'   the bottom level of the data group hierarchy.}
+#'   \item{\code{getLevelCount(includeCurrentLevel=FALSE)}}{Count the number of
+#'   levels in the data group hierarchy.}
 #'   \item{\code{getLevelGroups(level, levelGroups)}}{Get all of the data groups
 #'   at a specific level in the data group hierarchy.}
 #'   \item{\code{addChildGroup(variableName, values, caption, isTotal=FALSE,
@@ -90,8 +94,6 @@
 #'   calculation result values.}
 #'   \item{\code{addCalculationGroups(calculationGroupName, atLevel)}}{Add a
 #'   calculation group to the data group hierarchy.}
-#'   \item{\code{getLevelCount(includeCurrentLevel=FALSE)}}{Count the number of
-#'   levels in the data group hierarchy.}
 #'   \item{\code{normaliseDataGroup()}}{Normalise the data group hierachy so
 #'   that all branches have the same number of levels - accomplished by adding
 #'   empty child data groups where needed.}
@@ -221,6 +223,23 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getLeafGroups", "Got leaf groups", list(count=length(lgs)))
      return(invisible(lgs))
+   },
+   getLevelCount = function(includeCurrentLevel=FALSE) {
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getLevelCount", includeCurrentLevel, missing(includeCurrentLevel), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$levelCount", "Counting levels...")
+     # get the leaf level groups
+     leafGroups <- self$getLeafGroups()
+     # get the maximum number of parents of each group
+     maxParents <- 0
+     if(length(leafGroups)==0) return()
+     for(i in 1:length(leafGroups)) {
+       ancestors <- leafGroups[[i]]$getAncestorGroups(includeCurrentGroup=includeCurrentLevel)
+       maxParents <- max(maxParents, length(ancestors))
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$levelCount", "Counted levels.")
+     return(invisible(maxParents))
    },
    getLevelGroups = function(level=NULL, levelGroups=NULL) { #level=0 is the current data group
      if(private$p_parentPivot$argumentCheckMode > 0) {
@@ -798,23 +817,6 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addCalculationGroups", "Added calculation groups.", list(count=length(newGroups)))
      return(invisible(newGroups))
    },
-   getLevelCount = function(includeCurrentLevel=FALSE) {
-     if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getLevelCount", includeCurrentLevel, missing(includeCurrentLevel), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-     }
-     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$levelCount", "Counting levels...")
-     # get the leaf level groups
-     leafGroups <- self$getLeafGroups()
-     # get the maximum number of parents of each group
-     maxParents <- 0
-     if(length(leafGroups)==0) return()
-     for(i in 1:length(leafGroups)) {
-       ancestors <- leafGroups[[i]]$getAncestorGroups(includeCurrentGroup=includeCurrentLevel)
-       maxParents <- max(maxParents, length(ancestors))
-     }
-     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$levelCount", "Counted levels.")
-     return(invisible(maxParents))
-   },
    normaliseDataGroup = function() {
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$normaliseDataGroup", "Normalising data group...")
      private$p_parentPivot$resetCells()
@@ -1088,6 +1090,16 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        return(invisible())
      }
    },
+   fixedWidthSize = function(value) {
+     if(missing(value)) { return(invisible(private$p_fixedWidthSize)) }
+     else {
+       if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "fixedWidthSize", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+       }
+       private$p_fixedWidthSize <- value
+       return(invisible())
+     }
+   },
    isMatch = function(value) {
      if(missing(value)) { return(invisible(private$p_isMatch)) }
      else {
@@ -1165,6 +1177,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    p_rowColumnNumber = NULL,
    p_baseStyleName = NULL,
    p_style = NULL,
+   p_fixedWidthSize = 0,
    p_isMatch = FALSE, # helper flag used when searching through data groups
    p_isWithinVisibleRange = TRUE, # helper flag to allow a subsection of the pivot table to be output
    p_isRendered = FALSE, # helper flag to keep track of which data groups have already been rendered

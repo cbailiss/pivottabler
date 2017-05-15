@@ -19,6 +19,7 @@ vignette: >
 * Sample Data
 * Basic Pivot Table
 * Constructing the Basic Pivot Table
+* Outputting the Pivot Table as Plain Text
 * Extending the Basic Pivot Table
 * Examples Gallery
 * Further Reading
@@ -35,11 +36,17 @@ The `pivottabler` package:
 - provides optional hooks for specifying custom calculations/aggregations for more complex scenarios
     + This allows a wide-range of R functions, including custom functions written in R, to be used in the calculation logic.
 - does not require the user to specify low-level layout logic.
-- supports output to HTML and Latex as well as converting a pivot table to either a standard R matrix or data frame.
+- supports output in multiple formats as well as converting a pivot table to either a standard R matrix or data frame.
 
 Since pivot tables are primarily visualisation tools, the pivottabler package offers several custom styling options as well as conditional/custom formatting capabilities so that the pivot tables can be themed/branded as needed.
 
-Output can be rendered as HTML, including via the htmlwidgets framework, or rendered in Latex to PDF.  The generated HTML and Latex can also be easily retrieved, e.g. to be used outside of R.
+Output can be rendered as:
+
+- HTML, including via the htmlwidgets framework, 
+- Latex, e.g. to PDF, or
+- Plain text, e.g. to the console.  
+
+The generated HTML, Latex and text can also be easily retrieved, e.g. to be used outside of R.
 
 The latest version of the pivottabler package can be obtained directly from the [package repository](https://github.com/cbailiss/pivottabler/).  Please log any questions not answered by the vignettes or any bug reports [here](https://github.com/cbailiss/pivottabler/issues).
 
@@ -47,7 +54,7 @@ The latest version of the pivottabler package can be obtained directly from the 
 
 ### Quick Example
 
-An example of a pivot table showing the number of trains operated by different train companies is:
+An example of a pivot table showing the number of trains operated by different train companies, rendered as a HTML widget, is:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -171,6 +178,21 @@ pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")                #     **** LINE BELOW ADDED ****
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
+```
+
+## Outputting the Pivot Table as Plain Text
+
+The pivot table can be rendered as plain text to the console by using `pt`:
+
+```{r, message=FALSE, warning=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt
 ```
 
 ## Extending the Basic Pivot Table

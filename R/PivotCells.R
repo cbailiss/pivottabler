@@ -36,6 +36,8 @@
 #'   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
 #'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells matching
 #'   the specified criteria.}
+#'   \item{\code{getColumnWidths())}}{Retrieve the width of the longest value
+#'   (in characters) in each column.}
 #'   \item{\code{asMatrix(rawValue=TRUE))}}{Get a matrix containing all of the
 #'   numerical values from the body of the pivot table (for rawValue=TRUE) or
 #'   all of the formatted (i.e. character) values (for rawValue=FALSE).}
@@ -296,6 +298,23 @@ PivotCells <- R6::R6Class("PivotCells",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findCells", "Found cells.")
      return(invisible(matches))
+   },
+   getColumnWidths = function() {
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getColumnWidths", "Getting column widths...")
+     widths <- integer(0)
+     if((self$rowCount>0)&&(self$columnCount>0)) {
+       widths <- integer(self$columnCount)
+       for(r in 1:self$rowCount) {
+         for(c in 1:length(private$p_rows[[r]])) {
+           cell <- private$p_rows[[r]][[c]]
+           if(is.null(cell$formattedValue)) next
+           if(is.na(cell$formattedValue)) next
+           widths[c] <- max(widths[c], nchar(cell$formattedValue))
+         }
+       }
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getColumnWidths", "Got column widths.")
+     return(invisible(widths))
    },
    asMatrix = function(rawValue=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {

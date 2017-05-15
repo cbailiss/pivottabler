@@ -159,6 +159,8 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells in the
   body of the pivot table matching the specified criteria.}
+  \item{\code{print(asCharacter=FALSE)}}{Either print the pivot table to the
+  console or retrieve it as a character value.}
   \item{\code{asMatrix(includeHeaders=TRUE, repeatHeaders=FALSE,
   rawValue=FALSE)}}{Gets the pivot table as a matrix, with or without
   headings.}
