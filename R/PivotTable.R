@@ -1312,22 +1312,19 @@ PivotTable <- R6::R6Class("PivotTable",
         }
       }
     },
-    evaluationMode = function(value) {
-      if(missing(value)) {
-        return(private$p_evaluationMode)
-      }
-      else {
-        if(private$p_argumentCheckMode > 0) {
-          checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "evaluationMode", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("sequential", "batch"))
-        }
-        private$p_evaluationMode <- value
-        return(invisible())
-      }
-    },
+    evaluationMode = function(value) { return(invisible(private$p_evaluationMode)) },
     batchInfo = function(value) { return(invisible(private$p_lastCellBatchInfo)) },
     cells = function(value) { return(invisible(private$p_cells)) },
     rowCount = function(value) { return(invisible(private$p_cells$rowCount)) },
     columnCount = function(value) { return(invisible(private$p_cells$columnCount)) },
+    fixedWidthSized = function(value) {
+      if(missing(value)) return(invisible(private$p_fixedWidthSized))
+      else {
+        if(is.logical(value)) private$p_fixedWidthSized <- value
+        else stop("PivotTable$fixedWidthSized: value must be logical (TRUE, FALSE, T, F)", call. = FALSE)
+        return(invisible())
+      }
+    }
     theme = function(value) {
       if(missing(value)) {
         if(is.null(private$p_styles)) return(invisible(NULL))
