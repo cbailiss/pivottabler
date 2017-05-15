@@ -47,9 +47,9 @@ A simple example of creating a pivot table - summarising the types of trains run
 ```{r eval=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
-pt$addData(bhmtrains)
+pt$addData(bhmtrains) # bhmtrains is a data frame with columns TrainCategory, TOC, etc.
 pt$addColumnDataGroups("TrainCategory") # e.g. Express Passenger
-pt$addRowDataGroups("TOC") # Train Operating Company, e.g. Arriva Trains Wales
+pt$addRowDataGroups("TOC") # TOC = Train Operating Company e.g. Arriva Trains Wales
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -62,8 +62,10 @@ More complex pivot tables can also be created, e.g. with irregular layouts, usin
 # to see a list of available package vignettes:
 vignette(package="pivottabler")
 # to open a specific vignette
-vignette(topic="introduction", package="pivottabler")
+vignette(topic="v01-introduction", package="pivottabler")
 ```
 
 The vignettes can also be read on CRAN at:
 https://cran.r-project.org/package=pivottabler 
+
+The Introduction vignette includes an examples gallery.
