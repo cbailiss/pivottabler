@@ -52,18 +52,26 @@ pt$renderPivot()
 
 A `pivottabler` pivot table can be output in Latex using the `pt$getLatex()` function.  The Latex for the example pivot table above is:
 
-```{r, message=FALSE, warning=FALSE, comment="", echo=FALSE}
+```{r, message=FALSE, warning=FALSE, comment=""}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-pt$evaluatePivot()
 cat(pt$getLatex())
 ```
 
-The caption for the table can be specified using the `caption` argument when calling the `pt$getLatex()` function.  The table label, used to cross-reference the table in other parts of the document, can be specified using the `label` argument.  Both of these arguments are illustrated in the examples below.
+The caption for the table can be specified using the `caption` argument when calling the `pt$getLatex()` function.  The table label, used to cross-reference the table in other parts of the document, can be specified using the `label` argument.  Both of these arguments are illustrated in the examples later in this vignette.
+
+The equivalent quick-pivot command for the example pivot table shown above is:
+
+```{r, eval=FALSE}
+library(pivottabler)
+cat(qlpvt(bhmtrains, "TOC", "TrainCategory", c("TotalTrains"="n()")))
+```
+
+More information on the quick-pivot functions can be found in the [Introduction](v01-introduction.html) vignette.
 
 ## Rendering a Pivot Table to PDF via R Markdown
 

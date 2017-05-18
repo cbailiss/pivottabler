@@ -18,6 +18,7 @@ vignette: >
 * Method 2:  Deriving values from other summarised values
 * Method 3:  Custom calculation functions
 * Method 4:  Showing a value (no calculation)
+* Specifying calculations before row/column data groups
 * Using multiple data frames in the same pivot table
 * Filtering data as part of a calculation
 * Formatting calculated values
@@ -392,6 +393,41 @@ pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains",  # <<  *** CODE CHANGE (AND BELOW) *** <<
                      type="value", valueName="NumberOfTrains", 
                      summariseExpression="sum(NumberOfTrains)")
+pt$renderPivot()
+```
+
+## Specifying calculations before row/column data groups
+
+In the examples above, the row/column groups were specified first and then the calculations.  It is equally possible to specify the calculations first.  The calculation names then form the first level of the row/column groups, e.g.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$addColumnCalculationGroups()
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$renderPivot()
+```
+
+Similarly, on rows:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$addRowCalculationGroups()
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
 pt$renderPivot()
 ```
 

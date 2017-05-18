@@ -91,6 +91,10 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
                                                                              calculationExpression=calculationExpression,
                                                                              calculationFunctionIsNull=is.null(calculationFunction), basedOn=basedOn,
                                                                              noDataValue=noDataValue, noDataCaption=noDataCaption))
+     if(grepl(" ", calculationName)==TRUE)
+       stop("PivotCalculation$new():  calculationName must not contain any space characters.", call. = FALSE)
+     if(make.names(calculationName)!=calculationName)
+       stop(paste0("PivotCalculation$new():  Please specify a valid name for calculation '", calculationName, "'\nA valid name consists of letters, numbers and the dot or underline characters and starts with a letter or the dot not followed by a number."), call. = FALSE)
      if(missing(caption)||is.null(caption)) caption <- calculationName
      if((!(missing(dataName)))&&(!is.null(dataName))) {
        if(!private$p_parentPivot$data$isKnownData(dataName))

@@ -16,8 +16,10 @@ Improvements
 * addRowDataGroups and addColumnDataGroups functions pre-group the data to reduce the time required for larger data frames.
 * New argumentCheckMode parameter added to pivot table initialiser to provide an additional option to reduce the time required to create larger pivot tables.
 * print() method added to PivotTable class.  Can now print a simple plain text view of the pivot table to the console using just `pt` or retrieve the plain text as a character value using `pt$asCharacter`.
+* Quick-pivot functions added that construct a basic pivot table with one line of R: `qpvt()`, `qhpvt()` and `qlpvt()`.  See the Introduction vignette for more details.
 * Internal pivot filters class differentiates more clearly between 'all', 'some' and 'none' match cases for more robust filtering and early elimination of some cell calculations.
 * The getCells() function has been made more intuitive to use when getting specific cells by using a new cellCoordinates argument.  See the Finding and Formatting vignette for details.
+* Stricter name checking for calculation names to avoid later unclear dplyr/data.table errors caused by syntax errors arising from illegal names.
 
 Bug Fixes
 ----------------

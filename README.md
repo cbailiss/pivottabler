@@ -35,11 +35,26 @@ devtools::install_github("cbailiss/pivottabler", build_vignettes = TRUE)
 
 ### Example
 
-`pivottabler` has many styling and formatting capabilities when rendering pivot tables as htmlwidgets using `pt$renderPivot()`, however the most basic output is simply as plain text using `pt`.
+`pivottabler` has many styling and formatting capabilities when rendering pivot tables in HTML / as htmlwidgets using `pt$renderPivot()`, however the most basic output is simply as plain text.
 
 #### Plain Text Output
 
 A simple example of creating a pivot table - summarising the types of trains run by different train companies:
+
+``` r
+library(pivottabler)
+# arguments:  qpvt(dataFrame, rows, columns, calculations)
+qpvt(bhmtrains, "TOC", "TrainCategory", "n()") # TOC = Train Operating Company 
+```
+
+                         Express Passenger  Ordinary Passenger  Total  
+    Arriva Trains Wales               3079                 830   3909  
+    CrossCountry                     22865                  63  22928  
+    London Midland                   14487               33792  48279  
+    Virgin Trains                     8594                       8594  
+    Total                            49025               34685  83710  
+
+`pivottabler` also offers a more verbose syntax that is more self-describing and offers additional options that aren't available with the quick-pivot functions such as control over totals/sub-totals. The equivalent verbose commands to output the same pivot table as above are:
 
 ``` r
 library(pivottabler)
@@ -52,21 +67,19 @@ pt$evaluatePivot()
 pt
 ```
 
-                         Express Passenger  Ordinary Passenger  Total  
-    Arriva Trains Wales               3079                 830   3909  
-    CrossCountry                     22865                  63  22928  
-    London Midland                   14487               33792  48279  
-    Virgin Trains                     8594                       8594  
-    Total                            49025               34685  83710  
-
 Multiple levels can be added to the pivot table row or column headings, e.g. looking at combinations of TOC and PowerType:
 
 ``` r
 library(pivottabler)
+qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()")
+```
+
+``` r
+library(pivottabler)
 pt <- PivotTable$new()
-pt$addData(bhmtrains) # bhmtrains is a data frame with columns TrainCategory, TOC, etc.
-pt$addColumnDataGroups("TrainCategory") # e.g. Express Passenger
-pt$addRowDataGroups("TOC") # TOC = Train Operating Company e.g. Arriva Trains Wales
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
 pt$addRowDataGroups("PowerType") # D/EMU = Diesel/Electric Multiple Unit, HST=High Speed Train
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$evaluatePivot()
@@ -89,17 +102,43 @@ pt
 
 #### HTML Output
 
+The HTML rendering of the same two pivot tables shown above (each constructed using both a quick-pivot function and verbose syntax) is:
+
+``` r
+library(pivottabler)
+qhpvt(bhmtrains, "TOC", "TrainCategory", "n()") 
+```
+
+``` r
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains) 
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+![<http://cbailiss.me.uk/pivottablerreadmeimgs/example1.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example1.png)
+
+``` r
+library(pivottabler)
+qhpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()")  
+```
+
 ``` r
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains) # bhmtrains is a data frame with columns TrainCategory, TOC, etc.
 pt$addColumnDataGroups("TrainCategory") # e.g. Express Passenger
 pt$addRowDataGroups("TOC") # TOC = Train Operating Company e.g. Arriva Trains Wales
+pt$addRowDataGroups("PowerType") # D/EMU = Diesel/Electric Multiple Unit, HST=High Speed Train
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-pt$renderPivot()
+pt$evaluatePivot()
+pt
 ```
 
-Unfortunately the HTML output cannot be included in this README due to markdown/Github complexities. However, many examples can be found in the package vignettes.
+![<http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png)
 
 ### More Information
 

@@ -21,6 +21,7 @@ vignette: >
 * Constructing the Basic Pivot Table
 * Outputting the Pivot Table as Plain Text
 * Extending the Basic Pivot Table
+* Quick-Pivot Functions
 * Examples Gallery
 * Further Reading
 
@@ -28,7 +29,7 @@ vignette: >
 
 The `pivottabler` package enables pivot tables to be created with just a few lines of R.
 
-Pivot tables are constructed natively in R, via a series of R commands that gradually build a pivot table to meet your needs. 
+Pivot tables are constructed natively in R, either via a short one line command to build a basic pivot table or via series of R commands that gradually build a more bespoke pivot table to meet your needs. 
 
 The `pivottabler` package:
 
@@ -54,16 +55,12 @@ The latest version of the pivottabler package can be obtained directly from the 
 
 ### Quick Example
 
-An example of a pivot table showing the number of trains operated by different train companies, rendered as a HTML widget, is:
+An example of a pivot table showing the number of trains operated by different train companies is:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-pt$renderPivot()
+# arguments:  qhpvt(dataFrame, rows, columns, calculations)
+qhpvt(bhmtrains, "TOC", "TrainCategory", "n()") # TOC = Train Operating Company 
 ```
 
 This example pivot table is explained in more detail later in this vignette.  
@@ -127,6 +124,8 @@ pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
+
+The code above is the verbose version of the quick-pivot example near the start of this vignette (which used the `qhpvt()` function).  Both produce the same pivot table and output, but the verbose version helps more clearly explain the steps involved in constructing the pivot table.
 
 Each line above works as follows:
 
@@ -264,6 +263,40 @@ pt$addRowDataGroups("PowerType")
 pt$addRowDataGroups("SchedSpeedMPH", addTotal=FALSE)      #    << **** CODE CHANGE **** <<
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
+```
+
+## Quick-Pivot Functions
+
+To construct basic pivot tables quickly, three functions are provided that can construct pivot tables with one line of R:
+
+- `qpvt()` returns a pivot table.  Setting a variable equal to the return value, e.g. `pt <- qpvt(...)`, allows further operations to be carried out on the pivot table.  Otherwise, using `qpvt(...)` alone will simply print the pivot table to the console and then discard it.
+- `qhpvt()` returns a HTML widget that when used alone will render a HTML representation of  the pivot table (e.g. in the R-Studio "Viewer" pane).
+- `qlpvt()` returns a Latex representation of a pivot table. 
+
+These functions do not offer all of the options that are available when constructing a pivot table using the more verbose syntax.
+
+The arguments to all three functions are essentially the same:
+
+- `dataFrame` specifies the data frame that contains the pivot table data.
+- `rows` specifies the names of the variables (as a character vector) used to generate the row data groups.
+- `columns` specifies the names of the variables (as a character vector) used to generate the column data groups.
+- `calculations` specifies the summary calculations (as a character vector) used to calculate the cell values in the pivot table.  The names of the elements in this vector become the calculation names (and so the calculation headings when more than one calculation is present in the pivot table).
+
+Specifying "=" in either the `rows` or `columns` vectors sets the position of the calculations in the row/column headings.
+
+A basic example of quickly printing a pivot table to the console: 
+
+```{r, message=FALSE, warning=FALSE, comment=""}
+library(pivottabler)
+qpvt(bhmtrains, "TOC", "TrainCategory", "n()")
+```
+
+A slightly more complex pivot table being quickly rendered as a HTML widget, where the calculation headings are on the rows: 
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+qhpvt(bhmtrains, c("=", "TOC"), c("TrainCategory", "PowerType"),
+    c("Number of Trains"="n()", "Maximum Speed"="max(SchedSpeedMPH, na.rm=TRUE)"))
 ```
 
 ## Examples Gallery
