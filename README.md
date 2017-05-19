@@ -152,3 +152,9 @@ vignette(topic="v01-introduction", package="pivottabler")
 ```
 
 The vignettes can also be read on CRAN at: <https://cran.r-project.org/package=pivottabler>
+
+### More Examples
+
+The following are a few of the example pivot tables constructed in the package vignettes:
+
+![<http://cbailiss.me.uk/pivottablerreadmeimgs/example3.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example3.png)
