@@ -134,8 +134,7 @@ pt$addColumnDataGroups("TrainCategory") # e.g. Express Passenger
 pt$addRowDataGroups("TOC") # TOC = Train Operating Company e.g. Arriva Trains Wales
 pt$addRowDataGroups("PowerType") # D/EMU = Diesel/Electric Multiple Unit, HST=High Speed Train
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-pt$evaluatePivot()
-pt
+pt$renderPivot()
 ```
 
 ![<http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png)
@@ -155,6 +154,6 @@ The vignettes can also be read on CRAN at: <https://cran.r-project.org/package=p
 
 ### More Examples
 
-The following are a few of the example pivot tables constructed in the package vignettes:
+The following are a few of the example pivot tables constructed in the package vignettes (click to open full sized picture):
 
 ![<http://cbailiss.me.uk/pivottablerreadmeimgs/example3.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example3.png)
