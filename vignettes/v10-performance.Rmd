@@ -261,7 +261,7 @@ Here we run a performance comparison for a variety of different scenarios.  Test
 * Source data frame row counts of one hundred thousand (1e5), one million (1e6) and ten million (1e7).
 * Pivot table cell counts of 10, 100 and 1000.
 * Argument check modes of `none` and `balanced`.
-* Processing libraries of dplyr and data.table.
+* Processing libraries of dplyr (v0.5.0) and data.table (1.10.4).
 
 All of the above combinations are run three times.  This equals 72*3=216 tests in total.  The full performance comparison typically requires around 3 hours to execute.
 
@@ -433,17 +433,86 @@ scenarios <- results %>%
   ungroup()
 ```
 
-To examine the results, we will consider those test cases where the argument check mode was `none` (to reduce the number of variables to be plotted).
+To examine the results, we will consider those test cases where the argument check mode was `none` (to reduce the number of variables to be considered).
+
+The results are shown in the table below then examined further in series of charts:
+
+```{r, eval=FALSE}
+library(dplyr)
+summarydata <- mutate(scenarios, 
+                   cellDesc=paste0(cellCount, "  cells"), 
+                   rowDesc=paste0(
+                     recode(rowCount, "1e5"=" 0.1", "1e6"=" 1", "1e7"="10"), 
+                     "M  data frame rows")
+)
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(summarydata)
+pt$addColumnDataGroups("evaluationMode", addTotal=FALSE)
+pt$addColumnDataGroups("processingLibrary", addTotal=FALSE)
+pt$addRowDataGroups("rowDesc", addTotal=FALSE)
+pt$addRowDataGroups("cellDesc", addTotal=FALSE)
+pt$defineCalculation(calculationName="elapsedTimeAvg", type="value", valueName="elapsedTimeAvg", format="%.2f")
+pt$evaluatePivot()
+greenStyle <- PivotStyle$new(pt, "greenStyle", list("background-color"="#C6EFCE", "color"="#006100"))
+yellowStyle <- PivotStyle$new(pt, "yellowStyle", list("background-color"="#FFEB9C", "color"="#9C5700"))
+redStyle <- PivotStyle$new(pt, "redStyle", list("background-color"="#FFC7CE", "color"="#9C0006"))
+cells <- pt$findCells(minValue=0, maxValue=2, includeNull=FALSE, includeNA=FALSE)
+cellCount <- lapply(cells, function(cell) {cell$style <- greenStyle})
+cells <- pt$findCells(minValue=2, maxValue=15, includeNull=FALSE, includeNA=FALSE)
+cellCount <- lapply(cells, function(cell) {cell$style <- yellowStyle})
+cells <- pt$findCells(minValue=15, includeNull=FALSE, includeNA=FALSE)
+cellCount <- lapply(cells, function(cell) {cell$style <- redStyle})
+pt$renderPivot()
+```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(dplyr)
+summarydata <- mutate(pvtperfsummary, 
+                   cellDesc=paste0(cellCount, "  cells"), 
+                   rowDesc=paste0(
+                     recode(rowCount, "1e5"=" 0.1", "1e6"=" 1", "1e7"="10"), 
+                     "M  data frame rows")
+)
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(summarydata)
+pt$addColumnDataGroups("evaluationMode", addTotal=FALSE)
+pt$addColumnDataGroups("processingLibrary", addTotal=FALSE)
+pt$addRowDataGroups("rowDesc", addTotal=FALSE)
+pt$addRowDataGroups("cellDesc", addTotal=FALSE)
+pt$defineCalculation(calculationName="elapsedTimeAvg", type="value", valueName="elapsedTimeAvg", format="%.2f")
+pt$evaluatePivot()
+greenStyle <- PivotStyle$new(pt, "greenStyle", list("background-color"="#C6EFCE", "color"="#006100"))
+yellowStyle <- PivotStyle$new(pt, "yellowStyle", list("background-color"="#FFEB9C", "color"="#9C5700"))
+redStyle <- PivotStyle$new(pt, "redStyle", list("background-color"="#FFC7CE", "color"="#9C0006"))
+cells <- pt$findCells(minValue=0, maxValue=2, includeNull=FALSE, includeNA=FALSE)
+cellCount <- lapply(cells, function(cell) {cell$style <- greenStyle})
+cells <- pt$findCells(minValue=2, maxValue=15, includeNull=FALSE, includeNA=FALSE)
+cellCount <- lapply(cells, function(cell) {cell$style <- yellowStyle})
+cells <- pt$findCells(minValue=15, includeNull=FALSE, includeNA=FALSE)
+cellCount <- lapply(cells, function(cell) {cell$style <- redStyle})
+pt$renderPivot()
+```
 
 To plot the results, showing the full elapsed time range (up to around 700 seconds), faceting the charts horizontally by data frame row count (100,000 to 10,000,000) and vertically by pivot table cell count (10 to 1000): 
 
 ```{r, eval=FALSE}
+# clearer captions
+library(dplyr)
+plotdata <- mutate(scenarios, 
+                   cellDesc=paste0(cellCount, "  cells"), 
+                   rowDesc=paste0(
+                     recode(rowCount, "1e5"=" 0.1", "1e6"=" 1", "1e7"="10"), 
+                     "M  data frame rows")
+                   )
+
 # plot using ggplot2
 library(ggplot2)
 colors <- c("#A5E9A5","#33CC33", "#99CCFF","#0066FF")
 
 # bar chart
-ggplot(scenarios, aes(x = testName, y = elapsedTimeAvg)) +
+ggplot(plotdata, aes(x = testName, y = elapsedTimeAvg)) +
   geom_bar(aes(fill=testName), stat="identity", position="dodge") +
   scale_fill_manual(values=colors, name="Test") +
   theme(panel.background = element_rect(colour = "grey40", fill = "white"),
@@ -452,16 +521,25 @@ ggplot(scenarios, aes(x = testName, y = elapsedTimeAvg)) +
   scale_y_continuous(expand = c(0.01, 0)) +
   coord_cartesian(ylim = c(0, 680)) +
   labs(x = "Test", y = "Elapsed Time (seconds)", title ="Performance Comparison") +
-  facet_grid(cellCount ~ rowCount)
+  facet_grid(cellDesc ~ rowDesc)
 
 ```
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE, fig.width=7, fig.height=4}
+# clearer captions
+library(dplyr)
+plotdata <- mutate(pvtperfsummary, 
+                   cellDesc=paste0(cellCount, "  cells"), 
+                   rowDesc=paste0(
+                     recode(rowCount, "1e5"=" 0.1", "1e6"=" 1", "1e7"="10"), 
+                     "M  data frame rows")
+                   )
+# plot
 library(ggplot2)
 library(pivottabler)
 colors <- c("#A5E9A5","#33CC33", "#99CCFF","#0066FF")
 
-ggplot(pvtperfsummary, aes(x = testName, y = elapsedTimeAvg)) +
+ggplot(plotdata, aes(x = testName, y = elapsedTimeAvg)) +
   geom_bar(aes(fill=testName), stat="identity", position="dodge") +
   scale_fill_manual(values=colors, name="Test") +
   theme(panel.background = element_rect(colour = "grey40", fill = "white"),
@@ -470,7 +548,7 @@ ggplot(pvtperfsummary, aes(x = testName, y = elapsedTimeAvg)) +
   scale_y_continuous(expand = c(0.01, 0)) +
   coord_cartesian(ylim = c(0, 680)) +
   labs(x = "Test", y = "Elapsed Time (seconds)", title ="Performance Comparison") +
-  facet_grid(cellCount ~ rowCount)
+  facet_grid(cellDesc ~ rowDesc)
 ```
 
 It is clear pivot table creation time is very large when `sequential` mode is used for large pivot tables and large data frames.  The pivot table with one thousand cells based on a data frame containing ten million rows required around 500 seconds to be created.
@@ -478,10 +556,19 @@ It is clear pivot table creation time is very large when `sequential` mode is us
 Displaying the same chart again, but setting the y-axis maximum to be around 80 seconds:  
 
 ```{r, eval=FALSE}
+# clearer captions
+library(dplyr)
+plotdata <- mutate(scenarios, 
+                   cellDesc=paste0(cellCount, "  cells"), 
+                   rowDesc=paste0(
+                     recode(rowCount, "1e5"=" 0.1", "1e6"=" 1", "1e7"="10"), 
+                     "M  data frame rows")
+                   )
+# plot
 library(ggplot2)
 colors <- c("#A5E9A5","#33CC33", "#99CCFF","#0066FF")
 
-ggplot(scenarios, aes(x = testName, y = elapsedTimeAvg)) +
+ggplot(plotdata, aes(x = testName, y = elapsedTimeAvg)) +
   geom_bar(aes(fill=testName), stat="identity", position="dodge") +
   scale_fill_manual(values=colors, name="Test") +
   theme(panel.background = element_rect(colour = "grey40", fill = "white"),
@@ -490,15 +577,24 @@ ggplot(scenarios, aes(x = testName, y = elapsedTimeAvg)) +
   scale_y_continuous(expand = c(0.01, 0)) +
   coord_cartesian(ylim = c(0, 84)) +
   labs(x = "Test", y = "Elapsed Time (seconds)", title ="Performance Comparison") +
-  facet_grid(cellCount ~ rowCount)
+  facet_grid(cellDesc ~ rowDesc)
 ```
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE, fig.width=7, fig.height=4}
+# clearer captions
+library(dplyr)
+plotdata <- mutate(pvtperfsummary, 
+                   cellDesc=paste0(cellCount, "  cells"), 
+                   rowDesc=paste0(
+                     recode(rowCount, "1e5"=" 0.1", "1e6"=" 1", "1e7"="10"), 
+                     "M  data frame rows")
+                   )
+# plot
 library(ggplot2)
 library(pivottabler)
 colors <- c("#A5E9A5","#33CC33", "#99CCFF","#0066FF")
 
-ggplot(pvtperfsummary, aes(x = testName, y = elapsedTimeAvg)) +
+ggplot(plotdata, aes(x = testName, y = elapsedTimeAvg)) +
   geom_bar(aes(fill=testName), stat="identity", position="dodge") +
   scale_fill_manual(values=colors, name="Test") +
   theme(panel.background = element_rect(colour = "grey40", fill = "white"),
@@ -507,16 +603,25 @@ ggplot(pvtperfsummary, aes(x = testName, y = elapsedTimeAvg)) +
   scale_y_continuous(expand = c(0.01, 0)) +
   coord_cartesian(ylim = c(0, 84)) +
   labs(x = "Test", y = "Elapsed Time (seconds)", title ="Performance Comparison") +
-  facet_grid(cellCount ~ rowCount)
+  facet_grid(cellDesc ~ rowDesc)
 ```
 
 Finally, displaying the same chart again, but setting the y-axis maximum to be around 15 seconds: 
 
 ```{r, eval=FALSE}
+# clearer captions
+library(dplyr)
+plotdata <- mutate(scenarios, 
+                   cellDesc=paste0(cellCount, "  cells"), 
+                   rowDesc=paste0(
+                     recode(rowCount, "1e5"=" 0.1", "1e6"=" 1", "1e7"="10"), 
+                     "M  data frame rows")
+                   )
+# plot
 library(ggplot2)
 colors <- c("#A5E9A5","#33CC33", "#99CCFF","#0066FF")
 
-ggplot(scenarios, aes(x = testName, y = elapsedTimeAvg)) +
+ggplot(plotdata, aes(x = testName, y = elapsedTimeAvg)) +
   geom_bar(aes(fill=testName), stat="identity", position="dodge") +
   scale_fill_manual(values=colors, name="Test") +
   theme(panel.background = element_rect(colour = "grey40", fill = "white"),
@@ -525,15 +630,24 @@ ggplot(scenarios, aes(x = testName, y = elapsedTimeAvg)) +
   scale_y_continuous(expand = c(0.01, 0)) +
   coord_cartesian(ylim = c(0, 14)) +
   labs(x = "Test", y = "Elapsed Time (seconds)", title ="Performance Comparison") +
-  facet_grid(cellCount ~ rowCount)
+  facet_grid(cellDesc ~ rowDesc)
 ```
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE, fig.width=7, fig.height=4}
+# clearer captions
+library(dplyr)
+plotdata <- mutate(pvtperfsummary, 
+                   cellDesc=paste0(cellCount, "  cells"), 
+                   rowDesc=paste0(
+                     recode(rowCount, "1e5"=" 0.1", "1e6"=" 1", "1e7"="10"), 
+                     "M  data frame rows")
+                   )
+# plot
 library(ggplot2)
 library(pivottabler)
 colors <- c("#A5E9A5","#33CC33", "#99CCFF","#0066FF")
 
-ggplot(pvtperfsummary, aes(x = testName, y = elapsedTimeAvg)) +
+ggplot(plotdata, aes(x = testName, y = elapsedTimeAvg)) +
   geom_bar(aes(fill=testName), stat="identity", position="dodge") +
   scale_fill_manual(values=colors, name="Test") +
   theme(panel.background = element_rect(colour = "grey40", fill = "white"),
@@ -542,7 +656,7 @@ ggplot(pvtperfsummary, aes(x = testName, y = elapsedTimeAvg)) +
   scale_y_continuous(expand = c(0.01, 0)) +
   coord_cartesian(ylim = c(0, 14)) +
   labs(x = "Test", y = "Elapsed Time (seconds)", title ="Performance Comparison") +
-  facet_grid(cellCount ~ rowCount)
+  facet_grid(cellDesc ~ rowDesc)
 ```
 
 This highlights several interesting points:
