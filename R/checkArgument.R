@@ -37,19 +37,21 @@ checkArgument <- function(argumentCheckMode, checkDataTypes, className, methodNa
                           allowedValues=NULL, minValue=NULL, maxValue=NULL, maxLength=NULL) {
   if(argumentCheckMode==0) return(invisible())
   argumentName <- substitute(argumentValue)
-  if(isMissing&(!allowMissing)) stop(paste0(className, "$", methodName, "():  ", argumentName, " must be specified"), call. = FALSE)
-  if(is.null(argumentValue)&&(!allowNull)) stop(paste0(className, "$", methodName, "():  ", argumentName, " must not be null"), call. = FALSE)
+  if(is.null(className)||(length(className)==0)) classPrefix <- ""
+  else classPrefix <- paste0(className, "$")
+  if(isMissing&(!allowMissing)) stop(paste0(classPrefix, methodName, "():  ", argumentName, " must be specified"), call. = FALSE)
+  if(is.null(argumentValue)&&(!allowNull)) stop(paste0(classPrefix, methodName, "():  ", argumentName, " must not be null"), call. = FALSE)
   if(argumentCheckMode==1) return(invisible())
   if((argumentCheckMode==4)||((argumentCheckMode==3)&&(checkDataTypes==TRUE))) {
     if((!is.null(argumentValue))&&(!is.null(allowedClasses))&&(length(allowedClasses)>0)) {
       if(length(intersect(allowedClasses, class(argumentValue))) == 0) {
         if(length(allowedClasses) > 1) {
-          stop(paste0(className, "$", methodName, "():  ", argumentName, " must be one of the following types: (",
+          stop(paste0(classPrefix, methodName, "():  ", argumentName, " must be one of the following types: (",
                       paste(allowedClasses, sep="", collapse = ", "), ").  Type encountered: ",
                       paste(class(argumentValue), collapse=", "), "."), call. = FALSE)
         }
         else {
-          stop(paste0(className, "$", methodName, "():  ", argumentName, " must be of type ", allowedClasses, ".  ",
+          stop(paste0(classPrefix, methodName, "():  ", argumentName, " must be of type ", allowedClasses, ".  ",
                       "Type encountered: ", paste(class(argumentValue), sep="", collapse=", "), "."), call. = FALSE)
         }
       }
@@ -70,42 +72,42 @@ checkArgument <- function(argumentCheckMode, checkDataTypes, className, methodNa
               }
             }
             if(length(invalidTypes)>0)
-              stop(paste0(className, "$", methodName, "():  [", paste(unlist(invalidTypes), collapse=", "), "] is/are invalid data types for the ", argumentName,
+              stop(paste0(classPrefix, methodName, "():  [", paste(unlist(invalidTypes), collapse=", "), "] is/are invalid data types for the ", argumentName,
                           " argument. Elements of the ", argumentName, " list must be one of the following types: [",
                           paste(allowedListElementClasses, collapse=", "), "]"), call. = FALSE)
             if(length(nonAtomicTypes>0))
-              stop(paste0(className, "$", methodName, "():  [", paste(unlist(invalidTypes), collapse=", "), "] is/are invalid data types for the ", argumentName,
+              stop(paste0(classPrefix, methodName, "():  [", paste(unlist(invalidTypes), collapse=", "), "] is/are invalid data types for the ", argumentName,
                           " argument. Elements of the ", argumentName, " list must be atomic."), call. = FALSE)
           }
         }
       }
     }
     if((mustBeAtomic==TRUE)&&!(is.atomic(argumentValue))) {
-      stop(paste0(className, "$", methodName, "():  ", argumentName, " must be one of the atomic data types"), call. = FALSE)
+      stop(paste0(classPrefix, methodName, "():  ", argumentName, " must be one of the atomic data types"), call. = FALSE)
     }
   }
   if(argumentCheckMode>=2) {
     if(!is.null(allowedValues)) {
       invalidValues <- setdiff(argumentValue, allowedValues)
       if(length(invalidValues)>0)
-        stop(paste0(className, "$", methodName, "():  [", paste(invalidValues, collapse=", "), "] is/are invalid values for the ", argumentName,
+        stop(paste0(classPrefix, methodName, "():  [", paste(invalidValues, collapse=", "), "] is/are invalid values for the ", argumentName,
                     " argument. ", argumentName, " must be one of the following values: [", paste(allowedValues, collapse=", "), "]"), call. = FALSE)
     }
     if((!is.null(minValue))&&(!is.null(argumentValue))) {
       if(argumentValue < minValue) {
-        stop(paste0(className, "$", methodName, "():  ", argumentName, " must be greater than or equal to ", minValue), call. = FALSE)
+        stop(paste0(classPrefix, methodName, "():  ", argumentName, " must be greater than or equal to ", minValue), call. = FALSE)
       }
     }
     if((!is.null(maxValue))&&(!is.null(argumentValue))) {
       if(argumentValue > maxValue) {
-        stop(paste0(className, "$", methodName, "():  ", argumentName, " must be less than or equal to ", maxValue), call. = FALSE)
+        stop(paste0(classPrefix, methodName, "():  ", argumentName, " must be less than or equal to ", maxValue), call. = FALSE)
       }
     }
     if(!is.null(allowedClasses)) {
       if("character" %in% allowedClasses) {
         if(!is.null(maxLength)) {
           if(length(argumentValue)>maxLength) {
-            stop(paste0(className, "$", methodName, "():  ", argumentName, " must have length less than or equal to ", maxLength, " characters"), call. = FALSE)
+            stop(paste0(classPrefix, methodName, "():  ", argumentName, " must have length less than or equal to ", maxLength, " characters"), call. = FALSE)
           }
         }
       }

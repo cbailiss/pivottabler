@@ -43,7 +43,7 @@ A simple example of creating a pivot table - summarising the types of trains run
 
 ``` r
 library(pivottabler)
-# arguments:  qpvt(dataFrame, rows, columns, calculations)
+# arguments:  qpvt(dataFrame, rows, columns, calculations, ...)
 qpvt(bhmtrains, "TOC", "TrainCategory", "n()") # TOC = Train Operating Company 
 ```
 

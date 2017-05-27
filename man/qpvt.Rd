@@ -4,7 +4,7 @@
 \alias{qpvt}
 \title{Quickly build a basic pivot table.}
 \usage{
-qpvt(dataFrame, rows = NULL, columns = NULL, calculations = NULL)
+qpvt(dataFrame, rows = NULL, columns = NULL, calculations = NULL, ...)
 }
 \arguments{
 \item{dataFrame}{The data frame containing the data to be summarised in the
@@ -19,6 +19,9 @@ calculations.}
 
 \item{calculations}{One or more summary calculations to use to calculate the
 values of the cells in the pivot table.}
+
+\item{...}{Additional arguments, currently format, formats and/or
+argumentCheckMode.}
 }
 \value{
 A pivot table.
