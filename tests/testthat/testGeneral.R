@@ -62,7 +62,7 @@ testScenarios <- function(description="test", releaseEvaluationMode="batch", rel
 context("BASIC TESTS")
 
 scenarios <- testScenarios("bhmtrains basic pivot total", runAllForReleaseVersion=TRUE)
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -92,7 +92,7 @@ context("SMOKE TESTS")
 
 
 scenarios <- testScenarios("smoke tests:  bhmtrains basic pivot values", runAllForReleaseVersion=TRUE)
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -118,7 +118,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("smoke tests:  bhmtrains basic pivot html", runAllForReleaseVersion=TRUE)
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -143,7 +143,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("smoke tests:  bhmtrains basic pivot values two levels")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -169,7 +169,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("smoke tests:  bhmtrains basic pivot html two levels")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -195,7 +195,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("smoke tests:  bhmtrains basic pivot values two levels expanded")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -221,7 +221,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("smoke tests:  bhmtrains basic pivot html two levels expanded")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -247,7 +247,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("smoke tests:  calculation filters")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -295,7 +295,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("smoke tests:  ignoring parent groups")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -323,7 +323,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("smoke tests:  contradictory filters")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -459,7 +459,7 @@ context("BASIC LAYOUT TESTS")
 
 
 scenarios <- testScenarios("basic layout tests:  empty pivot")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -483,7 +483,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  empty pivot plus data")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -508,7 +508,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  just a total")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -536,7 +536,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  two measures")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -565,7 +565,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  rows only")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -591,7 +591,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  rows plus total")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -620,7 +620,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  rows plus two measures")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -650,7 +650,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  columns only")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -676,7 +676,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  columns plus total")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -705,7 +705,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  columns plus two totals")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -735,7 +735,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  rows and columns only")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -762,7 +762,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  rows, columns and calculation")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -792,7 +792,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  rows, columns and two calculations")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -823,7 +823,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  columns plus total on row")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -853,7 +853,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  columns plus two totals on rows")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -884,7 +884,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  rows, columns and calculation on rows")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -915,7 +915,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("basic layout tests:  rows, columns and two calculations on rows")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -950,7 +950,7 @@ context("DATA GROUP TESTS")
 
 
 scenarios <- testScenarios("data groups tests:  dplyr ignoring parent groups")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -978,7 +978,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("data groups tests:  adding data groups explicitly")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1006,7 +1006,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("data groups tests:  adding data groups that combine values")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1034,7 +1034,7 @@ for(i in 1:length(scenarios)) {
 }
 
 scenarios <- testScenarios("data groups tests:  formatting data groups")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1068,7 +1068,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("data groups tests:  sort by group into descending order")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1096,7 +1096,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("data groups tests:  numerical sort by group into descending order")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1128,7 +1128,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("data groups tests:  sort by value into descending order")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1157,7 +1157,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("data groups tests:  sort by level 2 value into descending order")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1189,7 +1189,7 @@ context("CALCULATION TESTS")
 
 
 scenarios <- testScenarios("calculation tests:  calculate dply summarise")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1238,7 +1238,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("calculation tests:  calculate on rows dply summarise")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1288,7 +1288,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("calculation tests:  deriving values from other calculations")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1332,7 +1332,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("calculation tests:  showing values only")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1369,7 +1369,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("calculation tests:  showing values plus totals")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1407,7 +1407,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("calculation tests:  calcs first 1")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1436,7 +1436,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("calculation tests:  calcs first 2")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1498,7 +1498,7 @@ context("VISUAL TOTALS TESTS")
 
 
 scenarios <- testScenarios("visual totals")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1531,7 +1531,7 @@ context("THEMING TESTS")
 
 
 scenarios <- testScenarios("theming tests:  basic test")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1577,7 +1577,7 @@ context("EMPTY GROUP TESTS")
 
 
 scenarios <- testScenarios("empty data group test 1")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1605,7 +1605,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("empty data group test 2")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1633,7 +1633,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("empty data group test 3")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1661,7 +1661,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("empty data group test 4")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1689,7 +1689,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("empty data group test 5")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1718,7 +1718,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("empty data group test 6")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1749,7 +1749,7 @@ context("EXPORT TESTS")
 
 
 scenarios <- testScenarios("export tests:  as Matrix (without row headings)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1783,7 +1783,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("export tests:  as Matrix (with row headings)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1808,7 +1808,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("export tests:  as Data Frame")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1836,7 +1836,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("export tests:  as Tidy Data Frame")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1867,7 +1867,7 @@ context("LATEX TESTS")
 
 
 scenarios <- testScenarios("latex tests:  basic latex table with spans")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1904,7 +1904,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  no data")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1927,7 +1927,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  just rows")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1952,7 +1952,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  just columns")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -1977,7 +1977,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  rows and columns")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2003,7 +2003,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  rows, columns and a measure")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2030,7 +2030,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  styling headers")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2057,7 +2057,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  rows, columns and two measures (on cols)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2085,7 +2085,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  rows, columns and two measures (on rows)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2114,7 +2114,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  just a total (on columns)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2139,7 +2139,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  two totals (on columns)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2165,7 +2165,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  multiple levels on columns (but no rows)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2200,7 +2200,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  multiple levels on columns (but no rows) with the calc on rows")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2236,7 +2236,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  just a total (on rows)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2262,7 +2262,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  two totals (on rows)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2289,7 +2289,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  multiple levels on rows (but no columns)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2325,7 +2325,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  multiple levels on rows (but no columns) with the calculation on columns")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2360,7 +2360,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  rows/cols split 1")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2387,7 +2387,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  rows/cols split 2")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2414,7 +2414,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("latex tests:  rows/cols split 3")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2444,7 +2444,7 @@ context("FIND GROUP TESTS")
 
 
 scenarios <- testScenarios("find groups tests:  simple:  variableNames")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2477,7 +2477,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("find groups tests:  simple:  variableValues")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2510,7 +2510,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("find groups tests:  simple:  exclude totals")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2543,7 +2543,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("find groups tests:  simple:  only totals")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2576,7 +2576,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("find groups tests:  simple:  includeDescendantGroups")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2611,7 +2611,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("find groups tests:  combinations:  variableNames")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2645,7 +2645,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("find groups tests:  combinations:  variableValues")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2679,7 +2679,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("find groups tests:  combinations:  specific sub total")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2716,7 +2716,7 @@ context("GET CELLS TESTS")
 
 
 scenarios <- testScenarios("get cells tests:  whole rows (specifyCellsAsList=FALSE)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2751,7 +2751,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("get cells tests:  whole rows (specifyCellsAsList=TRUE)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2786,7 +2786,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("get cells tests:  whole columns (specifyCellsAsList=FALSE)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2821,7 +2821,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("get cells tests:  whole columns (specifyCellsAsList=TRUE)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2856,7 +2856,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("get cells tests:  rows, columns and cells (specifyCellsAsList=FALSE)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2891,7 +2891,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("get cells tests:  rows, columns and cells (specifyCellsAsList=TRUE)")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2929,7 +2929,7 @@ context("FIND CELLS TESTS")
 
 
 scenarios <- testScenarios("find cells tests:  variableValues 1")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2964,7 +2964,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("find cells tests:  variableValues 2")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -2999,7 +2999,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("find cells tests:  totals")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -3034,7 +3034,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("find cells tests:  grand total")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -3069,7 +3069,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("find cells tests:  conditional formatting")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -3107,7 +3107,7 @@ context("IRREGULAR LAYOUT TESTS")
 
 
 scenarios <- testScenarios("irregular layout tests:  simple example")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -3135,7 +3135,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("irregular layout tests:  two-level example A")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -3166,7 +3166,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("irregular layout tests:  two-level example B")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -3196,7 +3196,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("irregular layout tests:  two-level example C")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -3231,7 +3231,7 @@ for(i in 1:length(scenarios)) {
 
 
 scenarios <- testScenarios("irregular layout tests:  empty groups")
-for(i in 1:length(scenarios)) {
+for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
