@@ -1,7 +1,5 @@
-pivottabler 0.2.0.9000:  Performance Improvements
+pivottabler 0.3.0:  Performance Improvements and Quick-Pivot Functions
 ================
-
-Current development version and 0.3.0-rc (CRAN submission May 30th).
 
 Breaking Changes
 ----------------
@@ -29,7 +27,7 @@ Bug Fixes
 Upcoming Changes
 ----------------
 
-* The previous usage of the arguments for the getCells() function is still supported (and is still the default) however the new argument usage will be made the default in a future version.  For now, a message is displayed noting the upcoming change.
+* The previous usage of the arguments for the getCells() function is still supported (and is still the default) however the new argument usage will be made the default in a future version.  For now, a message is displayed noting the upcoming change.  See the Finding and Formatting vignette for more details.
 
 pivottabler 0.2.0:  New Output/Conversion Options, New Find Options
 ================
