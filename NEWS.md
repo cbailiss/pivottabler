@@ -1,3 +1,8 @@
+pivottabler 0.3.0.9000
+================
+
+Current development version.
+
 pivottabler 0.3.0:  Performance Improvements and Quick-Pivot Functions
 ================
 
