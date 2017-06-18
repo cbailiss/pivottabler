@@ -20,7 +20,7 @@ calculations.}
 \item{calculations}{One or more summary calculations to use to calculate the
 values of the cells in the pivot table.}
 
-\item{...}{Additional arguments, currently format, formats and/or
+\item{...}{Additional arguments, currently format, formats, totals and/or
 argumentCheckMode.}
 }
 \value{

@@ -13,7 +13,7 @@
 #'   calculations.
 #' @param calculations One or more summary calculations to use to calculate the
 #'   values of the cells in the pivot table.
-#' @param ... Additional arguments, currently format, formats and/or
+#' @param ... Additional arguments, currently format, formats, totals and/or
 #'   argumentCheckMode.
 #' @return A pivot table.
 #' @examples
@@ -34,7 +34,9 @@ qpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL, ...) {
   pt <- buildPivot(functionName="qpvt", argumentCheckMode=argumentCheckMode,
                    dataFrame=dataFrame, dataName=dataName,
                    rows=rows, columns=columns, calculations=calculations,
-                   format=arguments[["format"]], formats=arguments[["formats"]]) # can't use $format as this also matches formats
+                   format=arguments[["format"]], formats=arguments[["formats"]], # can't use $format as this also matches formats
+                   totalsSpecified=("totals" %in% names(arguments)),
+                   totals=arguments[["totals"]])
   pt$evaluatePivot()
   return(pt)
 }
@@ -54,7 +56,7 @@ qpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL, ...) {
 #'   calculations.
 #' @param calculations One or more summary calculations to use to calculate the
 #'   values of the cells in the pivot table.
-#' @param ... Additional arguments, currently format, formats and/or
+#' @param ... Additional arguments, currently format, formats, totals and/or
 #'   argumentCheckMode.
 #' @return A HTML widget.
 #' @examples
@@ -72,7 +74,9 @@ qhpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL, ...) {
   pt <- buildPivot(functionName="qhpvt", argumentCheckMode=argumentCheckMode,
                    dataFrame=dataFrame, dataName=dataName,
                    rows=rows, columns=columns, calculations=calculations,
-                   format=arguments[["format"]], formats=arguments[["formats"]]) # can't use $format as this also matches formats
+                   format=arguments[["format"]], formats=arguments[["formats"]], # can't use $format as this also matches formats
+                   totalsSpecified=("totals" %in% names(arguments)),
+                   totals=arguments[["totals"]])
   w <- pt$renderPivot()
   return(w)
 }
@@ -92,7 +96,7 @@ qhpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL, ...) {
 #'   calculations.
 #' @param calculations One or more summary calculations to use to calculate the
 #'   values of the cells in the pivot table.
-#' @param ... Additional arguments, currently format, formats,
+#' @param ... Additional arguments, currently format, formats, totals,
 #'   argumentCheckMode, caption and/or label.  See the Latex output vignette for
 #'   a description of caption and label.
 #' @return Latex.
@@ -113,7 +117,9 @@ qlpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL, ...) {
   pt <- buildPivot(functionName="qlpvt", argumentCheckMode=argumentCheckMode,
                    dataFrame=dataFrame, dataName=dataName,
                    rows=rows, columns=columns, calculations=calculations,
-                   format=arguments[["format"]], formats=arguments[["formats"]]) # can't use $format as this also matches formats
+                   format=arguments[["format"]], formats=arguments[["formats"]], # can't use $format as this also matches formats
+                   totalsSpecified=("totals" %in% names(arguments)),
+                   totals=arguments[["totals"]])
   return(pt$getLatex(caption=arguments$caption, label=arguments$label))
 }
 
@@ -143,7 +149,8 @@ addCalculations <- function(pt, calculations, format=NULL, formats=NULL) {
 buildPivot <- function(functionName=NULL, argumentCheckMode=NULL,
                        dataFrame=NULL, dataName=NULL,
                        rows=NULL, columns=NULL, calculations=NULL,
-                       format=NULL, formats=NULL) {
+                       format=NULL, formats=NULL,
+                       totalsSpecified=FALSE, totals=NULL) {
   if(is.null(dataFrame)) stop(paste0(functionName, "():  dataFrame argument must not be NULL."), call. = FALSE)
   if(!is.data.frame(dataFrame)) stop(paste0(functionName, "():  dataFrame argument must be a data frame."), call. = FALSE)
   if((!is.null(rows))&&(!is.na(rows))) {
@@ -154,6 +161,25 @@ buildPivot <- function(functionName=NULL, argumentCheckMode=NULL,
   }
   if((length(rows[rows=="="])+length(columns[columns=="="]))>1) {
     stop(paste0(functionName, "():  Calculations cannot be added more than once."), call. = FALSE)
+  }
+  totalNames <- NULL
+  totalCaptions <- NULL
+  if((totalsSpecified==TRUE)&&(!is.null(totals))&&(length(totals)>0)) {
+    if(is.character(totals)) {
+      totalNames <- totals
+    }
+    else if(is.list(totals)) {
+      for(i in 1:length(totals)) {
+        if(!is.character(totals[[i]])) {
+          stop(paste0(functionName, "():  elements of the totals list must be character values."), call. = FALSE)
+        }
+      }
+      totalNames <- names(totals)
+      totalCaptions <- totals
+    }
+    else {
+      stop(paste0(functionName, "():  totals must be a character vector."), call. = FALSE)
+    }
   }
   pt <- PivotTable$new(argumentCheckMode=argumentCheckMode)
   pt$addData(dataFrame, dataName=dataName)
@@ -167,7 +193,15 @@ buildPivot <- function(functionName=NULL, argumentCheckMode=NULL,
         bCalculationsAdded <- TRUE
       }
       else {
-        pt$addRowDataGroups(rows[i])
+        includeTotal <- FALSE
+        totalCaption <- NULL
+        if(totalsSpecified==FALSE) includeTotal <- TRUE
+        else if(rows[i] %in% totalNames) {
+          includeTotal <- TRUE
+          totalCaption <- totalCaptions[[rows[i]]]
+        }
+        if(is.null(totalCaption)) totalCaption <- "Total"
+        pt$addRowDataGroups(rows[i], addTotal=includeTotal, totalCaption=totalCaption)
       }
     }
   }
@@ -180,7 +214,15 @@ buildPivot <- function(functionName=NULL, argumentCheckMode=NULL,
         bCalculationsAdded <- TRUE
       }
       else {
-        pt$addColumnDataGroups(columns[i])
+        includeTotal <- FALSE
+        totalCaption <- NULL
+        if(totalsSpecified==FALSE) includeTotal <- TRUE
+        else if(columns[i] %in% totalNames) {
+          includeTotal <- TRUE
+          totalCaption <- totalCaptions[[columns[i]]]
+        }
+        if(is.null(totalCaption)) totalCaption <- "Total"
+        pt$addColumnDataGroups(columns[i], addTotal=includeTotal, totalCaption=totalCaption)
       }
     }
   }
