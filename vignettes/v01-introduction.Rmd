@@ -283,6 +283,7 @@ The arguments to all three functions are essentially the same:
 - `calculations` specifies the summary calculations (as a character vector) used to calculate the cell values in the pivot table.  The names of the elements in this vector become the calculation names (and so the calculation headings when more than one calculation is present in the pivot table).
 - `format` specifies the same formatting for all calculations (as either a character vaue, list or R function).  See the "Formatting calculated values" section of the Calculations vignette for more details.
 - `formats` specifies a different format for each calculation (as a list of the same length as `calculations` containing any combination of character values, lists or R functions).
+- `totals` specifies which totals are shown and can also control the captions of totals.  This is described in more detail below.
 
 Specifying "=" in either the `rows` or `columns` vectors sets the position of the calculations in the row/column headings.
 
@@ -317,7 +318,23 @@ qhpvt(bhmtrains, "TOC", "TrainCategory",
      formats=list("%.0f", "%.1f"))
 ```
 
-In the above pivot table, the "Total" would be better renamed to something like "All" or "Overall" since a total for a mean or standard deviation does not make complete sense.  Renaming the captions in total headings can be accomplished using the more verbose syntax for building a pivot table.
+In the above pivot table, the "Total" would be better renamed to something like "All" or "Overall" since a total for a mean or standard deviation does not make complete sense.
+
+Totals can be controlled using the `totals` argument.  This works as follows:
+
+* If not specified, then totals are generated for all variables.
+* To hide all totals, specify `totals=NONE`.
+* To specify which variables have totals, specify the names of the variables in a character vector, e.g. in a pivot table containing the variables x, y and z, to display totals only for variables x and z, specify `totals=c("x", "z")`.
+* To specify which variables have totals and also renamed the captions of the total cells, specify a list, e.g. to rename the totals for x to "All x" and y to "All y", specify `totals=list("x"="All x", "y"="All y")`.
+
+Returning to the previous quick pivot texample, the totals can now be renamed to "All ..." using:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+qhpvt(bhmtrains, "TOC", "TrainCategory", 
+     c("Mean Speed"="mean(SchedSpeedMPH, na.rm=TRUE)", "Std Dev Speed"="sd(SchedSpeedMPH, na.rm=TRUE)"), 
+     formats=list("%.0f", "%.1f"), totals=list("TOC"="All TOCs", "TrainCategory"="All Categories"))
+```
 
 ## Examples Gallery
 

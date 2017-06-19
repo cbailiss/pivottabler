@@ -1,7 +1,25 @@
 pivottabler 0.3.0.9000
 ================
 
-Current development version.
+Breaking Changes
+----------------
+
+None 
+
+Improvements
+----------------
+
+* Quick-pivot functions now support showing/hiding totals and renaming the captions of totals, which was previously only possible using the verbose syntax.  See the Introduction vignette for more details.
+
+Bug Fixes
+----------------
+
+* Various small bug fixes.
+
+Upcoming Changes
+----------------
+
+* The previous usage of the arguments for the getCells() function is still supported (and is still the default) however the new argument usage will be made the default in a future version.  For now, a message is displayed noting the upcoming change.  See the Finding and Formatting vignette for more details.
 
 pivottabler 0.3.0:  Performance Improvements and Quick-Pivot Functions
 ================

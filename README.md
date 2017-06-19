@@ -54,7 +54,7 @@ qpvt(bhmtrains, "TOC", "TrainCategory", "n()") # TOC = Train Operating Company
     Virgin Trains                     8594                       8594  
     Total                            49025               34685  83710  
 
-`pivottabler` also offers a more verbose syntax that is more self-describing and offers additional options that aren't available with the quick-pivot functions such as control over totals/sub-totals. The equivalent verbose commands to output the same pivot table as above are:
+`pivottabler` also offers a more verbose syntax that is more self-describing and offers additional options that aren't available with the quick-pivot functions. The equivalent verbose commands to output the same pivot table as above are:
 
 ``` r
 library(pivottabler)
