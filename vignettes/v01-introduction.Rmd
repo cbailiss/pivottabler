@@ -325,7 +325,7 @@ Totals can be controlled using the `totals` argument.  This works as follows:
 * If not specified, then totals are generated for all variables.
 * To hide all totals, specify `totals=NONE`.
 * To specify which variables have totals, specify the names of the variables in a character vector, e.g. in a pivot table containing the variables x, y and z, to display totals only for variables x and z, specify `totals=c("x", "z")`.
-* To specify which variables have totals and also renamed the captions of the total cells, specify a list, e.g. to rename the totals for x to "All x" and y to "All y", specify `totals=list("x"="All x", "y"="All y")`.
+* To specify which variables have totals and also rename the captions of the total cells, specify a list, e.g. to rename the totals for x to "All x" and y to "All y", specify `totals=list("x"="All x", "y"="All y")`.
 
 Returning to the previous quick pivot texample, the totals can now be renamed to "All ..." using:
 
