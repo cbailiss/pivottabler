@@ -8,7 +8,7 @@ Description: Create regular pivot tables with just a few lines of R.
     More complex pivot tables can also be created, e.g. pivot tables
     with irregular layouts, multiple calculations and/or derived 
     calculations based on multiple data frames.
-Depends: R (>= 3.2.0)
+Depends: R (>= 3.3.0)
 Imports:
     R6 (>= 2.2.0),
     dplyr (>= 0.5.0),
@@ -20,6 +20,7 @@ Suggests:
     ggplot2 (>= 2.2.0),
     lubridate (>= 1.5.0),
     listviewer (>= 1.4.0),
+    openxlsx (>= 4.0.17),
     shiny,
     knitr,
     rmarkdown,

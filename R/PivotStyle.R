@@ -62,7 +62,7 @@ PivotStyle <- R6::R6Class("PivotStyle",
             val <- declarations[[i]]
             if(is.null(nme)) next
             if(is.null(val)) next
-            private$p_declarations[[nme]] <- val
+            private$p_declarations[[tolower(trimws(nme))]] <- val
          }
        }
      }
@@ -74,7 +74,7 @@ PivotStyle <- R6::R6Class("PivotStyle",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "setPropertyValue", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$setPropertyValue", "Setting property value...", list(property=property, value=value))
-     private$p_declarations[[property]] <- value
+     private$p_declarations[[tolower(trimws(property))]] <- value
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$setPropertyValue", "Set property value.")
      return(invisible())
    },
@@ -89,7 +89,7 @@ PivotStyle <- R6::R6Class("PivotStyle",
        property <- nms[i]
        if(is.null(property)) stop("PivotStyle$setPropertyValues():  NULL style property encountered.")
        value <- declarations[[i]]
-       private$p_declarations[[property]] <- value
+       private$p_declarations[[tolower(trimws(property))]] <- value
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$setPropertyValues", "Set property values.")
      return(invisible())
@@ -99,7 +99,7 @@ PivotStyle <- R6::R6Class("PivotStyle",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "getPropertyValue", property, missing(property), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$getPropertyValue", "Getting property value...", list(property=property))
-     val <- private$p_declarations[[property]]
+     val <- private$p_declarations[[tolower(trimws(property))]]
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$getPropertyValue", "Got property value.")
      return(invisible(val))
    },
@@ -113,6 +113,7 @@ PivotStyle <- R6::R6Class("PivotStyle",
      nms <- names(private$p_declarations)
      for(i in 1:length(private$p_declarations)) {
        if(length(nms[i])==0) stop("PivotStyle$asCSSRule(): Encountered a style declaration without a name.", call. = FALSE)
+       if(startsWith(tolower(nms[i]), "xl-")) next # exclude Excel declarations from CSS/HTML output
        cssRule <- paste0(cssRule, nms[i], ": ", private$p_declarations[[i]], "; ")
      }
      if(!is.null(selector)) cssRule <- paste0(cssRule, "}")

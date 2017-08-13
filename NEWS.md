@@ -4,7 +4,7 @@ pivottabler 0.3.0.9000
 Breaking Changes
 ----------------
 
-None 
+* Removed support for R 3.2.x.  Minimum supported version of base R now R 3.3.0. 
 
 Improvements
 ----------------

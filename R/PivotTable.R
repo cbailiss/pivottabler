@@ -248,6 +248,7 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_cells <- PivotCells$new(self)
       private$p_htmlRenderer <- PivotHtmlRenderer$new(parentPivot=self)
       private$p_latexRenderer <- PivotLatexRenderer$new(parentPivot=self)
+      private$p_openxlsxRenderer <- PivotOpenXlsxRenderer$new(parentPivot=self)
       private$p_timings <- list()
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$new", "Created new Pivot Table.")
       return(invisible())
@@ -1568,6 +1569,7 @@ PivotTable <- R6::R6Class("PivotTable",
     p_fixedWidthSized = FALSE,
     p_htmlRenderer = NULL,
     p_latexRenderer = NULL,
+    p_openxlsxRenderer = NULL,
     p_traceFile = NULL,
     p_timings = NULL,
     clearIsRenderedFlags = function() {

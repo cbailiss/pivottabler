@@ -2,6 +2,8 @@
 
 export(PivotFilter)
 export(PivotFilters)
+export(PivotOpenXlsxStyle)
+export(PivotOpenXlsxStyles)
 export(PivotStyle)
 export(PivotStyles)
 export(PivotTable)
