@@ -186,6 +186,10 @@
 #'   specifying the caption to appear above the table, the label to use when
 #'   referring to the table elsewhere in the document and how headings should be
 #'   styled.}
+#'   \item{\code{writeToExcelWorksheet(wb=NULL, wsName=NULL, topRowNumber=NULL,
+#'   leftMostColumnNumber=NULL, mapStylesFromCSS=TRUE)}}{Output the pivot table
+#'   into the specified workbook and worksheet at the specified row-column
+#'   location.}
 #'   \item{\code{showBatchInfo()}}{Show a text summary of the batch calculations
 #'   from the last evaluation of this pivot table.}
 #'   \item{\code{asList()}}{Get a list representation of the pivot table.}
@@ -1430,6 +1434,20 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(is.null(private$p_traceFile)) { message(msg) }
       else { cat(msg, file=private$p_traceFile, sep="\r\n", append=TRUE)}
+    },
+    writeToExcelWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, mapStylesFromCSS=TRUE) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="Workbook")
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", topRowNumber, missing(topRowNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", leftMostColumnNumber, missing(leftMostColumnNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", mapStylesFromCSS, missing(mapStylesFromCSS), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$writeToExcelWorksheet", "Writing to worksheet...")
+      private$p_openxlsxRenderer$writeToWorksheet(wb=wb, wsName=wsName, topRowNumber=topRowNumber,
+                                                  leftMostColumnNumber=leftMostColumnNumber,
+                                                  mapStylesFromCSS=mapStylesFromCSS)
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$writeToExcelWorksheet", "Written to worksheet.")
     },
     showBatchInfo = function() {
       message(self$batchInfo)

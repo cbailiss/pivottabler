@@ -36,6 +36,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       }
       private$p_parentPivot <- parentPivot
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$new", "Creating new OpenXlsx Renderer...")
+      private$p_styles <- PivotOpenXlsxStyles$new(parentPivot=private$p_parentPivot)
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$new", "Created new OpenXlsx Renderer.")
     },
     clearIsRenderedFlags = function() {
@@ -58,15 +59,24 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="Workbook")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", topRowNumber, missing(topRowNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numerical"))
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", leftMostColumnNumber, missing(leftMostColumnNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numerical"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", topRowNumber, missing(topRowNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", leftMostColumnNumber, missing(leftMostColumnNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", mapStylesFromCSS, missing(mapStylesFromCSS), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$writeToWorksheet", "Writing to worksheet...")
 
       # clear the is rendered flags
+      self$clearIsRenderedFlags()
+
       # clear the pivot styles
+      private$p_styles$clearStyles()
+
       # create an OpenXlsxStyle for each named style in the pivot table
+      private$p_styles$addNamedStyles(mapFromCss=mapStylesFromCSS)
+
+      # output the styles
+      message(private$p_styles$asString(seperator="\r\n\r\n"))
+
       # do the export, going cell by cell
       # for each header and cell, if the style is basic, find the basic style matching on name only
       # if the style is not basic (i.e. has additional style settings applied directly to that header/cell)
@@ -351,6 +361,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
    # }
   ),
   private = list(
-    p_parentPivot = NULL
+    p_parentPivot = NULL,
+    p_styles = NULL
   )
 )

@@ -9,6 +9,7 @@
 #' @return The cleaned value.
 
 cleanCssValue <- function(cssValue) {
+  if(is.null(cssValue)) return(NULL)
   value <- trimws(cssValue)
   value <- ifelse(endsWith(value, ";"), substr(value, 1, nchar(value)-1), value)
   value <- value[tolower(value) != "initial"]
@@ -137,6 +138,7 @@ parseCssSizeToPt <- function(size) {
   # references:
   #   https://www.w3.org/Style/Examples/007/units.en.html
   cSize <- tolower(cleanCssValue(size))
+  if(!isTextValue(cSize)) return(NULL)
   # convert named sizes, percentages, em and px
   percent <- NULL
   if(cSize=="xx-small") percent <- 50
@@ -231,6 +233,7 @@ parseCssSizeToPx <- function(size) {
   # references:
   #   https://www.w3.org/Style/Examples/007/units.en.html
   cSize <- tolower(cleanCssValue(size))
+  if(!isTextValue(cSize)) return(NULL)
   # convert named sizes, percentages, em
   percent <- NULL
   if(cSize=="xx-small") percent <- 50
@@ -323,6 +326,7 @@ parseCssSizeToPx <- function(size) {
 
 parseColor <- function(color) { # returns a colour in the form #[0-9A-F]
   cColor <- cleanCssValue(color)
+  if(!isTextValue(cColor)) return(NULL)
 
   # colour already in hex format?
   check <- grep("#[0-9A-F]{6}", cColor)
@@ -514,6 +518,7 @@ parseColor <- function(color) { # returns a colour in the form #[0-9A-F]
   else if(cColor=="whitesmoke") return("#F5F5F5")
   else if(cColor=="yellow") return("#FFFF00")
   else if(cColor=="yellowgreen") return("#9ACD32")
+  else return(NULL)
 }
 
 
@@ -535,6 +540,8 @@ parseCssBorder <- function(text) {
   # e.g. (not supported): border: thin thick solid thin red blue
 
   cText <- trimws(text)
+  if(!isTextValue(cText)) return(NULL)
+
   if(endsWith(cText, ";")) cText <- substr(cText, 1, nchar(cText)-1)
   i <- 1
   iEnd <- nchar(cText)
@@ -592,6 +599,7 @@ parseCssBorder <- function(text) {
   for(i in 1:length(parts)) {
     # examine each part
     part <- tolower(cleanCssValue(parts[i]))
+    if(!isTextValue(part)) next
     # width?
     if(is.null(borderWidth)) {
       if(part %in% allowedWidths) borderWidth <- part
@@ -610,7 +618,7 @@ parseCssBorder <- function(text) {
       if(!is.null(color)) borderColor <- color
     }
   }
-  if(is.null(borderStyle)) return(NULL)
+  if(!isTextValue(borderStyle)) return(NULL)
   result <- list(width=borderWidth, style=borderStyle, color=borderColor)
   return(result)
 }
@@ -627,11 +635,11 @@ parseCssBorder <- function(text) {
 
 getXlBorderStyleFromCssBorder <- function(border) {
   # border is a return value from the parseCssBorder() function
-  if(is.null(border)) return(NULL)
+  if(!isTextValue(border)) return(NULL)
   cssBorderStyle <- border[["style"]]
   cssBorderWidth <- border[["width"]]
-  if(is.null(cssBorderStyle)) return(NULL)
-  if(is.null(cssBorderWidth)) cssBorderWidth <- "thin"
+  if(!isTextValue(cssBorderStyle)) return(NULL)
+  if(!isTextValue(cssBorderWidth)) cssBorderWidth <- "thin"
   if(cssBorderStyle %in% c("none", "hidden", "initial", "inherit")) return(NULL)
   if(cssBorderStyle %in% c("groove", "ridge", "inset", "outset")) cssBorderStyle <- "solid"
   if(cssBorderStyle=="solid") {
@@ -690,6 +698,25 @@ getXlBorderStyleFromCssBorder <- function(border) {
 }
 
 
+#' Convert CSS border values to those used by the openxlsx package.
+#'
+#' \code{getXlBorderFromCssBorder} parses the CSS combined border declarations
+#' (i.e. border, border-left, border-right, border-top, border-bottom) and
+#' returns a list containing an openxlsx border style and color as separate
+#' elements.
+#'
+#' @param text The border declaration to parse.
+#' @return A list containing two elements: style and color.
+
+getXlBorderFromCssBorder <- function(text) {
+  cssBorder <- parseCssBorder(text)
+  if(is.null(cssBorder)) return(NULL)
+  xlBorderStyle <- getXlBorderStyleFromCssBorder(cssBorder)
+  if(is.null(cssBorder)) return(NULL)
+  return(list(style=xlBorderStyle, color=cssBorder[["color"]]))
+}
+
+
 #' Parse an xl-border value.
 #'
 #' \code{parseXlBorder} parses the combined xl border declarations (i.e.
@@ -708,6 +735,8 @@ parseXlBorder <- function(text) {
   # e.g. (not supported): xl-border: thin thick red blue
 
   cText <- trimws(text)
+  if(!isTextValue(cText)) return(NULL)
+
   if(endsWith(cText, ";")) cText <- substr(cText, 1, nchar(cText)-1)
   i <- 1
   iEnd <- nchar(cText)

@@ -71,6 +71,7 @@
 #'   all the attributes of the style.}
 #'   \item{\code{asList()}}{Get a list representation of this style.}
 #'   \item{\code{asJSON()}}{Get a JSON representation of this style.}
+#'   \item{\code{asString()}}{Get a text representation of this style.}
 #' }
 
 PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
@@ -299,7 +300,21 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
      )
      return(invisible(lst))
    },
-   asJSON = function() { return(jsonlite::toJSON(asList())) }
+   asJSON = function() { return(jsonlite::toJSON(asList())) },
+   asString = function() {
+     lst <- self$asList()
+     if(is.null(lst)||length(lst)==0) return("")
+     nms <- names(lst)
+     getNvp <- function(i) {
+       v <- lst[[i]]
+       if((!is.null(v))&&(length(v)>1)) {
+         v <- paste0("(", paste(v, collapse=", "), ")")
+       }
+       paste0(nms[i], "=", v)
+     }
+     nvp <- sapply(1:length(lst), getNvp)
+     return(invisible(paste0("{ ", paste(nvp, collapse=", "), " }")))
+   }
   ),
   active = list(
     baseStyleName = function(value) { return(invisible(private$p_baseStyleName)) },
