@@ -103,6 +103,7 @@ etc.}
   all the attributes of the style.}
   \item{\code{asList()}}{Get a list representation of this style.}
   \item{\code{asJSON()}}{Get a JSON representation of this style.}
+  \item{\code{asString()}}{Get a text representation of this style.}
 }
 }
 

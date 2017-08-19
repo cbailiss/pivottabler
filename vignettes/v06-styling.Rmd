@@ -44,7 +44,8 @@ An example of defining a `pivottabler` style is:
 
 ```{r, message=FALSE, warning=FALSE, eval=FALSE}
 pivotStyles$addStyle(styleName="ColumnHeader", list(
-    font="0.75em arial",
+    "font-family"="arial",
+    "font-size"="0.75em",
     padding="2px",
     border="1px solid blue",
     "vertical-align"="middle",
@@ -246,7 +247,8 @@ createCustomTheme <- function(parentPivot=NULL, themeName="myCustomTheme") {
     ))
   # column headings in pink
   pivotStyles$addStyle(styleName="ColumnHeader", list(
-      font="0.75em \"Courier New\", Courier, monospace",
+      "font-family"="\"Courier New\", Courier, monospace",
+      "font-size"="0.75em",
       "font-weight"="bold",
       padding="2px",
       "border"="2px solid #B28DFF",
@@ -258,7 +260,8 @@ createCustomTheme <- function(parentPivot=NULL, themeName="myCustomTheme") {
     ))
   # row headings in blue
   pivotStyles$addStyle(styleName="RowHeader", list(
-      font="0.75em \"Courier New\", Courier, monospace",
+      "font-family"="\"Courier New\", Courier, monospace",
+      "font-size"="0.75em",
       "font-weight"="bold",
       padding="2px 8px 2px 2px",
       "border"="1px solid #B28DFF",
@@ -270,7 +273,8 @@ createCustomTheme <- function(parentPivot=NULL, themeName="myCustomTheme") {
     ))
   # cells in yellow
   pivotStyles$addStyle(styleName="Cell", list(
-      font="0.75em \"Courier New\", Courier, monospace",
+      "font-family"="\"Courier New\", Courier, monospace",
+      "font-size"="0.75em",
       padding="2px 2px 2px 8px",
       "border"="1px solid #B28DFF",
       "text-align"="right",
@@ -279,7 +283,8 @@ createCustomTheme <- function(parentPivot=NULL, themeName="myCustomTheme") {
     ))
   # totals in orange
   pivotStyles$addStyle(styleName="Total", list(
-      font="0.75em \"Courier New\", Courier, monospace",
+      "font-family"="\"Courier New\", Courier, monospace",
+      "font-size"="0.75em",
       "font-weight"="bold",
       padding="2px 2px 2px 8px",
       "border"="1px solid rgb(84, 130, 53)",

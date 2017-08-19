@@ -197,6 +197,10 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   specifying the caption to appear above the table, the label to use when
   referring to the table elsewhere in the document and how headings should be
   styled.}
+  \item{\code{writeToExcelWorksheet(wb=NULL, wsName=NULL, topRowNumber=NULL,
+  leftMostColumnNumber=NULL, mapStylesFromCSS=TRUE)}}{Output the pivot table
+  into the specified workbook and worksheet at the specified row-column
+  location.}
   \item{\code{showBatchInfo()}}{Show a text summary of the batch calculations
   from the last evaluation of this pivot table.}
   \item{\code{asList()}}{Get a list representation of the pivot table.}
