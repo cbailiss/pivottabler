@@ -101,6 +101,7 @@ etc.}
   borderRight=NULL, borderTop=NULL, borderBottom=NULL, valueFormat=NULL,
   minColumnWidth=NULL, minRowHeight=NULL}}{Find a matching style matching on
   all the attributes of the style.}
+  \item{\code{createOpenXslxStyle()}}{Create the openxlsx style.}
   \item{\code{asList()}}{Get a list representation of this style.}
   \item{\code{asJSON()}}{Get a JSON representation of this style.}
   \item{\code{asString()}}{Get a text representation of this style.}

@@ -69,6 +69,7 @@
 #'   borderRight=NULL, borderTop=NULL, borderBottom=NULL, valueFormat=NULL,
 #'   minColumnWidth=NULL, minRowHeight=NULL}}{Find a matching style matching on
 #'   all the attributes of the style.}
+#'   \item{\code{createOpenXslxStyle()}}{Create the openxlsx style.}
 #'   \item{\code{asList()}}{Get a list representation of this style.}
 #'   \item{\code{asJSON()}}{Get a JSON representation of this style.}
 #'   \item{\code{asString()}}{Get a text representation of this style.}
@@ -76,7 +77,7 @@
 
 PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
   public = list(
-   initialize = function(parentPivot, baseStyleName=NULL, isBaseStyle=NULL,
+    initialize = function(parentPivot, baseStyleName=NULL, isBaseStyle=NULL,
                          fontName=NULL, fontSize=NULL, bold=NULL,
                          italic=NULL, underline=NULL, strikethrough=NULL,
                          superscript=NULL, subscript=NULL, fillColor=NULL,
@@ -85,33 +86,33 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
                          borderAll=NULL, borderLeft=NULL, borderRight=NULL,
                          borderTop=NULL, borderBottom=NULL, valueFormat=NULL,
                          minColumnWidth=NULL, minRowHeight=NULL) {
-     if(parentPivot$argumentCheckMode > 0) {
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", baseStyleName, missing(baseStyleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", isBaseStyle, missing(isBaseStyle), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", fontName, missing(fontName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", fontSize, missing(fontSize), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric", "integer"), minValue=4, maxValue=72)
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", bold, missing(bold), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", italic, missing(italic), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", underline, missing(underline), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", strikethrough, missing(strikethrough), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", superscript, missing(superscript), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", subscript, missing(subscript), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", fillColor, missing(fillColor), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", maxLength=7)
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", textColor, missing(textColor), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", maxLength=7)
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", hAlign, missing(hAlign), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("left", "center", "right"))
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", vAlign, missing(vAlign), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("top", "middle", "bottom"))
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", wrapText, missing(wrapText), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", textRotation, missing(textRotation), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric", "integer"))
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", indent, missing(indent), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric", "integer"), minValue=0, maxValue=500)
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", borderAll, missing(borderAll), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", borderLeft, missing(borderLeft), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", borderRight, missing(borderRight), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", borderTop, missing(borderTop), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", borderBottom, missing(borderBottom), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", valueFormat, missing(valueFormat), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", minColumnWidth, missing(minColumnWidth), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric", "integer"), minValue=0, maxValue=255)
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", minRowHeight, missing(minRowHeight), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric", "integer"), minValue=0, maxValue=400)
+      if(parentPivot$argumentCheckMode > 0) {
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", baseStyleName, missing(baseStyleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", isBaseStyle, missing(isBaseStyle), allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", fontName, missing(fontName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", fontSize, missing(fontSize), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric", "integer"), minValue=4, maxValue=72)
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", bold, missing(bold), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", italic, missing(italic), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", underline, missing(underline), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", strikethrough, missing(strikethrough), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", superscript, missing(superscript), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", subscript, missing(subscript), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", fillColor, missing(fillColor), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", maxLength=7)
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", textColor, missing(textColor), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", maxLength=7)
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", hAlign, missing(hAlign), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("left", "center", "right"))
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", vAlign, missing(vAlign), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("top", "middle", "bottom"))
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", wrapText, missing(wrapText), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", textRotation, missing(textRotation), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric", "integer"))
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", indent, missing(indent), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric", "integer"), minValue=0, maxValue=500)
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", borderAll, missing(borderAll), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", borderLeft, missing(borderLeft), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", borderRight, missing(borderRight), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", borderTop, missing(borderTop), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", borderBottom, missing(borderBottom), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", valueFormat, missing(valueFormat), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", minColumnWidth, missing(minColumnWidth), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric", "integer"), minValue=0, maxValue=255)
+        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyle", "initialize", minRowHeight, missing(minRowHeight), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric", "integer"), minValue=0, maxValue=400)
      }
      private$p_parentPivot <- parentPivot
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyle$new", "Creating new Pivot Style...", list())
@@ -223,6 +224,8 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
      private$p_minColumnWidth <- minColumnWidth
      private$p_minRowHeight <- minRowHeight
 
+     self$createOpenXslxStyle()
+
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyle$new", "Created new Pivot Style")
    },
    isBasicStyleNameMatch = function(baseStyleName=NULL) {
@@ -238,13 +241,13 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
                            borderTop=NULL, borderBottom=NULL,
                            valueFormat=NULL,
                            minColumnWidth=NULL, minRowHeight=NULL) {
-     if(isBaseStyle && private$p_isBaseStyle) {
-       # if this is a base style and the style we are trying to find a match for is also a base style
-       # (i.e. with no other additional style settings applied over the top) then just compare the names
-       return(isMatch(baseStyleName, private$p_baseStyleName))
-     }
-     else {
-       return(isMatch(baseStyleName, private$p_baseStyleName) &&
+      if(isBaseStyle && private$p_isBaseStyle) {
+        # if this is a base style and the style we are trying to find a match for is also a base style
+        # (i.e. with no other additional style settings applied over the top) then just compare the names
+        return(isMatch(baseStyleName, private$p_baseStyleName))
+      }
+      else {
+        return(isMatch(baseStyleName, private$p_baseStyleName) &&
                 isMatch(fontName, private$p_fontName) && isMatch(fontSize, private$p_fontSize) &&
                 isMatch(bold, private$p_bold) && isMatch(italic, private$p_italic) &&
                 isMatch(underline, private$p_underline) && isMatch(strikethrough, private$p_strikethrough) &&
@@ -259,8 +262,100 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
                 isMatch(valueFormat, private$p_valueFormat) && isMatch(aaa, private$p_) &&
                 isMatch(minColumnWidth, private$p_minColumnWidth) && isMatch(aaa, private$p_) &&
                 isMatch(aaa, private$p_) && isMatch(minRowHeight, private$p_minRowHeight))
-     }
-   },
+      }
+    },
+    createOpenXslxStyle = function() {
+      # consolidate the borders
+      borderSides <- list()
+      borderColors <- list()
+      borderStyles <- list()
+      if((!is.null(private$p_borderAll)) &&
+         (isTextValue(private$p_borderAll[["style"]]))){
+        borderSides <- list("left", "right", "top", "bottom")
+        if(isTextValue(private$p_borderAll[["color"]])) {
+          clr <- private$p_borderAll[["color"]]
+        }
+        else clr <- "#000000"
+        borderColors <- list(clr, clr, clr, clr)
+        stl <- private$p_borderAll[["style"]]
+        borderStyles <- list(stl, stl, stl, stl)
+      }
+      else {
+        if((!is.null(private$p_borderLeft)) &&
+           (isTextValue(private$p_borderLeft[["style"]]))) {
+          borderSides[[length(borderSides)+1]] <- "left"
+          if(isTextValue(private$p_borderLeft[["color"]])) {
+            clr <- private$p_borderLeft[["color"]]
+          }
+          else clr <- "#000000"
+          borderColors[[length(borderColors)+1]] <- clr
+          stl <- private$p_borderLeft[["style"]]
+          borderStyles[[length(borderStyles)+1]] <- stl
+        }
+        if((!is.null(private$p_borderRight)) &&
+           (isTextValue(private$p_borderRight[["style"]]))) {
+          borderSides[[length(borderSides)+1]] <- "right"
+          if(isTextValue(private$p_borderRight[["color"]])) {
+            clr <- private$p_borderRight[["color"]]
+          }
+          else clr <- "#000000"
+          borderColors[[length(borderColors)+1]] <- clr
+          stl <- private$p_borderRight[["style"]]
+          borderStyles[[length(borderStyles)+1]] <- stl
+        }
+        if((!is.null(private$p_borderTop)) &&
+           (isTextValue(private$p_borderTop[["style"]]))) {
+          borderSides[[length(borderSides)+1]] <- "top"
+          if(isTextValue(private$p_borderTop[["color"]])) {
+            clr <- private$p_borderTop[["color"]]
+          }
+          else clr <- "#000000"
+          borderColors[[length(borderColors)+1]] <- clr
+          stl <- private$p_borderTop[["style"]]
+          borderStyles[[length(borderStyles)+1]] <- stl
+        }
+        if((!is.null(private$p_borderBottom)) &&
+           (isTextValue(private$p_borderBottom[["style"]]))) {
+          borderSides[[length(borderSides)+1]] <- "bottom"
+          if(isTextValue(private$p_borderBottom[["color"]])) {
+            clr <- private$p_borderBottom[["color"]]
+          }
+          else clr <- "#000000"
+          borderColors[[length(borderColors)+1]] <- clr
+          stl <- private$p_borderBottom[["style"]]
+          borderStyles[[length(borderStyles)+1]] <- stl
+        }
+      }
+      borderSides <- unlist(borderSides)
+      borderColors <- unlist(borderColors)
+      borderStyles <- unlist(borderStyles)
+
+      # consolidate the text decoration
+      textDecoration <- list()
+      if(private$p_bold) textDecoration[[length(textDecoration)+1]] <- "bold"
+      if(private$p_italic) textDecoration[[length(textDecoration)+1]] <- "italic"
+      if(private$p_underline) textDecoration[[length(textDecoration)+1]] <- "underline"
+      if(private$p_strikethrough) textDecoration[[length(textDecoration)+1]] <- "strikeout"
+      textDecoration <- unlist(textDecoration)
+
+      # other values
+      valueFormat <- private$p_valueFormat
+      if(!isTextValue(valueFormat)) valueFormat <- "GENERAL"
+      vAlign <- private$p_vAlign
+      if(isTextValue(vAlign)&&(vAlign=="middle")) vAlign <- "center"
+
+      # message(private$p_vAlign)
+      # message(class(private$p_vAlign))
+
+      # create the style
+      private$p_openxlsxStyle <- createStyle(
+        fontName=private$p_fontName, fontSize=private$p_fontSize,
+        fontColour=private$p_textColor, numFmt=valueFormat,
+        border=borderSides, borderColour=borderColors, borderStyle=borderStyles,
+        fgFill=private$p_fillColor, halign=private$p_hAlign, valign=vAlign,
+        textDecoration=textDecoration, wrapText=private$p_wrapText,
+        textRotation=private$p_textRotation, indent=private$p_indent)
+    },
    asList = function() {
      lst <- list(
        baseStyleName = private$p_baseStyleName,
@@ -332,7 +427,8 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
     borderBottom = function(value) { return(invisible(private$p_borderBottom)) },
     valueFormat = function(value) { return(invisible(private$p_valueFormat)) },
     minColumnWidth = function(value) { return(invisible(private$p_minColumnWidth)) },
-    minRowHeight = function(value) { return(invisible(private$p_minRowHeight)) }
+    minRowHeight = function(value) { return(invisible(private$p_minRowHeight)) },
+    openxlsxStyle = function(value) { return(invisible(private$p_openxlsxStyle)) }
   ),
   private = list(
     p_parentPivot = NULL,
@@ -371,7 +467,8 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
       if(is.null(border1) && is.null(border2)) return(TRUE)
       return(isMatch(border1[["style"]], border2[["style"]]) &&
              isMatch(border1[["color"]], border2[["color"]]))
-    }
+    },
+    p_openxlsxStyle = NULL
   )
 )
 
