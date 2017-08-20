@@ -241,33 +241,24 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
      if(isBaseStyle && private$p_isBaseStyle) {
        # if this is a base style and the style we are trying to find a match for is also a base style
        # (i.e. with no other additional style settings applied over the top) then just compare the names
-       return(baseStyleName==private$p_baseStyleName)
+       return(isMatch(baseStyleName, private$p_baseStyleName))
      }
      else {
-       return(baseStyleName==private$p_baseStyleName &&
-                ((is.null(fontName) && is.null(private$p_fontName)) || (fontName==private$p_fontName)) &&
-                ((is.null(fontSize) && is.null(private$p_fontSize)) || (fontSize==private$p_fontSize)) &&
-                ((is.null(bold) && is.null(private$p_bold)) || (bold==private$p_bold)) &&
-                ((is.null(italic) && is.null(private$p_italic)) || (italic==private$p_italic)) &&
-                ((is.null(underline) && is.null(private$p_underline)) || (underline==private$p_underline)) &&
-                ((is.null(strikethrough) && is.null(private$p_strikethrough)) || (strikethrough==private$p_strikethrough)) &&
-                ((is.null(superscript) && is.null(private$p_superscript)) || (superscript==private$p_superscript)) &&
-                ((is.null(subscript) && is.null(private$p_subscript)) || (subscript==private$p_subscript)) &&
-                ((is.null(fillColor) && is.null(private$p_fillColor)) || (fillColor==private$p_fillColor)) &&
-                ((is.null(textColor) && is.null(private$p_textColor)) || (textColor==private$p_textColor)) &&
-                ((is.null(hAlign) && is.null(private$p_hAlign)) || (hAlign==private$p_hAlign)) &&
-                ((is.null(vAlign) && is.null(private$p_vAlign)) || (vAlign==private$p_vAlign)) &&
-                ((is.null(wrapText) && is.null(private$p_wrapText)) || (wrapText==private$p_wrapText)) &&
-                ((is.null(textRotation) && is.null(private$p_textRotation)) || (textRotation==private$p_textRotation)) &&
-                ((is.null(indent) && is.null(private$p_indent)) || (indent==private$p_indent)) &&
-                ((is.null(borderAll) && is.null(private$p_borderAll)) || (borderAll==private$p_borderAll)) &&
-                ((is.null(borderLeft) && is.null(private$p_borderLeft)) || (borderLeft==private$p_borderLeft)) &&
-                ((is.null(borderRight) && is.null(private$p_borderRight)) || (borderRight==private$p_borderRight)) &&
-                ((is.null(borderTop) && is.null(private$p_borderTop)) || (borderTop==private$p_borderTop)) &&
-                ((is.null(borderBottom) && is.null(private$p_borderBottom)) || (borderBottom==private$p_borderBottom)) &&
-                ((is.null(valueFormat) && is.null(private$p_valueFormat)) || (valueFormat==private$p_valueFormat)) &&
-                ((is.null(minColumnWidth) && is.null(private$p_minColumnWidth)) || (minColumnWidth==private$p_minColumnWidth)) &&
-                ((is.null(minRowHeight) && is.null(private$p_minRowHeight)) || (minRowHeight==private$p_minRowHeight)))
+       return(isMatch(baseStyleName, private$p_baseStyleName) &&
+                isMatch(fontName, private$p_fontName) && isMatch(fontSize, private$p_fontSize) &&
+                isMatch(bold, private$p_bold) && isMatch(italic, private$p_italic) &&
+                isMatch(underline, private$p_underline) && isMatch(strikethrough, private$p_strikethrough) &&
+                isMatch(superscript, private$p_superscript) && isMatch(subscript, private$p_subscript) &&
+                isMatch(fillColor, private$p_fillColor) && isMatch(textColor, private$p_textColor) &&
+                isMatch(hAlign, private$p_hAlign) && isMatch(vAlign, private$p_vAlign) &&
+                isMatch(wrapText, private$p_wrapText) && isMatch(textRotation, private$p_textRotation) &&
+                isMatch(indent, private$p_indent) &&
+                isBorderMatch(borderAll, private$p_borderAll) &&
+                isBorderMatch(borderLeft, private$p_borderLeft) && isBorderMatch(borderRight, private$p_borderRight) &&
+                isBorderMatch(borderTop, private$p_borderTop) && isBorderMatch(borderBottom, private$p_borderBottom) &&
+                isMatch(valueFormat, private$p_valueFormat) && isMatch(aaa, private$p_) &&
+                isMatch(minColumnWidth, private$p_minColumnWidth) && isMatch(aaa, private$p_) &&
+                isMatch(aaa, private$p_) && isMatch(minRowHeight, private$p_minRowHeight))
      }
    },
    asList = function() {
@@ -369,7 +360,18 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
     p_borderBottom = NULL,
     p_valueFormat = NULL,
     p_minColumnWidth = NULL,
-    p_minRowHeight = NULL
+    p_minRowHeight = NULL,
+    isMatch = function(value1, value2) {
+      if(is.null(value1) && is.null(value2)) return(TRUE)
+      if(is.na(value1) && is.na(value2)) return(TRUE)
+      if(length(value1) != length(value2)) return(FALSE)
+      return(value1==value2)
+    },
+    isBorderMatch = function(border1, border2) {
+      if(is.null(border1) && is.null(border2)) return(TRUE)
+      return(isMatch(border1[["style"]], border2[["style"]]) &&
+             isMatch(border1[["color"]], border2[["color"]]))
+    }
   )
 )
 
