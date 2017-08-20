@@ -31,6 +31,12 @@ objects.
   \item{\code{new(...)}}{Create a new set of styles, specifying the field
   values documented above.}
 
+  \item{\code{findNamedStyle(baseStyleName)}}{Find an existing openxlsx style
+  matching the name of a base style.}
+  \item{\code{findOrAddStyle(action="findOrAdd", baseStyleName=NULL,
+  isBaseStyle=NULL, style=NULL, mapFromCss=TRUE)}}{Find an existing openxlsx
+  style and/or add a new openxlsx style matching a base style and/or
+  PivotStyle object.}
   \item{\code{addNamedStyles(mapFromCss=TRUE)}}{Populate the OpenXlsx styles
   based on the styles defined in the pivot table.}
   \item{\code{asList()}}{Get a list representation of the styles.}
