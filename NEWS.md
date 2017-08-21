@@ -9,12 +9,14 @@ Breaking Changes
 Improvements
 ----------------
 
+* It is now possible to output a pivot table to an Excel file with one line of R, including with styling that closely matches the HTML output.  See the Excel Export vignette for more details. 
 * Quick-pivot functions now support showing/hiding totals and renaming the captions of totals, which was previously only possible using the verbose syntax.  See the Introduction vignette for more details.
 
 Bug Fixes
 ----------------
 
-* Various small bug fixes.
+* Corrections to ordering of code in Styling vignette.
+* A couple of other small bug fixes.
 
 Upcoming Changes
 ----------------

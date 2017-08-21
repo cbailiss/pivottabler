@@ -244,24 +244,47 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
       if(isBaseStyle && private$p_isBaseStyle) {
         # if this is a base style and the style we are trying to find a match for is also a base style
         # (i.e. with no other additional style settings applied over the top) then just compare the names
-        return(isMatch(baseStyleName, private$p_baseStyleName))
+        return(private$isMatch(baseStyleName, private$p_baseStyleName))
       }
       else {
-        return(isMatch(baseStyleName, private$p_baseStyleName) &&
-                isMatch(fontName, private$p_fontName) && isMatch(fontSize, private$p_fontSize) &&
-                isMatch(bold, private$p_bold) && isMatch(italic, private$p_italic) &&
-                isMatch(underline, private$p_underline) && isMatch(strikethrough, private$p_strikethrough) &&
-                isMatch(superscript, private$p_superscript) && isMatch(subscript, private$p_subscript) &&
-                isMatch(fillColor, private$p_fillColor) && isMatch(textColor, private$p_textColor) &&
-                isMatch(hAlign, private$p_hAlign) && isMatch(vAlign, private$p_vAlign) &&
-                isMatch(wrapText, private$p_wrapText) && isMatch(textRotation, private$p_textRotation) &&
-                isMatch(indent, private$p_indent) &&
-                isBorderMatch(borderAll, private$p_borderAll) &&
-                isBorderMatch(borderLeft, private$p_borderLeft) && isBorderMatch(borderRight, private$p_borderRight) &&
-                isBorderMatch(borderTop, private$p_borderTop) && isBorderMatch(borderBottom, private$p_borderBottom) &&
-                isMatch(valueFormat, private$p_valueFormat) && isMatch(aaa, private$p_) &&
-                isMatch(minColumnWidth, private$p_minColumnWidth) && isMatch(aaa, private$p_) &&
-                isMatch(aaa, private$p_) && isMatch(minRowHeight, private$p_minRowHeight))
+        # message(paste0("Match to ", private$p_baseStyleName, " isBaseStyle=", private$p_isBaseStyle))
+        # message(paste0("fontName: ", private$isMatch(fontName, private$p_fontName)))
+        # message(paste0("fontSize: ", private$isMatch(fontSize, private$p_fontSize)))
+        # message(paste0("bold: ", private$isMatch(bold, private$p_bold)))
+        # message(paste0("italic: ", private$isMatch(italic, private$p_italic)))
+        # message(paste0("underline: ", private$isMatch(underline, private$p_underline)))
+        # message(paste0("strikethrough: ", private$isMatch(strikethrough, private$p_strikethrough)))
+        # message(paste0("superscript: ", private$isMatch(superscript, private$p_superscript)))
+        # message(paste0("subscript: ", private$isMatch(subscript, private$p_subscript)))
+        # message(paste0("fillColor: ", private$isMatch(fillColor, private$p_fillColor)))
+        # message(paste0("textColor: ", private$isMatch(textColor, private$p_textColor)))
+        # message(paste0("hAlign: ", private$isMatch(hAlign, private$p_hAlign)))
+        # message(paste0("vAlign: ", private$isMatch(vAlign, private$p_vAlign)))
+        # message(paste0("wrapText: ", private$isMatch(wrapText, private$p_wrapText)))
+        # message(paste0("textRotation: ", private$isMatch(textRotation, private$p_textRotation)))
+        # message(paste0("indent: ", private$isMatch(indent, private$p_indent)))
+        # message(paste0("borderAll: ", private$isBorderMatch(borderAll, private$p_borderAll)))
+        # message(paste0("borderLeft: ", private$isBorderMatch(borderLeft, private$p_borderLeft)))
+        # message(paste0("borderRight: ", private$isBorderMatch(borderRight, private$p_borderRight)))
+        # message(paste0("borderTop: ", private$isBorderMatch(borderTop, private$p_borderTop)))
+        # message(paste0("borderBottom: ", private$isBorderMatch(borderBottom, private$p_borderBottom)))
+        # message(paste0("valueFormat: ", private$isMatch(valueFormat, private$p_valueFormat)))
+        # message(paste0("minColumnWidth: ", private$isMatch(minColumnWidth, private$p_minColumnWidth)))
+        # message(paste0("minRowHeight: ", private$isMatch(minRowHeight, private$p_minRowHeight)))
+        # message("")
+        return(private$isMatch(fontName, private$p_fontName) && private$isMatch(fontSize, private$p_fontSize) &&
+                private$isMatch(bold, private$p_bold) && private$isMatch(italic, private$p_italic) &&
+                private$isMatch(underline, private$p_underline) && private$isMatch(strikethrough, private$p_strikethrough) &&
+                private$isMatch(superscript, private$p_superscript) && private$isMatch(subscript, private$p_subscript) &&
+                private$isMatch(fillColor, private$p_fillColor) && private$isMatch(textColor, private$p_textColor) &&
+                private$isMatch(hAlign, private$p_hAlign) && private$isMatch(vAlign, private$p_vAlign) &&
+                private$isMatch(wrapText, private$p_wrapText) && private$isMatch(textRotation, private$p_textRotation) &&
+                private$isMatch(indent, private$p_indent) &&
+                private$isBorderMatch(borderAll, private$p_borderAll) &&
+                private$isBorderMatch(borderLeft, private$p_borderLeft) && private$isBorderMatch(borderRight, private$p_borderRight) &&
+                private$isBorderMatch(borderTop, private$p_borderTop) && private$isBorderMatch(borderBottom, private$p_borderBottom) &&
+                private$isMatch(valueFormat, private$p_valueFormat) &&
+                private$isMatch(minColumnWidth, private$p_minColumnWidth) && private$isMatch(minRowHeight, private$p_minRowHeight))
       }
     },
     createOpenXslxStyle = function() {
@@ -346,9 +369,12 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
 
       # message(private$p_vAlign)
       # message(class(private$p_vAlign))
+      # message(paste0("borderSides= ", paste(borderSides, collapse=",")))
+      # message(paste0("borderColors= ", paste(borderColors, collapse=",")))
+      # message(paste0("borderStyles= ", paste(borderStyles, collapse=",")))
 
       # create the style
-      private$p_openxlsxStyle <- createStyle(
+      private$p_openxlsxStyle <- openxlsx::createStyle(
         fontName=private$p_fontName, fontSize=private$p_fontSize,
         fontColour=private$p_textColor, numFmt=valueFormat,
         border=borderSides, borderColour=borderColors, borderStyle=borderStyles,
@@ -459,14 +485,18 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
     p_minRowHeight = NULL,
     isMatch = function(value1, value2) {
       if(is.null(value1) && is.null(value2)) return(TRUE)
+      if(is.null(value1)) return(FALSE)
+      if(is.null(value2)) return(FALSE)
       if(is.na(value1) && is.na(value2)) return(TRUE)
+      if(is.na(value1)) return(FALSE)
+      if(is.na(value2)) return(FALSE)
       if(length(value1) != length(value2)) return(FALSE)
       return(value1==value2)
     },
     isBorderMatch = function(border1, border2) {
       if(is.null(border1) && is.null(border2)) return(TRUE)
-      return(isMatch(border1[["style"]], border2[["style"]]) &&
-             isMatch(border1[["color"]], border2[["color"]]))
+      return(private$isMatch(border1[["style"]], border2[["style"]]) &&
+             private$isMatch(border1[["color"]], border2[["color"]]))
     },
     p_openxlsxStyle = NULL
   )

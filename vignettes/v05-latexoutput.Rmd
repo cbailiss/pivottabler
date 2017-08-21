@@ -133,3 +133,4 @@ The full set of vignettes is:
 9. [Irregular Layout](v09-irregularlayout.html)
 10. [Performance](v10-performance.html)
 11. [Shiny](v11-shiny.html)
+12. [Excel Export](v12-excelexport.html)

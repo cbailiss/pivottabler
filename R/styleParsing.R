@@ -329,8 +329,8 @@ parseColor <- function(color) { # returns a colour in the form #[0-9A-F]
   if(!isTextValue(cColor)) return(NULL)
 
   # colour already in hex format?
-  check <- grep("#[0-9A-F]{6}", cColor)
-  if((length(check)>0)&&(check==TRUE)) return(cColor)
+  check <- grep("#[0-9A-F]{6}", toupper(cColor))
+  if((length(check)>0)&&(check==TRUE)) return(toupper(cColor))
 
   # to lower after above check
   cColor <- tolower(cColor)

@@ -16,6 +16,7 @@ vignette: >
 * Results as Plain Text
 * Results as HTML
 * Results as Latex
+* Results in Excel
 * Results as an R Matrix
 * Results as an R Data Frame
 * Further Reading
@@ -107,6 +108,10 @@ cat(pt$getCss())
 ## Results as Latex
 
 Please see the [Latex Output](v05-latexoutput.html) vignette.
+
+## Results in Excel
+
+Please see the [Excel Export](v12-excelexport.html) vignette.
 
 ## Results as an R Matrix
 
@@ -254,3 +259,4 @@ The full set of vignettes is:
 9. [Irregular Layout](v09-irregularlayout.html)
 10. [Performance](v10-performance.html)
 11. [Shiny](v11-shiny.html)
+12. [Excel Export](v12-excelexport.html)

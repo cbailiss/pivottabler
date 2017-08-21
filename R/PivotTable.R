@@ -273,7 +273,7 @@ PivotTable <- R6::R6Class("PivotTable",
     },
     getTopColumnGroups = function() {
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopColumnGroups", "Getting top level column groups...")
-      grps <- private$p_columnGroup$getChildGroups()
+      grps <- private$p_columnGroup$childGroups
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopColumnGroups", "Got top level column groups", list(count = length(grps)))
       return(invisible(grps))
     },
@@ -358,7 +358,7 @@ PivotTable <- R6::R6Class("PivotTable",
     },
     getTopRowGroups = function() {
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopRowGroups", "Getting top level row groups...")
-      grps <- private$p_rowGroup$getChildGroups()
+      grps <- private$p_rowGroup$childGroups
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopRowGroups", "Got top level row groups", list(count = length(grps)))
       return(invisible(grps))
     },
@@ -1410,6 +1410,23 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("getLatex", timeStart)
       return(ltx)
     },
+    writeToExcelWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="Workbook")
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", topRowNumber, missing(topRowNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", leftMostColumnNumber, missing(leftMostColumnNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", outputValuesAs, missing(outputValuesAs), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("rawValue", "formattedValueAsText", "formattedValueAsNumber"))
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", applyStyles, missing(applyStyles), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", mapStylesFromCSS, missing(mapStylesFromCSS), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$writeToExcelWorksheet", "Writing to worksheet...")
+      private$p_openxlsxRenderer$writeToWorksheet(wb=wb, wsName=wsName, topRowNumber=topRowNumber,
+                                                  leftMostColumnNumber=leftMostColumnNumber,
+                                                  outputValuesAs=outputValuesAs,
+                                                  applyStyles=applyStyles, mapStylesFromCSS=mapStylesFromCSS)
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$writeToExcelWorksheet", "Written to worksheet.")
+    },
     trace = function(methodName, desc, detailList=NULL) {
       if(!private$p_traceEnabled) return()
       stackdepth <- length(sys.calls())
@@ -1434,20 +1451,6 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(is.null(private$p_traceFile)) { message(msg) }
       else { cat(msg, file=private$p_traceFile, sep="\r\n", append=TRUE)}
-    },
-    writeToExcelWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, mapStylesFromCSS=TRUE) {
-      if(private$p_argumentCheckMode > 0) {
-        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="Workbook")
-        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", topRowNumber, missing(topRowNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
-        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", leftMostColumnNumber, missing(leftMostColumnNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
-        checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", mapStylesFromCSS, missing(mapStylesFromCSS), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-      }
-      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$writeToExcelWorksheet", "Writing to worksheet...")
-      private$p_openxlsxRenderer$writeToWorksheet(wb=wb, wsName=wsName, topRowNumber=topRowNumber,
-                                                  leftMostColumnNumber=leftMostColumnNumber,
-                                                  mapStylesFromCSS=mapStylesFromCSS)
-      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$writeToExcelWorksheet", "Written to worksheet.")
     },
     showBatchInfo = function() {
       message(self$batchInfo)

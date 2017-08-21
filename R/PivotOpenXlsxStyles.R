@@ -69,7 +69,7 @@ PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
       }
 
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyles$findNamedStyle", "Found named style.")
-      return(matchedStyle)
+      return(invisible(matchedStyle))
     },
     findOrAddStyle = function(action="findOrAdd", baseStyleName=NULL, isBaseStyle=NULL, style=NULL, mapFromCss=TRUE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
@@ -301,7 +301,7 @@ PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
 
       # value format
       valueFormat <- NULL
-      xlStyleValue <- cleanCssValue(style$getPropertyValue("xl-format"))
+      xlStyleValue <- cleanCssValue(style$getPropertyValue("xl-value-format"))
       if(isTextValue(xlStyleValue)) valueFormat <- xlStyleValue
 
       # minimum column width
@@ -363,6 +363,7 @@ PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
                                         borderTop=borderTop, borderBottom=borderBottom,
                                         valueFormat=valueFormat,
                                         minColumnWidth=minColumnWidth, minRowHeight=minRowHeight)
+        private$p_styles[[length(private$p_styles)+1]] <- matchedStyle
       }
 
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyles$findOrAddStyle", "Found and/or added style.")
@@ -376,8 +377,8 @@ PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyles$addNamedStyles", "Adding named styles...")
       for(i in 1:length(private$p_parentPivot$styles$styles)) {
         style <- private$p_parentPivot$styles$styles[[i]]
+        if(!is.null(self$findNamedStyle(baseStyleName=style$name))) next
         openxlsxStyle <- self$findOrAddStyle(action="add", baseStyleName=style$name, isBaseStyle=TRUE, style=style, mapFromCss=TRUE)
-        private$p_styles[[length(private$p_styles)+1]] <- openxlsxStyle
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyles$addNamedStyles", "Added named styles.")
     },

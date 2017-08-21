@@ -22,10 +22,14 @@
 #'
 #'   \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist
 #'   on the PivotDataGroup class.}
+#'   \item{\code{writeToCell(wb=NULL, wsName=NULL, rowNumber=NULL,
+#'   columnNumber=NULL, value=NULL, applyStyles=TRUE, baseStyleName=NULL,
+#'   style=NULL, mapFromCss=TRUE)}}{Writes a value to a cell and applies styling
+#'   as needed.}
 #'   \item{\code{writeToWorksheet(wb=NULL, wsName=NULL, topRowNumber=NULL,
-#'   leftMostColumnNumber=NULL, mapStylesFromCSS=TRUE)}}{Output the pivot table
-#'   into the specified workbook and worksheet at the specified row-column
-#'   location.}
+#'   leftMostColumnNumber=NULL, outputValuesAs="value", applyStyles=TRUE,
+#'   mapStylesFromCSS=TRUE)}}{Output the pivot table into the specified workbook
+#'   and worksheet at the specified row-column location.}
 #' }
 
 PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
@@ -55,12 +59,61 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$clearIsRenderedFlags", "Cleared isRendered flags...")
       return(invisible())
     },
-    writeToWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, mapStylesFromCSS=TRUE) {
+    writeToCell = function(wb=NULL, wsName=NULL, rowNumber=NULL, columnNumber=NULL, value=NULL, applyStyles=TRUE, baseStyleName=NULL, style=NULL, mapFromCss=TRUE, mergeRows=NULL, mergeColumns=NULL) {
+       if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="Workbook")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", rowNumber, missing(rowNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", columnNumber, missing(columnNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "integer", "numeric", "character"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", applyStyles, missing(applyStyles), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", style, missing(style), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotStyle")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", mapFromCss, missing(mapFromCss), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", mergeRows, missing(mergeRows), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", mergeColumns, missing(mergeColumns), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$writeToWorksheet", "Writing to cell...")
+      # write the value
+      openxlsx::writeData(wb, sheet=wsName, x=value, colNames=FALSE, rowNames=FALSE, startCol=columnNumber, startRow=rowNumber)
+      # merge cells
+      isMergedCells <- isNumericValue(mergeRows)&&isNumericValue(mergeColumns)
+      if(isMergedCells) openxlsx::mergeCells(wb, sheet=wsName, cols=mergeColumns, rows=mergeRows)
+      # styling
+      if(applyStyles) {
+        openxlsxStyle <- NULL
+        # just a base style (these were all already added to the OpenXlsxStyles collection, so can just do a find based on the name only)
+        if(isTextValue(baseStyleName)&&is.null(style)) {
+          openxlsxStyle <- private$p_styles$findNamedStyle(baseStyleName)
+          if(is.null(openxlsxStyle)) stop(paste0("PivotOpenXlsxRenderer$writeToWorksheet(): Unable to find named style '", baseStyleName, "'."), call. = FALSE)
+          if(isMergedCells) openxlsx::addStyle(wb, sheet=wsName, style=openxlsxStyle$openxlsxStyle, rows=mergeRows, cols=mergeColumns, gridExpand=TRUE)
+          else openxlsx::addStyle(wb, sheet=wsName, style=openxlsxStyle$openxlsxStyle, rows=rowNumber, cols=columnNumber, gridExpand=TRUE)
+        }
+        # base style and overlaid style, or just an overlaid style
+        else if(!is.null(style)) {
+          openxlsxStyle <- private$p_styles$findOrAddStyle(action="findOrAdd", baseStyleName=baseStyleName, isBaseStyle=FALSE, style=style, mapFromCss=mapFromCss)
+          if(is.null(openxlsxStyle)) stop("PivotOpenXlsxRenderer$writeToWorksheet(): Failed to find or add style.", call. = FALSE)
+          if(isMergedCells) openxlsx::addStyle(wb, sheet=wsName, style=openxlsxStyle$openxlsxStyle, rows=mergeRows, cols=mergeColumns, gridExpand=TRUE)
+          else openxlsx::addStyle(wb, sheet=wsName, style=openxlsxStyle$openxlsxStyle, rows=rowNumber, cols=columnNumber, gridExpand=TRUE)
+        }
+        # min heights/widths
+        if(!is.null(openxlsxStyle)) {
+          cw <- openxlsxStyle$minColumnWidth
+          rh <- openxlsxStyle$minRowHeight
+          if((!is.null(cw)) && (cw > private$p_minimumColumnWidths[columnNumber])) private$p_minimumColumnWidths[columnNumber] <- cw
+          if((!is.null(rh)) && (rh > private$p_minimumRowHeights[rowNumber])) private$p_minimumRowHeights[rowNumber] <- rh
+        }
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$writeToWorksheet", "Written to cell.")
+    },
+    writeToWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="Workbook")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", topRowNumber, missing(topRowNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", leftMostColumnNumber, missing(leftMostColumnNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", outputValuesAs, missing(outputValuesAs), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("rawValue", "formattedValueAsText", "formattedValueAsNumber"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", applyStyles, missing(applyStyles), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", mapStylesFromCSS, missing(mapStylesFromCSS), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$writeToWorksheet", "Writing to worksheet...")
@@ -72,17 +125,144 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       private$p_styles$clearStyles()
 
       # create an OpenXlsxStyle for each named style in the pivot table
-      private$p_styles$addNamedStyles(mapFromCss=mapStylesFromCSS)
+      if(applyStyles) private$p_styles$addNamedStyles(mapFromCss=mapStylesFromCSS)
 
       # output the styles
-      message(private$p_styles$asString(seperator="\r\n\r\n"))
+      # message(private$p_styles$asString(seperator="\r\n\r\n"))
 
       # do the export, going cell by cell
       # for each header and cell, if the style is basic, find the basic style matching on name only
       # if the style is not basic (i.e. has additional style settings applied directly to that header/cell)
       # then need to do a full match on all of the details of the style (slower)
 
+      # get the style names
+      tableStyle = private$p_parentPivot$styles$tableStyle
+      rootStyle = private$p_parentPivot$styles$rootStyle
+      rowHeaderStyle = private$p_parentPivot$styles$rowHeaderStyle
+      colHeaderStyle = private$p_parentPivot$styles$colHeaderStyle
+      cellStyle = private$p_parentPivot$styles$cellStyle
+      totalStyle = private$p_parentPivot$styles$totalStyle
 
+      # get the data groups:  these are the leaf level groups
+      rowGroups <- private$p_parentPivot$cells$rowGroups
+      columnGroups <- private$p_parentPivot$cells$columnGroups
+
+      # get the dimensions of the various parts of the table...
+      # ...headings:
+      rowGroupLevelCount <- private$p_parentPivot$rowGroup$getLevelCount(includeCurrentLevel=FALSE)
+      columnGroupLevelCount <- private$p_parentPivot$columnGroup$getLevelCount(includeCurrentLevel=FALSE)
+
+      # ...cells:
+      rowCount <- private$p_parentPivot$cells$rowCount
+      columnCount <- private$p_parentPivot$cells$columnCount
+
+      # initialise the minimum widths/heights
+      private$p_minimumRowHeights = numeric(1048576)
+      private$p_minimumColumnWidths = numeric(16384)
+
+      # special case of no rows and no columns, return a blank empty table
+      if((rowGroupLevelCount==0)&&(columnGroupLevelCount==0)) {
+        self$writeToCell(wb, wsName, rowNumber=topRowNumber, columnNumber=leftMostColumnNumber, value="(no data)",
+                         applyStyles=applyStyles, baseStyleName=cellStyle, style=NULL, mapFromCss=mapStylesFromCSS)
+        return(invisible(NULL))
+      }
+
+      # there must always be at least one row and one column
+      insertDummyRowHeading <- (rowGroupLevelCount==0) & (columnGroupLevelCount > 0)
+      insertDummyColumnHeading <- (columnGroupLevelCount==0) & (rowGroupLevelCount > 0)
+
+      # render the column headings, with a large blank cell at the start over the row headings
+      if(insertDummyColumnHeading) {
+        self$writeToCell(wb, wsName, rowNumber=topRowNumber, columnNumber=leftMostColumnNumber, value="",
+                         applyStyles=applyStyles, baseStyleName=rootStyle, style=NULL, mapFromCss=mapStylesFromCSS,
+                         mergeRows=topRowNumber:(topRowNumber+columnGroupLevelCount-1),
+                         mergeColumns=leftMostColumnNumber:(leftMostColumnNumber+rowGroupLevelCount-1))
+        self$writeToCell(wb, wsName, rowNumber=topRowNumber, columnNumber=leftMostColumnNumber+rowGroupLevelCount, value="",
+                         applyStyles=applyStyles, baseStyleName=colHeaderStyle, style=NULL, mapFromCss=mapStylesFromCSS)
+
+      }
+      else {
+        for(r in 1:columnGroupLevelCount) {
+          if(r==1) { # generate the large top-left blank cell
+            self$writeToCell(wb, wsName, rowNumber=topRowNumber, columnNumber=leftMostColumnNumber, value="",
+                             applyStyles=applyStyles, baseStyleName=rootStyle, style=NULL, mapFromCss=mapStylesFromCSS,
+                             mergeRows=topRowNumber:(topRowNumber+columnGroupLevelCount-1),
+                             mergeColumns=leftMostColumnNumber:(leftMostColumnNumber+rowGroupLevelCount-1))
+          }
+          # get the groups at this level
+          grps <- private$p_parentPivot$columnGroup$getLevelGroups(level=r)
+          xlColumnNumber <- leftMostColumnNumber+rowGroupLevelCount
+          for(c in 1:length(grps)) {
+            grp <- grps[[c]]
+            chs <- colHeaderStyle
+            if(!is.null(grp$baseStyleName)) chs <- grp$baseStyleName
+            xlRowNumber <- topRowNumber+r-1
+            self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=grp$caption,
+                             applyStyles=applyStyles, baseStyleName=chs, style=grp$style, mapFromCss=mapStylesFromCSS,
+                             mergeRows=xlRowNumber,
+                             mergeColumns=xlColumnNumber:(xlColumnNumber+length(grp$leafGroups)-1))
+            xlColumnNumber <- xlColumnNumber + length(grp$leafGroups)
+          }
+        }
+      }
+
+      # render the rows
+      for(r in 1:rowCount) {
+        # row number
+        xlRowNumber <- topRowNumber + columnGroupLevelCount + r - 1
+        xlColumnNumber <- leftMostColumnNumber
+        # render the row headings
+        if(insertDummyRowHeading) {
+          self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value="",
+                           applyStyles=applyStyles, baseStyleName=rowHeaderStyle, style=NULL, mapFromCss=mapStylesFromCSS)
+        }
+        else {
+          # get the leaf row group, then render any parent data groups that haven't yet been rendered
+          rg <- rowGroups[[r]]
+          ancrgs <- rg$getAncestorGroups(includeCurrentGroup=TRUE)
+          for(c in (length(ancrgs)-1):1) { # 2 (not 1) since the top ancestor is parentPivot private$rowGroup, which is just a container
+            ancg <- ancrgs[[c]]
+            xlColumnNumber <- leftMostColumnNumber + length(ancrgs) - c - 1
+            if(!ancg$isRendered) {
+              rhs <- rowHeaderStyle
+              if(!is.null(ancg$baseStyleName)) rhs <- ancg$baseStyleName
+              self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=ancg$caption,
+                               applyStyles=applyStyles, baseStyleName=rhs, style=ancg$style, mapFromCss=mapStylesFromCSS,
+                               mergeRows=xlRowNumber:(xlRowNumber+length(ancg$leafGroups)-1),
+                               mergeColumns=xlColumnNumber)
+              ancg$isRendered <- TRUE
+            }
+          }
+        }
+        # render the cell values
+        for(c in 1:columnCount) {
+          xlRowNumber <- topRowNumber + columnGroupLevelCount + r - 1
+          xlColumnNumber <- leftMostColumnNumber + rowGroupLevelCount + c - 1
+          cell <- private$p_parentPivot$cells$getCell(r, c)
+          if(cell$isTotal) cs <- totalStyle
+          else cs <- cellStyle
+          if(!is.null(cell$baseStyleName)) cs <- cell$baseStyleName
+          if(outputValuesAs=="rawValue") value <- cell$rawValue
+          else if(outputValuesAs=="formattedValueAsText") value <- cell$formattedValue
+          else if(outputValuesAs=="formattedValueAsNumber") {
+            value <- suppressWarnings(as.numeric(cell$formattedValue))
+            if(!isNumericValue(value)) value <- cell$formattedValue
+          }
+          else value <- cell$rawValue
+          self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=value,
+                           applyStyles=applyStyles, baseStyleName=cs, style=cell$style, mapFromCss=mapStylesFromCSS)
+        }
+      }
+
+      # set the minimum heights / widths
+      for(r in 1:length(private$p_minimumRowHeights)) {
+        if(private$p_minimumRowHeights[r] > 0)
+          openxlsx::setRowHeights(wb, sheet=wsName, rows=r, heights=private$p_minimumRowHeights[r])
+      }
+      for(c in 1:length(private$p_minimumColumnWidths)) {
+        if(private$p_minimumColumnWidths[c] > 0)
+          openxlsx::setColWidths(wb, sheet=wsName, cols=c, widths=private$p_minimumColumnWidths[c])
+      }
 
       # TRELLO NOTES
 
@@ -109,259 +289,11 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
 
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$writeToWorksheet", "Written to worksheet.")
     }
-   # getTableHtml = function(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE,
-   #                         includeCalculationFilters=FALSE, includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
-   #                         includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE) {
-   #   if(private$p_parentPivot$argumentCheckMode > 0) {
-   #     checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "getTableHtml", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-   #     checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "getTableHtml", includeHeaderValues, missing(includeHeaderValues), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-   #     checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "getTableHtml", includeRCFilters, missing(includeRCFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-   #     checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "getTableHtml", includeCalculationFilters, missing(includeCalculationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-   #     checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "getTableHtml", includeWorkingData, missing(includeWorkingData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-   #     checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "getTableHtml", includeEvaluationFilters, missing(includeEvaluationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-   #     checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "getTableHtml", includeCalculationNames, missing(includeCalculationNames), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-   #     checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "getTableHtml", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-   #     checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "getTableHtml", includeTotalInfo, missing(includeTotalInfo), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-   #   }
-   #   if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$getTableHtml", "Getting table HTML...")
-   #   # get the style names
-   #   styles <- names(private$p_parentPivot$styles$styles)
-   #   defaultTableStyle = private$p_parentPivot$styles$tableStyle
-   #   defaultRootStyle = private$p_parentPivot$styles$rootStyle
-   #   defaultRowHeaderStyle = private$p_parentPivot$styles$rowHeaderStyle
-   #   defaultColHeaderStyle = private$p_parentPivot$styles$colHeaderStyle
-   #   defaultCellStyle = private$p_parentPivot$styles$cellStyle
-   #   defaultTotalStyle = private$p_parentPivot$styles$totalStyle
-   #   # get the actual style names to use, including the styleNamePrefix
-   #   tableStyle <- paste0(styleNamePrefix, defaultTableStyle)
-   #   rootStyle <- paste0(styleNamePrefix, defaultRootStyle)
-   #   rowHeaderStyle <- paste0(styleNamePrefix, defaultRowHeaderStyle)
-   #   colHeaderStyle <- paste0(styleNamePrefix, defaultColHeaderStyle)
-   #   cellStyle <- paste0(styleNamePrefix, defaultCellStyle)
-   #   totalStyle <- paste0(styleNamePrefix, defaultTotalStyle)
-   #   # get the data groups:  these are the leaf level groups
-   #   rowGroups <- private$p_parentPivot$cells$rowGroups
-   #   columnGroups <- private$p_parentPivot$cells$columnGroups
-   #   # clear the isRendered flags
-   #   self$clearIsRenderedFlags()
-   #   # get the dimensions of the various parts of the table...
-   #   # ...headings:
-   #   rowGroupLevelCount <- private$p_parentPivot$rowGroup$getLevelCount(includeCurrentLevel=FALSE)
-   #   columnGroupLevelCount <- private$p_parentPivot$columnGroup$getLevelCount(includeCurrentLevel=FALSE)
-   #   # ...cells:
-   #   rowCount <- private$p_parentPivot$cells$rowCount
-   #   columnCount <- private$p_parentPivot$cells$columnCount
-   #   # special case of no rows and no columns, return a blank empty table
-   #   if((rowGroupLevelCount==0)&&(columnGroupLevelCount==0)) {
-   #     tbl <- htmltools::tags$table(class=tableStyle, htmltools::tags$tr(
-   #       htmltools::tags$td(class=cellStyle, style="text-align: center; padding: 6px", htmltools::HTML("(no data)"))))
-   #     return(tbl)
-   #   }
-   #   # there must always be at least one row and one column
-   #   insertDummyRowHeading <- (rowGroupLevelCount==0) & (columnGroupLevelCount > 0)
-   #   insertDummyColumnHeading <- (columnGroupLevelCount==0) & (rowGroupLevelCount > 0)
-   #   # build the table up row by row
-   #   trows <- list()
-   #   # render the column headings, with a large blank cell at the start over the row headings
-   #   if(insertDummyColumnHeading) {
-   #     trow <- list()
-   #     trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=columnGroupLevelCount, colspan=rowGroupLevelCount, htmltools::HTML("&nbsp;"))
-   #     trow[[2]] <- htmltools::tags$th(class=colHeaderStyle)
-   #     trows[[1]] <- htmltools::tags$tr(trow)
-   #   }
-   #   else {
-   #     for(r in 1:columnGroupLevelCount) {
-   #       trow <- list()
-   #       if(r==1) { # generate the large top-left blank cell
-   #         trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=columnGroupLevelCount, colspan=rowGroupLevelCount, htmltools::HTML("&nbsp;"))
-   #       }
-   #       # get the groups at this level
-   #       grps <- private$p_parentPivot$columnGroup$getLevelGroups(level=r)
-   #       for(c in 1:length(grps)) {
-   #         grp <- grps[[c]]
-   #         chs <- colHeaderStyle
-   #         if(!is.null(grp$baseStyleName)) chs <- paste0(styleNamePrefix, grp$baseStyleName)
-   #         colstyl <- NULL
-   #         if(!is.null(grp$style)) colstyl <- grp$style$asCSSRule()
-   #         if(includeHeaderValues||includeTotalInfo) {
-   #           detail <- list()
-   #           if(includeHeaderValues) {
-   #             lst <- NULL
-   #             if(is.null(grp$filters)) { lst <- "No filters" }
-   #             else {
-   #               lst <- list()
-   #               if(grp$filters$count > 0) {
-   #                 for(i in 1:grp$filters$count){
-   #                   lst[[length(lst)+1]] <- htmltools::tags$li(grp$filters$filters[[i]]$asString(seperator=", "))
-   #                 }
-   #               }
-   #             }
-   #             detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", "Filters: ")
-   #             detail[[length(detail)+1]] <- htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst)
-   #           }
-   #           if(includeTotalInfo) {
-   #             lst <- list()
-   #             lst[[length(lst)+1]] <- htmltools::tags$li(paste0("isTotal = ", grp$isTotal))
-   #             lst[[length(lst)+1]] <- htmltools::tags$li(paste0("isLevelSubTotal = ", grp$isLevelSubTotal))
-   #             lst[[length(lst)+1]] <- htmltools::tags$li(paste0("isLevelTotal = ", grp$isLevelTotal))
-   #             detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", "Totals: ")
-   #             detail[[length(detail)+1]] <- htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst)
-   #           }
-   #           trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl,  colspan=length(grp$leafGroups), htmltools::tags$p(grp$caption), detail) # todo: check escaping
-   #         }
-   #         else trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl, colspan=length(grp$leafGroups), grp$caption) # todo: check escaping
-   #       }
-   #       trows[[length(trows)+1]] <- htmltools::tags$tr(trow)
-   #     }
-   #   }
-   #   # render the rows
-   #   for(r in 1:rowCount) {
-   #     trow <- list()
-   #     # render the row headings
-   #     if(insertDummyRowHeading) {
-   #       trow[[1]] <- htmltools::tags$th(class=rowHeaderStyle, htmltools::HTML("&nbsp;"))
-   #     }
-   #     else {
-   #       # get the leaf row group, then render any parent data groups that haven't yet been rendered
-   #       rg <- rowGroups[[r]]
-   #       ancrgs <- rg$getAncestorGroups(includeCurrentGroup=TRUE)
-   #       for(c in (length(ancrgs)-1):1) { # 2 (not 1) since the top ancestor is parentPivot private$rowGroup, which is just a container
-   #         ancg <- ancrgs[[c]]
-   #         if(ancg$isRendered==FALSE) {
-   #           rhs <- rowHeaderStyle
-   #           if(!is.null(ancg$baseStyleName)) rhs <- paste0(styleNamePrefix, ancg$baseStyleName)
-   #           rwstyl <- NULL
-   #           if(!is.null(ancg$style)) rwstyl <- ancg$style$asCSSRule()
-   #           if(includeHeaderValues||includeTotalInfo) {
-   #             detail <- list()
-   #             if(includeHeaderValues) {
-   #               lst <- NULL
-   #               if(is.null(ancg$filters)) { lst <- "No filters" }
-   #               else {
-   #                 lst <- list()
-   #                 if(ancg$filters$count > 0) {
-   #                   for(i in 1:ancg$filters$count){
-   #                     lst[[length(lst)+1]] <- htmltools::tags$li(ancg$filters$filters[[i]]$asString(seperator=", "))
-   #                   }
-   #                 }
-   #               }
-   #               detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", "Filters: ")
-   #               detail[[length(detail)+1]] <- htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst)
-   #             }
-   #             if(includeTotalInfo) {
-   #               lst <- list()
-   #               lst[[length(lst)+1]] <- htmltools::tags$li(paste0("isTotal = ", ancg$isTotal))
-   #               lst[[length(lst)+1]] <- htmltools::tags$li(paste0("isLevelSubTotal = ", ancg$isLevelSubTotal))
-   #               lst[[length(lst)+1]] <- htmltools::tags$li(paste0("isLevelTotal = ", ancg$isLevelTotal))
-   #               detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", "Totals: ")
-   #               detail[[length(detail)+1]] <- htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst)
-   #             }
-   #             trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl,  rowspan=length(ancg$leafGroups), htmltools::tags$p(ancg$caption), detail) # todo: check escaping
-   #           }
-   #           else trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl, rowspan=length(ancg$leafGroups), ancg$caption) # todo: check escaping
-   #           ancg$isRendered <- TRUE
-   #         }
-   #       }
-   #     }
-   #     # render the cell values
-   #     for(c in 1:columnCount) {
-   #       cell <- private$p_parentPivot$cells$getCell(r, c)
-   #       if(cell$isTotal) cssCell <- totalStyle
-   #       else cssCell <- cellStyle
-   #       if(!is.null(cell$baseStyleName)) cssCell <- paste0(styleNamePrefix, cell$baseStyleName)
-   #       cllstyl <- NULL
-   #       if(!is.null(cell$style)) cllstyl <- cell$style$asCSSRule()
-   #       detail <- list()
-   #       if(includeRCFilters|includeCalculationFilters|includeWorkingData|includeEvaluationFilters|includeCalculationNames|includeRawValue)
-   #       {
-   #         if(includeRawValue) {
-   #           detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", paste0("raw value = ", cell$rawValue))
-   #         }
-   #         if(includeRCFilters) {
-   #           lst <- NULL
-   #           if(is.null(cell$rowColFilters)) { lst <- "No RC filters" }
-   #           else {
-   #             lst <- list()
-   #             if(cell$rowColFilters$count > 0) {
-   #               for(i in 1:cell$rowColFilters$count){
-   #                 lst[[length(lst)+1]] <- htmltools::tags$li(cell$rowColFilters$filters[[i]]$asString(seperator=", "))
-   #               }
-   #             }
-   #           }
-   #           detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "RC Filters: "),
-   #                                              htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
-   #         }
-   #         if(includeCalculationNames) {
-   #           cstr <- paste0("Calc: ",  cell$calculationGroupName, ": ", cell$calculationName)
-   #           detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", cstr))
-   #         }
-   #         if(includeCalculationFilters) {
-   #           lst <- NULL
-   #           if(is.null(cell$calculationFilters)) { lst <- "No calculation filters" }
-   #           else {
-   #             lst <- list()
-   #             if(cell$calculationFilters$count > 0) {
-   #               for(i in 1:cell$calculationFilters$count){
-   #                 lst[[length(lst)+1]] <- htmltools::tags$li(cell$calculationFilters$filters[[i]]$asString(seperator=", "))
-   #               }
-   #             }
-   #           }
-   #           detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Calc. Filters: "),
-   #                                              htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
-   #         }
-   #         if(includeWorkingData) {
-   #           if(length(cell$workingData)>0) {
-   #             wdNames <- names(cell$workingData)
-   #             for(w in 1:length(cell$workingData)) {
-   #               wd <- cell$workingData[[w]]
-   #               if(is.null(wd)) next
-   #               lst <- list()
-   #               if(is.null(wd$batchName)) lst[[length(lst)+1]] <- htmltools::tags$li("No batch")
-   #               else {
-   #                 lst[[length(lst)+1]] <- htmltools::tags$li(paste0("Batch = ", wd$batchName))
-   #               }
-   #               if(is.null(wd$workingFilters)) { lst[[length(lst)+1]] <- htmltools::tags$li("No working filters") }
-   #               else {
-   #                 if(wd$workingFilters$count > 0) {
-   #                   for(i in 1:wd$workingFilters$count){
-   #                     lst[[length(lst)+1]] <- htmltools::tags$li(wd$workingFilters$filters[[i]]$asString(seperator=", "))
-   #                   }
-   #                 }
-   #               }
-   #               detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;",
-   #                                                                    paste0("Working Data for ", wdNames[w], ":")),
-   #                                                  htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
-   #             }
-   #           }
-   #         }
-   #         if(includeEvaluationFilters) {
-   #           lst <- NULL
-   #           if(is.null(cell$evaluationFilters)) { lst <- "No evaluation filters" }
-   #           else {
-   #             lst <- list()
-   #             if(cell$evaluationFilters$count > 0) {
-   #               for(i in 1:cell$evaluationFilters$count){
-   #                 lst[[length(lst)+1]] <- htmltools::tags$li(cell$evaluationFilters$filters[[i]]$asString(seperator=", "))
-   #               }
-   #             }
-   #           }
-   #           detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Eval. Filters: "),
-   #                                              htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
-   #         }
-   #         trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, htmltools::tags$p(cell$formattedValue), detail) # todo: check escaping
-   #       }
-   #       else { trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, cell$formattedValue) } # todo: check escaping
-   #     }
-   #     # finished this row
-   #     trows[[length(trows)+1]] <- htmltools::tags$tr(trow)
-   #   }
-   #   tbl <- htmltools::tags$table(class=tableStyle, trows)
-   #   if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$getTableHtml", "Got table HTML.")
-   #   return(invisible(tbl))
-   # }
   ),
   private = list(
     p_parentPivot = NULL,
-    p_styles = NULL
+    p_styles = NULL,
+    p_minimumRowHeights = NULL,
+    p_minimumColumnWidths = NULL
   )
 )

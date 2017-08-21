@@ -31,10 +31,14 @@ The PivotOpenXlsxRenderer class creates a representation of a pivot table in an 
 
   \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist
   on the PivotDataGroup class.}
+  \item{\code{writeToCell(wb=NULL, wsName=NULL, rowNumber=NULL,
+  columnNumber=NULL, value=NULL, applyStyles=TRUE, baseStyleName=NULL,
+  style=NULL, mapFromCss=TRUE)}}{Writes a value to a cell and applies styling
+  as needed.}
   \item{\code{writeToWorksheet(wb=NULL, wsName=NULL, topRowNumber=NULL,
-  leftMostColumnNumber=NULL, mapStylesFromCSS=TRUE)}}{Output the pivot table
-  into the specified workbook and worksheet at the specified row-column
-  location.}
+  leftMostColumnNumber=NULL, outputValuesAs="value", applyStyles=TRUE,
+  mapStylesFromCSS=TRUE)}}{Output the pivot table into the specified workbook
+  and worksheet at the specified row-column location.}
 }
 }
 
