@@ -91,7 +91,14 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         }
         # base style and overlaid style, or just an overlaid style
         else if(!is.null(style)) {
-          openxlsxStyle <- private$p_styles$findOrAddStyle(action="findOrAdd", baseStyleName=baseStyleName, isBaseStyle=FALSE, style=style, mapFromCss=mapFromCss)
+          if(isTextValue(baseStyleName)) {
+            # need to get the base style and overlay the additional style attributes
+            baseStyle <- private$p_parentPivot$styles$getStyle(baseStyleName)
+            fullStyle <- baseStyle$getCopy(newStyleName="")
+            fullStyle$setPropertyValues(style$declarations)
+          }
+          else fullStyle <- style
+          openxlsxStyle <- private$p_styles$findOrAddStyle(action="findOrAdd", baseStyleName=baseStyleName, isBaseStyle=FALSE, style=fullStyle, mapFromCss=mapFromCss)
           if(is.null(openxlsxStyle)) stop("PivotOpenXlsxRenderer$writeToWorksheet(): Failed to find or add style.", call. = FALSE)
           if(isMergedCells) openxlsx::addStyle(wb, sheet=wsName, style=openxlsxStyle$openxlsxStyle, rows=mergeRows, cols=mergeColumns, gridExpand=TRUE)
           else openxlsx::addStyle(wb, sheet=wsName, style=openxlsxStyle$openxlsxStyle, rows=rowNumber, cols=columnNumber, gridExpand=TRUE)

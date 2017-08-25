@@ -347,12 +347,14 @@ pt$theme <- theme
 # evaluate the pivot to generate the cells
 pt$evaluatePivot()
 # apply an additional highlight to one cell (3rd row, 2nd column)
-cellHighlight <- pt$createInlineStyle(baseStyleName="Cell", declarations=list("background-color"="#FFFF00"))
+cellHighlight <- pt$createInlineStyle(declarations=list("background-color"="#FFFF00"))
 cells <- pt$getCells(specifyCellsAsList=TRUE, cellCoordinates=list(c(3, 2)))
 cells[[1]]$style <- cellHighlight
 # draw the pivot table
 pt$renderPivot(styleNamePrefix="t5")
 ```
+
+In the example above, the default cell style from the theme is still applied.  The highlight is applied in addition to the default styling.  To stop the base styling being applied, create a new named style and set the baseStyleName property on the cell to the name of the new style. 
 
 For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v07-findingandformatting.html) vignette.
 

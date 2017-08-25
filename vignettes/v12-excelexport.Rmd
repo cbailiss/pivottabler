@@ -16,6 +16,7 @@ vignette: >
 * Styling and Formatting
 * Formatting Values
 * Column Widths and Row Heights
+* Performance
 * Styling Reference
 * Further Reading
 
@@ -215,6 +216,14 @@ saveWorkbook(wb, file="C:\\test.xlsx", overwrite = TRUE)
 As part of the styling, it is possible to specifying a minimum row height and/or column width as part of the styling.  The relevant styling properties are "xl-min-row-height" and "xl-min-column-width".
 
 Rows/columns are sized to meet all of the minimum sizes specified.  E.g. if three cells in the same row have minimum row heights of 40, 45 and 50 specified, the row height will be set to 50.
+
+## Performance
+
+Creating Excel files is relatively effort intensive.  Outputing pivot tables to Excel files requires more time than creating a HTML representation of a pivot table.  In order of increasing time required:
+
+* Unstyled Pivot Tables - these will be written to Excel quicker than styled pivot tables.
+* Pivot tables using only base styles - i.e. where no additional styles have been applied to individual cells in the pivot table - these take a moderate amount of time to write to Excel.
+* Pivot tables with styles applied to individual cells - these take the longest amount of time to write to Excel due to the extra effort of handling the styles applied to individual cells.
 
 ## Styling Reference
 
