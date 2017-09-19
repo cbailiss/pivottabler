@@ -1420,6 +1420,9 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", applyStyles, missing(applyStyles), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, FALSE, "PivotTable", "writeToExcelWorksheet", mapStylesFromCSS, missing(mapStylesFromCSS), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
+      if (!requireNamespace("openxlsx", quietly = TRUE)) {
+        stop("PivotTable$writeToExcelWorksheet():  The openxlsx package is needed to write the pivot table to an Excel file.  Please install it.", call. = FALSE)
+      }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$writeToExcelWorksheet", "Writing to worksheet...")
       private$p_openxlsxRenderer$writeToWorksheet(wb=wb, wsName=wsName, topRowNumber=topRowNumber,
                                                   leftMostColumnNumber=leftMostColumnNumber,
