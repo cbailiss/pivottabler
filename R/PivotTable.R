@@ -26,6 +26,8 @@
 #' pt$renderPivot()
 #' @field argumentCheckMode A number (0-4 meaning none, minimal, basic,
 #'   balanced, full) indicating the argument checking level.
+#' @field traceEnabled A logical value indicating whether actions are logged to
+#'   a trace file.
 #' @field processingLibrary A character value indicating the processing library
 #'   being used (base, dplyr, data.table).
 #' @field data A PivotData object containing the data frames used to populate
@@ -45,6 +47,8 @@
 #'   evaluation of this pivot table.
 #' @field cells A PivotCells object containing all of the cells in the body of
 #'   the pivot table.
+#' @field rowCount The number of rows in the table.
+#' @field columnCount The number of columns in the table.
 #' @field theme The name of the theme currently applied to the pivot table.
 #' @field styles A PivotStyles object containing the styles used to theme the
 #'   pivot table.
