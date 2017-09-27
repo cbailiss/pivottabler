@@ -48,7 +48,7 @@ PivotStyle <- R6::R6Class("PivotStyle",
      if(parentPivot$argumentCheckMode > 0) {
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotStyle", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotStyle", "initialize", styleName, missing(styleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotStyle", "initialize", declarations, missing(declarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="character")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotStyle", "initialize", declarations, missing(declarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
      }
      private$p_parentPivot <- parentPivot
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$new", "Creating new Pivot Style...", list())
@@ -62,7 +62,7 @@ PivotStyle <- R6::R6Class("PivotStyle",
             val <- declarations[[i]]
             if(is.null(nme)) next
             if(is.null(val)) next
-            private$p_declarations[[tolower(trimws(nme))]] <- val
+            private$p_declarations[[tolower(trimws(nme))]] <- as.character(val)
          }
        }
      }
