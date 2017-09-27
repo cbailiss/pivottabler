@@ -213,7 +213,7 @@ saveWorkbook(wb, file="C:\\test.xlsx", overwrite = TRUE)
 
 ## Column Widths and Row Heights
 
-As part of the styling, it is possible to specifying a minimum row height and/or column width as part of the styling.  The relevant styling properties are "xl-min-row-height" and "xl-min-column-width".
+It is possible to specifying a minimum row height and/or column width as part of the styling.  The relevant styling properties are "xl-min-row-height" and "xl-min-column-width".
 
 Rows/columns are sized to meet all of the minimum sizes specified.  E.g. if three cells in the same row have minimum row heights of 40, 45 and 50 specified, the row height will be set to 50.
 
