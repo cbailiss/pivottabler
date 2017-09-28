@@ -943,7 +943,8 @@ PivotTable <- R6::R6Class("PivotTable",
           for(cg in 1:length(levelGroups)) {
             cgrp <- levelGroups[[cg]]
             if(is.null(cgrp$caption)) currentLine <- paste0(currentLine, repStr(" ", cgrp$fixedWidthSize))
-            if(is.na(cgrp$caption)) currentLine <- paste0(currentLine, repStr(" ", cgrp$fixedWidthSize))
+            else if(length(cgrp$caption)==0) currentLine <- paste0(currentLine, repStr(" ", cgrp$fixedWidthSize))
+            else if(is.na(cgrp$caption)) currentLine <- paste0(currentLine, repStr(" ", cgrp$fixedWidthSize))
             else currentLine <- paste0(currentLine, cgrp$caption, repStr(" ", cgrp$fixedWidthSize - nchar(cgrp$caption)))
           }
           # print this line
@@ -974,7 +975,8 @@ PivotTable <- R6::R6Class("PivotTable",
             }
             else {
               if(is.null(rg$caption)) currentLine <- paste0(currentLine, repStr(" ", rowLevelWidths[rl]))
-              if(is.na(rg$caption)) currentLine <- paste0(currentLine, repStr(" ", rowLevelWidths[rl]))
+              else if(length(rg$caption)==0) currentLine <- paste0(currentLine, repStr(" ", rowLevelWidths[rl]))
+              else if(is.na(rg$caption)) currentLine <- paste0(currentLine, repStr(" ", rowLevelWidths[rl]))
               else currentLine <- paste0(currentLine, rg$caption, repStr(" ", rowLevelWidths[rl] - nchar(rg$caption)))
               rg$isRendered <- TRUE
             }
@@ -986,6 +988,7 @@ PivotTable <- R6::R6Class("PivotTable",
             for(c in 1:self$columnCount) {
               cell <- private$p_cells$getCell(r, c)
               if(is.null(cell$formattedValue)) currentLine <- paste0(currentLine, repStr(" ", columnWidths[c]))
+              else if(length(cell$formattedValue)==0) currentLine <- paste0(currentLine, repStr(" ", columnWidths[c]))
               else if(is.na(cell$formattedValue)) currentLine <- paste0(currentLine, repStr(" ", columnWidths[c]))
               else currentLine <- paste0(currentLine, repStr(" ", columnWidths[c] - 2 - nchar(cell$formattedValue)), cell$formattedValue, "  ")
             }
@@ -1068,6 +1071,7 @@ PivotTable <- R6::R6Class("PivotTable",
           }
           else v <- cell$formattedValue
           if(is.null(v)) m[columnHeaderLevelCount + r, rowHeaderLevelCount + c] <- ""
+          else if(length(v)==0) m[columnHeaderLevelCount + r, rowHeaderLevelCount + c] <- ""
           else if(is.na(v)) m[columnHeaderLevelCount + r, rowHeaderLevelCount + c] <- ""
           else m[columnHeaderLevelCount + r, rowHeaderLevelCount + c] <- v
         }
