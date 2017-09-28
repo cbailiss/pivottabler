@@ -27,7 +27,7 @@ vignette: >
 
 ## Introducing pivottabler
 
-The `pivottabler` package enables pivot tables to be created with just a few lines of R.
+The `pivottabler` package enables pivot tables to be created and rendered/exported with just a few lines of R.
 
 Pivot tables are constructed natively in R, either via a short one line command to build a basic pivot table or via series of R commands that gradually build a more bespoke pivot table to meet your needs. 
 
@@ -47,7 +47,11 @@ Output can be rendered as:
 - Latex, e.g. to PDF, or
 - Plain text, e.g. to the console.  
 
-The generated HTML, Latex and text can also be easily retrieved, e.g. to be used outside of R.
+The generated HTML, Latex and text can also be easily retrieved, e.g. to be used outside of R
+
+The pivot tables can also be exported to Excel, including the styling/formatting.
+
+`pivottabler` is a companion package to the `basictabler` package.  `pivottabler` is focussed on generating pivot tables and can aggregate data.  `basictabler` does not aggregate data but offers more control of table structure.
 
 The latest version of the pivottabler package can be obtained directly from the [package repository](https://github.com/cbailiss/pivottabler/).  Please log any questions not answered by the vignettes or any bug reports [here](https://github.com/cbailiss/pivottabler/issues).
 

@@ -30,7 +30,7 @@ This vignette starts with a basic (unformatted) export.  Following this are vari
 
 Exporting a pivot table to an Excel table is reasonably straightforward:
 
-1. Create the pivot table,
+1. Create a pivot table in R using `pivottabler`,
 2. Using the openxlsx package, create a new Excel file and add a worksheet (or open an existing worksheet),
 3. Call the `writeToExcelWorksheet` method on the pivot table.
 4. Using the openxlsx package, save the workbook.

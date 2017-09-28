@@ -232,7 +232,7 @@ pt$renderPivot(styleNamePrefix="t7")
 
 ## Creating a New Theme
 
-Since a theme is a collection of styles they can be relatively easily created.  The names of the styles are then assigned to the different types of cells within a pivot table:
+Since a theme is a collection of styles, creating themes is relatively straightforward.  The names of the styles are then assigned to the different types of cells within a pivot table:
 
 *  tableStyle - the name of the style applied to the table (i.e. the HTML `<table>` element).
 *  rootStyle - the name of the style applied to the empty cell at the top left of the pivot table.
@@ -351,7 +351,7 @@ cellHighlight <- pt$createInlineStyle(declarations=list("background-color"="#FFF
 cells <- pt$getCells(specifyCellsAsList=TRUE, cellCoordinates=list(c(3, 2)))
 cells[[1]]$style <- cellHighlight
 # draw the pivot table
-pt$renderPivot(styleNamePrefix="t5")
+pt$renderPivot(styleNamePrefix="t9")
 ```
 
 In the example above, the default cell style from the theme is still applied.  The highlight is applied in addition to the default styling.  To stop the base styling being applied, create a new named style and set the baseStyleName property on the cell to the name of the new style. 

@@ -477,7 +477,7 @@ cat("The raw value of the cell is", cells[[1]]$rawValue, "and the formatted valu
 pt$renderPivot()
 ```
 
-Retrieving multiple cells (2nd row-3rd column, 3rd row-4th column and 5th row-7th column):
+#### Retrieving multiple cells (2nd row-3rd column, 3rd row-4th column and 5th row-7th column):
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)

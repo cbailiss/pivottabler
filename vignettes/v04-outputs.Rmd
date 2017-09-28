@@ -34,6 +34,7 @@ The `pivottabler` package supports outputing a pivot table in a number of differ
     + `pt$saveHtml()` to save the HTML to a file.
 - As Latex - using `pt$getLatex()` to retrieve a character variable containing Latex.
 - As plain text - using `pt` to output to the console or `pt$asCharacter` to retrieve as a character value.
+- Into an Excel Worksheet.
 
 Sometimes it is desirable to retrieve the pivot table results as a more standard data type that is easier to work with in R code.  A pivot table can be converted to either a matrix or a data frame.  Neither data type is a perfect representation of a pivot table - which option is better will depend upon your use case.
 

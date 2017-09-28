@@ -84,11 +84,11 @@ PivotCells <- R6::R6Class("PivotCells",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCell", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_columnGroups))
      }
      if(r < 1)
-       stop(paste0("PivotCells$getCell(): r (", r, ") must be must be greater than or equal to 1."), call. = FALSE)
+       stop(paste0("PivotCells$getCell(): r (", r, ") must be greater than or equal to 1."), call. = FALSE)
      if(r > self$rowCount)
        stop(paste0("PivotCells$getCell(): r (", r, ") must be less than or equal to rowCount (", self$rowCount, ")."), call. = FALSE)
      if(c < 1)
-       stop(paste0("PivotCells$getCell(): c (", c, ") must be must be greater than or equal to 1."), call. = FALSE)
+       stop(paste0("PivotCells$getCell(): c (", c, ") must be greater than or equal to 1."), call. = FALSE)
      if(c > self$columnCount)
        stop(paste0("PivotCells$getCell(): c (", c, ") must be less than or equal to columnCount (", self$columnCount, ")."), call. = FALSE)
      if(length(private$p_rows[[r]]) < c) return(invisible(NULL))
@@ -101,11 +101,11 @@ PivotCells <- R6::R6Class("PivotCells",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "setCell", cell, missing(cell), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotCell")
      }
      if(r < 1)
-       stop(paste0("PivotCells$setCell(): r (", r, ") must be must be greater than or equal to 1."), call. = FALSE)
+       stop(paste0("PivotCells$setCell(): r (", r, ") must be greater than or equal to 1."), call. = FALSE)
      if(r > self$rowCount)
        stop(paste0("PivotCells$setCell(): r (", r, ") must be less than or equal to rowCount (", self$rowCount, ")."), call. = FALSE)
      if(c < 1)
-       stop(paste0("PivotCells$setCell(): c (", c, ") must be must be greater than or equal to 1."), call. = FALSE)
+       stop(paste0("PivotCells$setCell(): c (", c, ") must be greater than or equal to 1."), call. = FALSE)
      if(c > self$columnCount)
        stop(paste0("PivotCells$setCell(): c (", c, ") must be less than or equal to columnCount (", self$columnCount, ")."), call. = FALSE)
      private$p_rows[[r]][[c]] <- cell
