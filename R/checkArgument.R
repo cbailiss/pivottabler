@@ -94,19 +94,19 @@ checkArgument <- function(argumentCheckMode, checkDataTypes, className, methodNa
                     " argument. ", argumentName, " must be one of the following values: [", paste(allowedValues, collapse=", "), "]"), call. = FALSE)
     }
     if((!is.null(minValue))&&(!is.null(argumentValue))) {
-      if(argumentValue < minValue) {
+      if(any(argumentValue < minValue)) {
         stop(paste0(classPrefix, methodName, "():  ", argumentName, " must be greater than or equal to ", minValue), call. = FALSE)
       }
     }
     if((!is.null(maxValue))&&(!is.null(argumentValue))) {
-      if(argumentValue > maxValue) {
+      if(any(argumentValue > maxValue)) {
         stop(paste0(classPrefix, methodName, "():  ", argumentName, " must be less than or equal to ", maxValue), call. = FALSE)
       }
     }
     if(!is.null(allowedClasses)) {
       if("character" %in% allowedClasses) {
         if(!is.null(maxLength)) {
-          if(length(argumentValue)>maxLength) {
+          if(any(nchar(argumentValue)>maxLength)) {
             stop(paste0(classPrefix, methodName, "():  ", argumentName, " must have length less than or equal to ", maxLength, " characters"), call. = FALSE)
           }
         }
