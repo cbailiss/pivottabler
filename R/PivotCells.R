@@ -111,7 +111,7 @@ PivotCells <- R6::R6Class("PivotCells",
      private$p_rows[[r]][[c]] <- cell
      return(invisible())
    },
-   getCells = function(specifyCellsAsList=FALSE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL) {
+   getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", specifyCellsAsList, missing(specifyCellsAsList), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
@@ -119,11 +119,6 @@ PivotCells <- R6::R6Class("PivotCells",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", cellCoordinates, missing(cellCoordinates), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Getting cells...")
-     # warning of impending change to default parameter value
-     if((!private$p_getCellsWarning)&&(!specifyCellsAsList)&&missing(specifyCellsAsList)) {
-       message("getCells():  The default value of the specifyCellsAsList argument will be changed to TRUE in a future version of the pivottabler package.\nPlease specify the value of this argument explicitly to avoid being impacted when this change occurs.")
-       private$p_getCellsWarning <- TRUE
-     }
      if(specifyCellsAsList==FALSE) {
        # NA is allowed in rowNumbers or columnNumbers
        # cells are specified as in the rowNumbers and columnNumbers
@@ -366,7 +361,6 @@ PivotCells <- R6::R6Class("PivotCells",
     p_parentPivot = NULL,
     p_rowGroups = NULL,
     p_columnGroups = NULL,
-    p_rows = NULL,
-    p_getCellsWarning = FALSE
+    p_rows = NULL
   )
 )

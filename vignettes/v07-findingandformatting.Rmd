@@ -294,7 +294,7 @@ pt$renderPivot()
 
 The `getCells()` function can be used to retrieve one or more cells by row/column number in the body of the pivot table.  The arguments can be specified in two different ways depending on the value of the `specifyCellsAsList` argument.
 
-For backward-compatibility reasons, the current default value of the `specifyCellsAsList` argument is `FALSE`.  This will be changed to `TRUE` in a future version of the pivottabler package.  For the moment, a message is displayed if `getCells()` is used without explicitly specifying the value of the `specifyCellsAsList` argument.
+In versions v0.4.0 and earlier, the default value of the `specifyCellsAsList` argument was `FALSE`.  The default value is now `TRUE`.
 
 The `getCells()` function returns a list of cell objects.
 
