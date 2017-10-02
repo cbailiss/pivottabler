@@ -1,13 +1,16 @@
 Package: pivottabler
 Type: Package
 Title: Create Pivot Tables in R
-Version: 0.3.0.9000
+Version: 0.4.0
 Authors@R: person("Christopher", "Bailiss", email = "cbailiss@gmail.com",
   role = c("aut", "cre"))
 Description: Create regular pivot tables with just a few lines of R.  
     More complex pivot tables can also be created, e.g. pivot tables
     with irregular layouts, multiple calculations and/or derived 
-    calculations based on multiple data frames.
+    calculations based on multiple data frames.  Pivot tables are
+    constructed using R only and can be written to a range of
+    output formats (plain text, 'HTML', 'Latex' and 'Excel'), 
+    including with styling/formatting.
 Depends: R (>= 3.3.0)
 Imports:
     R6 (>= 2.2.0),

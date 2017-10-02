@@ -22,6 +22,9 @@ constructing and interacting with the pivot table.
 \item{\code{argumentCheckMode}}{A number (0-4 meaning none, minimal, basic,
 balanced, full) indicating the argument checking level.}
 
+\item{\code{traceEnabled}}{A logical value indicating whether actions are logged to
+a trace file.}
+
 \item{\code{processingLibrary}}{A character value indicating the processing library
 being used (base, dplyr, data.table).}
 
@@ -49,6 +52,10 @@ evaluation of this pivot table.}
 
 \item{\code{cells}}{A PivotCells object containing all of the cells in the body of
 the pivot table.}
+
+\item{\code{rowCount}}{The number of rows in the table.}
+
+\item{\code{columnCount}}{The number of columns in the table.}
 
 \item{\code{theme}}{The name of the theme currently applied to the pivot table.}
 

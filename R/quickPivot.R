@@ -61,6 +61,12 @@ qpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL, ...) {
 #' @return A HTML widget.
 #' @examples
 #' qhpvt(bhmtrains, "TOC", "TrainCategory", "n()")
+#' qhpvt(bhmtrains, "TOC", "TrainCategory",
+#'      c("Mean Speed"="mean(SchedSpeedMPH, na.rm=TRUE)",
+#'        "Std Dev Speed"="sd(SchedSpeedMPH, na.rm=TRUE)"),
+#'      formats=list("%.0f", "%.1f"),
+#'      totals=list("TOC"="All TOCs",
+#'        "TrainCategory"="All Categories"))
 
 qhpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL, ...) {
   arguments <- list(...)
