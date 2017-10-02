@@ -1,3 +1,27 @@
+pivottabler 0.4.0.9000
+================
+
+Breaking Changes
+----------------
+
+* The default value of the `specifyCellsAsList` argument in the `getCells()` function has been changed to `TRUE`.
+The previous usage of the `getCells()` function is still supported (now you must explicitly specify `specifyCellsAsList=FALSE`).  This change has been planned since v0.3.0 (June 2017) and a warning message has been displayed since then.  See the Finding and Formatting vignette for more details on the `specifyCellsAsList` argument. 
+
+Improvements
+----------------
+
+TBC
+
+Bug Fixes
+----------------
+
+TBC
+
+Upcoming Changes
+----------------
+
+TBC
+
 pivottabler 0.4.0
 ================
 
