@@ -24,7 +24,6 @@ Good starting points for using Shiny are:
 
 * [Overview](https://shiny.rstudio.com/)
 * [Video Tutorial](https://shiny.rstudio.com/tutorial/)
-* [Older Written Tutorial](https://shiny.rstudio.com/tutorial/lesson1/)
 * [Detailed Written Articles](https://shiny.rstudio.com/articles/)
 
 ## Examples

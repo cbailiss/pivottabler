@@ -138,7 +138,7 @@ Each line above works as follows:
 3. Specify the data frame that contains the data for the pivot table.
 4. Add the distinct values from the TrainCategory column in the data frame as columns in the pivot table.
 5. Add the distinct values from the TOC column in the data frame as rows in the pivot table.
-6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function^[See the [dplyr cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) for other summary functions.].  `pivottabler` also supports data.table - see the [Performance](v10-performance.html) vignette for more details.
+6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function.  `pivottabler` also supports data.table - see the [Performance](v10-performance.html) vignette for more details.
 7. Generate the pivot table.
 
 ## Constructing the Basic Pivot Table
