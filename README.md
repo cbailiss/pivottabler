@@ -161,7 +161,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Data",
 saveWorkbook(wb, file="C:\\test.xlsx", overwrite = TRUE)
 ```
 
-![<http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example4.png)
+![<http://cbailiss.me.uk/pivottablerreadmeimgs/example4.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example4.png)
 
 Gridlines have been made invisible (by clearing the checkbox on the 'View' ribbon) in the screenshot above to make the styling easier to see. Columns were alsoauto sized - though the widths of columns could also be manually specified from R. See the Excel Export vignette for more details.
 
