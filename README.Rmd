@@ -149,7 +149,7 @@ saveWorkbook(wb, file="C:\\test.xlsx", overwrite = TRUE)
 
 ![http://cbailiss.me.uk/pivottablerreadmeimgs/example4.png](http://cbailiss.me.uk/pivottablerreadmeimgs/example4.png)
 
-Gridlines have been made invisible (by clearing the checkbox on the 'View' ribbon) in the screenshot above to make the styling easier to see.  Columns were alsoauto sized - though the widths of columns could also be manually specified from R.  See the Excel Export vignette for more details.
+In the screenshot above, Gridlines have been made invisible to make the styling easier to see (by clearing the checkbox on the 'View' ribbon).  Columns were also auto-sized - though the widths of columns could also be manually specified from R.  See the Excel Export vignette for more details.
 
 ### More Information
 
