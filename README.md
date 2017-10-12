@@ -15,7 +15,7 @@ All calculations for the pivot tables take place inside R, enabling the use of a
 
 Pivot tables are rendered as htmlwidgets, Latex or plain text. The HTML/Latex/text can be exported for use outside of R.
 
-Pivot tables can also be converted to a standard R matrix or data frame.
+Pivot tables can be converted to a standard R matrix or data frame. Pivot tables can also be exported to Excel.
 
 ### Installation
 
@@ -138,6 +138,32 @@ pt$renderPivot()
 ```
 
 ![<http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png)
+
+#### Excel Output
+
+The same styling/formatting used for the HTML output is also used when outputting to Excel - greatly reducing the amount of script that needs to be written to create Excel output.
+
+``` r
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains) # bhmtrains is a data frame with columns TrainCategory, TOC, etc.
+pt$addColumnDataGroups("TrainCategory") # e.g. Express Passenger
+pt$addRowDataGroups("TOC") # TOC = Train Operating Company e.g. Arriva Trains Wales
+pt$addRowDataGroups("PowerType") # D/EMU = Diesel/Electric Multiple Unit, HST=High Speed Train
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+
+library(openxlsx)
+wb <- createWorkbook(creator = Sys.getenv("USERNAME"))
+addWorksheet(wb, "Data")
+pt$writeToExcelWorksheet(wb=wb, wsName="Data", 
+                         topRowNumber=2, leftMostColumnNumber=2, applyStyles=TRUE)
+saveWorkbook(wb, file="C:\\test.xlsx", overwrite = TRUE)
+```
+
+![<http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example4.png)
+
+Gridlines have been made invisible (by clearing the checkbox on the 'View' ribbon) in the screenshot above to make the styling easier to see. Columns were alsoauto sized - though the widths of columns could also be manually specified from R. See the Excel Export vignette for more details.
 
 ### More Information
 
