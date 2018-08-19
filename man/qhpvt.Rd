@@ -4,7 +4,8 @@
 \alias{qhpvt}
 \title{Quickly render a basic pivot table in HTML.}
 \usage{
-qhpvt(dataFrame, rows = NULL, columns = NULL, calculations = NULL, ...)
+qhpvt(dataFrame, rows = NULL, columns = NULL, calculations = NULL,
+  ...)
 }
 \arguments{
 \item{dataFrame}{The data frame containing the data to be summarised in the

@@ -4,7 +4,8 @@
 \alias{qlpvt}
 \title{Quickly get a Latex representation of a basic pivot table.}
 \usage{
-qlpvt(dataFrame, rows = NULL, columns = NULL, calculations = NULL, ...)
+qlpvt(dataFrame, rows = NULL, columns = NULL, calculations = NULL,
+  ...)
 }
 \arguments{
 \item{dataFrame}{The data frame containing the data to be summarised in the
