@@ -13,8 +13,6 @@
 #' # It is not intended to be created outside of the pivot table.
 #' @field parentPivot Owning pivot table.
 #' @field calculationName Calculation unique name.
-#' @field safeName The name of the calculation, surrounded by back-ticks, if
-#'   the calculationName is not legal.
 #' @field caption Calculation display name - i.e. the name shown in the pivot
 #'   table.
 #' @field visible Show or hide the calculation.  Hidden calculations are
@@ -125,7 +123,6 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
      }
 
      private$p_name <- calculationName
-     private$p_safeName <- processIdentifier(calculationName)
      private$p_caption <- caption
      private$p_visible <- visible
      private$p_displayOrder <- displayOrder
@@ -145,7 +142,6 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
    asList = function() {
      lst <- list(
        name = private$p_name,
-       safeName = private$p_safeName,
        caption = private$p_caption,
        visible = private$p_visible,
        displayOrder = private$p_displayOrder,
@@ -177,7 +173,6 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
   ),
   active = list(
     calculationName = function(value) { return(invisible(private$p_name)) },
-    calculationSafeName = function(value) { return(invisible(private$p_safeName)) },
     caption = function(value) { return(invisible(private$p_caption)) },
     visible = function(value) { return(invisible(private$p_visible)) },
     displayOrder = function(value) { return(invisible(private$p_displayOrder)) },
@@ -196,7 +191,6 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
   private = list(
     p_parentPivot = NULL,
     p_name = NULL,
-    p_safeName = NULL,
     p_caption = NULL,
     p_visible = NULL,
     p_displayOrder = NULL,
