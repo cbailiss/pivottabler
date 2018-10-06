@@ -20,8 +20,7 @@ The PivotCalculation class defines one calculation in a pivot table.
 \describe{
 \item{\code{parentPivot}}{Owning pivot table.}
 
-\item{\code{calculationName}}{Calculation unique name.  Recommendation:  Do not have
-spaces in this name.}
+\item{\code{calculationName}}{Calculation unique name.}
 
 \item{\code{caption}}{Calculation display name - i.e. the name shown in the pivot
 table.}

@@ -27,6 +27,9 @@ column.
 \item{\code{variableName}}{The name of the column in the data frame that this filter
 will apply to.}
 
+\item{\code{safeVariableName}}{The name of the column, surrounded by back-ticks, if
+the name is not legal.}
+
 \item{\code{values}}{A single data value or a vector of data values that could/can
 be found in the data frame column.}
 }}
