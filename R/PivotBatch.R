@@ -162,7 +162,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
         # group by
         if(!is.null(private$p_variableNames)) {
           if(length(private$p_variableNames)>0) {
-            groupByVars <- paste(private$p_variableNames, sep="", collapse=", ")
+            groupByVars <- paste(processIdentifiers(private$p_variableNames), sep="", collapse=", ")
             groupByCmd <- paste0("data <- dplyr::group_by(data, ", groupByVars, ")")
             eval(parse(text=groupByCmd))
           }
@@ -197,7 +197,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
         groupByVars <- NULL
         if(!is.null(private$p_variableNames)) {
           if(length(private$p_variableNames)>0) {
-            groupByVars <- paste0(", by=.(", paste(private$p_variableNames, sep="", collapse=", "), ")")
+            groupByVars <- paste0(", by=.(", paste(processIdentifiers(private$p_variableNames), sep="", collapse=", "), ")")
           }
         }
         # calculations

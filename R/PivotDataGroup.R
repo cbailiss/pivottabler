@@ -330,6 +330,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                         totalPosition=totalPosition, totalCaption=totalCaption, preGroupData=preGroupData))
      private$p_parentPivot$resetCells()
      if(missing(variableName)||is.null(variableName)) stop("PivotDataGroup$addDataGroups(): variableName must be specified.", call. = FALSE)
+     safeVariableName <- processIdentifier(variableName)
      if(addTotal==TRUE){ private$p_visualTotals <- visualTotals }
      df <- NULL
      topLevelDisinctValues <- NULL
@@ -372,10 +373,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if(private$p_parentPivot$processingLibrary=="dplyr") {
          # build a dplyr query
          # todo: see escaping note 50 or so lines below
-         eval(parse(text=paste0("data <- dplyr::select(data, ", variableName, ")")))
+         eval(parse(text=paste0("data <- dplyr::select(data, ", safeVariableName, ")")))
          data <- dplyr::distinct(data)
-         if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
-         else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", variableName, "))")))
+         if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", safeVariableName, ")")))
+         else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", safeVariableName, "))")))
          topLevelDisinctValues <- dplyr::collect(data)[[variableName]]
        }
        else if(private$p_parentPivot$processingLibrary=="data.table") {
@@ -388,7 +389,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          # seem to need a dummy row count in order to get the distinct values
          rcName <- "rc"
          if(variableName==rcName) rcName <- "rowCount"
-         eval(parse(text=paste0("topLevelDisinctValues <- data[order(", ifelse(dataSortOrder=="desc", "-", ""), variableName, "), .(", rcName, "=.N), by=.(", variableName, ")][, ", variableName, "]")))
+         eval(parse(text=paste0("topLevelDisinctValues <- data[order(", ifelse(dataSortOrder=="desc", "-", ""), safeVariableName, "), .(", rcName, "=.N), by=.(", safeVariableName, ")][, ", safeVariableName, "]")))
        }
        else stop(paste0("PivotDataGroup$addDataGroups(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
        if(is.factor(topLevelDisinctValues)) { topLevelDisinctValues <- as.character(topLevelDisinctValues) }
@@ -430,7 +431,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            # build a dplyr query
            # todo: checking the escaping of the variable names and values below
            # get the distinct values for these variables
-           eval(parse(text=paste0("df <- dplyr::distinct(df, ", paste(varNamesInUse3, sep="", collapse=", "), ")")))
+           eval(parse(text=paste0("df <- dplyr::distinct(df, ", paste(processIdentifiers(varNamesInUse3), sep="", collapse=", "), ")")))
            df <- dplyr::collect(df)
          }
          else if(private$p_parentPivot$processingLibrary=="data.table") {
@@ -445,7 +446,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            while(rcName %in% varNamesInUse3) {
              rcName <- paste0(rcName, "N")
            }
-           eval(parse(text=paste0("df <- df[, .(", rcName, "=.N), by=.(", paste(varNamesInUse3, sep="", collapse=", "), ")]")))
+           eval(parse(text=paste0("df <- df[, .(", rcName, "=.N), by=.(", paste(processIdentifiers(varNamesInUse3), sep="", collapse=", "), ")]")))
          }
          else stop(paste0("PivotDataGroup$addDataGroups(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
        }
@@ -496,10 +497,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                data <- rowColFilters$getFilteredDataFrame(dataFrame=data)
              }
              # get the distinct values for the current variable
-             eval(parse(text=paste0("data <- dplyr::select(data, ", variableName, ")")))
+             eval(parse(text=paste0("data <- dplyr::select(data, ", safeVariableName, ")")))
              data <- dplyr::distinct(data)
-             if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
-             else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", variableName, "))")))
+             if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", safeVariableName, ")")))
+             else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", safeVariableName, "))")))
              distinctValues <- dplyr::collect(data)[[variableName]]
            }
            else if(private$p_parentPivot$processingLibrary=="data.table") {
@@ -525,7 +526,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                  if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
                  if(length(filter$values)>0) {
                    # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
-                   filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% rowColFilters$filters[[", j, "]]$values)")
+                   filterCmd <- paste0(filterCmd, "(", filter$safeVariableName, " %in% rowColFilters$filters[[", j, "]]$values)")
                    filterCount <- filterCount + 1
                  }
                }
@@ -533,7 +534,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
              # seem to need a dummy row count in order to get the distinct values
              rcName <- "rc"
              if(variableName==rcName) rcName <- "rowCount"
-             eval(parse(text=paste0("distinctValues <- data[", filterCmd, ", .(", rcName, "=.N), by=.(", variableName, ")][order(", ifelse(dataSortOrder=="desc", "-", ""), variableName, ")][, ", variableName, "]")))
+             eval(parse(text=paste0("distinctValues <- data[", filterCmd, ", .(", rcName, "=.N), by=.(", safeVariableName, ")][order(", ifelse(dataSortOrder=="desc", "-", ""), safeVariableName, ")][, ", safeVariableName, "]")))
            }
            else stop(paste0("PivotDataGroup$addDataGroups(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
            if("factor" %in% class(distinctValues)) { distinctValues <- as.character(distinctValues) }

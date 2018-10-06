@@ -56,3 +56,32 @@ containsText <- function(textToSearch, textToFind) {
   r <- regexpr(textToFind, textToSearch, fixed=TRUE)
   return((length(r[r!=-1]))>0)
 }
+
+#' Handle an identifier that may be illegal (e.g. containing spaces).
+#'
+#' \code{processIdentifier} is a utility function that wraps an illegal
+#' identifier in backticks.
+#'
+#' @param identifier The identifier that may be illegal.
+#' @return The identifier wrapped in backticks (if illegal) or unchanged.
+
+processIdentifier <- function(identifier) {
+  if(is.null(identifier)) return(NULL)
+  id <- trimws(identifier)
+  if (startsWith(id, "`") && endsWith(id, "`")) return(identifier)
+  if (make.names(identifier) == identifier) return(identifier)
+  else return(paste0("`", identifier, "`"))
+}
+
+#' Handle identifiers that may be illegal (e.g. containing spaces).
+#'
+#' \code{processIdentifiers} is a utility function that wraps illegal
+#' identifiers in backticks.
+#'
+#' @param identifiers The identifiers that may be illegal.
+#' @return The identifiers wrapped in backticks (if illegal) or unchanged.
+
+processIdentifiers <- function(identifiers) {
+  if(is.null(identifiers)) return(NULL)
+  return(sapply(identifiers, processIdentifier, USE.NAMES=FALSE))
+}

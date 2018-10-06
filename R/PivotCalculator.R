@@ -226,12 +226,13 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "getDistinctValues", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getDistinctValues", "Getting filtered data frame...")
+     safeVariableName <- processIdentifier(variableName)
      # build a dplyr query
      data <- dataFrame
      if(private$p_parentPivot$processingLibrary=="dplyr") {
-       eval(parse(text=paste0("data <- dplyr::select(data, ", variableName, ")")))
+       eval(parse(text=paste0("data <- dplyr::select(data, ", safeVariableName, ")")))
        data <- dplyr::distinct(data)
-       eval(parse(text=paste0("data <- dplyr::arrange(data, ", variableName, ")")))
+       eval(parse(text=paste0("data <- dplyr::arrange(data, ", safeVariableName, ")")))
        distinctValues <- dplyr::collect(data)[[variableName]]
        if(is.factor(distinctValues)) distinctValues <- as.character(distinctValues)
      }
@@ -245,7 +246,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        # seem to need a dummy row count in order to get the distinct values
        rcName <- "rc"
        if(variableName==rcName) rcName <- "rowCount"
-       eval(parse(text=paste0("distinctValues <- data[order(", variableName, "), .(", rcName, "=.N), by=.(", variableName, ")][, ", variableName, "]")))
+       eval(parse(text=paste0("distinctValues <- data[order(", safeVariableName, "), .(", rcName, "=.N), by=.(", safeVariableName, ")][, ", safeVariableName, "]")))
        if(is.factor(distinctValues)) distinctValues <- as.character(distinctValues)
      }
      else stop(paste0("PivotCalculator$getDistinctValues(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
@@ -559,7 +560,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
              # calculate the value
              # todo: escaping below
              if(nrow(data)==0) return(invisible(NULL))
-             summaryCmd <- paste0("data <- dplyr::summarise(data, ", summaryName, " = ", summariseExpression, ")")
+             summaryCmd <- paste0("data <- dplyr::summarise(data, ", processIdentifier(summaryName), " = ", summariseExpression, ")")
              eval(parse(text=summaryCmd))
              if((nrow(data)>1)||(ncol(data)>1))
                stop(paste0("PivotCalculator$evaluateSummariseExpression(): Summary expression '", summaryName, "' has resulted in '", nrow(data),
@@ -591,7 +592,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
                if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
                if(length(filter$values)>0) {
                  # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
-                 filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% workingFilters$filters[[", j, "]]$values)")
+                 filterCmd <- paste0(filterCmd, "(", filter$safeVariableName, " %in% workingFilters$filters[[", j, "]]$values)")
                  filterCount <- filterCount + 1
                }
              }

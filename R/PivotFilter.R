@@ -20,6 +20,8 @@
 #' @field parentPivot Owning pivot table.
 #' @field variableName The name of the column in the data frame that this filter
 #'   will apply to.
+#' @field safeVariableName The name of the column, surrounded by back-ticks, if
+#'   the name is not legal.
 #' @field values A single data value or a vector of data values that could/can
 #'   be found in the data frame column.
 
@@ -55,6 +57,7 @@ PivotFilter <- R6::R6Class("PivotFilter",
      private$p_parentPivot <- parentPivot
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$new", "Creating new Pivot Filter...", list(variableName=variableName, values=values))
      private$p_variableName <- variableName
+     private$p_safeVariableName <- processIdentifier(variableName)
      if(is.null(values)) {
        if(type=="VALUES")
          stop("PivotFilter$new():  One or more values must be specified when type=VALUES.", call. = FALSE)
@@ -225,12 +228,14 @@ PivotFilter <- R6::R6Class("PivotFilter",
   ),
   active = list(
     variableName = function(value) { return(invisible(private$p_variableName)) },
+    safeVariableName = function(value) { return(invisible(private$p_safeVariableName)) },
     type = function(value) { return(invisible(private$p_type)) },
     values = function(value) { return(invisible(private$p_values)) }
   ),
   private = list(
     p_parentPivot = NULL,
     p_variableName = NULL,
+    p_safeVariableName = NULL,
     p_values = NULL,
     p_type = NULL
   )

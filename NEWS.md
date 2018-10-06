@@ -35,6 +35,12 @@ Improvements
 
 * It is now possible to output a pivot table to an Excel file with one line of R, including with styling that closely matches the HTML output.  See the Excel Export vignette for more details. 
 * Quick-pivot functions now support showing/hiding totals and renaming the captions of totals, which was previously only possible using the verbose syntax.  See the Introduction vignette for more details.
+* Improved support for illegal data frame column names and illegal calculation names (e.g. including spaces or symbols such as dash, plus, dollar, etc).
+  Example:  pt$addColumnDataGroups("Sale Item")
+  Illegal names must be wrapped in back-ticks in summarise expressions and calculation expressions.
+  Example:  pt$defineCalculation(calculationName="Total Sales", summariseExpression="sum(`Sale Amount`)")
+  Example:  pt$defineCalculation(type="calculation", basedOn=c("Total Sales", "Sale Count"), format="%.1f", 
+                     calculationName="Avg Sale Amount", calculationExpression="values$`Total Sales`/values$`Sale Count`")
 
 Bug Fixes
 ----------------

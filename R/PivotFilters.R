@@ -306,7 +306,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
             if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
             if(length(filter$values)>0) {
               # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
-              filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% private$p_filters[[", j, "]]$values)")
+              filterCmd <- paste0(filterCmd, "(", filter$safeVariableName, " %in% private$p_filters[[", j, "]]$values)")
               filterCount <- filterCount + 1
             }
           }
@@ -333,7 +333,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
             if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
             if(length(filter$values)>0) {
               # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
-              filterCmd <- paste0(filterCmd, "(", filter$variableName, " %in% private$p_filters[[", j, "]]$values)")
+              filterCmd <- paste0(filterCmd, "(", filter$safeVariableName, " %in% private$p_filters[[", j, "]]$values)")
               filterCount <- filterCount + 1
             }
           }
