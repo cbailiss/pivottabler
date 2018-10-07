@@ -186,7 +186,7 @@ PivotCell <- R6::R6Class("PivotCell",
      if(missing(value)) return(invisible(private$p_rawValue))
      else {
        if(private$p_parentPivot$argumentCheckMode > 0) {
-         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "rawValue", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "rawValue", value, missing(value), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric", "character", "logical", "date", "Date", "POSIXct"))
        }
        private$p_rawValue <- value
        return(invisible())

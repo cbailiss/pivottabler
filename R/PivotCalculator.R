@@ -258,14 +258,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      # to work with data types other than numeric/integer
      # , "character", "factor", "logical", "Date", "POSIXct", "POSIXlt"
      if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses=c("integer", "numeric", "character", "logical", "date", "Date", "POSIXct"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$formatValue", "Formatting value...")
      if(is.null(value)) return(invisible(NULL))
-     if(is.null(format)) return(value)
+     if(is.null(format)) return(as.character(value))
      clsv <- class(value)
-     if(("numeric" %in% clsv)||("integer" %in% clsv)) {
+     if(("numeric" %in% clsv)||("integer" %in% clsv)||("logical" %in% clsv)) {
        clsf <- class(format)
        if("character" %in% clsf) value <- sprintf(format, value)
        else if ("list" %in% clsf) {
@@ -274,18 +274,19 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          value <- do.call(base::format, args)
        }
        else if ("function" %in% class(format)) value <- format(value)
+       else value <- as.character(value)
      }
-     # else if(("Date" %in% clsv)||("POSIXct" %in% clsv)||("POSIXlt" %in% clsv)) {
-     #   clsf <- class(format)
-     #   if ("list" %in% clsf) {
-     #     args <- format
-     #     args$x <- value
-     #     value <- do.call(base::format, args)
-     #   }
-     #   else if ("function" %in% class(format)) value <- format(value)
-     # }
-     # else if ("factor" %in% clsv) value <- as.character(value)
-     # else if("logical" %in% clsv) value <- as.character(value)
+     else if(("Date" %in% clsv)||("POSIXct" %in% clsv)||("POSIXlt" %in% clsv)) {
+       clsf <- class(format)
+       if ("list" %in% clsf) {
+         args <- format
+         args$x <- value
+         value <- do.call(base::format, args)
+       }
+       else if ("function" %in% class(format)) value <- format(value)
+       else value <- as.character(value)
+     }
+     else value <- as.character(value)
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$formatValue", "Formated value.")
      return(invisible(value))
    },
