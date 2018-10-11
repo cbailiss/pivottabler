@@ -10,6 +10,8 @@ The previous usage of the `getCells()` function is still supported (now you must
 Improvements
 ----------------
 
+* pivottabler now supports using any of the following data types in both row/column headings and cell values:
+    integer, numeric, character, logical, Date, and POSIXct.
 * Improved support for illegal data frame column names and illegal calculation names (e.g. including spaces or symbols such as dash, plus, dollar, etc).
   Example:  pt$addColumnDataGroups("Sale Item")
   Illegal names must be wrapped in back-ticks in summarise expressions and calculation expressions.
@@ -17,6 +19,7 @@ Improvements
   Example:  pt$defineCalculation(type="calculation", basedOn=c("Total Sales", "Sale Count"), format="%.1f", 
                      calculationName="Avg Sale Amount", calculationExpression="values$`Total Sales`/values$`Sale Count`")
 * pt$asDataFrame() and pt$asTidyDataFrame() now support additional parameter stringsAsFactors with default value default.stringsAsFactors().
+* Additional options when exporting to HTML, Latex and Excel for controlling how NA, NaN, -Inf and Inf are exported.
 
 Bug Fixes
 ----------------

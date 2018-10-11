@@ -85,3 +85,60 @@ processIdentifiers <- function(identifiers) {
   if(is.null(identifiers)) return(NULL)
   return(sapply(identifiers, processIdentifier, USE.NAMES=FALSE))
 }
+
+#' Should the current value be skipped during export?
+#'
+#' \code{skipExportingValue} is a utility function that returns true if
+#' the current value should be skipped when exporting.
+#'
+#' @param rawValue The value to check.
+#' @param exportOptions A list of options controlling export behaviour.
+#' @return TRUE or FALSE indicating whether the current value should be
+#' skipped.
+
+skipExportingValue <- function(rawValue, exportOptions) {
+  if(is.null(rawValue)) return(invisible(TRUE))
+  if(is.null(exportOptions)) return(invisible(FALSE))
+  if((NA %in% rawValue) && ("skipNA" %in% names(exportOptions)) && (exportOptions$skipNA==TRUE)) return(invisible(TRUE))
+  if((NaN %in% rawValue) && ("skipNAN" %in% names(exportOptions)) && (exportOptions$skipNAN==TRUE)) return(invisible(TRUE))
+  if((-Inf %in% rawValue) && ("skipNegInf" %in% names(exportOptions)) && (exportOptions$skipNegInf==TRUE)) return(invisible(TRUE))
+  if((Inf %in% rawValue) && ("skipPosInf" %in% names(exportOptions)) && (exportOptions$skipPosInf==TRUE)) return(invisible(TRUE))
+  return(invisible(FALSE))
+}
+
+#' Replace the current value with a placeholder during export.
+#'
+#' \code{exportValueAs} is a utility function that returns either the
+#' original value or a replacement placeholder value for export.
+#'
+#' @param rawValue The raw value to check.
+#' @param formattedValue The formatted value to be exported.
+#' @param exportOptions A list of options controlling export behaviour.
+#' @param blankValue The 'placeholder' value to be exported when skipping the value.
+#' @return Either the original value or a placeholder value.
+
+exportValueAs <- function(rawValue, formattedValue, exportOptions, blankValue=character(0)) {
+  if(is.null(rawValue)) {
+    if(is.null(formattedValue)) return(invisible(blankValue))
+    else return(invisible(formattedValue))
+  }
+  if(is.null(exportOptions)) return(invisible(formattedValue))
+  if(NA %in% rawValue) {
+    if(("skipNA" %in% names(exportOptions)) && (exportOptions$skipNA==TRUE)) return(invisible(blankValue))
+    if("exportNAAs" %in% names(exportOptions)) return(invisible(exportNAAs))
+  }
+  if(NaN %in% rawValue) {
+    if(("skipNAN" %in% names(exportOptions)) && (exportOptions$skipNAN==TRUE)) return(invisible(blankValue))
+    if("exportNaNAs" %in% names(exportOptions)) return(invisible(exportNaNAs))
+  }
+  if(-Inf %in% rawValue) {
+    if(("skipNegInf" %in% names(exportOptions)) && (exportOptions$skipNegInf==TRUE)) return(invisible(blankValue))
+    if(("exportNegInfAs" %in% names(exportOptions))) return(invisible(exportNegInfAs))
+  }
+
+  if(Inf %in% rawValue) {
+    if(("skipPosInf" %in% names(exportOptions)) && (exportOptions$skipPosInf==TRUE)) return(invisible(blankValue))
+    if(("exportPosInfAs" %in% names(exportOptions))) return(invisible(exportPosInfAs))
+  }
+  return(invisible(formattedValue))
+}

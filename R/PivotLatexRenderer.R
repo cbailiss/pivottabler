@@ -29,10 +29,10 @@
 #'   for use when a pivot table will not fit into a single A4 page.}
 #'   \item{\code{clearIsRenderedFlags()}}{}
 #'   \item{\code{getTableLatex = function(caption=NULL, label=NULL,
-#'   boldHeadings=FALSE, italicHeadings=FALSE))}}{Get a Latex representation of
-#'   the pivot table, specifying the caption to appear above the table, the
-#'   label to use when referring to the table elsewhere in the document and how
-#'   headings should be styled.}
+#'   boldHeadings=FALSE, italicHeadings=FALSE, exportOptions=NULL))}}
+#'   {Get a Latex representation of the pivot table, specifying the caption to
+#'   appear above the table, the label to use when referring to the table
+#'   elsewhere in the document and how headings should be styled.}
 #' }
 #'
 PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
@@ -145,12 +145,13 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$setVisibleRange", "Set visible range.")
       return(invisible())
     },
-    getTableLatex = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE) {
+    getTableLatex = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE, exportOptions=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex", label, missing(label), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex", boldHeadings, missing(boldHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex", italicHeadings, missing(italicHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex", exportOptions, missing(exportOptions), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$getTableLatex", "Getting table Latex...")
       # reset rendered flags
@@ -180,11 +181,11 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
       insertDummyColumnHeading <- (columnGroupLevelCount==0) & (rowGroupLevelCount > 0)
       # run the appropriate function
       if(insertDummyRowHeading)
-        ltx <- private$getTableLatex1Row(caption=caption, label=label, boldHeadings=boldHeadings, italicHeadings=italicHeadings)
+        ltx <- private$getTableLatex1Row(caption=caption, label=label, boldHeadings=boldHeadings, italicHeadings=italicHeadings, exportOptions=exportOptions)
       else if(insertDummyColumnHeading)
-        ltx <- private$getTableLatex1Column(caption=caption, label=label, boldHeadings=boldHeadings, italicHeadings=italicHeadings)
+        ltx <- private$getTableLatex1Column(caption=caption, label=label, boldHeadings=boldHeadings, italicHeadings=italicHeadings, exportOptions=exportOptions)
       else
-        ltx <- private$getTableLatexNormal(caption=caption, label=label, boldHeadings=boldHeadings, italicHeadings=italicHeadings)
+        ltx <- private$getTableLatexNormal(caption=caption, label=label, boldHeadings=boldHeadings, italicHeadings=italicHeadings, exportOptions=exportOptions)
       return(invisible(ltx))
     }
  ),
@@ -198,12 +199,13 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
    getSafeString = function(str) {
      gsub('([#$%&~_\\^\\\\{}])', '\\\\\\1', str, perl = TRUE);
    },
-   getTableLatex1Row = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE) {
+   getTableLatex1Row = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE, exportOptions=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex1Row", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex1Row", label, missing(label), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex1Row", boldHeadings, missing(boldHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex1Row", italicHeadings, missing(italicHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex1Row", exportOptions, missing(exportOptions), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$getTableLatex1Row", "Getting table Latex...")
      # references
@@ -281,10 +283,10 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
          else s <- paste0(s, " & ")
          leafGroupCount <- grp$visibleLeafGroupCount
          if(leafGroupCount > 1) {
-           s <- paste0(s, "\\multicolumn{", leafGroupCount, "}{|c|}{", headingPrefix, private$getSafeString(grp$caption), headingSuffix, "}")
+           s <- paste0(s, "\\multicolumn{", leafGroupCount, "}{|c|}{", headingPrefix, private$getSafeString(exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")), headingSuffix, "}")
          }
          else {
-           s <- paste0(s, headingPrefix, private$getSafeString(grp$caption), headingSuffix)
+           s <- paste0(s, headingPrefix, private$getSafeString(exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")), headingSuffix)
          }
        }
        s <- paste0(s, "\\\\")
@@ -302,7 +304,7 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
        for(c in fromColumn:toColumn) {
          s <- paste0(s, " & ")
          cell <- cells$getCell(r, c)
-         s <- paste0(s, private$getSafeString(cell$formattedValue))
+         s <- paste0(s, private$getSafeString(exportValueAs(cell$rawValue, cell$formattedValue, exportOptions, blankValue="")))
        }
        # finish the line
        s <- paste0(s, "\\\\")
@@ -316,12 +318,13 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
      ltx <- paste(ltx, sep = '', collapse = '\n')
      return(invisible(ltx))
    },
-   getTableLatex1Column = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE) {
+   getTableLatex1Column = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE, exportOptions=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex1Column", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex1Column", label, missing(label), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex1Column", boldHeadings, missing(boldHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex1Column", italicHeadings, missing(italicHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex1Column", exportOptions, missing(exportOptions), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$getTableLatex1Column", "Getting table Latex...")
      # references
@@ -426,10 +429,10 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
          if(ancg$isRendered==FALSE) {
            leafGroupCount <- ancg$visibleLeafGroupCount
            if(leafGroupCount > 1) {
-             s <- paste0(s, "\\multirow{", leafGroupCount, "}{*}{", headingPrefix, private$getSafeString(ancg$caption), headingSuffix, "} ")
+             s <- paste0(s, "\\multirow{", leafGroupCount, "}{*}{", headingPrefix, private$getSafeString(exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")), headingSuffix, "} ")
            }
            else {
-             s <- paste0(s, headingPrefix, private$getSafeString(ancg$caption), headingSuffix, " ")
+             s <- paste0(s, headingPrefix, private$getSafeString(exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")), headingSuffix, " ")
            }
            ancg$isRendered <- TRUE
          }
@@ -438,7 +441,7 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
        for(c in fromColumn:toColumn) {
          s <- paste0(s, " & ")
          cell <- cells$getCell(r, c)
-         s <- paste0(s, private$getSafeString(cell$formattedValue))
+         s <- paste0(s, private$getSafeString(exportValueAs(cell$rawValue, cell$formattedValue, exportOptions, blankValue="")))
        }
        # finish the line
        s <- paste0(s, "\\\\")
@@ -452,12 +455,13 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
      ltx <- paste(ltx, sep = '', collapse = '\n')
      return(invisible(ltx))
    },
-   getTableLatexNormal = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE) {
+   getTableLatexNormal = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE, exportOptions=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatexNormal", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatexNormal", label, missing(label), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatexNormal", boldHeadings, missing(boldHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatexNormal", italicHeadings, missing(italicHeadings), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatexNormal", exportOptions, missing(exportOptions), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$getTableLatexNormal", "Getting table Latex...")
      # references
@@ -538,10 +542,10 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
          else s <- paste0(s, " & ")
          leafGroupCount <- grp$visibleLeafGroupCount
          if(leafGroupCount > 1) {
-           s <- paste0(s, "\\multicolumn{", leafGroupCount, "}{|c|}{", headingPrefix, private$getSafeString(grp$caption), headingSuffix, "}")
+           s <- paste0(s, "\\multicolumn{", leafGroupCount, "}{|c|}{", headingPrefix, private$getSafeString(exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")), headingSuffix, "}")
          }
          else {
-           s <- paste0(s, headingPrefix, private$getSafeString(grp$caption), headingSuffix)
+           s <- paste0(s, headingPrefix, private$getSafeString(exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")), headingSuffix)
          }
        }
        s <- paste0(s, "\\\\")
@@ -586,10 +590,10 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
          if(ancg$isRendered==FALSE) {
            leafGroupCount <- ancg$visibleLeafGroupCount
            if(leafGroupCount > 1) {
-             s <- paste0(s, "\\multirow{", leafGroupCount, "}{*}{", headingPrefix, private$getSafeString(ancg$caption), headingSuffix, "} ")
+             s <- paste0(s, "\\multirow{", leafGroupCount, "}{*}{", headingPrefix, private$getSafeString(exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")), headingSuffix, "} ")
            }
            else {
-             s <- paste0(s, headingPrefix, private$getSafeString(ancg$caption), headingSuffix, " ")
+             s <- paste0(s, headingPrefix, private$getSafeString(exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")), headingSuffix, " ")
            }
            ancg$isRendered <- TRUE
          }
@@ -598,7 +602,7 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
        for(c in fromColumn:toColumn) {
          s <- paste0(s, " & ")
          cell <- cells$getCell(r, c)
-         s <- paste0(s, private$getSafeString(cell$formattedValue))
+         s <- paste0(s, private$getSafeString(exportValueAs(cell$rawValue, cell$formattedValue, exportOptions, blankValue="")))
        }
        # finish the line
        s <- paste0(s, "\\\\")

@@ -26,7 +26,8 @@
 #'   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
 #'   includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
 #'   includeCalculationNames=FALSE, includeRawValue=FALSE,
-#'   includeTotalInfo=FALSE)}}{Get a HTML representation of the pivot table,
+#'   includeTotalInfo=FALSE, exportOptions=NULL)}}
+#'   {Get a HTML representation of the pivot table,
 #'   optionally including additional detail for debugging purposes.}
 #' }
 
@@ -58,7 +59,8 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
    },
    getTableHtml = function(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE,
                            includeCalculationFilters=FALSE, includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
-                           includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE) {
+                           includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE,
+                           exportOptions=exportOptions) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", includeHeaderValues, missing(includeHeaderValues), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -69,6 +71,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", includeCalculationNames, missing(includeCalculationNames), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", includeTotalInfo, missing(includeTotalInfo), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", exportOptions, missing(exportOptions), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$getTableHtml", "Getting table HTML...")
      # get the style names
@@ -154,9 +157,9 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
                detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", "Totals: ")
                detail[[length(detail)+1]] <- htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst)
              }
-             trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl,  colspan=length(grp$leafGroups), htmltools::tags$p(grp$caption), detail) # todo: check escaping
+             trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl,  colspan=length(grp$leafGroups), htmltools::tags$p(exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")), detail) # todo: check escaping
            }
-           else trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl, colspan=length(grp$leafGroups), grp$caption) # todo: check escaping
+           else trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl, colspan=length(grp$leafGroups), exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")) # todo: check escaping
          }
          trows[[length(trows)+1]] <- htmltools::tags$tr(trow)
        }
@@ -203,9 +206,9 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
                  detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", "Totals: ")
                  detail[[length(detail)+1]] <- htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst)
                }
-               trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl,  rowspan=length(ancg$leafGroups), htmltools::tags$p(ancg$caption), detail) # todo: check escaping
+               trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl,  rowspan=length(ancg$leafGroups), htmltools::tags$p(exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")), detail) # todo: check escaping
              }
-             else trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl, rowspan=length(ancg$leafGroups), ancg$caption) # todo: check escaping
+             else trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl, rowspan=length(ancg$leafGroups), exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")) # todo: check escaping
              ancg$isRendered <- TRUE
            }
          }
@@ -295,9 +298,9 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
              detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Eval. Filters: "),
                                                 htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
            }
-           trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, htmltools::tags$p(cell$formattedValue), detail) # todo: check escaping
+           trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, htmltools::tags$p(exportValueAs(cell$rawValue, cell$formattedValue, exportOptions, blankValue="")), detail) # todo: check escaping
          }
-         else { trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, cell$formattedValue) } # todo: check escaping
+         else { trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, exportValueAs(cell$rawValue, cell$formattedValue, exportOptions, blankValue="")) } # todo: check escaping
        }
        # finished this row
        trows[[length(trows)+1]] <- htmltools::tags$tr(trow)

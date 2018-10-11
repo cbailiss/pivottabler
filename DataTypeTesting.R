@@ -372,12 +372,3 @@ pt$renderPivot()
 
 
 
-# all of the above examples use the default formatting option (of as.character()) since no format parameter is specified.
-# need to:
-#   - check export to Excel to see how that handles exporting each of the above
-#   - check latex export for the same reason
-#   - write automated test cases for the above
-#   - document the changes, at least in the NEWS file (and also check if any vignettes say data types are currently limited)
-#   - add new FAQ that describes (1) Data type support, (2) data type formatting, (3) Dealing with columns with illegal names
-
-

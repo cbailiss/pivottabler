@@ -28,8 +28,8 @@
 #'   as needed.}
 #'   \item{\code{writeToWorksheet(wb=NULL, wsName=NULL, topRowNumber=NULL,
 #'   leftMostColumnNumber=NULL, outputValuesAs="value", applyStyles=TRUE,
-#'   mapStylesFromCSS=TRUE)}}{Output the pivot table into the specified workbook
-#'   and worksheet at the specified row-column location.}
+#'   mapStylesFromCSS=TRUE, exportOptions=NULL)}}{Output the pivot table into
+#'   the specified workbook and worksheet at the specified row-column location.}
 #' }
 
 PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
@@ -75,7 +75,9 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$writeToWorksheet", "Writing to cell...")
       # write the value
-      openxlsx::writeData(wb, sheet=wsName, x=value, colNames=FALSE, rowNames=FALSE, startCol=columnNumber, startRow=rowNumber)
+      if (!is.null(value) && (length(value) > 0)) {
+        openxlsx::writeData(wb, sheet=wsName, x=value, colNames=FALSE, rowNames=FALSE, startCol=columnNumber, startRow=rowNumber)
+      }
       # merge cells
       isMergedCells <- isNumericValue(mergeRows)&&isNumericValue(mergeColumns)
       if(isMergedCells) openxlsx::mergeCells(wb, sheet=wsName, cols=mergeColumns, rows=mergeRows)
@@ -113,7 +115,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$writeToWorksheet", "Written to cell.")
     },
-    writeToWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE) {
+    writeToWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE, exportOptions=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="Workbook")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
@@ -122,6 +124,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", outputValuesAs, missing(outputValuesAs), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("rawValue", "formattedValueAsText", "formattedValueAsNumber"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", applyStyles, missing(applyStyles), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", mapStylesFromCSS, missing(mapStylesFromCSS), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", exportOptions, missing(exportOptions), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$writeToWorksheet", "Writing to worksheet...")
 
@@ -180,18 +183,18 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
 
       # render the column headings, with a large blank cell at the start over the row headings
       if(insertDummyColumnHeading) {
-        self$writeToCell(wb, wsName, rowNumber=topRowNumber, columnNumber=leftMostColumnNumber, value="",
+        self$writeToCell(wb, wsName, rowNumber=topRowNumber, columnNumber=leftMostColumnNumber, value=character(0),
                          applyStyles=applyStyles, baseStyleName=rootStyle, style=NULL, mapFromCss=mapStylesFromCSS,
                          mergeRows=topRowNumber:(topRowNumber+columnGroupLevelCount-1),
                          mergeColumns=leftMostColumnNumber:(leftMostColumnNumber+rowGroupLevelCount-1))
-        self$writeToCell(wb, wsName, rowNumber=topRowNumber, columnNumber=leftMostColumnNumber+rowGroupLevelCount, value="",
+        self$writeToCell(wb, wsName, rowNumber=topRowNumber, columnNumber=leftMostColumnNumber+rowGroupLevelCount, value=character(0),
                          applyStyles=applyStyles, baseStyleName=colHeaderStyle, style=NULL, mapFromCss=mapStylesFromCSS)
 
       }
       else {
         for(r in 1:columnGroupLevelCount) {
           if(r==1) { # generate the large top-left blank cell
-            self$writeToCell(wb, wsName, rowNumber=topRowNumber, columnNumber=leftMostColumnNumber, value="",
+            self$writeToCell(wb, wsName, rowNumber=topRowNumber, columnNumber=leftMostColumnNumber, value=character(0),
                              applyStyles=applyStyles, baseStyleName=rootStyle, style=NULL, mapFromCss=mapStylesFromCSS,
                              mergeRows=topRowNumber:(topRowNumber+columnGroupLevelCount-1),
                              mergeColumns=leftMostColumnNumber:(leftMostColumnNumber+rowGroupLevelCount-1))
@@ -204,7 +207,8 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
             chs <- colHeaderStyle
             if(!is.null(grp$baseStyleName)) chs <- grp$baseStyleName
             xlRowNumber <- topRowNumber+r-1
-            self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=grp$caption,
+            value <- exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue=character(0))
+            self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=value,
                              applyStyles=applyStyles, baseStyleName=chs, style=grp$style, mapFromCss=mapStylesFromCSS,
                              mergeRows=xlRowNumber,
                              mergeColumns=xlColumnNumber:(xlColumnNumber+length(grp$leafGroups)-1))
@@ -220,7 +224,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         xlColumnNumber <- leftMostColumnNumber
         # render the row headings
         if(insertDummyRowHeading) {
-          self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value="",
+          self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=character(0),
                            applyStyles=applyStyles, baseStyleName=rowHeaderStyle, style=NULL, mapFromCss=mapStylesFromCSS)
         }
         else {
@@ -233,7 +237,8 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
             if(!ancg$isRendered) {
               rhs <- rowHeaderStyle
               if(!is.null(ancg$baseStyleName)) rhs <- ancg$baseStyleName
-              self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=ancg$caption,
+              value <- exportValueAs(ncg$sortValue, ncg$caption, exportOptions, blankValue=character(0))
+              self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=value,
                                applyStyles=applyStyles, baseStyleName=rhs, style=ancg$style, mapFromCss=mapStylesFromCSS,
                                mergeRows=xlRowNumber:(xlRowNumber+length(ancg$leafGroups)-1),
                                mergeColumns=xlColumnNumber)
@@ -256,6 +261,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
             if(!isNumericValue(value)) value <- cell$formattedValue
           }
           else value <- cell$rawValue
+          value <- exportValueAs(cell$rawValue, value, exportOptions, blankValue=character(0))
           self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=value,
                            applyStyles=applyStyles, baseStyleName=cs, style=cell$style, mapFromCss=mapStylesFromCSS)
         }
