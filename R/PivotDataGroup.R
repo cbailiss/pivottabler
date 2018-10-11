@@ -1186,12 +1186,12 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    # private functions:
    formatValue = function(value=NULL, format=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric", "character", "factor", "logical", "Date", "POSIXct", "POSIXlt"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric", "character", "logical", "date", "Date", "POSIXct", "POSIXlt"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$formatValue", "Formatting value...")
      if(is.null(value)) return(invisible(NULL))
-     if(is.null(format)) return(value)
+     if(is.null(format)) return(as.character(value))
      clsv <- class(value)
      if(("numeric" %in% clsv)||("integer" %in% clsv)) {
        clsf <- class(format)
@@ -1202,18 +1202,47 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          value <- do.call(base::format, args)
        }
        else if ("function" %in% class(format)) value <- format(value)
+       else value <- as.character(value)
      }
-     else if(("Date" %in% clsv)||("POSIXct" %in% clsv)||("POSIXlt" %in% clsv)) {
+     else if("logical" %in% clsv) {
        clsf <- class(format)
-       if ("list" %in% clsf) {
+       if("character" %in% clsf) {
+         if (length(format)==2) {
+           if(value==FALSE) value <- format[1]
+           else if(value==TRUE) value <- format[2]
+           else value <- "NA"
+         }
+         else if (length(format)==3) {
+           if(value==FALSE) value <- format[1]
+           else if(value==TRUE) value <- format[2]
+           else value <- format[3]
+         }
+         else value <- sprintf(format, value)
+       }
+       else if ("list" %in% clsf) {
          args <- format
          args$x <- value
          value <- do.call(base::format, args)
        }
        else if ("function" %in% class(format)) value <- format(value)
+       else value <- as.character(value)
      }
-     else if ("factor" %in% clsv) value <- as.character(value)
-     else if("logical" %in% clsv) value <- as.character(value)
+     else if(("Date" %in% clsv)||("POSIXct" %in% clsv)||("POSIXlt" %in% clsv)) {
+       clsf <- class(format)
+       if ("character" %in% clsf) {
+         args <- list(format)
+         args$x <- value
+         value <- do.call(base::format, args)
+       }
+       else if ("list" %in% clsf) {
+         args <- format
+         args$x <- value
+         value <- do.call(base::format, args)
+       }
+       else if ("function" %in% class(format)) value <- format(value)
+       else value <- as.character(value)
+     }
+     else value <- as.character(value)
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$formatValue", "Formated value.")
      return(invisible(value))
    }

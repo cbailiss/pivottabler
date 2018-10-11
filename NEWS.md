@@ -41,6 +41,7 @@ Improvements
   Example:  pt$defineCalculation(calculationName="Total Sales", summariseExpression="sum(`Sale Amount`)")
   Example:  pt$defineCalculation(type="calculation", basedOn=c("Total Sales", "Sale Count"), format="%.1f", 
                      calculationName="Avg Sale Amount", calculationExpression="values$`Total Sales`/values$`Sale Count`")
+* pt$asDataFrame() and pt$asTidyDataFrame() now support additional parameter stringsAsFactors with default value default.stringsAsFactors().
 
 Bug Fixes
 ----------------
