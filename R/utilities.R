@@ -125,20 +125,20 @@ exportValueAs <- function(rawValue, formattedValue, exportOptions, blankValue=ch
   if(is.null(exportOptions)) return(invisible(formattedValue))
   if(NA %in% rawValue) {
     if(("skipNA" %in% names(exportOptions)) && (exportOptions$skipNA==TRUE)) return(invisible(blankValue))
-    if("exportNAAs" %in% names(exportOptions)) return(invisible(exportNAAs))
+    if("exportNAAs" %in% names(exportOptions)) return(invisible(exportOptions$exportNAAs))
   }
   if(NaN %in% rawValue) {
-    if(("skipNAN" %in% names(exportOptions)) && (exportOptions$skipNAN==TRUE)) return(invisible(blankValue))
-    if("exportNaNAs" %in% names(exportOptions)) return(invisible(exportNaNAs))
+    if(("skipNaN" %in% names(exportOptions)) && (exportOptions$skipNaN==TRUE)) return(invisible(blankValue))
+    if("exportNaNAs" %in% names(exportOptions)) return(invisible(exportOptions$exportNaNAs))
   }
   if(-Inf %in% rawValue) {
     if(("skipNegInf" %in% names(exportOptions)) && (exportOptions$skipNegInf==TRUE)) return(invisible(blankValue))
-    if(("exportNegInfAs" %in% names(exportOptions))) return(invisible(exportNegInfAs))
+    if(("exportNegInfAs" %in% names(exportOptions))) return(invisible(exportOptions$exportNegInfAs))
   }
 
   if(Inf %in% rawValue) {
     if(("skipPosInf" %in% names(exportOptions)) && (exportOptions$skipPosInf==TRUE)) return(invisible(blankValue))
-    if(("exportPosInfAs" %in% names(exportOptions))) return(invisible(exportPosInfAs))
+    if(("exportPosInfAs" %in% names(exportOptions))) return(invisible(exportOptions$exportPosInfAs))
   }
   return(invisible(formattedValue))
 }

@@ -237,7 +237,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
             if(!ancg$isRendered) {
               rhs <- rowHeaderStyle
               if(!is.null(ancg$baseStyleName)) rhs <- ancg$baseStyleName
-              value <- exportValueAs(ncg$sortValue, ncg$caption, exportOptions, blankValue=character(0))
+              value <- exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue=character(0))
               self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=value,
                                applyStyles=applyStyles, baseStyleName=rhs, style=ancg$style, mapFromCss=mapStylesFromCSS,
                                mergeRows=xlRowNumber:(xlRowNumber+length(ancg$leafGroups)-1),
