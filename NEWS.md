@@ -20,6 +20,7 @@ Improvements
                      calculationName="Avg Sale Amount", calculationExpression="values$`Total Sales`/values$`Sale Count`")
 * pt$asDataFrame() and pt$asTidyDataFrame() now support additional parameter stringsAsFactors with default value default.stringsAsFactors().
 * Additional options when exporting to HTML, Latex and Excel for controlling how NA, NaN, -Inf and Inf are exported.
+* Additional option to control how row/column headings are formatted when exporting to Excel.
 
 Bug Fixes
 ----------------
