@@ -40,7 +40,7 @@
 #' \describe{
 #'   \item{Documentation}{For more complete explanations and examples please see
 #'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new pivot calculation, specifying the field
+#'   \item{\code{new(...)}}{Create a new pivot filters object, specifying the field
 #'   values documented above.}
 #'
 #'   \item{\code{getFilter(variableName=NULL)}}{Find a filter with the specified
@@ -81,7 +81,6 @@ PivotFilters <- R6::R6Class("PivotFilters",
       }
       private$p_parentPivot <- parentPivot
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$new", "Creating new Pivot Filters...", list(variableName=variableName, values=values))
-
       private$p_filters <- list()
       if(!missing(variableName)&&!is.null(variableName)) {
         self$setFilterValues(variableName=variableName, type=type, values=values, action="replace")
@@ -97,6 +96,8 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilter", "Got filter.")
       return(invisible(filter))
     },
+    # isFilterMatch is used when searching for row/column headings (see the "Finding and Formatting" vignette),
+    # i.e. it compares the criteria of one filter to specified criteria, e.g. to find the PivotDataGroup thats is Country=UK.
     isFilterMatch = function(matchMode="simple", variableNames=NULL, variableValues=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "isFilterMatch", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
@@ -188,10 +189,30 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(matchMode=="simple") return(invisible(FALSE))
       else return(invisible(TRUE))
     },
+    # the action parameter below controls how two filters are combined.  Most common cases:
+    #   1) When working out the rowColFilters for each pivot table cell (action=and when combining row and column heading filters)
+    #   2) When combining the rowColFilters with calculation filters (in order of most typical, action could be any of: and/replace/or)
+    #      "and" would apply additional restrictions, e.g. see the example in the Calculations vignette that has a measure for weekend trains only
+    #      "replace" would apply when doing things like percentage of row total calculations - again, see example in the calculations vignette
+    #      "or" is probably much less likely (can't envisage many situations when that would be needed)
+    #   3) in custom calculation functions (action could be any of and/replace/or)
+    # note the use of action=or is limited.
+    # it does not allow complex conditions to be built up, such as ((A=X) or (B=Y)) and (C=2)
+    # since as the above illustrates, there is complex logic around precedence of "and" vs. "or".
+    # instead, the action=or simply expands the criteria of one filter slightly, e.g.
+    # if filter1 is A=1 and filter2 is A=2, then resultant filter is A=(1 or 2).
+    # if filter1 is A=1 and filter2 is B=2, then resultant filter is still A=1,
+    # since filter1 is effectively A=1 and B=anything, so B=anything or B=2 is effectively B=anything.
+    # you could argue that, since filter2 is also A=anyting, then the resulting filter
+    # should be ALL (i.e. no criteria against A or B), but that would likely have limited practical use.
+    # so, action=or should be thought of as:
+    # 1) if filter1 is VALUES or NONE, then action=or allows additional values.
+    # 2) if filter1 has no restriction on the field that filter2 relates to, then action=or has no effect.
+    # See the and/or/replace methods on PivotFilter for the specifics.
     setFilters = function(filters=NULL, action="replace") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace", "or"))
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilters", "Setting filters...", list(action=action, filters=filters$asString()))
       if(length(filters$filters)>0) {
@@ -205,7 +226,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
     setFilter = function(filter=NULL, action="replace") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace", "or"))
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilters", "Setting filter...", list(action=action, filter=filter$asString()))
       self$setFilterValues(variableName=filter$variableName, type=filter$type, values=filter$values, action=action)
@@ -217,7 +238,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace", "or"))
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilterValues", "Setting filter values...",
                                     list(action=action, variableName=variableName, type=type, values=values))
@@ -226,6 +247,10 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(action=="and") {
         if(variableName %in% variablesNames) { private$p_filters[[variableName]]$and(filter) }
         else { private$p_filters[[variableName]] <- filter }
+      }
+      else if(action=="or") {
+        if(variableName %in% variablesNames) { private$p_filters[[variableName]]$or(filter) }
+        # no "else", since for this variable, this filter is ALL, so ALL or something = ALL.
       }
       else if(action=="replace") {
         private$p_filters[[variableName]] <- filter

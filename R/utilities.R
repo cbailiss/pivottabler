@@ -142,3 +142,4 @@ exportValueAs <- function(rawValue, formattedValue, exportOptions, blankValue=ch
   }
   return(invisible(formattedValue))
 }
+

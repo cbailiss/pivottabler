@@ -153,7 +153,7 @@ PivotCell <- R6::R6Class("PivotCell",
      if(missing(value)) { return(invisible(private$p_calculationFilters)) }
      else {
        if(private$p_parentPivot$argumentCheckMode > 0) {
-         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "calculationFilters", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "calculationFilters", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses=c("PivotFilters", "PivotFilterOverrides"))
        }
        private$p_calculationFilters <- value
        return(invisible())

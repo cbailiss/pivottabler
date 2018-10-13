@@ -44,18 +44,19 @@ checkArgument <- function(argumentCheckMode, checkDataTypes, className, methodNa
   if(argumentCheckMode==1) return(invisible())
   if((argumentCheckMode==4)||((argumentCheckMode==3)&&(checkDataTypes==TRUE))) {
     if((!is.null(argumentValue))&&(!is.null(allowedClasses))&&(length(allowedClasses)>0)) {
-      if(length(intersect(allowedClasses, class(argumentValue))) == 0) {
+      cls <- class(argumentValue)
+      if(length(intersect(allowedClasses, cls)) == 0) {
         if(length(allowedClasses) > 1) {
           stop(paste0(classPrefix, methodName, "():  ", argumentName, " must be one of the following types: (",
                       paste(allowedClasses, sep="", collapse = ", "), ").  Type encountered: ",
-                      paste(class(argumentValue), collapse=", "), "."), call. = FALSE)
+                      paste(cls, collapse=", "), "."), call. = FALSE)
         }
         else {
           stop(paste0(classPrefix, methodName, "():  ", argumentName, " must be of type ", allowedClasses, ".  ",
-                      "Type encountered: ", paste(class(argumentValue), sep="", collapse=", "), "."), call. = FALSE)
+                      "Type encountered: ", paste(cls, sep="", collapse=", "), "."), call. = FALSE)
         }
       }
-      if("list" %in% allowedClasses) {
+      if(("list" %in% allowedClasses)&&("list" %in% cls)) {
         if(!is.null(allowedListElementClasses)) {
           invalidTypes <- list()
           nonAtomicTypes <- list()

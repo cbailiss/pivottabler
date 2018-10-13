@@ -250,9 +250,16 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
              if(is.null(cell$calculationFilters)) { lst <- "No calculation filters" }
              else {
                lst <- list()
-               if(cell$calculationFilters$count > 0) {
-                 for(i in 1:cell$calculationFilters$count){
-                   lst[[length(lst)+1]] <- htmltools::tags$li(cell$calculationFilters$filters[[i]]$asString(seperator=", "))
+               if("PivotFilters" %in% class(cell$calculationFilters)) {
+                 if(cell$calculationFilters$count > 0) {
+                   for(i in 1:cell$calculationFilters$count){
+                     lst[[length(lst)+1]] <- htmltools::tags$li(cell$calculationFilters$filters[[i]]$asString(seperator=", "))
+                   }
+                 }
+               }
+               else if("PivotFilterOverrides" %in% class(cell$calculationFilters)) {
+                 if(length(cell$calculationFilters) > 0) {
+                   lst[[length(lst)+1]] <- htmltools::tags$li(cell$calculationFilters$asString(seperator=", "))
                  }
                }
              }

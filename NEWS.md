@@ -4,8 +4,8 @@ pivottabler 0.4.0.9000
 Breaking Changes
 ----------------
 
-* The default value of the `specifyCellsAsList` argument in the `getCells()` function has been changed to `TRUE`.
-The previous usage of the `getCells()` function is still supported (now you must explicitly specify `specifyCellsAsList=FALSE`).  This change has been planned since v0.3.0 (June 2017) and a warning message has been displayed since then.  See the Finding and Formatting vignette for more details on the `specifyCellsAsList` argument. 
+* The default value of the `specifyCellsAsList` argument in the `pt$getCells()` function has been changed to `TRUE`.
+The previous usage of the `pt$getCells()` function is still supported (now you must explicitly specify `specifyCellsAsList=FALSE`).  This change has been planned since v0.3.0 (June 2017) and a warning message has been displayed since then.  See the Finding and Formatting vignette for more details on the `specifyCellsAsList` argument. 
 
 Improvements
 ----------------
@@ -18,6 +18,7 @@ Improvements
   Example:  pt$defineCalculation(calculationName="Total Sales", summariseExpression="sum(`Sale Amount`)")
   Example:  pt$defineCalculation(type="calculation", basedOn=c("Total Sales", "Sale Count"), format="%.1f", 
                      calculationName="Avg Sale Amount", calculationExpression="values$`Total Sales`/values$`Sale Count`")
+* Added additional options for overriding data used to calculate cell values via the `PivotFilterOverrides` class.  It is now possible to add or remove the filter criteria present in each cell as part of calculation definitions.  This makes calculations such as "% of row/column/grand total" easier.  See the Calculations vignette for details.
 * Row/column heading style settings for data groups can now be declared up front using the `baseStyleName` and `styleDeclarations` arguments in `pt$addColumnDataGroups(...)` and `pt$addRowDataGroups(...)`.  See the Styling vignette for more details.
 * Row/column heading style settings for calculations can now be declared up front using the `headingBaseStyleName` and `headingStyleDeclarations` arguments in `pt$defineCalculation(...)`.  See the Styling vignette for more details.
 * Cell style settings for calculations can now be declared up front using the `cellBaseStyleName` and `cellStyleDeclarations` arguments in `pt$defineCalculation(...)`.  See the Styling vignette for more details.
