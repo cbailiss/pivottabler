@@ -38,10 +38,10 @@ The PivotLatexRenderer class creates a Latex representation of a pivot table.
   for use when a pivot table will not fit into a single A4 page.}
   \item{\code{clearIsRenderedFlags()}}{}
   \item{\code{getTableLatex = function(caption=NULL, label=NULL,
-  boldHeadings=FALSE, italicHeadings=FALSE))}}{Get a Latex representation of
-  the pivot table, specifying the caption to appear above the table, the
-  label to use when referring to the table elsewhere in the document and how
-  headings should be styled.}
+  boldHeadings=FALSE, italicHeadings=FALSE, exportOptions=NULL))}}
+  {Get a Latex representation of the pivot table, specifying the caption to
+  appear above the table, the label to use when referring to the table
+  elsewhere in the document and how headings should be styled.}
 }
 }
 

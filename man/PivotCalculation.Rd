@@ -31,8 +31,10 @@ typically used as base values for other calculations.}
 \item{\code{displayOrder}}{The order the calculations are displayed in the pivot
 table.}
 
-\item{\code{filters}}{Any data filters specific to this calculation.  A PivotFilters
-object.}
+\item{\code{filters}}{Any additional data filters specific to this calculation.
+This can be a PivotFilters object that further restrict the data for the
+calculation of a list of individual PivotFilter objects that provide more
+flexability (and/or/replace).  See the Calculations vignette for details.}
 
 \item{\code{format}}{A character, list or custom function to format the calculation
 result.}

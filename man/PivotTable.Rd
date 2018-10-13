@@ -91,7 +91,8 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   dataName, dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-  totalCaption="Total", preGroupData=TRUE)}}{Generate new column heading data
+  totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
+  styleDeclarations=NULL)}}{Generate new column heading data
   groups based on the distinct values in a data frame or using explicitly
   specified data values.}
   \item{\code{normaliseColumnGroups() }}{Normalise the column heading data
@@ -109,7 +110,8 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   dataName, dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-  totalCaption="Total", preGroupData=TRUE)}}{Generate new row heading data
+  totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
+  styleDeclarations=NULL)}}{Generate new row heading data
   groups based on the distinct values in a data frame or using explicitly
   specified data values.}
   \item{\code{normaliseRowGroups()}}{Normalise the row heading data group
@@ -129,11 +131,13 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   noDataCaption)}}{Define a new calculation.  See the PivotCalculation class
   for details.}
   \item{\code{addColumnCalculationGroups(calculationGroupName="default",
-  atLevel)}}{Add calculation names on columns (if more than one calculation
+  atLevel, baseStyleName=NULL, styleDeclarations=NULL)}}
+  {Add calculation names on columns (if more than one calculation
   is defined and visible, then the calculation names will appear as column
   headings).}
   \item{\code{addRowCalculationGroups(calculationGroupName="default",
-  atLevel)}}{Add calculation names on rows (if more than one calculation is
+  atLevel, baseStyleName=NULL, styleDeclarations=NULL)}}
+  {Add calculation names on rows (if more than one calculation is
   defined and visible, then the calculation names will appear as row
   headings).}
   \item{\code{addStyle(styleName, declarations)}}{Define a new PivotStyle and
@@ -183,21 +187,23 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
   includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
   includeCalculationNames=FALSE, includeRawValue=FALSE,
-  includeTotalInfo=FALSE)}}{Get the HTML representation of the pivot table,
+  includeTotalInfo=FALSE, exportOptions=NULL)}}
+  {Get the HTML representation of the pivot table,
   specifying the CSS style name prefix to use and whether additional debug
   information should be included in the pivot table.}
   \item{\code{saveHtml(filePath, fullPageHTML=TRUE, styleNamePrefix,
   includeHeaderValues=FALSE, includeRCFilters=FALSE,
   includeCalculationFilters=FALSE, includeWorkingData=FALSE,
   includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
-  includeRawValue=FALSE, includeTotalInfo=FALSE)}}{Save the HTML
+  includeRawValue=FALSE, includeTotalInfo=FALSE,
+  exportOptions=NULL)}}{Save the HTML
   representation of the pivot table to a file.}
   \item{\code{renderPivot(width, height, styleNamePrefix,
   includeHeaderValues=FALSE, includeRCFilters=FALSE,
   includeCalculationFilters=FALSE, includeWorkingData=FALSE,
   includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
-  includeRawValue=FALSE, includeTotalInfo=FALSE)}}{Render the pivot table as
-  a htmlwidget.}
+  includeRawValue=FALSE, includeTotalInfo=FALSE, exportOptions=NULL)}}
+  {Render the pivot table as a htmlwidget.}
   \item{\code{getLatex(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL,
   fromColumn=NULL, toColumn=NULL, boldHeadings=FALSE,
   italicHeadings=FALSE)}}{Get the Latex representation of the pivot table,
@@ -205,9 +211,11 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   referring to the table elsewhere in the document and how headings should be
   styled.}
   \item{\code{writeToExcelWorksheet(wb=NULL, wsName=NULL, topRowNumber=NULL,
-  leftMostColumnNumber=NULL, mapStylesFromCSS=TRUE)}}{Output the pivot table
-  into the specified workbook and worksheet at the specified row-column
-  location.}
+  leftMostColumnNumber=NULL, outputHeadingsAs="formattedValueAsText",
+  outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE,
+  exportOptions=NULL)}}
+  {Output the pivot table into the specified workbook and worksheet at the
+  specified row-column location.}
   \item{\code{showBatchInfo()}}{Show a text summary of the batch calculations
   from the last evaluation of this pivot table.}
   \item{\code{asList()}}{Get a list representation of the pivot table.}

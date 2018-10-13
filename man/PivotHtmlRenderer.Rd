@@ -35,7 +35,8 @@ The PivotHtmlRenderer class creates a HTML representation of a pivot table.
   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
   includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
   includeCalculationNames=FALSE, includeRawValue=FALSE,
-  includeTotalInfo=FALSE)}}{Get a HTML representation of the pivot table,
+  includeTotalInfo=FALSE, exportOptions=NULL)}}
+  {Get a HTML representation of the pivot table,
   optionally including additional detail for debugging purposes.}
 }
 }

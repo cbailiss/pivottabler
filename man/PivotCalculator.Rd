@@ -64,17 +64,11 @@ calculating the value of a cell in a pivot table.
   \item{\code{formatValue(value, format)}}{Formats a numerical value using
   either an sprintf string, a list of arguments for the base::format()
   function or using a custom R function.}
-  \item{\code{getFiltersForSingleValue = function(rowColFilters=NULL,
-  calcFilters=NULL)}}{Get the working filters for a single value
-  calculation.}
-  \item{\code{getFiltersForSummariseExpression = function(rowColFilters=NULL,
-  calcFilters=NULL)}}{Get the working filters for a summary calculation.}
-  \item{\code{getFiltersForCalculateFunction = function(rowColFilters=NULL,
-  calcFilters=NULL)}}{Get the working filters for a calculation based on
-  other calculations.}
+  \item{\code{getCombinedFilters = function(rowColFilters=NULL,
+  calcFilters=NULL)}}{Get the working filters for a calculation.}
   \item{\code{getFiltersForNamedCalculation = function(calculationName=NULL,
   calculationGroupName=NULL, rowColFilters=NULL, cell=NULL)}}{Get the working
-  filters for a custom calculation.}
+  filters for a named calculation.}
   \item{\code{setWorkingData = function(cell=NULL)}}{Set the working
   filters for a cell.}
   \item{\code{evaluateSingleValue(dataFrame, workingFilters, valueName,

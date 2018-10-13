@@ -117,3 +117,15 @@ pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE,
                includeCalculationNames=TRUE, includeRawValue=TRUE, includeTotalInfo=TRUE)
 
 
+
+
+
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+pt$rowGroup$childGroups[[2]]$caption <- "CC Trains"
+pt$renderPivot()

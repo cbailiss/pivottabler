@@ -37,8 +37,8 @@ The PivotOpenXlsxRenderer class creates a representation of a pivot table in an 
   as needed.}
   \item{\code{writeToWorksheet(wb=NULL, wsName=NULL, topRowNumber=NULL,
   leftMostColumnNumber=NULL, outputValuesAs="value", applyStyles=TRUE,
-  mapStylesFromCSS=TRUE)}}{Output the pivot table into the specified workbook
-  and worksheet at the specified row-column location.}
+  mapStylesFromCSS=TRUE, exportOptions=NULL)}}{Output the pivot table into
+  the specified workbook and worksheet at the specified row-column location.}
 }
 }
 
