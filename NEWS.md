@@ -18,9 +18,13 @@ Improvements
   Example:  pt$defineCalculation(calculationName="Total Sales", summariseExpression="sum(`Sale Amount`)")
   Example:  pt$defineCalculation(type="calculation", basedOn=c("Total Sales", "Sale Count"), format="%.1f", 
                      calculationName="Avg Sale Amount", calculationExpression="values$`Total Sales`/values$`Sale Count`")
-* pt$asDataFrame() and pt$asTidyDataFrame() now support additional parameter stringsAsFactors with default value default.stringsAsFactors().
-* Additional options when exporting to HTML, Latex and Excel for controlling how NA, NaN, -Inf and Inf are exported.
-* Additional option to control how row/column headings are formatted when exporting to Excel.
+* Row/column heading style settings for data groups can now be declared up front using the `baseStyleName` and `styleDeclarations` arguments in `pt$addColumnDataGroups(...)` and `pt$addRowDataGroups(...)`.  See the Styling vignette for more details.
+* Row/column heading style settings for calculations can now be declared up front using the `headingBaseStyleName` and `headingStyleDeclarations` arguments in `pt$defineCalculation(...)`.  See the Styling vignette for more details.
+* Cell style settings for calculations can now be declared up front using the `cellBaseStyleName` and `cellStyleDeclarations` arguments in `pt$defineCalculation(...)`.  See the Styling vignette for more details.
+* Additional `exportOptions` parameter when exporting to HTML, Latex and Excel for controlling how NA, NaN, -Inf and Inf are exported.
+* Additional parameter `outputHeadingsAs` in `pt$writeToExcelWorksheet(...)` to control how row/column headings are formatted when exporting to Excel.
+* `pt$asDataFrame(...)` and `pt$asTidyDataFrame(...)` now support additional parameter `stringsAsFactors` with default value `default.stringsAsFactors()`.
+* Additional checks to prevent calculations being moved/added after the calculation row/column groups have been generated.
 
 Bug Fixes
 ----------------

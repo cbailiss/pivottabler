@@ -234,12 +234,20 @@ PivotCell <- R6::R6Class("PivotCell",
     p_rowColFilters = NULL,           # an object ref (unique to this cell)
     p_calculationFilters = NULL,      # an object ref (shared across this calculation)
     p_workingData = NULL,             # a list:  element = calculationName, value = a list of two elements (workingFilters & batchName) for the calculation
-    p_evaluationFilters = NULL,       # an obejct ref (unique to this cell)
+    p_evaluationFilters = NULL,       # an object ref (unique to this cell)
     p_rowLeafGroup = NULL,            # an object ref (shared across this row)
     p_columnLeafGroup = NULL,         # an object ref (shared across this column)
     p_rawValue = NULL ,               # a value (unique to this cell)
     p_formattedValue = NULL,          # a value (unique to this cell)
     p_baseStyleName = NULL,           # a string
-    p_style = NULL                    # an object ref (may or may not be shared) to a PivotStyle object
+    p_style = NULL                    # an object ref (may or may not be shared, but better if not) to a PivotStyle object.
+                                      # The code tries to encourage this to be unique (e.g. when generating the headings/cells of a pvt
+                                      # a unique PivotStyle object is generated per heading/cell).  If want the same PivotStyle object to
+                                      # be used across cells, then can either define a named style and set baseStyleName to that, or can use
+                                      # a function after the pivot table has been generated to set the cell$style object for multiple cells
+                                      # to the same PivotStyle object.  A shared object will prevent styles being changed for individual
+                                      # cells, but may offer performance advantages for very large pivot tables.  However, the bottom line
+                                      # is that the proper general way to create a shared style is to create a NAMED pivot style, and not
+                                      # to create a PivotStyle object and start sharing that around.
   )
 )

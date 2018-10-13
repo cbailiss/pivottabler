@@ -52,6 +52,8 @@ PivotStyle <- R6::R6Class("PivotStyle",
      }
      private$p_parentPivot <- parentPivot
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$new", "Creating new Pivot Style...", list())
+     if((!is.null(declarations))&&(length(declarations)!=length(names(declarations))))
+       stop("PivotStyle$initialize(): One or more style declarations are missing a name.", call. = FALSE)
      private$p_declarations <- list()
      private$p_name <- styleName
      if(!is.null(declarations)) {
@@ -109,10 +111,11 @@ PivotStyle <- R6::R6Class("PivotStyle",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$asCSSRule", "Getting CSS rule...")
      cssRule <- NULL
+     if(is.null(private$p_declarations)||(length(private$p_declarations)==0)) stop("PivotStyle$asCSSRule(): Encountered an empty style declaration.", call. = FALSE)
      if(!is.null(selector)) cssRule <- paste0(selector, " {")
      nms <- names(private$p_declarations)
      for(i in 1:length(private$p_declarations)) {
-       if(length(nms[i])==0) stop("PivotStyle$asCSSRule(): Encountered a style declaration without a name.", call. = FALSE)
+       if(is.null(nms[i])||is.na(nms[i])||(nchar(nms[i])==0)) stop("PivotStyle$asCSSRule(): Encountered a style declaration without a name.", call. = FALSE)
        if(startsWith(tolower(nms[i]), "xl-")) next # exclude Excel declarations from CSS/HTML output
        cssRule <- paste0(cssRule, nms[i], ": ", private$p_declarations[[i]], "; ")
      }

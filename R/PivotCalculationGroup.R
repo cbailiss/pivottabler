@@ -66,6 +66,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$isExistingCalculation", "Checked calculation exists.")
       return(invisible(calcExists))
     },
+    item = function(index) { return(invisible(private$p_calculations[[index]])) },
     getCalculation = function(calculationName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "getCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -82,7 +83,8 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
     defineCalculation = function(calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
                          filters=NULL, format=NULL, dataName=NULL, type="summary", executionOrder=NULL,
                          valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
-                         noDataValue=NULL, noDataCaption=NULL) {
+                         noDataValue=NULL, noDataCaption=NULL,
+                         headingBaseStyleName=NULL, headingStyleDeclarations=NULL, cellBaseStyleName=NULL, cellStyleDeclarations=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -99,6 +101,10 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", basedOn, missing(basedOn), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", headingBaseStyleName, missing(headingBaseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", headingStyleDeclarations, missing(headingStyleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", cellBaseStyleName, missing(cellBaseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", cellStyleDeclarations, missing(cellStyleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$defineCalculation", "Defining calculation...")
       if(calculationName %in% names(private$p_calculations)) {
@@ -110,7 +116,9 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
                                           visible=visible, displayOrder=displayOrder, filters=filters, format=format,
                                           dataName=dataName, type=type, valueName=valueName, summariseExpression=summariseExpression,
                                           calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn,
-                                          noDataValue=noDataValue, noDataCaption=noDataCaption)
+                                          noDataValue=noDataValue, noDataCaption=noDataCaption,
+                                          headingBaseStyleName=headingBaseStyleName, headingStyleDeclarations=headingStyleDeclarations,
+                                          cellBaseStyleName=cellBaseStyleName, cellStyleDeclarations=cellStyleDeclarations)
       private$p_calculations[[calculationName]] <- calculation
       if(is.null(private$p_defaultCalculation)) private$p_defaultCalculation <- calculationName
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$defineCalculation", "Defined calculation.")

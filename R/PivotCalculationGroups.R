@@ -55,6 +55,7 @@ PivotCalculationGroups <- R6::R6Class("PivotCalculationGroups",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroups$isExistingCalculationGroup", "Checked calculation group exists.")
       return(invisible(calcGroupExists))
     },
+    item = function(index) { return(invisible(private$p_groups[[index]])) },
     getCalculationGroup = function(calculationGroupName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroups", "getCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
