@@ -1071,13 +1071,21 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    isLevelSubTotal = function(value) { return(invisible(private$p_isLevelSubTotal)) },
    isLevelTotal = function(value) { return(invisible(private$p_isLevelTotal)) },
    caption = function(value) {
-     if(is.null(private$p_caption)) {
-       if((private$p_isTotal)&&(!is.null(private$p_parentGroup))&&
-          (length(private$p_parentGroup$childGroups)<2)) return(invisible(""))
-       if(is.null(private$p_filters)) return(invisible(""))
-       else return(invisible(private$p_filters$asString(includeVariableName=FALSE)))
+     if(missing(value)) {
+       if(is.null(private$p_caption)) {
+         if((private$p_isTotal)&&(!is.null(private$p_parentGroup))&&
+            (length(private$p_parentGroup$childGroups)<2)) return(invisible(""))
+         if(is.null(private$p_filters)) return(invisible(""))
+         else return(invisible(private$p_filters$asString(includeVariableName=FALSE)))
+       }
+       else return(invisible(private$p_caption))
      }
-     else return(invisible(private$p_caption))
+     else {
+       if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "caption", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+       }
+       private$p_caption <- value
+     }
    },
    sortValue = function(value) { return(invisible(private$p_sortValue)) },
    rowColumnNumber = function(value) {
