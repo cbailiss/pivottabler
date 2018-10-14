@@ -63,7 +63,7 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
     initialize = function(parentPivot=NULL, filter=NULL, variableName=NULL, type="ALL", values=NULL, action="and") {
       if(parentPivot$argumentCheckMode > 0) {
         checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-        checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", filter, missing(filter), allowMissing=TRUE, allowNull=FALSE, allowedClasses="PivotFilter")
+        checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", filter, missing(filter), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilter")
         checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
         checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
@@ -79,7 +79,7 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
     },
     add = function(filter=NULL, variableName=NULL, type="ALL", values=NULL, action="and") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
-        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "add", filter, missing(filter), allowMissing=TRUE, allowNull=FALSE, allowedClasses="PivotFilter")
+        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "add", filter, missing(filter), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilter")
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "add", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "add", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "add", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)

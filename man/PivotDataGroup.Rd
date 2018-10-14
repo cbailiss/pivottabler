@@ -108,15 +108,15 @@ group (used as part of the rendering routines).}
   at a specific level in the data group hierarchy.}
   \item{\code{addChildGroup(variableName, values, caption, isTotal=FALSE,
   isLevelSubTotal=FALSE, isLevelTotal=FALSE, calculationGroupName=NULL,
-  calculationName=NULL, baseStyleName=NULL, styleDeclarations=NULL)}}
-  {Add a new data group as the child of the current data group.}
+  calculationName=NULL, baseStyleName=NULL, styleDeclarations=NULL)}}{
+  Add a new data group as the child of the current data group.}
   \item{\code{addDataGroups(variableName, atLevel, fromData=TRUE,  dataName,
   dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-  totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL)}}
-  {Generate new data groups based on the distinct values in a data frame or
-  using explicitly specified data values.}
+  totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
+  styleDeclarations=NULL)}}{Generate new data groups based on the distinct
+  values in a data frame or using explicitly specified data values.}
   \item{\code{sortDataGroups(levelNumber=1, orderBy="calculation",
   sortOrder="desc", calculationGroupName="default", calculationName)}}{Sort
   data groups either by the data group data value, caption or based on

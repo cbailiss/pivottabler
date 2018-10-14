@@ -117,13 +117,13 @@
 #'   noDataCaption)}}{Define a new calculation.  See the PivotCalculation class
 #'   for details.}
 #'   \item{\code{addColumnCalculationGroups(calculationGroupName="default",
-#'   atLevel, baseStyleName=NULL, styleDeclarations=NULL)}}
-#'   {Add calculation names on columns (if more than one calculation
+#'   atLevel, baseStyleName=NULL, styleDeclarations=NULL)}}{Add
+#'   calculation names on columns (if more than one calculation
 #'   is defined and visible, then the calculation names will appear as column
 #'   headings).}
 #'   \item{\code{addRowCalculationGroups(calculationGroupName="default",
-#'   atLevel, baseStyleName=NULL, styleDeclarations=NULL)}}
-#'   {Add calculation names on rows (if more than one calculation is
+#'   atLevel, baseStyleName=NULL, styleDeclarations=NULL)}}{Add
+#'   calculation names on rows (if more than one calculation is
 #'   defined and visible, then the calculation names will appear as row
 #'   headings).}
 #'   \item{\code{addStyle(styleName, declarations)}}{Define a new PivotStyle and
@@ -173,8 +173,8 @@
 #'   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
 #'   includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
 #'   includeCalculationNames=FALSE, includeRawValue=FALSE,
-#'   includeTotalInfo=FALSE, exportOptions=NULL)}}
-#'   {Get the HTML representation of the pivot table,
+#'   includeTotalInfo=FALSE, exportOptions=NULL)}}{Get
+#'   the HTML representation of the pivot table,
 #'   specifying the CSS style name prefix to use and whether additional debug
 #'   information should be included in the pivot table.}
 #'   \item{\code{saveHtml(filePath, fullPageHTML=TRUE, styleNamePrefix,
@@ -188,8 +188,8 @@
 #'   includeHeaderValues=FALSE, includeRCFilters=FALSE,
 #'   includeCalculationFilters=FALSE, includeWorkingData=FALSE,
 #'   includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
-#'   includeRawValue=FALSE, includeTotalInfo=FALSE, exportOptions=NULL)}}
-#'   {Render the pivot table as a htmlwidget.}
+#'   includeRawValue=FALSE, includeTotalInfo=FALSE, exportOptions=NULL)}}{
+#'   Render the pivot table as a htmlwidget.}
 #'   \item{\code{getLatex(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL,
 #'   fromColumn=NULL, toColumn=NULL, boldHeadings=FALSE,
 #'   italicHeadings=FALSE)}}{Get the Latex representation of the pivot table,
@@ -199,8 +199,8 @@
 #'   \item{\code{writeToExcelWorksheet(wb=NULL, wsName=NULL, topRowNumber=NULL,
 #'   leftMostColumnNumber=NULL, outputHeadingsAs="formattedValueAsText",
 #'   outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE,
-#'   exportOptions=NULL)}}
-#'   {Output the pivot table into the specified workbook and worksheet at the
+#'   exportOptions=NULL)}}{Output the
+#'   pivot table into the specified workbook and worksheet at the
 #'   specified row-column location.}
 #'   \item{\code{showBatchInfo()}}{Show a text summary of the batch calculations
 #'   from the last evaluation of this pivot table.}
