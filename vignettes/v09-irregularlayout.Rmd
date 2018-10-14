@@ -289,3 +289,4 @@ The full set of vignettes is:
 10. [Performance](v10-performance.html)
 11. [Shiny](v11-shiny.html)
 12. [Excel Export](v12-excelexport.html)
+A1. [Appendix](vA1-appendix.html)

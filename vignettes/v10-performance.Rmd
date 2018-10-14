@@ -742,7 +742,7 @@ To achieve optimum performance:
 * Don't create large pivot tables needlessly.
     - Pivot tables having 10,000 cells will take at least one minute to create, even in `batch` evaluation mode.
     - Pivot tables having more than 100,000 cells will take a relatively long time to create (more than ten minutes), even in `batch` evaluation mode.
-* Use the data.table processing library with `pivottabler` for data frames with more than ten million rows (but only with the `batch` evaluation mode).
+* Use the data.table processing library with `pivottabler` for data frames with more than ten million rows (but only with the `batch` evaluation mode), though take note of the warning above regarding the odd behaviour of data.table in some circumstances.
 * Reduce the argument check mode for large pivot tables.
 
 ## Further Reading
@@ -761,3 +761,4 @@ The full set of vignettes is:
 10. [Performance](v10-performance.html)
 11. [Shiny](v11-shiny.html)
 12. [Excel Export](v12-excelexport.html)
+A1. [Appendix](vA1-appendix.html)

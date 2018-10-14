@@ -94,7 +94,7 @@ pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev."
 pt$renderPivot()
 ```
 
-The data.table package can also be used - see the [Performance](v10-performance.html) for details.  Note that the "count" summarise expression is specified as ".N" when using data.table, not as "n()".
+The data.table package can also be used - see the [Performance](v10-performance.html) for details.  Note that the "count" summarise expression is specified as ".N" when using data.table, not as "n()".  Also, when using data.table, be aware of some strange behaviour that leads to incorrect values in the pivot table when aggregating over columns that are also used in either row/column headings.  Again, see the [Performance](v10-performance.html) for details.
 
 ### Displaying calculations on rows
 
@@ -573,9 +573,9 @@ pt$renderPivot()
 
 The `pivottabler` package supports two different evaluation modes for computing cell values: `batch` and `sequential`.  The `batch` evaluation mode offers much higher performance, especially for large pivot tables.
 
-The `pivottabler` package is also able to use two different packages when carrying out summarising cell calculations (method 1 calculations as described above in this vignette): dplyr and data.table.  data.table offers slightly higher performance when used with large data frames (over ten million rows) with `batch` evaluation mode.
+The `pivottabler` package is also able to use two different packages when carrying out summarising cell calculations (method 1 calculations as described above in this vignette): dplyr and data.table.  data.table offers slightly higher performance when used with large data frames (over ten million rows) with `batch` evaluation mode, though has some quirks/odd behaviours when aggregating over columns that are also used in the row/column headings of the pivot table.
 
-Please see the [Performance](v10-performance.html) for more information about `pivottabler` performance.
+Please see the [Performance](v10-performance.html) for more information about `pivottabler` performance and data.table.
 
 ## Further Reading
 
@@ -593,3 +593,4 @@ The full set of vignettes is:
 10. [Performance](v10-performance.html)
 11. [Shiny](v11-shiny.html)
 12. [Excel Export](v12-excelexport.html)
+A1. [Appendix](vA1-appendix.html)

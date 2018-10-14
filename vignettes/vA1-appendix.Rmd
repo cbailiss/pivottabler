@@ -1,0 +1,49 @@
+---
+title: "A1. Appendix"
+author: "Chris Bailiss"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A1. Appendix}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## In This Vignette
+
+* What is Latex?
+* etc
+* Further Reading
+
+## What is Latex?
+
+Latex is used to write documents.  Latex documents are written in plain-text that contains tags for defining the structure and formatting of the document, i.e. a different approach compared to typical WYSIWYG document editors like Microsoft Word.  Latex is widely used in academia for the publishing of scientific papers.
+
+A trivial example of a Latex document is:
+
+```{r, message=FALSE, warning=FALSE, comment="", echo=FALSE}
+s <- "\\documentclass{article}\n\\begin{document}\nHello World!\n\\end{document}"
+cat(s)
+```
+
+For more information see [Wikipedia](https://en.wikipedia.org/wiki/LaTeX) or [Latex-Tutorial.com](https://www.latex-tutorial.com/tutorials/).
+
+A helpful reference for understanding the structure of Latex pivot tables can be found on [wikibooks](https://en.wikibooks.org/wiki/LaTeX/Tables).
+
+## Further Reading
+
+The full set of vignettes is:
+
+1. [Introduction](v01-introduction.html)
+2. [Data Groups](v02-datagroups.html)
+3. [Calculations](v03-calculations.html)
+4. [Outputs](v04-outputs.html)
+5. [Latex Output](v05-latexoutput.html)
+6. [Styling](v06-styling.html)
+7. [Finding and Formatting](v07-findingandformatting.html)
+8. [Cell Context](v08-cellcontext.html)
+9. [Irregular Layout](v09-irregularlayout.html)
+10. [Performance](v10-performance.html)
+11. [Shiny](v11-shiny.html)
+12. [Excel Export](v12-excelexport.html)
+A1. [Appendix](vA1-appendix.html)

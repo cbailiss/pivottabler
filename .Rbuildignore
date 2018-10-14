@@ -16,3 +16,4 @@
 ^example3\.png$
 ^example4\.png$
 ^ExcelExport\.xlsx$
+^ExcelManualRegressionTest\.R$

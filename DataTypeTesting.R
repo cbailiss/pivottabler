@@ -16,10 +16,13 @@ dtdata <- data.frame(SaleID=1:5, SaleID2=as.character(1:5), Colour=c("Red", "Red
 
 library(openxlsx)
 
-testXLSX <- function(pt) {
+testXLSX <- function(pt, asRawValue=FALSE) {
   wb <- createWorkbook(creator = Sys.getenv("USERNAME"))
   addWorksheet(wb, "Data")
-  pt$writeToExcelWorksheet(wb=wb, wsName="Data",
+  if(asRawValue==TRUE) outputAs<-"rawValue"
+  else outputAs<-"formattedValueAsText"
+  pt$writeToExcelWorksheet(wb=wb, wsName="Data", outputHeadingsAs=outputAs,
+                           outputValuesAs=outputAs,
                            topRowNumber=1, leftMostColumnNumber=1,
                            applyStyles=TRUE, mapStylesFromCSS=TRUE)
   saveWorkbook(wb, file="C:\\Users\\Chris\\Desktop\\test.xlsx", overwrite = TRUE)
@@ -30,13 +33,14 @@ testXLSX <- function(pt) {
 # integer
 
 library(pivottabler)
-pt <- PivotTable$new(processingLibrary="data.table", evaluationMode="batch")
+pt <- PivotTable$new()#processingLibrary="data.table", evaluationMode="batch")
 pt$addData(dtdata)
 pt$addColumnDataGroups("SaleID")
 pt$addRowDataGroups("SaleQuantity")
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt)
 
 # numeric
 
@@ -48,6 +52,7 @@ pt$addRowDataGroups("SaleAmount")
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt)
 
 # logical
 
@@ -59,6 +64,7 @@ pt$addRowDataGroups("IsNewCustomer")
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,FALSE)
 
 # Date
 
@@ -66,10 +72,11 @@ library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(dtdata)
 pt$addColumnDataGroups("SaleID")
-pt$addRowDataGroups("SaleDate")
+pt$addRowDataGroups("SaleDate", styleDeclarations=list("xl-value-format"="yyyy-mm-dd hh:mm"))
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 # POSIXct
 
@@ -77,10 +84,11 @@ library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(dtdata)
 pt$addColumnDataGroups("SaleID")
-pt$addRowDataGroups("SaleDT")
+pt$addRowDataGroups("SaleDT", styleDeclarations=list("xl-value-format"="dd mmm yyyy hh:mm"))
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 # ROW/COLUMN DATA TYPE FORMAT TESTS:  SPRINTF()
 
@@ -98,6 +106,7 @@ pt$addRowDataGroups("SaleQuantity", dataFormat="%i")
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 # numeric
 
@@ -105,10 +114,11 @@ library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(dtdata)
 pt$addColumnDataGroups("SaleID")
-pt$addRowDataGroups("SaleAmount", dataFormat="%.1f")
+pt$addRowDataGroups("SaleAmount", dataFormat="%.1f", styleDeclarations=list("xl-value-format"="##0.0"))
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 # logical
 
@@ -120,6 +130,7 @@ pt$addRowDataGroups("IsNewCustomer", dataFormat="%i")
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 # ROW/COLUMN DATA TYPE FORMAT TESTS:  FORMAT()
 
@@ -136,6 +147,7 @@ pt$addRowDataGroups("SaleAmount", dataFormat=list(digits=4, nsmall=2))
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 # logical
 
@@ -147,6 +159,7 @@ pt$addRowDataGroups("IsNewCustomer", dataFormat=c("Existing Customer", "New Cust
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,FALSE)
 
 # Date
 
@@ -154,10 +167,11 @@ library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(dtdata)
 pt$addColumnDataGroups("SaleID")
-pt$addRowDataGroups("SaleDate", dataFormat="%d %b %Y")
+pt$addRowDataGroups("SaleDate", dataFormat="%d %b %Y", styleDeclarations=list("xl-value-format"="dd mmm yy"))
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 # POSIXct
 
@@ -169,6 +183,7 @@ pt$addRowDataGroups("SaleDT", dataFormat="%d %b %Y %H:%M:%S")
 pt$defineCalculation(calculationName="VolumeSold", summariseExpression="sum(SaleQuantity, na.rm=TRUE)", caption="Volume Sold")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 
 
@@ -187,6 +202,7 @@ pt$defineCalculation(type="calculation", basedOn=c("VolumeSold", "TotalSales"), 
                      calculationName="AvgSales", calculationExpression="values$TotalSales/values$VolumeSold", caption="Avg")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 # numeric
 
@@ -201,6 +217,7 @@ pt$defineCalculation(type="calculation", basedOn=c("SaleCount", "TotalSales"), f
                      calculationName="AvgSales", calculationExpression="values$TotalSales/values$SaleCount", caption="Avg")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 # character
 
@@ -214,6 +231,7 @@ pt$defineCalculation(calculationName="FirstModel", summariseExpression="min(Sale
 pt$defineCalculation(calculationName="LastModel", summariseExpression="max(SaleModel, na.rm=TRUE)", caption="Last Model")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 # logical
 
@@ -227,6 +245,7 @@ pt$defineCalculation(calculationName="FirstIsNewCustomer", summariseExpression="
 pt$defineCalculation(calculationName="LastIsNewCustomer", summariseExpression="as.logical(max(IsNewCustomer, na.rm=TRUE))", caption="Last NC")
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,FALSE)
 
 # date
 
@@ -237,9 +256,10 @@ pt$addColumnDataGroups("Colour")
 pt$addRowDataGroups("SaleItem")
 pt$defineCalculation(calculationName="SaleCount", summariseExpression="n()", caption="Sale Count")
 pt$defineCalculation(calculationName="FirstSale", summariseExpression="min(SaleDate, na.rm=TRUE)", caption="First Sale")
-pt$defineCalculation(calculationName="LastSale", summariseExpression="max(SaleDate, na.rm=TRUE)", caption="Last Sale")
+pt$defineCalculation(calculationName="LastSale", summariseExpression="max(SaleDate, na.rm=TRUE)", caption="Last Sale", cellStyleDeclarations=list("xl-value-format"="dd mmm yy"))
 pt$evaluatePivot()
 pt$renderPivot()
+testXLSX(pt,TRUE)
 
 # POSIXct
 
