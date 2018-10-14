@@ -43,9 +43,10 @@
 #'   \item{\code{new(...)}}{Create a new pivot filters object, specifying the field
 #'   values documented above.}
 #'
+#'   \item{\code{clearFilters()}}{Remove all filters.}
 #'   \item{\code{getFilter(variableName=NULL)}}{Find a filter with the specified
 #'   variable name.}
-#'   \item{\code{isFilterMatch(variableNames=NULL, variableValues=NULL)}}{Tests
+#'   \item{\code{isFilterMatch(variableNames=NULL, variableValues=NULL)}}{Test
 #'   whether these filters match the specified criteria.}
 #'   \item{\code{setFilters(filters=NULL, action="replace")}}{Update the value of this
 #'   PivotFilters object with the filters from the specified PivotFilters
@@ -87,9 +88,47 @@ PivotFilters <- R6::R6Class("PivotFilters",
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$new", "Created new Pivot Filters.")
     },
+    clearFilters = function() {
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$clearFilters", "Clearing filters...")
+      private$p_filters <- list()
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$clearFilters", "Cleared filters.")
+      return(invisible(filter))
+    },
+    keepOnlyFiltersFor = function(variableNames=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "keepOnlyFiltersFor", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$keepOnlyFiltersFor", "Keeping filters only for...", list(variableNames=variableNames))
+      newlst <- list()
+      if((!is.null(variableNames))&&(length(private$p_filters)>0)) {
+        nms <- names(private$p_filters)
+        for(i in 1:length(private$p_filters)) {
+          if(nms[i] %in% variableNames) newlst[[length(newlst)+1]] <- private$p_filters[[i]]
+        }
+      }
+      private$p_filters <- newlst
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$keepOnlyFiltersFor", "Kept filters only for.")
+      return(invisible(filter))
+    },
+    removeFiltersFor = function(variableNames=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "removeFiltersFor", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$removeFiltersFor", "Removing filters for...", list(variableNames=variableNames))
+      newlst <- list()
+      if((!is.null(variableNames))&&(length(private$p_filters)>0)) {
+        nms <- names(private$p_filters)
+        for(i in 1:length(private$p_filters)) {
+          if(!(nms[i] %in% variableNames)) newlst[[length(newlst)+1]] <- private$p_filters[[i]]
+        }
+      }
+      private$p_filters <- newlst
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$removeFiltersFor", "Removed filters for.")
+      return(invisible(filter))
+    },
     getFilter = function(variableName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "getFilter", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilter", "Getting filter...", list(variableName=variableName))
       filter <- private$p_filters[[variableName]]

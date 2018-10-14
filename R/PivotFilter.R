@@ -230,7 +230,15 @@ PivotFilter <- R6::R6Class("PivotFilter",
     variableName = function(value) { return(invisible(private$p_variableName)) },
     safeVariableName = function(value) { return(invisible(private$p_safeVariableName)) },
     type = function(value) { return(invisible(private$p_type)) },
-    values = function(value) { return(invisible(private$p_values)) }
+    values = function(newValues) {
+      if(missing(newValues)) return(invisible(private$p_values))
+      else {
+        if(private$p_parentPivot$argumentCheckMode > 0) {
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "values", newValues, missing(newValues), allowMissing=FALSE, allowNull=FALSE, mustBeAtomic=TRUE)
+        }
+        private$p_values <- newValues
+      }
+    }
   ),
   private = list(
     p_parentPivot = NULL,
