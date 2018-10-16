@@ -258,7 +258,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$formatValue", "Formatting value...")
      if(is.null(value)) return(invisible(NULL))
-     if(is.null(format)) return(as.character(value))
+     if(is.null(format)) return(base::as.character(value))
      clsv <- class(value)
      if(("numeric" %in% clsv)||("integer" %in% clsv)) {
        clsf <- class(format)
@@ -269,7 +269,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          value <- do.call(base::format, args)
        }
        else if ("function" %in% class(format)) value <- format(value)
-       else value <- as.character(value)
+       else value <- base::as.character(value)
      }
      else if("logical" %in% clsv) {
        clsf <- class(format)
@@ -292,14 +292,17 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          value <- do.call(base::format, args)
        }
        else if ("function" %in% class(format)) value <- format(value)
-       else value <- as.character(value)
+       else value <- base::as.character(value)
      }
      else if(("Date" %in% clsv)||("POSIXct" %in% clsv)||("POSIXlt" %in% clsv)) {
        clsf <- class(format)
        if ("character" %in% clsf) {
-         args <- list(format)
-         args$x <- value
-         value <- do.call(base::format, args)
+         if (format %in% c("%d","%i","%o","%x","%X")) value <- sprintf(format, value)
+         else {
+           args <- list(format)
+           args$x <- value
+           value <- do.call(base::format, args)
+         }
        }
        else if ("list" %in% clsf) {
          args <- format
@@ -307,9 +310,9 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          value <- do.call(base::format, args)
        }
        else if ("function" %in% class(format)) value <- format(value)
-       else value <- as.character(value)
+       else value <- base::as.character(value)
      }
-     else value <- as.character(value)
+     else value <- base::as.character(value)
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$formatValue", "Formated value.")
      return(invisible(value))
    },
