@@ -1,34 +1,168 @@
 ---
-title: "A1. Appendix"
+title: "A1. Appendix:  Details"
 author: "Chris Bailiss"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{A1. Appendix}
+  %\VignetteIndexEntry{A1. Appendix:  Details}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ## In This Vignette
 
-* What is Latex?
-* etc
-* Further Reading
+* Introduction
+* Data Type Support
+* Formatting Options
+* Handling Illegal Variable Names
+* Output of NA, NaN, -Inf and Inf
+* Styling Reference
 
-## What is Latex?
+## Introduction
 
-Latex is used to write documents.  Latex documents are written in plain-text that contains tags for defining the structure and formatting of the document, i.e. a different approach compared to typical WYSIWYG document editors like Microsoft Word.  Latex is widely used in academia for the publishing of scientific papers.
+This appendix contains information that doesn't fit in the other vignettes - typically miscellaneous topics or more detail on existing topics that would clutter the other vignettes.
 
-A trivial example of a Latex document is:
+## Data Type Support
 
-```{r, message=FALSE, warning=FALSE, comment="", echo=FALSE}
-s <- "\\documentclass{article}\n\\begin{document}\nHello World!\n\\end{document}"
-cat(s)
+`pivottabler` supports any of the following data types for use either on row/column headings or as part of calculations in the cells of the pivot table:
+
+* integer
+* numeric
+* logical
+* Date
+* POSIXct
+* character
+
+The most common calculations based on logical, character, Date and POSIXct data types are min/max.
+
+## Formatting Options
+
+A general introduction to formatting row/column headings can be found in the [Data Groups](v02-datagroups.html) vignette.  A general introduction to formatting the results of calculations can be found in the [Calculations](v03-calculations.html) vignette.
+
+Four general methods are supported for formatting, depending on what is specified for the `format` parameter (for calculations) or `dataFormat` parameter (for data groups):
+
+* If `format` is a character value, then pivottabler invokes `base::sprintf()` with the specified format.
+* If `format` is a list, then pivottabler invokes `base::format()`, where the elements in the list become arguments in the function call.
+* If `format` is an R function, then this is invoked for each value.
+* If `format` is not specified, then `base::as.character()` is invoked to provide a default formatted value.
+
+There are some small variations to the above, depending on the data type of the value that is being formatted:
+
+| Value Type | character  format                           | list  format  | 
+|:-----------|:--------------------------------------------|:--------------|
+| integer    | `sprintf()`                                 | `format()`    |
+| numerical  | `sprintf()`                                 | `format()`    |
+| logical    | `sprintf()` or custom - see note below.     | N/A           |
+| Date       | `sprintf()` or `format()` - see note below. | `format()`    |
+| POSIXct    | `sprintf()` or `format()` - see note below. | `format()`    |
+| character  | N/A                                         | N/A           |
+
+Formatting `logical` values when `format` is a character value:
+
+* If `format` is a character vector of length 1, then `sprintf()` is invoked to format the value.
+* If `format` is a character vector of length 2, then `format[1]` is used as the formatted value for `FALSE`, `format[2]` is used as the formatted value for `TRUE` and the character value `"NA"` is used as the formatted value for `NA`.  
+* If `format` is a character vector of length 3, then `format[1]` is used as the formatted value for `FALSE`, `format[2]` is used as the formatted value for `TRUE` and `format[3]` is used as the formatted value for `NA`.
+
+Formatting `Date` or `POSIXct` values when `format` is a character value:
+
+* If `format` is one of %d, %i, %o, %x or %X then `base::sprintf()` is used to format the value.
+* Otherwise `base::format()` is used.
+
+Some examples of specifying formatting:
+
+| Value Type | character format                          | list format                                     | 
+|:-----------|:------------------------------------------|:------------------------------------------------|
+| integer    | `"%i"` e.g. 12                            | `list(digits=4, nsmall=2)` e.g. 123.00          |
+| numerical  | `"%.1f"` e.g. 12.3                        | `list(digits=4, nsmall=2)` e.g. 12.35           |
+| logical    | `c("No", "Yes", "N/A")` e.g. Yes          | N/A                                             |
+| Date       | `"%d %b %Y"` e.g. 04 Mar 2012             | `list("%d %b %Y")` e.g. 04 Mar 2012             |
+| POSIXct    | `"%d %b %Y %H:%M"` e.g. 04 Mar 2012 17:15 | `list("%d %b %Y %H:%M")` e.g. 04 Mar 2012 17:15 |
+| character  | N/A                                       | N/A                                             |
+
+## Handling Illegal Variable Names
+
+`pivottabler` supports working with illegal data frame column names and illegal calculation names (e.g. including spaces or symbols such as dash, plus, dollar, etc).  
+
+Illegal names must be wrapped in back-ticks in summarise expressions and calculation expressions.
+
+```{r, message=FALSE, warning=FALSE, comment="", echo=TRUE, eval=FALSE}
+...
+pt$addColumnDataGroups("Sale Item")
+pt$defineCalculation(calculationName="Total Sales",
+                     summariseExpression="sum(`Sale Amount`)")
+pt$defineCalculation(type="calculation", basedOn=c("Total Sales", "Sale Count"),  
+                     format="%.1f", calculationName="Avg Sale Amount", 
+                     calculationExpression="values$`Total Sales`/values$`Sale Count`")
+...
 ```
 
-For more information see [Wikipedia](https://en.wikipedia.org/wiki/LaTeX) or [Latex-Tutorial.com](https://www.latex-tutorial.com/tutorials/).
+## Output of NA, NaN, -Inf and Inf
 
-A helpful reference for understanding the structure of Latex pivot tables can be found on [wikibooks](https://en.wikibooks.org/wiki/LaTeX/Tables).
+The `pt$getHtml(...)`, `pt$saveHtml(...)`, `pt$renderPivot(...)`, `pt$getLatex(...)` and `pt$writeToExcelWorksheet(...)` functions all support an `exportOptions` list parameter that provides control over how NA, NaN, -Inf and Inf values in R are outout.  
+
+`skipNegInf=TRUE, skipPosInf=TRUE, skipNA=TRUE, skipNaN=TRUE` specify that these values are exported as blanks.
+
+`exportNegInfAs="-Infinity",exportPosInfAs="Infinity",exportNAAs="No Data",exportNaNAs="Not a Number"` specify alternative values to output.
+
+Example of exporting a pivot table using the default values and replaced values:
+
+```{r, message=FALSE, warning=FALSE, comment="", echo=TRUE}
+someData <- data.frame(Colour=c("Red", "Yellow", "Green", "Blue", "White", "Black"),
+                       SomeNumber=c(1, 2, NA, NaN, -Inf, Inf))
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(someData)
+pt$addRowDataGroups("Colour")
+pt$defineCalculation(calculationName="Total", summariseExpression="sum(SomeNumber)")
+pt$evaluatePivot()
+pt$renderPivot()
+pt$renderPivot(exportOptions=list(skipNegInf=TRUE, skipPosInf=TRUE, skipNA=TRUE, skipNaN=TRUE))
+pt$renderPivot(exportOptions=list(exportNegInfAs="-Infinity", exportPosInfAs="Infinity",
+                                  exportNAAs="Nothing", exportNaNAs="Not a Number"))
+```
+
+## Styling Reference
+
+For an overview of styling pivot tables see the [Styling](v06-styling.html) vignette.
+
+The following table details the styling properties that are supported.
+
+| CSS Property       | XL Property         | XL Example              | Notes                                      | 
+|:-------------------|:--------------------|:------------------------|:-------------------------------------------|
+| font-family        | xl-font-name        | Arial                   | Only the first CSS font is used in Excel.  |
+| font-size          | xl-font-size        | 12                      | In Points (4-72).  See below for CSS units.|
+| font-weight        | xl-bold             | normal or bold          | XL bold is CSS font-weight >= 600.         |
+| font-style         | xl-italic           | normal or italic        | italic and oblique map to italic.          |
+| text-decoration    | xl-underline        | normal or underline     |                                            |
+| text-decoration    | xl-strikethrough    | normal or strikethrough |                                            |
+| background-color   | xl-fill-color       | #FF0000                 | See below for supported CSS colours.       |
+| color              | xl-text-color       | #00FF00                 | See below for supported CSS colours.       |
+| text-align         | xl-h-align          | left or center or right |                                            |
+| vertical-align     | xl-v-align          | top or middle or bottom |                                            |
+| white-space        | xl-wrap-text        | normal or wrap          |                                            |
+|                    | xl-text-rotation    | 90                      | 0 to 359, or 255 for vertical text.        |
+|                    | xl-indent           | 20                      | 0 to 250.                                  |
+| border             | xl-border           | thin black              | See below for supported CSS border values. |
+| border-left        | xl-border-left      | thin black              | See below for supported CSS border values. |
+| border-right       | xl-border-right     | thin black              | See below for supported CSS border values. |
+| border-top         | xl-border-top       | thin black              | See below for supported CSS border values. |
+| border-bottom      | xl-border-bottom    | thin black              | See below for supported CSS border values. |
+|                    | xl-min-column-width | 50                      | 0 to 255.                                  |
+|                    | xl-min-row-height   | 45                      | 0 to 400.                                  |
+|                    | xl-value-format     | #,###.00                | See notes below for full details.          |
+
+Notes:
+
+* For CSS font-size, only the following units are supported:  in, cm, mm, pt, pc, px, em, %.
+* For CSS background-color, CSS color and border colours, only hex colours, named colours, RGB() and RGBA() values are supported.  HLS() and HLSA() values are not supported.  Examples of supported CSS values:  #0080FF, rgb(0, 128, 255), rgba(0, 128, 255, 0.5), red, black, darkolivegreen, etc.
+* For borders, either use CSS border / xl-border to specify the same border on all four sides of each cell.  Or use the side-specific versions, e.g. CSS border-left / xl-border-left.
+* For XL border styles, the allowed range of values is:  none thin, medium, dashed, dotted, thick, double, hair, mediumDashed, dashDot, mediumDashDot, dashDotDot, mediumDashDotDot, slantDashDot
+* For xl-value-format, the following constants are supported: GENERAL, NUMBER, CURRENCY, ACCOUNTING, DATE, LONGDATE, TIME, PERCENTAGE, FRACTION, SCIENTIFIC, TEXT, COMMA.  Alternatively, custom format strings can be specified.  For date/datetime, specify a combination of d, m, y, e.g. dd/mm/yyyy.  For numeric rounding use 0.00 etc.
+
+Note that the following CSS properties are NOT supported:
+
+* font - use font-family, font-size, etc. instead
+* Border side specific properties, e.g. border-left-style, border-top-color, etc.
 
 ## Further Reading
 
@@ -46,4 +180,6 @@ The full set of vignettes is:
 10. [Performance](v10-performance.html)
 11. [Shiny](v11-shiny.html)
 12. [Excel Export](v12-excelexport.html)
-A1. [Appendix](vA1-appendix.html)
+13. [Appendix: Details](vA1-appendix.html)
+14. [Appendix: Calculations](vA2-appendix.html)
+15. [Appendix: Class Overview](vA3-appendix.html)

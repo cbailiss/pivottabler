@@ -45,9 +45,10 @@ filtered by this PivotFilters object.}
   \item{\code{new(...)}}{Create a new pivot filters object, specifying the field
   values documented above.}
 
+  \item{\code{clearFilters()}}{Remove all filters.}
   \item{\code{getFilter(variableName=NULL)}}{Find a filter with the specified
   variable name.}
-  \item{\code{isFilterMatch(variableNames=NULL, variableValues=NULL)}}{Tests
+  \item{\code{isFilterMatch(variableNames=NULL, variableValues=NULL)}}{Test
   whether these filters match the specified criteria.}
   \item{\code{setFilters(filters=NULL, action="replace")}}{Update the value of this
   PivotFilters object with the filters from the specified PivotFilters

@@ -14,7 +14,9 @@ vignette: >
 * Overview
 * Basic Export (no styling)
 * Styling and Formatting
-* Formatting Values
+* Formatting Cell Values
+* Formatting Headings
+* Export of NA, NaN, -Inf and Inf
 * Column Widths and Row Heights
 * Performance
 * Styling Reference
@@ -89,9 +91,11 @@ In general, the CSS mappings described above will simplify outputting to Excel. 
 
 The table at the bottom of this vignette details the full set of CSS and Excel style properties that are supported.
 
-## Formatting Values
+## Formatting Cell Values
 
-There are a few different ways for format the values written into the worksheet.  These are controlled by the `outputValuesAs` parameter.  The following pivot table will be used to illustrate the different values for this parameter:
+There are a few different ways for format the values written into the worksheet.  These are controlled by the `outputValuesAs` parameter, which has allowed values: "rawValue", "formattedValueAsText" and "formattedValueAsNumber".
+
+The following pivot table will be used to illustrate the different values for this parameter:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -164,11 +168,11 @@ Specifying `outputValuesAs="formattedValueAsNumber"` will output the formatted v
 
 ![Exporting formatted values as numbers](excel5.png)
 
-### Using Excel to format the values
+### Using Excel to format the values (recommended)
 
-The `outputValuesAs` parameter provides a simple way to control value formatting.  However, this applies to every cell in the pivot table, so is not a very fine grained control.
+The `outputValuesAs` parameter provides a simple way to control value formatting.  However, this applies to every cell in the pivot table, so is not a very fine-grained control.
 
-Another option is to output the raw unformatted values to Excel and then specify an Excel format string to allow Excel to format the values.  The Excel format string is specified in the styling of cells, either as part of the theme (but this leaves little flexibility for different calculations) or more flexibly, by adding format codes to individual cells / groups of cells after the pivot table has been populated.  To do this, a new style is applied to each cell, based on an existing style in the theme.  In the example below, the new style is based on the existing "Cell" style, but with a value format string applied.
+A better option is to output the raw unformatted values to Excel and then specify an Excel format string as part of the calculation definition to allow Excel to format the values.
 
 ```{r, message=FALSE, warning=FALSE, eval=FALSE}
 library(pivottabler)
@@ -187,17 +191,9 @@ pt$addColumnDataGroups("TrainCategory")
 pt$addColumnDataGroups("PowerType")
 pt$addRowDataGroups("TOC", totalCaption="All TOCs")
 pt$defineCalculation(calculationName="MeanArrivalDelay", caption="Mean Arr. Delay", 
-                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", format="%.1f")
+                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", format="%.1f",
+                     cellStyleDeclarations=list("xl-value-format"="##0.0"))
 pt$evaluatePivot()
-# style setting function
-setStyle <- function(cell, baseStyleName, declarations) {
-  if(is.null(cell$style)) 
-    cell$style <- pt$createInlineStyle(baseStyleName=baseStyleName, declarations=declarations)
-  else cell$style$setPropertyValues(declarations=declarations)
-}
-# set the styling on the cells
-cells <- pt$findCells(calculationNames="MeanArrivalDelay")
-invisible(lapply(cells, setStyle, baseStyleName="Cell", declarations=list("xl-value-format"="##0.0")))
 
 library(openxlsx)
 wb <- createWorkbook(creator = Sys.getenv("USERNAME"))
@@ -210,6 +206,16 @@ saveWorkbook(wb, file="C:\\test.xlsx", overwrite = TRUE)
 ```
 
 ![Exporting raw values with an Excel format string](excel6.png)
+
+## Formatting Headings
+
+The formatting of headings is controlled by the `outputHeadingsAs` parameter, which has allowed values: "rawValue", "formattedValueAsText" and "formattedValueAsNumber".  The values have the same behaviour as described above for the `outputValuesAs` parameter.  The default value of `outputHeadingsAs` is "formattedValueAsText".
+
+Note that specifying `outputHeadingsAs="rawValue"` will export dates and POSIXct values as numbers (since dates and date/time values are actually represented as numbers in Excel).  For numbers, dates and date/time values, specifying an Excel format code when adding the data groups to the pivot table is recommended, e.g. `pt$addColumnDataGroups("GbttDate", styleDeclarations=list("xl-value-format"="##0.0"))`.  This will then ensure they are formatted when exported to Excel using `outputHeadingsAs="rawValue"`.
+
+## Export of NA, NaN, -Inf and Inf
+
+The `pt$writeToExcelWorksheet(...)` function supports an `exportOptions` parameter that provides control over how NA, NaN, -Inf and Inf values in R are exported to Excel.  See the [Appendix: Details](vA1-appendix.html) vignette for details.
 
 ## Column Widths and Row Heights
 
@@ -227,45 +233,7 @@ Creating Excel files is relatively effort intensive.  Outputing pivot tables to 
 
 ## Styling Reference
 
-The following table details the styling properties that are supported.
-
-| CSS Property       | XL Property         | XL Example              | Notes                                      | 
-|:-------------------|:--------------------|:------------------------|:-------------------------------------------|
-| font-family        | xl-font-name        | Arial                   | Only the first CSS font is used in Excel.  |
-| font-size          | xl-font-size        | 12                      | In Points (4-72).  See below for CSS units.|
-| font-weight        | xl-bold             | normal or bold          | XL bold is CSS font-weight >= 600.         |
-| font-style         | xl-italic           | normal or italic        | italic and oblique map to italic.          |
-| text-decoration    | xl-underline        | normal or underline     |                                            |
-| text-decoration    | xl-strikethrough    | normal or strikethrough |                                            |
-| background-color   | xl-fill-color       | #FF0000                 | See below for supported CSS colours.       |
-| color              | xl-text-color       | #00FF00                 | See below for supported CSS colours.       |
-| text-align         | xl-h-align          | left or center or right |                                            |
-| vertical-align     | xl-v-align          | top or middle or bottom |                                            |
-| white-space        | xl-wrap-text        | normal or wrap          |                                            |
-|                    | xl-text-rotation    | 90                      | 0 to 359, or 255 for vertical text.        |
-|                    | xl-indent           | 20                      | 0 to 250.                                  |
-| border             | xl-border           | thin black              | See below for supported CSS border values. |
-| border-left        | xl-border-left      | thin black              | See below for supported CSS border values. |
-| border-right       | xl-border-right     | thin black              | See below for supported CSS border values. |
-| border-top         | xl-border-top       | thin black              | See below for supported CSS border values. |
-| border-bottom      | xl-border-bottom    | thin black              | See below for supported CSS border values. |
-|                    | xl-min-column-width | 50                      | 0 to 255.                                  |
-|                    | xl-min-row-height   | 45                      | 0 to 400.                                  |
-|                    | xl-value-format     | #,###.00                | See notes below for full details.          |
-
-Notes:
-
-* For CSS font-size, only the following units are supported:  in, cm, mm, pt, pc, px, em, %.
-* For CSS background-color, CSS color and border colours, only hex colours, named colours, RGB() and RGBA() values are supported.  HLS() and HLSA() values are not supported.  Examples of supported CSS values:  #0080FF, rgb(0, 128, 255), rgba(0, 128, 255, 0.5), red, black, darkolivegreen, etc.
-* For borders, either use CSS border / xl-border to specify the same border on all four sides of each cell.  Or use the side-specific versions, e.g. CSS border-left / xl-border-left.
-* For XL border styles, the allowed range of values is:  none thin, medium, dashed, dotted, thick, double, hair, mediumDashed, dashDot, mediumDashDot, dashDotDot, mediumDashDotDot, slantDashDot
-* For xl-value-format, the following constants are supported: GENERAL, NUMBER, CURRENCY, ACCOUNTING, DATE, LONGDATE, TIME, PERCENTAGE, FRACTION, SCIENTIFIC, TEXT, COMMA.  Alternatively, custom format strings can be specified.  For date/datetime, specify a combination of d, m, y, e.g. dd/mm/yyyy.  For numeric rounding use 0.00 etc.
-
-Note that the following CSS properties are NOT supported:
-
-* font - use font-family, font-size, etc. instead
-* Border side specific properties, e.g. border-left-style, border-top-color, etc.
-
+A reference table of the supported styling declarations can be found in the [Appendix: Details](vA1-appendix.html) vignette. 
 
 ## Further Reading
 
@@ -283,4 +251,6 @@ The full set of vignettes is:
 10. [Performance](v10-performance.html)
 11. [Shiny](v11-shiny.html)
 12. [Excel Export](v12-excelexport.html)
-A1. [Appendix](vA1-appendix.html)
+13. [Appendix: Details](vA1-appendix.html)
+14. [Appendix: Calculations](vA2-appendix.html)
+15. [Appendix: Class Overview](vA3-appendix.html)

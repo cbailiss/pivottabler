@@ -13,16 +13,20 @@ vignette: >
 
 * Calculations and Calculation Groups
 * Calculation Types
-* Method 1:  Summarising Values
+* Basic Calculation Methods
+    + Method 1:  Summarising Values
+    + Method 2:  Deriving values from other summarised values
+* Moving the calculations in the pivot table
     + Displaying calculations on rows
-* Method 2:  Deriving values from other summarised values
-* Method 3:  Custom calculation functions
-* Method 4:  Showing a value (no calculation)
-* Specifying calculations before row/column data groups
-* Using multiple data frames in the same pivot table
+    + Specifying calculations before row/column data groups
 * Filtering data as part of a calculation
+* % of Totals, Cumulative Sums, Running Differences, Rolling Averages, Ratios/Multiples
 * Formatting calculated values
 * Empty cells
+* Using multiple data frames in the same pivot table
+* Advanced Calculation Methods
+    + Method 3:  Custom calculation functions
+    + Method 4:  Showing a value (no calculation)
 * Performance considerations
 * Further Reading
 
@@ -45,9 +49,13 @@ The pivottabler package supports several different ways of calculating the value
 3. Custom calculation functions
 4. Show a value (no calculation)
 
-Calculations are added to the pivot table using the `defineCalculation()` function.  The following sections show the different ways this function can be used for each of the above types of calculation.
+Calculations are added to the pivot table using the `defineCalculation()` function.  
 
-## Method 1:  Summarising Values
+The first two of the methods listed above are described in more detail in the following section.  The third and fourth methods are less commonly needed and are described at the end of this vignette.
+
+## Basic Calculation Methods
+
+### Calculation Method 1:  Summarising Values
 
 The most common way to calculate the pivot table is to provide an expression that describes how to summarise the data, e.g. defining a calculation that counts the number of trains:
 
@@ -96,44 +104,7 @@ pt$renderPivot()
 
 The data.table package can also be used - see the [Performance](v10-performance.html) for details.  Note that the "count" summarise expression is specified as ".N" when using data.table, not as "n()".  Also, when using data.table, be aware of some strange behaviour that leads to incorrect values in the pivot table when aggregating over columns that are also used in either row/column headings.  Again, see the [Performance](v10-performance.html) for details.
 
-### Displaying calculations on rows
-
-Calculations can be swapped onto the rows using the `addRowCalculationGroups()` method.  Transposing the example pivot table from above:
-
-```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-library(dplyr)
-library(lubridate)
-
-# derive some additional data
-trains <- mutate(bhmtrains,
-   ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
-   ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
-
-# create the pivot table
-pt <- PivotTable$new()
-pt$addData(trains)
-pt$addColumnDataGroups("TOC", totalCaption="All TOCs")   #  << ***** CODE CHANGE ***** <<
-pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains", 
-                     summariseExpression="n()")
-pt$defineCalculation(calculationName="MinArrivalDelay", caption="Min Arr. Delay", 
-                     summariseExpression="min(ArrivalDelay, na.rm=TRUE)")
-pt$defineCalculation(calculationName="MaxArrivalDelay", caption="Max Arr. Delay", 
-                     summariseExpression="max(ArrivalDelay, na.rm=TRUE)")
-pt$defineCalculation(calculationName="MeanArrivalDelay", caption="Mean Arr. Delay", 
-                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", format="%.1f")
-pt$defineCalculation(calculationName="MedianArrivalDelay", caption="Median Arr. Delay", 
-                     summariseExpression="median(ArrivalDelay, na.rm=TRUE)")
-pt$defineCalculation(calculationName="IQRArrivalDelay", caption="Delay IQR", 
-                     summariseExpression="IQR(ArrivalDelay, na.rm=TRUE)")
-pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev.", 
-                     summariseExpression="sd(ArrivalDelay, na.rm=TRUE)", format="%.1f")
-
-pt$addRowCalculationGroups()                             #  << ***** CODE CHANGE ***** <<
-pt$renderPivot()
-```
-
-## Method 2:  Deriving values from other summarised values
+### Calculation Method 2:  Deriving values from other summarised values
 
 Calculations can be defined that refer to other calculations, by following these steps:
 
@@ -200,7 +171,256 @@ pt$defineCalculation(calculationName="DelayedPercent", caption="% Trains Arr. 5+
 pt$renderPivot()
 ```
 
-## Method 3:  Custom calculation functions
+## Moving the calculations in the pivot table
+
+By default the calculation headings (if visible) are placed in the pivot table as column headings, underneath any column data groups.  
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$renderPivot()
+```
+
+The location of these headings can be moved as illustrated below.
+
+### Displaying calculations on rows
+
+Calculations can be swapped onto the rows using the `addRowCalculationGroups()` method:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$addRowCalculationGroups()
+pt$renderPivot()
+```
+
+## Specifying calculations before row/column data groups
+
+In the examples above, the row/column groups were specified first and then the calculations.  It is equally possible to specify the calculations first.  The calculation names then form the first level of the row/column groups, e.g.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$addColumnCalculationGroups()
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$renderPivot()
+```
+
+Similarly, on rows:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$addRowCalculationGroups()
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$renderPivot()
+```
+
+## Filtering data as part of a calculation
+
+It is possible to specify additional/different filter criteria as part of a calculation definition.  This additional criteria can either be in the form of a `PivotFilters` object or a `PivotFiltersOverrides` object.
+
+For example, to calculate the percentage of trains of each category that each train company operated at weekends, for each cell in the pivot table:
+
+1. Additionally filter the data to trains operating at weekends and count the number of trains at weekends,
+2. Count the total number of trains (with no additional filter, i.e. irrespective of weekday or weekend),
+3. Calculate the percentage.
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(lubridate)
+library(pivottabler)
+
+# get the date of each train and whether that date is a weekday or weekend
+trains <- bhmtrains %>%
+  mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+         DayNumber=wday(GbttDateTime),
+         WeekdayOrWeekend=ifelse(DayNumber %in% c(1,7), "Weekend", "Weekday"))
+
+# render the pivot table
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+weekendFilter <- PivotFilters$new(pt, variableName="WeekdayOrWeekend", values="Weekend")
+pt$defineCalculation(calculationName="WeekendTrains", summariseExpression="n()", 
+                     filters=weekendFilter, visible=FALSE)
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", visible=FALSE)
+pt$defineCalculation(calculationName="WeekendTrainsPercentage",
+                     type="calculation", basedOn=c("WeekendTrains", "TotalTrains"),
+                     format="%.1f %%",
+                     calculationExpression="values$WeekendTrains/values$TotalTrains*100")
+pt$renderPivot()
+```
+
+See the [Appendix: Calculations](vA2-appendix.html) vignette for many more examples.
+
+## % of Totals, Cumulative Sums, Running Differences, Rolling Averages, Ratios/Multiples
+
+Changing the filter criteria used in a cell enables many additional types of calculations.  See the [Appendix: Calculations](vA2-appendix.html) vignette for examples.
+
+Example:  % of row total:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", 
+                     caption="Count", visible=FALSE)
+filterOverrides <- PivotFilterOverrides$new(pt, keepOnlyFiltersFor="TOC")
+pt$defineCalculation(calculationName="TOCTotalTrains", filters=filterOverrides, 
+                     summariseExpression="n()", caption="TOC Total", visible=FALSE)
+pt$defineCalculation(calculationName="PercentageOfTOCTrains", type="calculation", 
+                     basedOn=c("CountTrains", "TOCTotalTrains"),
+                     calculationExpression="values$CountTrains/values$TOCTotalTrains*100", 
+                     format="%.1f %%", caption="% of TOC")
+pt$renderPivot()
+```
+
+See the [Appendix: Calculations](vA2-appendix.html) vignette for an explanation of the above.
+
+## Formatting calculated values
+
+Each cell in a pivot table has two values:  A `rawValue` that is the result of the calculation in the cell.  The `rawValue` is typically the same data type as the variable the calculation is based on, e.g. a sum() of numerical values will result in a numerical value.  The `formattedValue` is the value that is displayed in the pivot table.  The data type of the `formattedValue` is typically character.
+
+The formatting of calculation results is specified by setting the `format` parameter when calling the `defineCalculation` function.
+
+A number of different approaches to formatting are supported:
+
+* If `format` is a text value, then pivottabler invokes `base::sprintf()` with the specified format.
+* If `format` is a list, then pivottabler invokes `base::format()`, where the elements in the list become arguments in the function call.
+* If `format` is an R function, then this is invoked for each value.
+* If `format` is not specified, then `base::as.character()` is invoked to provide a default formatted value.
+
+The above are the same approaches used when formatting data groups.  See the [Data Groups](v02-datagroups.html) vignette for more details
+
+Some formatting behaviour depends on the data type of the value being formatted.  For details see the [Appendix: Details](vA1-appendix.html) vignette. 
+
+Examples of the first two approaches above can be found in previous examples in this vignette.  An example of the third approach can be found in the [Data Groups](v02-datagroups.html) vignette.
+
+## Empty cells
+
+By default, where no data exists (for a particular combination of row and column headers) `pivottabler` will leave the pivot table cell empty.  Sometimes it is desirable to display a value in these cells.  This can be specified in two ways in the `defineCalculation()` function - either by specifying a value for either the `noDataValue` or `noDataCaption` arguments.  The differences between these two options are as follows:
+
+| Comparison                           | noDataValue argument      | noDataCaption argument        |
+|:-------------------------------------|:--------------------------|:------------------------------|
+| Allowed Data Type(s)                 | `integer` or `numeric`    | `character`                   |
+| `format` argument applies            | Yes (will be formatted)   | No (will be displayed as-is)  |
+| Will be used in other calculations   | Yes                       | No                            |
+
+If the requirement is only to display a different value when there is no data, then `noDataCaption` is the right choice.  Both approaches are demonstrated below, where the Virgin Trains, Ordinary Passenger cell has no data, so the empty cell value/caption is shown.
+
+### noDataValue Example
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", noDataValue=0)
+pt$renderPivot()
+```
+
+### noDataCaption Example
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", noDataCaption="-")
+pt$renderPivot()
+```
+
+## Using multiple data frames in the same pivot table
+
+A pivot table can display data from multiple data frames.  The following summarises the possible functionality:
+
+*  A pivot table can contain multiple calculations. Many of the examples above in this vignette illustrate this.
+*  Each calculation must be based on one data frame.  This is specified as part of the arguments to the `defineCalculation()` function^[If the pivot table contains only one data frame, then specifying the data frame when calling `defineCalculation()` is not necessary.].
+*  Defining multiple calculations allows data from multiple data frames to be displayed in the pivot table.
+
+**Important:**  When adding multiple data frames to a pivot table, the data frame columns used for the data groups (i.e. row/column headings) must be conformed, i.e.:
+
+*  The columns from the data frames placed on the row/column headings in the pivot table must be present in all of the data frames added to the pivot table.
+*  Those columns must have the same names in all of the data frames added to the pivot table.
+*  The data values used in those columns should be consistent (e.g. "England" must be "England" in all data frames added to the pivot table, not "England" in one data frame and "Eng",  "ENGLAND", etc. in other data frames).
+
+It is also worth noting that only the first data frame added to the pivot table is used when generating the row/column headings.
+
+The example below illustrates using two data frames with a single pivot table:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+
+# derive some additional data
+trains <- mutate(bhmtrains, 
+  ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+  ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
+  DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0)) %>%
+  select(TrainCategory, TOC, DelayedByMoreThan5Minutes) 
+# in this example, bhmtraindisruption is joined to bhmtrains
+# so that the TrainCategory and TOC columns are present in both
+# data frames added to the pivot table
+cancellations <- bhmtraindisruption %>%
+  inner_join(bhmtrains, by="ServiceId") %>%
+  mutate(CancelledInBirmingham=ifelse(LastCancellationLocation=="BHM",1,0)) %>%
+  select(TrainCategory, TOC, CancelledInBirmingham)
+
+# create the pivot table
+pt <- PivotTable$new()
+pt$addData(trains, "trains")
+pt$addData(cancellations, "cancellations")
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="DelayedTrains", dataName="trains", 
+                     caption="Delayed", 
+                     summariseExpression="sum(DelayedByMoreThan5Minutes, na.rm=TRUE)")
+pt$defineCalculation(calculationName="CancelledTrains", dataName="cancellations", 
+                     caption="Cancelled", 
+                     summariseExpression="sum(CancelledInBirmingham, na.rm=TRUE)")
+pt$renderPivot()
+```
+
+In the example above, the number of trains more than five minutes late is calculated from the `trains` data frame and the number of trains cancelled at Birmingham New Street is calculated from the `cancellations` data frame.
+
+## Advanced Calculation Methods
+
+The following two methods of calculating cell values are more advanced and less commonly needed.
+
+### Calculation Method 3:  Custom calculation functions
 
 A custom calculation function allows more complex calculation logic to be used.  Such a function is invoked once for each cell in the body of the pivot table.  Custom calculation functions always have the same arguments defined:
 
@@ -313,7 +533,7 @@ pt$renderPivot()
 
 Including two values in each cell somewhat reduces the readability however.
 
-## Method 4:  Showing a value (no calculation)
+### Calculation Method 4:  Showing a value (no calculation)
 
 With this approach, the pivot table performs little or no calculations.  The values to display are predominantly calculated in R code before the pivot table is created.  This pivot table is used primarily as a visualisation mechanism.
 
@@ -354,7 +574,7 @@ pt$renderPivot()
 
 In the current version of `pivottabler` there is no way to explicitly pre-calculate the totals.  Instead, two workarounds are possible.  Either the totals can be hidden or a summarise expression can be specified to calculate the totals.  Both of these examples are presented below.
 
-### Hiding the totals
+#### Hiding the totals
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -374,7 +594,7 @@ pt$defineCalculation(calculationName="TotalTrains", type="value", valueName="Num
 pt$renderPivot()
 ```
 
-### Calculating the totals
+#### Calculating the totals
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -393,179 +613,6 @@ pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains",  # <<  *** CODE CHANGE (AND BELOW) *** <<
                      type="value", valueName="NumberOfTrains", 
                      summariseExpression="sum(NumberOfTrains)")
-pt$renderPivot()
-```
-
-## Specifying calculations before row/column data groups
-
-In the examples above, the row/column groups were specified first and then the calculations.  It is equally possible to specify the calculations first.  The calculation names then form the first level of the row/column groups, e.g.
-
-```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
-                     summariseExpression="n()")
-pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
-                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
-pt$addColumnCalculationGroups()
-pt$addColumnDataGroups("TrainCategory")
-pt$addRowDataGroups("TOC")
-pt$renderPivot()
-```
-
-Similarly, on rows:
-
-```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
-                     summariseExpression="n()")
-pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
-                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
-pt$addRowCalculationGroups()
-pt$addColumnDataGroups("PowerType")
-pt$addRowDataGroups("TOC")
-pt$renderPivot()
-```
-
-## Using multiple data frames in the same pivot table
-
-A pivot table can display data from multiple data frames.  The following summarises the possible functionality:
-
-*  A pivot table can contain multiple calculations. Many of the examples above in this vignette illustrate this.
-*  Each calculation must be based on one data frame.  This is specified as part of the arguments to the `defineCalculation()` function^[If the pivot table contains only one data frame, then specifying the data frame when calling `defineCalculation()` is not necessary.].
-*  Defining multiple calculations allows data from multiple data frames to be displayed in the pivot table.
-
-**Important:**  When adding multiple data frames to a pivot table, the data frame columns used for the data groups (i.e. row/column headings) must be conformed, i.e.:
-
-*  The columns from the data frames placed on the row/column headings in the pivot table must be present in all of the data frames added to the pivot table.
-*  Those columns must have the same names in all of the data frames added to the pivot table.
-*  The data values used in those columns should be consistent (e.g. "England" must be "England" in all data frames added to the pivot table, not "England" in one data frame and "Eng",  "ENGLAND", etc. in other data frames).
-
-It is also worth noting that only the first data frame added to the pivot table is used when generating the row/column headings.
-
-The example below illustrates using two data frames with a single pivot table:
-
-```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-library(dplyr)
-
-# derive some additional data
-trains <- mutate(bhmtrains, 
-  ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
-  ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
-  DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0)) %>%
-  select(TrainCategory, TOC, DelayedByMoreThan5Minutes) 
-# in this example, bhmtraindisruption is joined to bhmtrains
-# so that the TrainCategory and TOC columns are present in both
-# data frames added to the pivot table
-cancellations <- bhmtraindisruption %>%
-  inner_join(bhmtrains, by="ServiceId") %>%
-  mutate(CancelledInBirmingham=ifelse(LastCancellationLocation=="BHM",1,0)) %>%
-  select(TrainCategory, TOC, CancelledInBirmingham)
-
-# create the pivot table
-pt <- PivotTable$new()
-pt$addData(trains, "trains")
-pt$addData(cancellations, "cancellations")
-pt$addColumnDataGroups("TrainCategory")
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="DelayedTrains", dataName="trains", 
-                     caption="Delayed", 
-                     summariseExpression="sum(DelayedByMoreThan5Minutes, na.rm=TRUE)")
-pt$defineCalculation(calculationName="CancelledTrains", dataName="cancellations", 
-                     caption="Cancelled", 
-                     summariseExpression="sum(CancelledInBirmingham, na.rm=TRUE)")
-pt$renderPivot()
-```
-
-In the example above, the number of trains more than five minutes late is calculated from the `trains` data frame and the number of trains cancelled at Birmingham New Street is calculated from the `cancellations` data frame.
-
-## Filtering data as part of a calculation
-
-Sometimes it is necessary to calculate a value based on a subset of the data.  For example, to calculate the percentage of trains of each category that each train company operated at weekends, for each cell in the pivot table:
-
-1. Filter the data to trains operating at weekends and count the number of trains,
-2. Count the total number of trains (i.e. irrespective of weekday or weekend),
-3. Calculate the percentage.
-
-```{r, message=FALSE, warning=FALSE}
-library(dplyr)
-library(lubridate)
-library(pivottabler)
-
-# get the date of each train and whether that date is a weekday or weekend
-trains <- bhmtrains %>%
-  mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
-         DayNumber=wday(GbttDateTime),
-         WeekdayOrWeekend=ifelse(DayNumber %in% c(1,7), "Weekend", "Weekday"))
-
-# render the pivot table
-pt <- PivotTable$new()
-pt$addData(trains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addRowDataGroups("TOC")
-weekendFilter <- PivotFilters$new(pt, variableName="WeekdayOrWeekend", values="Weekend")
-pt$defineCalculation(calculationName="WeekendTrains", summariseExpression="n()", 
-                     filters=weekendFilter, visible=FALSE)
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", visible=FALSE)
-pt$defineCalculation(calculationName="WeekendTrainsPercentage",
-                     type="calculation", basedOn=c("WeekendTrains", "TotalTrains"),
-                     format="%.1f %%",
-                     calculationExpression="values$WeekendTrains/values$TotalTrains*100")
-pt$renderPivot()
-```
-
-## Formatting calculated values
-
-The formatting of calculation results is specified by setting the `format` parameter when calling the `defineCalculation` function.
-
-A number of different approaches to formatting are supported:
-
-* If `format` is a text value, then pivottabler invokes `base::sprintf()` with the specified format.
-* If `format` is a list, then pivottabler invokes `base::format()`, where the elements in the list become arguments in the function call.
-* If `format` is an R function, then this is invoked for each value.
-
-The above are the same approaches used when formatting data groups.  See the [Data Groups](v02-datagroups.html) vignette for more details.
-
-Examples of the first two approaches above can be found in previous examples in this vignette.  An example of the third approach can be found in the [Data Groups](v02-datagroups.html) vignette.
-
-## Empty cells
-
-By default, where no data exists (for a particular combination of row and column headers) `pivottabler` will leave the pivot table cell empty.  Sometimes it is desirable to display a value in these cells.  This can be specified in two ways in the `defineCalculation()` function - either by specifying a value for either the `noDataValue` or `noDataCaption` arguments.  The differences between these two options are as follows:
-
-| Comparison                           | noDataValue argument      | noDataCaption argument        |
-|:-------------------------------------|:--------------------------|:------------------------------|
-| Allowed Data Type(s)                 | `integer` or `numeric`    | `character`                   |
-| `format` argument applies            | Yes (will be formatted)   | No (will be displayed as-is)  |
-| Will be used in other calculations   | Yes                       | No                            |
-
-If the requirement is only to display a different value when there is no data, then `noDataCaption` is the right choice.  Both approaches are demonstrated below, where the Virgin Trains, Ordinary Passenger cell has no data, so the empty cell value/caption is shown.
-
-### noDataValue Example
-
-```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", noDataValue=0)
-pt$renderPivot()
-```
-
-### noDataCaption Example
-
-```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", noDataCaption="-")
 pt$renderPivot()
 ```
 
@@ -593,4 +640,6 @@ The full set of vignettes is:
 10. [Performance](v10-performance.html)
 11. [Shiny](v11-shiny.html)
 12. [Excel Export](v12-excelexport.html)
-A1. [Appendix](vA1-appendix.html)
+13. [Appendix: Details](vA1-appendix.html)
+14. [Appendix: Calculations](vA2-appendix.html)
+15. [Appendix: Class Overview](vA3-appendix.html)

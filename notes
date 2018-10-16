@@ -1,0 +1,11 @@
+Correct way of setting styles so that any styles already defined aren't completely lost
+
+# style setting function
+setStyle <- function(cell, baseStyleName, declarations) {
+  if(is.null(cell$style))
+    cell$style <- pt$createInlineStyle(baseStyleName=baseStyleName, declarations=declarations)
+  else cell$style$setPropertyValues(declarations=declarations)
+}
+# set the styling on the cells
+cells <- pt$findCells(calculationNames="MeanArrivalDelay")
+invisible(lapply(cells, setStyle, baseStyleName="Cell", declarations=list("xl-value-format"="##0.0")))

@@ -18,6 +18,7 @@ vignette: >
 * Simple Themes
 * Creating a New Theme
 * Changing the appearance of individual cells
+* Styling Reference
 * Further Reading
 
 ## Styles and Themes
@@ -319,6 +320,58 @@ pt$theme <- createCustomTheme(pt)
 pt$renderPivot(styleNamePrefix="t8")
 ```
 
+## Changing the appearance of data groups
+
+The appearance of sets of data groups can be specified when adding the data groups to the pivot table either by specifying a `baseStyleName` or by specifying `styleDeclarations`.  If specifying a `baseStyleName`, the full style must be defined.  Alternatively specifying a set of style declarations allows just the style settings of interest to be overriden which tends to be simpler, e.g.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory", styleDeclarations=list("color"="red", "font-weight"="bold", "background-color"="yellow"))
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot(styleNamePrefix="tdg")
+```
+
+## Changing the appearance of calculations
+
+The appearance of calculation headings or cell values can be specified when defining the calculations by specifying any combination of `headingBaseStyleName`, `headingStyleDeclarations`, `cellBaseStyleName` and/or `cellStyleDeclarations`. If specifying a base style name, the full style must be defined.  Alternatively specifying a set of style declarations allows just the style settings of interest to be overriden which tends to be simpler.  The example below shows both approaches.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$styles$addStyle(styleName="NewHeadingStyle1", list(
+      "font-family"="Arial",
+      "font-size"="0.75em",
+      padding="2px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "text-align"="center",
+      "font-weight"="bold",
+      "background-color"="Gold",
+      "xl-wrap-text"="wrap"
+    ))
+pt$styles$addStyle(styleName="CellStyle1", list(
+      "font-family"="Arial",
+      "font-size"="0.75em",
+      padding="2px 2px 2px 8px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "background-color"="Yellow",
+      "text-align"="right"
+    ))
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains1", summariseExpression="n()",
+                     headingBaseStyleName="NewHeadingStyle1", cellBaseStyleName="CellStyle1")
+pt$defineCalculation(calculationName="TotalTrains2", summariseExpression="n()",
+                     headingStyleDeclarations=list("color"="red", "font-weight"="bold"),
+                     cellStyleDeclarations=list("color"="blue"))
+pt$renderPivot(styleNamePrefix="tcn")
+```
+
 ## Changing the appearance of individual cells
 
 The individual cells in the pivot table can have their appearance changed by retrieving the cell then applying a style to the cell.  These styles typically apply in addition to the styles coming from the underlying theme, e.g. highlighting a cell:
@@ -358,6 +411,10 @@ In the example above, the default cell style from the theme is still applied.  T
 
 For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v07-findingandformatting.html) vignette.
 
+## Styling Reference
+
+A reference table of the supported styling declarations can be found in the [Appendix: Details](vA1-appendix.html) vignette. 
+
 ## Further Reading
 
 The full set of vignettes is:
@@ -374,4 +431,6 @@ The full set of vignettes is:
 10. [Performance](v10-performance.html)
 11. [Shiny](v11-shiny.html)
 12. [Excel Export](v12-excelexport.html)
-A1. [Appendix](vA1-appendix.html)
+13. [Appendix: Details](vA1-appendix.html)
+14. [Appendix: Calculations](vA2-appendix.html)
+15. [Appendix: Class Overview](vA3-appendix.html)

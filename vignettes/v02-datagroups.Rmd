@@ -145,7 +145,9 @@ Adding data groups one-at-a-time for fine-grained control to create a pivot tabl
 
 ## Formatting data groups
 
-In all of the examples above, the data groups are text values.  When data groups are numerical or date/time values, then typically some form of formatting is required.  Formatting generates a caption for each data group, i.e. a more readable version of the underlying data group value.
+Each data group has two values:  A `sortValue` that is used to order the group within the set of groups.  The `sortValue` is the same data type as the variable the data group is based on.  The `caption` is the value that is displayed in the pivot table.  The data type of the `caption` is typically character.
+
+In all of the examples above, the data groups are text values (i.e. are based on data frame columns of data type character).  When data groups are numerical or date/time values, then typically some form of formatting is required.  Formatting generates a caption for each data group, i.e. a more readable version of the underlying data group value.
 
 For example, plotting the total number of trains per month for each train operation company:
 
@@ -195,6 +197,9 @@ A number of different approaches to formatting are supported:
 * If the `dataFormat` is a list, then pivottabler invokes `base::format()`, where the elements in the list become arguments in the function call.
     + The example above is equivalent to: `base::format(value, format="%B %Y")`
 * If the `dataFormat` is an R function, then this is invoked for each value.
+* If `dataFormat` is not specified, then `base::as.character()` is invoked to provide a default formatted value.
+
+Some formatting behaviour depends on the data type of the value being formatted.  For details see the [Appendix: Details](vA1-appendix.html) vignette.
 
 An example of using a custom R function to accomplish the same formatting is:
 
@@ -326,4 +331,6 @@ The full set of vignettes is:
 10. [Performance](v10-performance.html)
 11. [Shiny](v11-shiny.html)
 12. [Excel Export](v12-excelexport.html)
-A1. [Appendix](vA1-appendix.html)
+13. [Appendix: Details](vA1-appendix.html)
+14. [Appendix: Calculations](vA2-appendix.html)
+15. [Appendix: Class Overview](vA3-appendix.html)

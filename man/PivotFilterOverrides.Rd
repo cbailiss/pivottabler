@@ -22,6 +22,16 @@ pivot table calculation.
 \describe{
 \item{\code{parentPivot}}{Owning pivot table.}
 
+\item{\code{removeAllFilters}}{TRUE to remove all existing filters before applying
+any other and/replace/or filters.}
+
+\item{\code{keepOnlyFiltersFor}}{Specify the names of existing variables to retain
+the filters for.  All other filters will be removed.}
+
+\item{\code{removeFiltersFor}}{Specify the names of variables to remove filters for.}
+
+\item{\code{overrideFunction}}{A custom function to ammend the filters in each cell.}
+
 \item{\code{countAnd}}{The number of PivotFilters that will be combined with other
 pivot filters using the AND operator.}
 
@@ -73,8 +83,9 @@ other pivot filters.}
 pt <- PivotTable$new()
 # ...
 # PivotFilterOverrides constructor allows a filter to be defined
-filterOverrides <- PivotFilterOverrides$new(pt)
-# Create a new filter
+# e.g. to enable \%of row or column type calculations
+filterOverrides <- PivotFilterOverrides$new(pt, keepOnlyFiltersFor="Volume")
+# Alternatively/in addition, create a new filter
 filter <- PivotFilter$new(pt, variableName="Country", values="England")
 # Add the filter to the set of overrides
 filterOverrides$add(filter=filter, action="replace")

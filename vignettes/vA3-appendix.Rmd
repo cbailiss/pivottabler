@@ -1,0 +1,159 @@
+---
+title: "A3. Appendix:  Class Overview"
+author: "Chris Bailiss"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A3. Appendix:  Class Overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## In This Vignette
+
+* Introduction
+* Pivot Table
+* Base Data
+* Data Groups
+* Calculation Definitions
+* Cells
+* Filter Classes
+* Calculator Classes
+* Styling Classes
+* Rendering Classes
+* Summary
+* Further Reading
+
+## Introduction
+
+The `pivottabler` package is comprised of R6 classes.  This section provides a short description of the main classes, their function and relationships in the package.
+
+## Pivot Table
+
+The `PivotTable` class represents a single pivot table.  In all of the example code, the instance of the pivot table is represented by the `pt` variable, on which various functions/methods are invoked e.g. pivot tables are created by:
+
+```{r, message=FALSE, warning=FALSE, comment="", echo=TRUE, eval=FALSE}
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+...
+```
+
+## Base Data
+
+The `PivotData` class contains the references to the source data (i.e. data frames) used to build a pivot table and is accessible via `pt$data`.
+
+A pivot table can be built from more than one data frame, though this is typically only viable if the variable names and values in the data frames are consistent - e.g. if a given variable is present in multiple data frames, it should have the same name in all of them.
+
+## Data Groups
+
+A pivot table has a set of column headings and a set of row headings, each of which is an instance of the `PivotDataGroup` class.  A data group can (and normally does) have child groups. 
+
+A single invisible data group `pt$rowGroup` acts as the top-level parent for the row groups, and another single invisible data group `pt$columnGroup` acts as the top-level parent for the column groups. 
+
+Calling `pt$addColumnDataGroups(...)` or `pt$addRowDataGroups(...)` generates a new level of child data groups, each of which is a `PivotDataGroup`.  
+
+The children for a given `PivotDataGroup` can be accessed using the `childGroups` property, e.g. the first level of row headings can be accessed via `pt$rowGroup$childGroups`.  The child data groups of a data group in this level can then be accessed via `pt$rowGroup$childGroups[[1]]$childGroups`.
+
+The display value of a data group is accessible via the caption property, e.g. `pt$rowGroup$childGroups[[1]]$caption`.
+
+See the [Data Groups](v02-datagroups.html) vignette for more details.
+
+## Calculation Definitions
+
+A pivot table normally has one or more calculations.  Each calculation definition is an instance of the `PivotCalculation` class.  Calculation definitions are grouped together by a `PivotCalculationGroup`, of which there is normally only a single default group in a pivot table.  If this calculation group contains three calculation definitions, then in the populated pivot table there will be three cells underneath each data group (one for each calculation), e.g.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MinimumpeedMPH", caption="Minimum Speed (MPH)",
+                     summariseExpression="min(SchedSpeedMPH, na.rm=TRUE)")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$renderPivot()
+```
+
+It is possible (though not typical) for a pivot table to contain multiple calculation groups.  See the [Irregular Layout](v09-irregularlayout.html) vignette for an example.
+
+`pt$calculationGroups` contains the calculation groups present in a pivot table.  The calculation definitions within the default group are accessed via `pt$calculationGroups$defaultGroup$calculations`.
+
+see the [Calculations](v03-calculations.html) vignette for more details.
+
+## Cells
+
+A pivot table contains a set of cells represented by the `PivotCells` class.  The cells of a pivot table are accessed via `pt$cells`.  The dimensions of a pivot table (excluding data group headings) can be checked with `pt$rowCount` and `pt$columnCount`.
+
+Individual cells are represented by the `PivotCell` class.  The easiest way to access individual cells (i.e. individual `PivotCell` objects) is `pt$cells$getCell(r, c)`.
+
+Within the `PivotCells` object is a list of rows, each of which is a list of `PivotCell` objects.  So a more direct (but less-safe) way to access individual cells is `pt$cells$rows[[r]][[c]]`.
+
+Each cell has a raw value (typically of data type numeric) and a formatted value (typically of data type character).  These can be accessed via `cell$rawValue` and `cell$formattedValue` respectively.
+
+It is possible to find the leaf-level data groups (i.e. right-most row heading and bottom column heading) that relate to a cell using `cell$rowLeafGroup` and `cell$columnLeafGroup`.  If the data group has other parent groups, then these can be accessed recursively via `cell$rowLeafGroup$parentGroup`, `cell$rowLeafGroup$parentGroup$parentGroup`, etc.
+
+The [Finding and Formatting](v07-findingandformatting.html) vignette describes other ways of accessing cells and data group headings.
+
+## Filter Classes
+
+Each data group typically acts as a filter for the data in that row/column of the pivot table.  E.g. a heading of "France" typically implies "Country=France".  This filter condition is represented by the `PivotFilter` class.  Every cell in a pivot table has a set of filters (one filter from each row/column heading) and these filters are represented by the `PivotFilters` class.  See the [Cell Context](v08-cellcontext.html) vignette for more details.
+
+The `PivotFilterOverrides` class provides a mechanism for individual calculation definitions to override the default filters associated with a cell.  See the [Calculations](v03-calculations.html) vignette for more details.
+
+## Calculator Classes
+
+The `PivotCalculator` class provides much of the functionality for calculating the values in a pivot table.  Users of the `pivottabler` package typically do not directly interact with this internal class.
+
+The `PivotBatch`, `PivotBatchCalculator` and `PivotBatchStatistics` classes provide functionality for calculating the values of batches of cells in one/a small number of dplyr/data.table calculations.  These classes are also internal.
+
+## Styling Classes
+
+The `PivotStyle` class represents a single style declaration in the form of a single name-value pair (similar to a CSS style declaration).  
+
+The `PivotStyles` class is a set of style declarations that would be applied to a cell (or a set of cells). 
+
+The `PivotOpenXlsxStyle` and `PivotOpenXlsxStyles` classes are similar, except these are specific to Excel export.
+
+The `PivotThemes` class represents a set of styles to apply to the different parts (headings, cells, totals, etc) of a pivot table.
+
+See the [Styling](v06-styling.html) vignette for more details.
+
+## Rendering Classes
+
+The `PivotHtmlRenderer`, `PivotLatexRenderer` and `PivotOpenXlsxRenderer` classes provide rendering logic for each of the formats that a pivot table can be output in.
+
+See the [Outputs](v04-outputs.html) vignette for more details.
+
+## Summary
+
+* The `PivotTable` class represents a single pivot table, typically named `pt` in the package examples.
+* `pt$data` is an instance of the `PivotData` class that wraps the data frames used to build the pivot table.
+* `pt$rowGroup` and `pt$columnGroup` are the invisible top-level data groups - each is an instance of the `PivotDataGroup` class.
+* Child data groups can be accessed recursively, e.g. via `pt$rowGroup$childGroups`, `pt$rowGroup$childGroups[[1]]$childGroups`, etc.
+* `pt$calculationGroups` contains the calculation groups present in a pivot table.  The calculation definitions within a group are accessed via `pt$calculationGroups$defaultGroup$calculations`.
+* Check pivot table size using `pt$rowCount` and `pt$columnCount`.
+* Individual cells in a pivot table are represented by the `PivotCell` class and can be accessed via `pt$cells$getCell(r, c)`.
+* The data groups related to a cell can be accessed recursively via `cell$rowLeafGroup$parentGroup`, `cell$rowLeafGroup$parentGroup$parentGroup`, etc. 
+
+## Further Reading
+
+The full set of vignettes is:
+
+1. [Introduction](v01-introduction.html)
+2. [Data Groups](v02-datagroups.html)
+3. [Calculations](v03-calculations.html)
+4. [Outputs](v04-outputs.html)
+5. [Latex Output](v05-latexoutput.html)
+6. [Styling](v06-styling.html)
+7. [Finding and Formatting](v07-findingandformatting.html)
+8. [Cell Context](v08-cellcontext.html)
+9. [Irregular Layout](v09-irregularlayout.html)
+10. [Performance](v10-performance.html)
+11. [Shiny](v11-shiny.html)
+12. [Excel Export](v12-excelexport.html)
+13. [Appendix: Details](vA1-appendix.html)
+14. [Appendix: Calculations](vA2-appendix.html)
+15. [Appendix: Class Overview](vA3-appendix.html)

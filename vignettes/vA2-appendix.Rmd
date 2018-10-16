@@ -1,0 +1,489 @@
+---
+title: "A2. Appendix:  Calculations"
+author: "Chris Bailiss"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A2. Appendix:  Calculations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## In This Vignette
+
+* Introduction
+* Basic Principle
+* Modifying filters
+    + Method 1:  Further restricting the data using a `PivotFilters` object
+    + Method 2:  Flexible filter changes using a `PivotFilterOverrides` object
+* Examples of Modifying Filters
+    + % of Row Total, % of Column Total
+    + % of Grand Total
+    + Ratios/Multiples
+    + Subsets of Data
+* Examples using a custom filter override function
+    + Running Differences/Changes
+    + Rolling Average
+    + Cumulative Sum
+
+## Introduction
+
+This vignette describes how to construct more advanced calculations, such as percentages of totals, cumulative sums, running differences, rolling averages, and ratios/multiples.
+
+Before reading this vignette, it may be helpful to read the [Calculations](v03-calculations.html) and [Cell Context](v08-cellcontext.html) vignettes.
+
+Many of the examples in this vignette leave working columns (i.e. intermediate values not of interest) visible in the pivot tables.  This is done deliberately to aid understanding.  These calculations can be made invisible by specifying `visible=FALSE` as an additional parameter as part of `pt$defineCalculation(...)`.
+
+## Basic Principle
+
+Every cell in a pivot table has a set of associated filters that specify what data is included in the calculation of the value of that cell, as explained in the [Cell Context](v08-cellcontext.html) vignette:
+
+```{r, message=FALSE, warning=FALSE}
+
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot(includeWorkingData=TRUE)
+```
+
+By changing these filters it is possible to perform different sorts of calculations.
+
+## Modifying filters
+
+There are two possible ways to change the filters used when calculating values.
+
+### Method 1:  Further restricting the data using a `PivotFilters` object
+
+When defining a calculation, it is possible to specify a `PivotFilters` object as part of the calculation.  These additional filters are applied on top of the filters already related to that cell, effectively further restricting the subset of data that is covered by the calculation.
+
+As an example, the "Weekend Trains" calculation below specifies an extra filter that means only rows where the WeekdayOrWeekend variable equals "Weekend" are included in the row count.
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(lubridate)
+library(pivottabler)
+
+# get the date of each train and whether that date is a weekday or weekend
+trains <- bhmtrains %>%
+  mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+         DayNumber=wday(GbttDateTime),
+         WeekdayOrWeekend=ifelse(DayNumber %in% c(1,7), "Weekend", "Weekday"))
+
+# render the pivot table
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+weekendFilter <- PivotFilters$new(pt, variableName="WeekdayOrWeekend", values="Weekend")
+pt$defineCalculation(calculationName="WeekendTrains", summariseExpression="n()", 
+                     filters=weekendFilter, caption="Weekend Trains")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", 
+                     caption="Total Trains")
+pt$defineCalculation(calculationName="WeekendTrainsPercentage",
+                     type="calculation", basedOn=c("WeekendTrains", "TotalTrains"),
+                     format="%.1f %%", caption="% at Weekend",
+                     calculationExpression="values$WeekendTrains/values$TotalTrains*100")
+pt$renderPivot()
+```
+
+This approach has been supported since v0.3.0 of the `pivottabler` package.  A weakness of this approach is that it can only be used to further restrict the data - it cannot be used to refer to data outside the scope of the current cell.
+
+### Method 2:  Flexible filter changes using a `PivotFilterOverrides` object
+
+Newly added in v1.0.0 of the `pivottabler` package is the ability to specify a `PivotFilterOverrides` object as part of a calculation definition.  This provides a more flexible and more powerful way of controlling the filters used when calculating a cell value.  In particular, using a `PivotFilterOverrides` object it is possible to add new filters or change/remove existing filters - this enables many new calculation possibilities.  Many of the examples below use this approach.
+
+A few different options can be specified when creating a `PivotFilterOverrides` object:
+
+* `removeAllFilters=TRUE|FALSE` specifies whether to clear all existing filters for the calculation (default value is `FALSE`) 
+* `keepOnlyFiltersFor=variableNames` specifies a character vector of variable names to retain the filter criteria for.  Filter criteria for all other variables will be cleared.
+* `removeFiltersFor=variableNames` specifies a character vector of variable names for which the filter criteria will be cleared.
+* `overrideFunction=function` specifies a custom R function which will be invoked for each cell to modify the filters before the calculation is carried out.
+* `filter=filter, action="and"|"replace"|"or"` specifies a `PivotFilter` object containing filter criteria which will be combined with the current set of filters using the specified combine method (explained below).
+* `variableName=variableName, type="ALL"|"VALUES"|"NONE", values=values, action="and"|"replace"|"or"` specifies a new filter condition which will be combined with the current set of filters using the specified combine method (explained below).
+
+Three different methods of combining filter criteria are supported:
+
+* and - this further restricts the data - i.e. it is additional filter criteria on top of the existing filter criteria for the variable.  
+* replace - this removes the existing criteria for the specified variable and replaces it with the newly specified criteria for the variable.
+* or - this is an additional allowed value, alongside any existing criteria.
+
+The table below provides some examples:
+
+| Existing Criteria           | Override Criteria | Combine Action | Resulting Criteria                   | 
+|:----------------------------|:------------------|:---------------|:-------------------------------------|
+| 1st, 2nd and 3rd March 2018 | 2nd March 2018    | and            | 2nd March 2018                       |
+| 1st, 2nd and 3rd March 2018 | 2nd March 2018    | replace        | 2nd March 2018                       |
+| 1st, 2nd and 3rd March 2018 | 2nd March 2018    | or             | 1st, 2nd and 3rd March 2018          |
+| 1st, 2nd and 3rd March 2018 | 9th March 2018    | and            | NONE (i.e. no matching data)         |
+| 1st, 2nd and 3rd March 2018 | 9th March 2018    | replace        | 9th March 2018                       |
+| 1st, 2nd and 3rd March 2018 | 9th March 2018    | or             | 1st, 2nd, 3rd and 9th March 2018     |
+
+## Examples of Modifying Filters
+
+The first example immediately below provides more explanation of the approach of overriding the filters.  The other examples have less explanation, but the same approach of displaying the working data using `pt$renderPivot(includeWorkingData=TRUE)` can be used to display helpful filter details with these examples too.
+
+### % of Row Total, % of Column Total
+
+Objective:
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", 
+                     caption="Count", visible=FALSE)
+filterOverrides <- PivotFilterOverrides$new(pt, keepOnlyFiltersFor="TOC")
+pt$defineCalculation(calculationName="TOCTotalTrains", filters=filterOverrides, 
+                     summariseExpression="n()", caption="TOC Total", visible=FALSE)
+pt$defineCalculation(calculationName="PercentageOfTOCTrains", type="calculation", 
+                     basedOn=c("CountTrains", "TOCTotalTrains"),
+                     calculationExpression="values$CountTrains/values$TOCTotalTrains*100", 
+                     format="%.1f %%", caption="% of TOC")
+pt$renderPivot()
+```
+
+To calculate the percentage of each train operating company's (TOC's) trains that are either of category express passenger or ordinary passenger:
+
+1. Define the basic calculation (e.g. a count of trains) as normal.
+2. Define a second calculation that will return the row total for every combination in the row.  For example, if the row is about a specific TOC, then define a set of filter override that removes all filters except TOC for this new calculation.  Everywhere in the row will then have the total for the TOC.
+3. Define a third calculation that calculates the percentage based on the above two calculations.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", 
+                     caption="Count")
+filterOverrides <- PivotFilterOverrides$new(pt, keepOnlyFiltersFor="TOC")
+pt$defineCalculation(calculationName="TOCTotalTrains", filters=filterOverrides, 
+                     summariseExpression="n()", caption="TOC Total")
+pt$defineCalculation(calculationName="PercentageOfTOCTrains", type="calculation", 
+                     basedOn=c("CountTrains", "TOCTotalTrains"),
+                     calculationExpression="values$CountTrains/values$TOCTotalTrains*100", 
+                     format="%.1f %%", caption="% of TOC")
+pt$renderPivot()
+```
+
+In the example above, the "TOC Total" value is the same everywhere in each row.  This is because the filter criteria has been overriden to remove the "TrainCategory" filter for this calculation.  This can be seen by displaying the context:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", 
+                     caption="Count")
+filterOverrides <- PivotFilterOverrides$new(pt, keepOnlyFiltersFor="TOC")
+pt$defineCalculation(calculationName="TOCTotalTrains", filters=filterOverrides, 
+                     summariseExpression="n()", caption="TOC Total")
+pt$renderPivot(includeWorkingData=TRUE)
+```
+
+### % of Grand Total
+
+Objective:
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count", visible=FALSE)
+filterOverrides <- PivotFilterOverrides$new(pt, removeAllFilters=TRUE)
+pt$defineCalculation(calculationName="GrandTotalTrains", filters=filterOverrides, summariseExpression="n()", caption="Grand Total", visible=FALSE)
+pt$defineCalculation(calculationName="PercentageOfAllTrains", type="calculation", basedOn=c("CountTrains", "GrandTotalTrains"),
+                     calculationExpression="values$CountTrains/values$GrandTotalTrains*100", format="%.1f %%", caption="% of All")
+pt$renderPivot()
+```
+
+The approach is similar to the previous example, except the filter override removes all of the existing filters:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
+filterOverrides <- PivotFilterOverrides$new(pt, removeAllFilters=TRUE)
+pt$defineCalculation(calculationName="GrandTotalTrains", filters=filterOverrides, 
+                     summariseExpression="n()", caption="Grand Total")
+pt$defineCalculation(calculationName="PercentageOfAllTrains", type="calculation", 
+                     basedOn=c("CountTrains", "GrandTotalTrains"),
+                     calculationExpression="values$CountTrains/values$GrandTotalTrains*100", 
+                     format="%.1f %%", caption="% of All")
+pt$renderPivot()
+```
+
+### Ratios/Multiples
+
+Objective:
+
+We wish to find the multiples of Cross Country Express Passenger: 
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count", visible=FALSE)
+filterOverrides <- PivotFilterOverrides$new(pt, removeAllFilters=TRUE)
+filterOverrides$add(variableName="TrainCategory", values="Express Passenger", action="replace")
+filterOverrides$add(variableName="TOC", values="CrossCountry", action="replace")
+pt$defineCalculation(calculationName="CrossCountryExpress", filters=filterOverrides, summariseExpression="n()", caption="CrossCountry Express Trains", visible=FALSE)
+pt$defineCalculation(calculationName="MultipleOfCCExpressTrains", type="calculation", basedOn=c("CountTrains", "CrossCountryExpress"),
+                     calculationExpression="values$CountTrains/values$CrossCountryExpress", format="%.2f", caption="Multiple of CC Express")
+pt$renderPivot()
+```
+
+A "CrossCountryExpress" calculation is defined with a set of filters  on TrainCategory="Express Passenger" and TOC="CrossCountry" that *replace* the existing filters on these variables:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
+filterOverrides <- PivotFilterOverrides$new(pt, removeAllFilters=TRUE)
+filterOverrides$add(variableName="TrainCategory", values="Express Passenger", action="replace")
+filterOverrides$add(variableName="TOC", values="CrossCountry", action="replace")
+pt$defineCalculation(calculationName="CrossCountryExpress", filters=filterOverrides, 
+                     summariseExpression="n()", caption="CrossCountry Express Trains")
+pt$defineCalculation(calculationName="MultipleOfCCExpressTrains", type="calculation", 
+                     basedOn=c("CountTrains", "CrossCountryExpress"),
+                     calculationExpression="values$CountTrains/values$CrossCountryExpress", 
+                     format="%.2f", caption="Multiple of CC Express")
+pt$renderPivot()
+```
+
+### Subsets of Data
+
+Objective:
+
+We wish to find the percentage of trains with PowerType="DMU".
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+filterDMU <- PivotFilter$new(pt, variableName="PowerType", values="DMU")
+filterOverrides <- PivotFilterOverrides$new(pt, filter=filterDMU, action="and")
+pt$defineCalculation(calculationName="CountDMU", filters=filterOverrides, summariseExpression="n()", caption="DMU", visible=FALSE)
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count", visible=FALSE)
+pt$defineCalculation(calculationName="PercentageDMU", type="calculation", basedOn=c("CountTrains", "CountDMU"),
+                     calculationExpression="values$CountDMU/values$CountTrains*100", format="%.1f %%", caption="% DMU")
+pt$renderPivot()
+```
+
+A "CountDMU" calculation is defined that applies an additional filter on PowerType="DMU", i.e. that is combined using action=*and*:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+filterDMU <- PivotFilter$new(pt, variableName="PowerType", values="DMU")
+filterOverrides <- PivotFilterOverrides$new(pt, filter=filterDMU, action="and")
+pt$defineCalculation(calculationName="CountDMU", filters=filterOverrides, 
+                     summariseExpression="n()", caption="DMU")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
+pt$defineCalculation(calculationName="PercentageDMU", type="calculation", 
+                     basedOn=c("CountTrains", "CountDMU"),
+                     calculationExpression="values$CountDMU/values$CountTrains*100", 
+                     format="%.1f %%", caption="% DMU")
+pt$renderPivot()
+```
+
+## Examples using a custom filter override function
+
+The above examples provide different basic ways of modifying filters.  For relative / more dynamic filters, a custom filter override function can be used.
+
+Some of these examples may be accomplished more simply in practice  by adding additional columns to the data frame before creating the pivot table.
+
+### Running Differences/Changes
+
+Objective:
+
+We wish to show the change in the number of trains compared to the previous day for the first seven days of 2017.
+
+A custom filter override function is used to change the filter from the current date (i.e. the date in the current row) to the previous date:
+
+```{r, message=FALSE, warning=FALSE}
+trains <- bhmtrains %>%
+  mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+         GbttDate=as.Date(GbttDateTime))
+januaryDates <- seq(as.Date("2017-01-01"), as.Date("2017-01-07"), by="days")
+
+# comparison to yesterday
+# date filter function to return yesterday
+getYesterdayDateFilter <- function(pt, filters) {
+  # get the date filter
+  filter <- filters$getFilter("GbttDate")
+  if(is.null(filter)||(filter$type=="ALL")||(length(filter$values)>1)) {
+    # there is no filter on GbttDate in this cell
+    # i.e. we are in one of the total cells that covers all dates,
+    # so the concept of yesterday has no meaning, so block all dates
+    newFilter <- PivotFilter$new(pt, variableName="GbttDate", type="NONE")
+    filters$setFilter(newFilter, action="replace")
+  }
+  else {
+    # get the date value and subtract one day
+    date <- filter$values
+    date <- date - 1
+    filter$values <- date
+  }
+}
+# build the pivot
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("GbttDate", fromData=FALSE, 
+                    explicitListOfValues=as.list(januaryDates), visualTotals=TRUE)
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", 
+                     caption="Current Day Count")
+filterOverrides <- PivotFilterOverrides$new(pt, overrideFunction=getYesterdayDateFilter)
+pt$defineCalculation(calculationName="CountPreviousDayTrains", filters=filterOverrides, 
+                     summariseExpression="n()", caption="Previous Day Count")
+pt$defineCalculation(calculationName="Daily Change", type="calculation", 
+                     basedOn=c("CountTrains", "CountPreviousDayTrains"),
+                     calculationExpression="values$CountTrains-values$CountPreviousDayTrains", 
+                     caption="Daily Change")
+pt$renderPivot()
+```
+
+The above example uses `visualTotals=TRUE`, since the data frame contains other dates outside of the range 1st to 7th January.  If visual totals is not enabled, then the column totals include data for all dates, i.e. the column totals in the pivot table would be greater than the sum of the values in the pivot table column.
+
+### Rolling Average
+
+Objective:
+
+We wish to show a three-day rolling average of train count for the first seven days of 2017.
+
+A custom filter override function is used to change the filter to include the previous, current and following date:
+
+```{r, message=FALSE, warning=FALSE}
+trains <- bhmtrains %>%
+  mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+         GbttDate=as.Date(GbttDateTime))
+januaryDates <- seq(as.Date("2017-01-01"), as.Date("2017-01-07"), by="days")
+
+# three-day rolling average
+# date filter function to a three day range of dates
+getThreeDayFilter <- function(pt, filters) {
+  # get the date filter
+  filter <- filters$getFilter("GbttDate")
+  if(is.null(filter)||(filter$type=="ALL")||(length(filter$values)>1)) {
+    # there is no filter on GbttDate in this cell
+    # i.e. we are in one of the total cells that covers all dates,
+    # so the concept of previous/next day has no meaning, so block all dates
+    newFilter <- PivotFilter$new(pt, variableName="GbttDate", type="NONE")
+    filters$setFilter(newFilter, action="replace")
+  }
+  else {
+    # get the date value and create three day filter
+    date <- filter$values
+    newDates <- seq(date-1, date+1, by="days")
+    filter$values <- newDates
+  }
+}
+# build the pivot
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("GbttDate", fromData=FALSE, 
+                    explicitListOfValues=as.list(januaryDates), visualTotals=TRUE)
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", 
+                     caption="Current Day Count")
+filterOverrides <- PivotFilterOverrides$new(pt, overrideFunction=getThreeDayFilter)
+pt$defineCalculation(calculationName="ThreeDayCount", filters=filterOverrides, 
+                     summariseExpression="n()", caption="Three Day Total")
+pt$defineCalculation(calculationName="ThreeDayAverage", type="calculation", 
+                     basedOn="ThreeDayCount",
+                     calculationExpression="values$ThreeDayCount/3", 
+                     format="%.1f", caption="Three Day Rolling Average")
+pt$renderPivot()
+```
+
+The above example also uses `visualTotals=TRUE` for the same reasons as described in the previous example.
+
+### Cumulative Sum
+
+Objective:
+
+We wish to show a cumulative sum of the number of trains for the first seven days of 2017.
+
+A custom filter override function is used to change the filter to include dates between the 1st January 2017 and the current date:
+
+```{r, message=FALSE, warning=FALSE}
+trains <- bhmtrains %>%
+  mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+         GbttDate=as.Date(GbttDateTime)) %>%
+  filter((as.Date("2017-01-01") <= GbttDate)&(GbttDate <= as.Date("2017-01-07")))
+januaryDates <- seq(as.Date("2017-01-01"), as.Date("2017-01-07"), by="days")
+
+# date filter function to all dates since 1st jan
+getCumulativeFilter <- function(pt, filters) {
+  # get the date filter
+  filter <- filters$getFilter("GbttDate")
+  if(is.null(filter)||(filter$type=="ALL")||(length(filter$values)>1)) {
+    # there is no filter on GbttDate in this cell
+    # i.e. we are in one of the total cells that covers all dates,
+    # can allow this to just be the total
+  }
+  else {
+    # get the date value and modify the filter
+    date <- filter$values
+    newDates <- seq(as.Date("2017-01-01"), date, by="days")
+    filter$values <- newDates
+  }
+}
+# build the pivot
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("GbttDate", fromData=FALSE, 
+                    explicitListOfValues=as.list(januaryDates))
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", 
+                     caption="Current Day Count")
+filterOverrides <- PivotFilterOverrides$new(pt, overrideFunction=getCumulativeFilter)
+pt$defineCalculation(calculationName="CumulativeCount", filters=filterOverrides, 
+                     summariseExpression="n()", caption="Cumulative Count")
+pt$renderPivot()
+```
+ 
+## Further Reading
+
+The full set of vignettes is:
+
+1. [Introduction](v01-introduction.html)
+2. [Data Groups](v02-datagroups.html)
+3. [Calculations](v03-calculations.html)
+4. [Outputs](v04-outputs.html)
+5. [Latex Output](v05-latexoutput.html)
+6. [Styling](v06-styling.html)
+7. [Finding and Formatting](v07-findingandformatting.html)
+8. [Cell Context](v08-cellcontext.html)
+9. [Irregular Layout](v09-irregularlayout.html)
+10. [Performance](v10-performance.html)
+11. [Shiny](v11-shiny.html)
+12. [Excel Export](v12-excelexport.html)
+13. [Appendix: Details](vA1-appendix.html)
+14. [Appendix: Calculations](vA2-appendix.html)
+15. [Appendix: Class Overview](vA3-appendix.html)
