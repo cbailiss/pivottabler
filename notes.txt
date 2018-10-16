@@ -9,3 +9,18 @@ setStyle <- function(cell, baseStyleName, declarations) {
 # set the styling on the cells
 cells <- pt$findCells(calculationNames="MeanArrivalDelay")
 invisible(lapply(cells, setStyle, baseStyleName="Cell", declarations=list("xl-value-format"="##0.0")))
+
+
+
+
+
+# changing the caption of a data group
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+pt$rowGroup$childGroups[[2]]$caption <- "CC Trains"
+pt$renderPivot()

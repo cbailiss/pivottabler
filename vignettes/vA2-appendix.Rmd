@@ -21,6 +21,7 @@ vignette: >
     + % of Grand Total
     + Ratios/Multiples
     + Subsets of Data
+    + More filter combination examples
 * Examples using a custom filter override function
     + Running Differences/Changes
     + Rolling Average
@@ -110,7 +111,7 @@ Three different methods of combining filter criteria are supported:
 * replace - this removes the existing criteria for the specified variable and replaces it with the newly specified criteria for the variable.
 * or - this is an additional allowed value, alongside any existing criteria.
 
-The table below provides some examples:
+The table below provides some examples of filter criteria applied to a hypothetical date variable:
 
 | Existing Criteria           | Override Criteria | Combine Action | Resulting Criteria                   | 
 |:----------------------------|:------------------|:---------------|:-------------------------------------|
@@ -307,6 +308,65 @@ pt$defineCalculation(calculationName="PercentageDMU", type="calculation",
                      format="%.1f %%", caption="% DMU")
 pt$renderPivot()
 ```
+
+### More filter combination examples
+
+While the above examples have practical use, the following couple of examples are more for illustrative purposes to show what happens when the filter overrides are specified using the same variable as in either the row or column headings.  These examples follow the rules described in the table above.
+
+In the following examples, the TOC variable makes up the row headings and a filter override is specified where `TOC="London Midland"`.  This filter override is combined in three different ways with the existing filters from the row headings.
+
+**and**:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+filterTOC <- PivotFilter$new(pt, variableName="TOC", values="London Midland")
+filterOverrides <- PivotFilterOverrides$new(pt, filter=filterTOC, action="and")
+pt$defineCalculation(calculationName="CountLM", filters=filterOverrides, summariseExpression="n()", caption="Test Count")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
+pt$renderPivot()
+```
+
+In the above example the filter override in the "Test Count" calculation combines the TOC criteria in every row with `AND TOC="London Midland"`.
+
+It is impossible for any row in the source data frame to simultaneously have two different values for TOC, e.g. in a single data frame row, TOC cannot equal both "Arriva Trains Wales" and "London Midland".  Therefore, the only row where the "Test Count" calculation has a value is the "London Midland" row.
+
+**replace**:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+filterTOC <- PivotFilter$new(pt, variableName="TOC", values="London Midland")
+filterOverrides <- PivotFilterOverrides$new(pt, filter=filterTOC, action="replace")
+pt$defineCalculation(calculationName="CountLM", filters=filterOverrides, summariseExpression="n()", caption="Test Count")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
+pt$renderPivot()
+```
+
+In the above example the filter override in the "Test Count" calculation replaces the TOC criteria in every row with `TOC="London Midland"`.
+
+**or**:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+filterTOC <- PivotFilter$new(pt, variableName="TOC", values="London Midland")
+filterOverrides <- PivotFilterOverrides$new(pt, filter=filterTOC, action="or")
+pt$defineCalculation(calculationName="CountLM", filters=filterOverrides, summariseExpression="n()", caption="Test Count")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
+pt$renderPivot()
+```
+
+In the above example the filter override in the "Test Count" calculation combines the TOC criteria in every row with `OR TOC="London Midland"`.  So the London Midland count is included in every row for "Test Count", e.g. the value of "Test Count" for "Arriva Trains Wales" includes the values for both "Arriva Trains Wales" and "London Midland", i.e. 3079 + 14487 = 17566.
 
 ## Examples using a custom filter override function
 
