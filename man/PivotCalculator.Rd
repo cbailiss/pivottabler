@@ -65,7 +65,7 @@ calculating the value of a cell in a pivot table.
   either an sprintf string, a list of arguments for the base::format()
   function or using a custom R function.}
   \item{\code{getCombinedFilters = function(rowColFilters=NULL,
-  calcFilters=NULL)}}{Get the working filters for a calculation.}
+  calcFilters=NULL, cell=NULL)}}{Get the working filters for a calculation.}
   \item{\code{getFiltersForNamedCalculation = function(calculationName=NULL,
   calculationGroupName=NULL, rowColFilters=NULL, cell=NULL)}}{Get the working
   filters for a named calculation.}

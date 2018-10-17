@@ -32,12 +32,15 @@
 #'   \item{\code{new(...)}}{Create a new pivot filter, specifying the field
 #'   values documented above.}
 #'
-#'   \item{\code{and(filter)}}{Update this PivotFilter by ANDing this filter
-#'   with the specified PivotFilter.}
-#'   \item{\code{or(filter)}}{Update this PivotFilter by ORing filter with the
-#'   specified PivotFilter.}
-#'   \item{\code{replace(filter)}}{Update this PivotFilter by setting this
-#'   filter to match the specified PivotFilter.}
+#'   \item{\code{intersect(filter)}}{Update this PivotFilter by intersecting
+#'   the allowed values in this filter with the allowed values in the specified
+#'   filter.}
+#'   \item{\code{union(filter)}}{Update this PivotFilter by unioning
+#'   the allowed values in this filter with the allowed values in the specified
+#'   filter.}
+#'   \item{\code{replace(filter)}}{Update this PivotFilter by replacing the
+#'   allowed values in this filter with the allowed values from the specified
+#'   filter.}
 #'   \item{\code{getCopy()}}{Get a copy of this PivotFilter.}
 #'   \item{\code{asList()}}{Get a list representation of this PivotFilter.}
 #'   \item{\code{asJSON()}}{Get a list representation of this PivotFilter.}
@@ -75,13 +78,13 @@ PivotFilter <- R6::R6Class("PivotFilter",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$new", "Created new Pivot Filter.")
    },
-   and = function(filter) {
+   intersect = function(filter) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "and", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "intersect", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
      }
-     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "ANDing filter...", list(filter=filter$asString()))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$intersect", "Intersecting filter...", list(filter=filter$asString()))
      if(private$p_variableName != filter$variableName)
-       stop(paste0("PivotFilter$and():  filter variable name mismatch. ",
+       stop(paste0("PivotFilter$intersect():  filter variable name mismatch. ",
                    "Expected: ", private$p_variableName, " Encountered: ", filter$variableName), call. = FALSE)
      if(private$p_type=="ALL") {
        if(filter$type=="ALL") {
@@ -94,7 +97,7 @@ PivotFilter <- R6::R6Class("PivotFilter",
        else if(filter$type=="NONE") {
          private$p_type <- "NONE"
        }
-       else stop(paste0("PivotFilter$and():  Invalid filter$type (A): ", filter$type), call. = FALSE)
+       else stop(paste0("PivotFilter$intersect():  Invalid filter$type (A): ", filter$type), call. = FALSE)
      }
      else if(private$p_type=="VALUES") {
        if(filter$type=="ALL") {
@@ -114,7 +117,7 @@ PivotFilter <- R6::R6Class("PivotFilter",
          private$p_type <- "NONE"
          private$p_values <- NULL
        }
-       else stop(paste0("PivotFilter$and():  Invalid filter$type (B): ", filter$type), call. = FALSE)
+       else stop(paste0("PivotFilter$intersect():  Invalid filter$type (B): ", filter$type), call. = FALSE)
      }
      else if(private$p_type=="NONE") {
        if(filter$type=="ALL") {
@@ -126,19 +129,19 @@ PivotFilter <- R6::R6Class("PivotFilter",
        else if(filter$type=="NONE") {
          # do nothing
        }
-       else stop(paste0("PivotFilter$and():  Invalid filter$type (C): ", filter$type), call. = FALSE)
+       else stop(paste0("PivotFilter$intersect():  Invalid filter$type (C): ", filter$type), call. = FALSE)
      }
-     else stop(paste0("PivotFilter$and():  Invalid type (D): ", private$p_type), call. = FALSE)
-     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "ANDed filter.")
+     else stop(paste0("PivotFilter$intersect():  Invalid type (D): ", private$p_type), call. = FALSE)
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$intersect", "Intersected filter.")
      return(invisible())
    },
-   or = function(filter) {
+   union = function(filter) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "or", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "union", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
      }
-     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "ORing filter...", list(filter=filter$asString()))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "Unioning filter...", list(filter=filter$asString()))
      if(private$p_variableName != filter$variableName)
-       stop(paste0("PivotFilter$or():  filter variable name mismatch. ",
+       stop(paste0("PivotFilter$union():  filter variable name mismatch. ",
                    "Expected: ", private$p_variableName, " Encountered: ", filter$variableName), call. = FALSE)
      if(private$p_type=="ALL") {
        if(filter$type=="ALL") {
@@ -150,7 +153,7 @@ PivotFilter <- R6::R6Class("PivotFilter",
        else if(filter$type=="NONE") {
          # do nothing
        }
-       else stop(paste0("PivotFilter$or():  Invalid filter$type (A): ", filter$type), call. = FALSE)
+       else stop(paste0("PivotFilter$union():  Invalid filter$type (A): ", filter$type), call. = FALSE)
      }
      else if(private$p_type=="VALUES") {
        if(filter$type=="ALL") {
@@ -163,7 +166,7 @@ PivotFilter <- R6::R6Class("PivotFilter",
        else if(filter$type=="NONE") {
          # do nothing
        }
-       else stop(paste0("PivotFilter$or():  Invalid filter$type (B): ", filter$type), call. = FALSE)
+       else stop(paste0("PivotFilter$union():  Invalid filter$type (B): ", filter$type), call. = FALSE)
      }
      else if(private$p_type=="NONE") {
        if(filter$type=="ALL") {
@@ -176,10 +179,10 @@ PivotFilter <- R6::R6Class("PivotFilter",
        else if(filter$type=="NONE") {
          # do nothing
        }
-       else stop(paste0("PivotFilter$or():  Invalid filter$type (C): ", filter$type), call. = FALSE)
+       else stop(paste0("PivotFilter$union():  Invalid filter$type (C): ", filter$type), call. = FALSE)
      }
-     else stop(paste0("PivotFilter$or():  Invalid type (D): ", private$p_type), call. = FALSE)
-     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "ORed filter.")
+     else stop(paste0("PivotFilter$union():  Invalid type (D): ", private$p_type), call. = FALSE)
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "Unioned filter.")
      return(invisible())
    },
    replace = function(filter) {

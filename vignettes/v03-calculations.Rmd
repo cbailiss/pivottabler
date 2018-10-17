@@ -321,11 +321,9 @@ A number of different approaches to formatting are supported:
 * If `format` is an R function, then this is invoked for each value.
 * If `format` is not specified, then `base::as.character()` is invoked to provide a default formatted value.
 
-The above are the same approaches used when formatting data groups.  See the [Data Groups](v02-datagroups.html) vignette for more details
+The above are the same approaches used when formatting data groups.  Examples of the first two approaches above can be found in previous examples in this vignette.  An example of the third approach and more details can be found in the [Data Groups](v02-datagroups.html) vignette.
 
 Some formatting behaviour depends on the data type of the value being formatted.  For details see the [Appendix: Details](vA1-appendix.html) vignette. 
-
-Examples of the first two approaches above can be found in previous examples in this vignette.  An example of the third approach can be found in the [Data Groups](v02-datagroups.html) vignette.
 
 ## Empty cells
 

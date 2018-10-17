@@ -12,7 +12,7 @@ vignette: >
 ## In This Vignette
 
 * Introduction
-* Basic Principle
+* Basic Principles
 * Modifying filters
     + Method 1:  Further restricting the data using a `PivotFilters` object
     + Method 2:  Flexible filter changes using a `PivotFilterOverrides` object
@@ -35,9 +35,13 @@ Before reading this vignette, it may be helpful to read the [Calculations](v03-c
 
 Many of the examples in this vignette leave working columns (i.e. intermediate values not of interest) visible in the pivot tables.  This is done deliberately to aid understanding.  These calculations can be made invisible by specifying `visible=FALSE` as an additional parameter as part of `pt$defineCalculation(...)`.
 
-## Basic Principle
+## Basic Principles
 
-Every cell in a pivot table has a set of associated filters that specify what data is included in the calculation of the value of that cell, as explained in the [Cell Context](v08-cellcontext.html) vignette.  By changing these filters it is possible to perform different sorts of calculations.  
+A filter is simply the name of a variable and one or more allowed values of that variable (e.g. TrainCategory="Express Passenger").
+
+Every cell in a pivot table has a set of associated filters that specify what data is included in the calculation of the value of that cell, as explained in the [Cell Context](v08-cellcontext.html) vignette.  
+
+By changing these filters it is possible to perform different sorts of calculations.  
 
 The filters associated with each cell can be made visible in the pivot table by specifying `pt$renderPivot(includeWorkingData=TRUE)` as shown in the example below.
 
@@ -82,13 +86,14 @@ pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 weekendFilter <- PivotFilters$new(pt, variableName="WeekdayOrWeekend", values="Weekend")
 pt$defineCalculation(calculationName="WeekendTrains", summariseExpression="n()", 
-                     filters=weekendFilter, caption="Weekend Trains")
+                     filters=weekendFilter, noDataValue=0, 
+                     caption="Weekend Trains")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()", 
-                     caption="Total Trains")
+                     noDataValue=0, caption="Total Trains")
 pt$defineCalculation(calculationName="WeekendTrainsPercentage",
-                     type="calculation", basedOn=c("WeekendTrains", "TotalTrains"),
-                     format="%.1f %%", caption="% at Weekend",
-                     calculationExpression="values$WeekendTrains/values$TotalTrains*100")
+   type="calculation", basedOn=c("WeekendTrains", "TotalTrains"),
+   format="%.1f %%", caption="% at Weekend",
+   calculationExpression="ifelse(values$TotalTrains>0, values$WeekendTrains/values$TotalTrains*100, NA)")
 pt$renderPivot()
 ```
 
@@ -102,33 +107,33 @@ A few different options can be specified when creating a `PivotFilterOverrides` 
 * `keepOnlyFiltersFor=variableNames` specifies a character vector of variable names to retain the filter criteria for.  Filter criteria for all other variables will be cleared.
 * `removeFiltersFor=variableNames` specifies a character vector of variable names for which the filter criteria will be cleared.
 * `overrideFunction=function` specifies a custom R function which will be invoked for each cell to modify the filters before the calculation is carried out.
-* `filter=filter, action="and"|"replace"|"or"` specifies a `PivotFilter` object containing filter criteria which will be combined with the current set of filters using the specified combine method (explained below).
-* `variableName=variableName, type="ALL"|"VALUES"|"NONE", values=values, action="and"|"replace"|"or"` specifies a new filter condition which will be combined with the current set of filters using the specified combine method (explained below).
+* `filter=filter, action="intersect"|"replace"|"union"` specifies a `PivotFilter` object containing filter criteria which will be combined with the current set of filters using the specified combine method (explained below).
+* `variableName=variableName, type="ALL"|"VALUES"|"NONE", values=values, action="intersect"|"replace"|"union"` specifies a new filter condition which will be combined with the current set of filters using the specified combine method (explained below).
 
-Three different methods of combining filter criteria are supported:
+When we talk about combining filters, we mean combining the lists of allowed values in each filter.  Three different methods of combining filter criteria are supported:
 
-* and - this further restricts the data - i.e. it is additional filter criteria on top of the existing filter criteria for the variable.  
+* intersect - this further restricts the data - i.e. it is additional filter criteria on top of the existing filter criteria for the variable.  
 * replace - this removes the existing criteria for the specified variable and replaces it with the newly specified criteria for the variable.
-* or - this is an additional allowed value, alongside any existing criteria.
+* union - this provides additional allowed values, alongside any existing criteria.
 
 The tables below provide some examples of filter overrides applied to hypothetical GbttDate and TOC variables:
 
-| Existing Criteria             | Override Criteria    | Combine | Resulting Criteria                 | 
-|:------------------------------|:---------------------|:--------|:-----------------------------------|
-| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 2nd May 2018  | and     | Gbtt = 2nd May 2018                |
-| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 2nd May 2018  | replace | Gbtt = 2nd May 2018                |
-| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 2nd May 2018  | or      | Gbtt = 1st, 2nd, 3rd May 2018      |
-| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 9th May 2018  | and     | NONE (i.e. no matching data)       |
-| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 9th May 2018  | replace | Gbtt = 9th May 2018                |
-| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 9th May 2018  | or      | Gbtt = 1st, 2nd, 3rd, 9th May 2018 |
+| Existing Criteria             | Override Criteria    | Combine   | Resulting Criteria                 | 
+|:------------------------------|:---------------------|:----------|:-----------------------------------|
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 2nd May 2018  | intersect | Gbtt = 2nd May 2018                |
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 2nd May 2018  | replace   | Gbtt = 2nd May 2018                |
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 2nd May 2018  | union     | Gbtt = 1st, 2nd, 3rd May 2018      |
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 9th May 2018  | intersect | NONE (i.e. no matching data)       |
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 9th May 2018  | replace   | Gbtt = 9th May 2018                |
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 9th May 2018  | union     | Gbtt = 1st, 2nd, 3rd, 9th May 2018 |
 
-Filters for different variables are combined completely independently.  Where no filter criteria exists for a particular variable, then there is an implicit filter that allows ALL values, i.e. in the tables above and below, in the Existing Criteria column there is an implicit "TOC = ALL".
+Filters for different variables are combined completely independently.  Where no filter criteria exists for a particular variable, then there is an implicit filter that allows ALL values, i.e. in the tables above and below, in the Existing Criteria column, there is an implicit "TOC = ALL".
 
-| Existing Criteria             | Override  | Combine | Resulting Criteria                      | 
-|:------------------------------|:----------|:--------|:----------------------------------------|
-| Gbtt = 1st, 2nd, 3rd May 2018 | TOC = c2c | and     | Gbtt = 1st, 2nd, 3rd May 2018, TOC=c2c  |
-| Gbtt = 1st, 2nd, 3rd May 2018 | TOC = c2c | replace | Gbtt = 1st, 2nd, 3rd May 2018, TOC=c2c  |
-| Gbtt = 1st, 2nd, 3rd May 2018 | TOC = c2c | or      | Gbtt = 1st, 2nd, 3rd May 2018, TOC=ALL  |
+| Existing Criteria             | Override  | Combine   | Resulting Criteria                      | 
+|:------------------------------|:----------|:----------|:----------------------------------------|
+| Gbtt = 1st, 2nd, 3rd May 2018 | TOC = c2c | intersect | Gbtt = 1st, 2nd, 3rd May 2018, TOC=c2c  |
+| Gbtt = 1st, 2nd, 3rd May 2018 | TOC = c2c | replace   | Gbtt = 1st, 2nd, 3rd May 2018, TOC=c2c  |
+| Gbtt = 1st, 2nd, 3rd May 2018 | TOC = c2c | union     | Gbtt = 1st, 2nd, 3rd May 2018, TOC=ALL  |
 
 ## Examples of Modifying Filters
 
@@ -289,7 +294,7 @@ pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 filterDMU <- PivotFilter$new(pt, variableName="PowerType", values="DMU")
-filterOverrides <- PivotFilterOverrides$new(pt, filter=filterDMU, action="and")
+filterOverrides <- PivotFilterOverrides$new(pt, filter=filterDMU, action="intersect")
 pt$defineCalculation(calculationName="CountDMU", filters=filterOverrides, summariseExpression="n()", caption="DMU", visible=FALSE)
 pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count", visible=FALSE)
 pt$defineCalculation(calculationName="PercentageDMU", type="calculation", basedOn=c("CountTrains", "CountDMU"),
@@ -297,7 +302,7 @@ pt$defineCalculation(calculationName="PercentageDMU", type="calculation", basedO
 pt$renderPivot()
 ```
 
-A "CountDMU" calculation is defined that applies an additional filter on PowerType="DMU", i.e. that is combined using action=*and*:
+A "CountDMU" calculation is defined that applies an additional filter on PowerType="DMU", i.e. that is combined using action=*intersect*:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -306,7 +311,7 @@ pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 filterDMU <- PivotFilter$new(pt, variableName="PowerType", values="DMU")
-filterOverrides <- PivotFilterOverrides$new(pt, filter=filterDMU, action="and")
+filterOverrides <- PivotFilterOverrides$new(pt, filter=filterDMU, action="intersect")
 pt$defineCalculation(calculationName="CountDMU", filters=filterOverrides, 
                      summariseExpression="n()", caption="DMU")
 pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
@@ -323,7 +328,7 @@ While the above examples have practical use, the following couple of examples ar
 
 In the following examples, the TOC variable makes up the row headings and a filter override is specified where `TOC="London Midland"`.  This filter override is combined in three different ways with the existing filters from the row headings.
 
-**and**:
+**intersect**:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -332,15 +337,15 @@ pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 filterTOC <- PivotFilter$new(pt, variableName="TOC", values="London Midland")
-filterOverrides <- PivotFilterOverrides$new(pt, filter=filterTOC, action="and")
+filterOverrides <- PivotFilterOverrides$new(pt, filter=filterTOC, action="intersect")
 pt$defineCalculation(calculationName="CountLM", filters=filterOverrides, summariseExpression="n()", caption="Test Count")
 pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
 pt$renderPivot()
 ```
 
-In the above example the filter override in the "Test Count" calculation combines the TOC criteria in every row with `AND TOC="London Midland"`.
+In the above example the filter override in the "Test Count" calculation intersects the TOC criteria in every row with `TOC="London Midland"`.  The intersection of `TOC="London Midland"` with anything other than `TOC="London Midland"` results in an empty set, so only the "London Midland" row has any matching data.
 
-It is impossible for any row in the source data frame to simultaneously have two different values for TOC, e.g. in a single data frame row, TOC cannot equal both "Arriva Trains Wales" and "London Midland".  Therefore, the only row where the "Test Count" calculation has a value is the "London Midland" row.
+Another way of looking at this is to say that it is impossible for any row in the source data frame to simultaneously have two different values for TOC, e.g. in a single data frame row, TOC cannot equal both "Arriva Trains Wales" and "London Midland".  Therefore, the only row where the "Test Count" calculation has a value is the "London Midland" row.
 
 **replace**:
 
@@ -359,7 +364,7 @@ pt$renderPivot()
 
 In the above example the filter override in the "Test Count" calculation replaces the TOC criteria in every row with `TOC="London Midland"`.
 
-**or**:
+**union**:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -368,13 +373,13 @@ pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 filterTOC <- PivotFilter$new(pt, variableName="TOC", values="London Midland")
-filterOverrides <- PivotFilterOverrides$new(pt, filter=filterTOC, action="or")
+filterOverrides <- PivotFilterOverrides$new(pt, filter=filterTOC, action="union")
 pt$defineCalculation(calculationName="CountLM", filters=filterOverrides, summariseExpression="n()", caption="Test Count")
 pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
 pt$renderPivot()
 ```
 
-In the above example the filter override in the "Test Count" calculation combines the TOC criteria in every row with `OR TOC="London Midland"`.  So the London Midland count is included in every row for "Test Count", e.g. the value of "Test Count" for "Arriva Trains Wales" includes the values for both "Arriva Trains Wales" and "London Midland", i.e. 3079 + 14487 = 17566.
+In the above example the filter override in the "Test Count" calculation unions the TOC criteria in every row with `TOC="London Midland"`.  So the London Midland count is included in every row for "Test Count", e.g. the value of "Test Count" for "Arriva Trains Wales" includes the values for both "Arriva Trains Wales" and "London Midland", i.e. 3079 + 14487 = 17566.
 
 ## Examples using a custom filter override function
 

@@ -228,30 +228,23 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(matchMode=="simple") return(invisible(FALSE))
       else return(invisible(TRUE))
     },
-    # the action parameter below controls how two filters are combined.  Most common cases:
-    #   1) When working out the rowColFilters for each pivot table cell (action=and when combining row and column heading filters)
-    #   2) When combining the rowColFilters with calculation filters (in order of most typical, action could be any of: and/replace/or)
-    #      "and" would apply additional restrictions, e.g. see the example in the Calculations vignette that has a measure for weekend trains only
+    # The action parameter below controls how two filters are combined.
+    # Basic principle:  A filter is a list of allowed values for a specific variable.
+    # The action parameters describe below relate to how those lists of allowed values can be combined.
+    # Most common cases:
+    #   1) When working out the rowColFilters for each pivot table cell (action=intersect when combining row and column heading filters)
+    #   2) When combining the rowColFilters with calculation filters (in order of most typical, action could be any of: intersect/replace/union)
+    #      "intersect" would apply additional restrictions, e.g. see the example in the Calculations vignette that has a measure for weekend trains only
     #      "replace" would apply when doing things like percentage of row total calculations - again, see example in the calculations vignette
-    #      "or" is probably much less likely (can't envisage many situations when that would be needed)
-    #   3) in custom calculation functions (action could be any of and/replace/or)
-    # note the use of action=or is limited.
-    # it does not allow complex conditions to be built up, such as ((A=X) or (B=Y)) and (C=2)
+    #      "union" is probably much less likely (can't envisage many situations when that would be needed)
+    #   3) in custom calculation functions (action could be any of intersect/replace/union)
+    # pivottabler does not allow complex conditions to be built up, such as ((A=X) or (B=Y)) and (C=2)
     # since as the above illustrates, there is complex logic around precedence of "and" vs. "or".
-    # instead, the action=or simply expands the criteria of one filter slightly, e.g.
-    # if filter1 is A=1 and filter2 is A=2, then resultant filter is A=(1 or 2).
-    # if filter1 is A=1 and filter2 is B=2, then resultant filter is still A=1,
-    # since filter1 is effectively A=1 and B=anything, so B=anything or B=2 is effectively B=anything.
-    # you could argue that, since filter2 is also A=anyting, then the resulting filter
-    # should be ALL (i.e. no criteria against A or B), but that would likely have limited practical use.
-    # so, action=or should be thought of as:
-    # 1) if filter1 is VALUES or NONE, then action=or allows additional values.
-    # 2) if filter1 has no restriction on the field that filter2 relates to, then action=or has no effect.
-    # See the and/or/replace methods on PivotFilter for the specifics.
+    # See Appendix 2 vignette for more details.
     setFilters = function(filters=NULL, action="replace") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace", "or"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("intersect", "replace", "union"))
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilters", "Setting filters...", list(action=action, filters=filters$asString()))
       if(length(filters$filters)>0) {
@@ -265,7 +258,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
     setFilter = function(filter=NULL, action="replace") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace", "or"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("intersect", "replace", "union"))
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilters", "Setting filter...", list(action=action, filter=filter$asString()))
       self$setFilterValues(variableName=filter$variableName, type=filter$type, values=filter$values, action=action)
@@ -277,22 +270,22 @@ PivotFilters <- R6::R6Class("PivotFilters",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace", "or"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("intersect", "replace", "union"))
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilterValues", "Setting filter values...",
                                     list(action=action, variableName=variableName, type=type, values=values))
       filter <- PivotFilter$new(private$p_parentPivot, variableName=variableName, type=type, values=values)
       variablesNames <- names(private$p_filters)
-      if(action=="and") {
-        if(variableName %in% variablesNames) { private$p_filters[[variableName]]$and(filter) }
+      if(action=="intersect") {
+        if(variableName %in% variablesNames) { private$p_filters[[variableName]]$intersect(filter) }
         else { private$p_filters[[variableName]] <- filter }
-      }
-      else if(action=="or") {
-        if(variableName %in% variablesNames) { private$p_filters[[variableName]]$or(filter) }
-        # no "else", since for this variable, this filter is ALL, so ALL or something = ALL.
       }
       else if(action=="replace") {
         private$p_filters[[variableName]] <- filter
+      }
+      else if(action=="union") {
+        if(variableName %in% variablesNames) { private$p_filters[[variableName]]$union(filter) }
+        # no "else", since for this variable, this filter is ALL, so ALL or something = ALL.
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilterValues", "Set filter values.")
       return(invisible())

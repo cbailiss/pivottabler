@@ -32,26 +32,26 @@ the filters for.  All other filters will be removed.}
 
 \item{\code{overrideFunction}}{A custom function to ammend the filters in each cell.}
 
-\item{\code{countAnd}}{The number of PivotFilters that will be combined with other
-pivot filters using the AND operator.}
+\item{\code{countIntersect}}{The number of PivotFilters that will be combined with other
+pivot filters by intersecting their lists of allowed values.}
 
 \item{\code{countReplace}}{The number of PivotFilters that will be combined with other
 pivot filters by entirely replaceing existing PivotFilter objects.}
 
-\item{\code{countOr}}{The number of PivotFilters that will be combined with other
-pivot filters using the OR operator.}
+\item{\code{countUnion}}{The number of PivotFilters that will be combined with other
+pivot filters by unioning their lists of allowed values.}
 
 \item{\code{countTotal}}{The total number of PivotFilters that will be combined with
 other pivot filters.}
 
-\item{\code{andFilter}}{The PivotFilters that will be combined with other
-pivot filters using the AND operator.}
+\item{\code{intersectFilters}}{The PivotFilters that will be combined with other
+pivot filters by intersecting their lists of allowed values.}
 
 \item{\code{replaceFilters}}{The PivotFilters that will be combined with other
-pivot filters by entirely replaceing existing PivotFilter objects.}
+pivot filters by entirely replacing existing PivotFilter objects.}
 
-\item{\code{orFilters}}{The PivotFilters that will be combined with other
-pivot filters using the OR operator.}
+\item{\code{unionFilters}}{The PivotFilters that will be combined with other
+pivot filters by unioning their lists of allowed values.}
 
 \item{\code{allFilters}}{The complete set of PivotFilters that will be combined with
 other pivot filters.}
@@ -66,7 +66,7 @@ other pivot filters.}
   the field values documented above.}
 
   \item{\code{add(filter=NULL, variableName=NULL, type="ALL", values=NULL,
-  action="and")}}{Add a pivot filter override, either from an existing
+  action="intersect")}}{Add a pivot filter override, either from an existing
   PivotFilter object or by specifying a variableName and values.}
   \item{\code{apply(filters)}}{Apply the filter overrides to a PivotFilters
   object.}

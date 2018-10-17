@@ -630,7 +630,7 @@ PivotTable <- R6::R6Class("PivotTable",
         rowGrps[[i]]$rowColumnNumber <- as.integer(i)
         # get the ancestor groups for this group, starting with the current object
         ancestors <- rowGrps[[i]]$getAncestorGroups(includeCurrentGroup=TRUE)
-        # construct the parent filter settings using "and" filter logic
+        # construct the parent filter settings using "intersect" filter logic
         rowColFilters <- PivotFilters$new(self)
         for(j in length(ancestors):1) {
           acs <- ancestors[[j]]
@@ -639,7 +639,7 @@ PivotTable <- R6::R6Class("PivotTable",
           if(filters$count==0) next
           for(k in 1:length(filters$filters)) {
             filter <- filters$filters[[k]]
-            rowColFilters$setFilter(filter, action="and")
+            rowColFilters$setFilter(filter, action="intersect")
           }
         }
         rowFilters[[i]] <- rowColFilters
@@ -662,7 +662,7 @@ PivotTable <- R6::R6Class("PivotTable",
         columnGrps[[i]]$rowColumnNumber <- as.integer(i)
         # get the ancestor groups for this group, starting with the current object
         ancestors <- columnGrps[[i]]$getAncestorGroups(includeCurrentGroup=TRUE)
-        # construct the parent filter settings using "and" filter logic
+        # construct the parent filter settings using "intersect" filter logic
         rowColFilters <- PivotFilters$new(self)
         for(j in length(ancestors):1) {
           acs <- ancestors[[j]]
@@ -671,7 +671,7 @@ PivotTable <- R6::R6Class("PivotTable",
           if(filters$count==0) next
           for(k in 1:length(filters$filters)) {
             filter <- filters$filters[[k]]
-            rowColFilters$setFilter(filter, action="and")
+            rowColFilters$setFilter(filter, action="intersect")
           }
         }
         columnFilters[[i]] <- rowColFilters
@@ -717,7 +717,7 @@ PivotTable <- R6::R6Class("PivotTable",
               }
               else {
                 rowColFilters <- rowFilters[[r]]$getCopy()
-                if (!is.null(columnFilters[[c]])) { rowColFilters$setFilters(columnFilters[[c]], action="and") }
+                if (!is.null(columnFilters[[c]])) { rowColFilters$setFilters(columnFilters[[c]], action="intersect") }
               }
               # find the calculation
               calcGrpNme <- NULL

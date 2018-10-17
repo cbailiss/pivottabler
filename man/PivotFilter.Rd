@@ -42,12 +42,15 @@ be found in the data frame column.}
   \item{\code{new(...)}}{Create a new pivot filter, specifying the field
   values documented above.}
 
-  \item{\code{and(filter)}}{Update this PivotFilter by ANDing this filter
-  with the specified PivotFilter.}
-  \item{\code{or(filter)}}{Update this PivotFilter by ORing filter with the
-  specified PivotFilter.}
-  \item{\code{replace(filter)}}{Update this PivotFilter by setting this
-  filter to match the specified PivotFilter.}
+  \item{\code{intersect(filter)}}{Update this PivotFilter by intersecting
+  the allowed values in this filter with the allowed values in the specified
+  filter.}
+  \item{\code{union(filter)}}{Update this PivotFilter by unioning
+  the allowed values in this filter with the allowed values in the specified
+  filter.}
+  \item{\code{replace(filter)}}{Update this PivotFilter by replacing the
+  allowed values in this filter with the allowed values from the specified
+  filter.}
   \item{\code{getCopy()}}{Get a copy of this PivotFilter.}
   \item{\code{asList()}}{Get a list representation of this PivotFilter.}
   \item{\code{asJSON()}}{Get a list representation of this PivotFilter.}

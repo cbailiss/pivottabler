@@ -172,7 +172,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilters", filters1, missing(filters1), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilters", filters2, missing(filters2), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilters", action, missing(action), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace", "or"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilters", action, missing(action), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("intersect", "replace", "union"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setFilters", "Setting filters...")
      copy <- filters1$getCopy() # always copy, to avoid inadvertant bugs of a change to one filter affecting multiple cells in the Pivot Table
@@ -184,7 +184,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilter", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilter", action, missing(action), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace", "or"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilter", action, missing(action), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("intersect", "replace", "union"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setFilter", "Setting filter...")
      copy <- filters$getCopy() # always copy, to avoid inadvertant bugs of changing one filter affecting multiple cells
@@ -197,7 +197,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilterValues", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilterValues", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilterValues", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilterValues", action, missing(action), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace", "or"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilterValues", action, missing(action), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("intersect", "replace", "union"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setFilterValues", "Setting filter values...")
      copy <- filters$getCopy() # always copy, to avoid inadvertant bugs of changing one filter affecting multiple cells
@@ -249,9 +249,6 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      return(invisible(distinctValues))
    },
    formatValue = function(value=NULL, format=NULL) {
-     # this function is ready to support other data types, once the other PivotTable logic/cells have been modified
-     # to work with data types other than numeric/integer
-     # , "character", "factor", "logical", "Date", "POSIXct", "POSIXlt"
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses=c("integer", "numeric", "character", "logical", "date", "Date", "POSIXct"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
@@ -341,7 +338,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      else {
        filters <- rowColFilters$getCopy()
        if(!is.null(calcFilters)) {
-         if("PivotFilters" %in% class(calcFilters)) filters$setFilters(filters=calcFilters, action="and")
+         if("PivotFilters" %in% class(calcFilters)) filters$setFilters(filters=calcFilters, action="intersect")
          else if("PivotFilterOverrides" %in% class(calcFilters)) calcFilters$apply(filters, cell)
        }
      }

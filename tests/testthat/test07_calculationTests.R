@@ -482,7 +482,7 @@ for(i in 1:nrow(scenarios)) {
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("TOC")
     filterDMU <- PivotFilter$new(pt, variableName="PowerType", values="DMU")
-    filterOverrides <- PivotFilterOverrides$new(pt, filter=filterDMU, action="and")
+    filterOverrides <- PivotFilterOverrides$new(pt, filter=filterDMU, action="intersect")
     pt$defineCalculation(calculationName="CountDMU", filters=filterOverrides, summariseExpression=countFunction, caption="DMU", visible=FALSE)
     pt$defineCalculation(calculationName="CountTrains", summariseExpression=countFunction, caption="Count", visible=FALSE)
     pt$defineCalculation(calculationName="PercentageDMU", type="calculation", basedOn=c("CountTrains", "CountDMU"),

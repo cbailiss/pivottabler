@@ -490,7 +490,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        else {
          # get the ancestor groups for this group, starting with the current object
          ancestors <- grp$getAncestorGroups(includeCurrentGroup=TRUE)
-         # construct the parent filter settings using "and" filter logic
+         # construct the parent filter settings using "intersect" filter logic
          rowColFilters <- PivotFilters$new(private$p_parentPivot)
          for(j in length(ancestors):1) {
            acs <- ancestors[[j]]
@@ -499,7 +499,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            if(filters$count==0) next
            for(k in 1:length(filters$filters)) {
              filter <- filters$filters[[k]]
-             rowColFilters$setFilter(filter, action="and")
+             rowColFilters$setFilter(filter, action="intersect")
            }
          }
          if(!rowColFilters$isNONE) {
@@ -631,7 +631,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        topLevelFilter <- PivotFilter$new(parentPivot=private$p_parentPivot, variableName=variableName, values=allValues)
        for(i in 1:length(descdnts)) {
          descdnt <- descdnts[[i]]
-         if(descdnt$isTotal) descdnt$filters$setFilter(topLevelFilter, action="and")
+         if(descdnt$isTotal) descdnt$filters$setFilter(topLevelFilter, action="intersect")
        }
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addDataGroups", "Added groups.", list(count=length(newGroups)))
@@ -736,7 +736,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
              if(filters$count==0) next
              for(l in 1:length(filters$filters)) {
                filter <- filters$filters[[l]]
-               netFilters$setFilter(filter, action="and")
+               netFilters$setFilter(filter, action="intersect")
              }
            }
            # calculate the value
@@ -879,7 +879,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if(filters$count==0) next
        for(k in 1:length(filters$filters)) {
          filter <- filters$filters[[k]]
-         netFilters$setFilter(filter, action="and")
+         netFilters$setFilter(filter, action="intersect")
        }
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getNetFilters", "Got net filters.")

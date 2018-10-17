@@ -28,20 +28,20 @@
 #' the filters for.  All other filters will be removed.
 #' @field removeFiltersFor Specify the names of variables to remove filters for.
 #' @field overrideFunction A custom function to ammend the filters in each cell.
-#' @field countAnd The number of PivotFilters that will be combined with other
-#' pivot filters using the AND operator.
+#' @field countIntersect The number of PivotFilters that will be combined with other
+#' pivot filters by intersecting their lists of allowed values.
 #' @field countReplace The number of PivotFilters that will be combined with other
 #' pivot filters by entirely replaceing existing PivotFilter objects.
-#' @field countOr The number of PivotFilters that will be combined with other
-#' pivot filters using the OR operator.
+#' @field countUnion The number of PivotFilters that will be combined with other
+#' pivot filters by unioning their lists of allowed values.
 #' @field countTotal The total number of PivotFilters that will be combined with
 #' other pivot filters.
-#' @field andFilter The PivotFilters that will be combined with other
-#' pivot filters using the AND operator.
+#' @field intersectFilters The PivotFilters that will be combined with other
+#' pivot filters by intersecting their lists of allowed values.
 #' @field replaceFilters The PivotFilters that will be combined with other
-#' pivot filters by entirely replaceing existing PivotFilter objects.
-#' @field orFilters The PivotFilters that will be combined with other
-#' pivot filters using the OR operator.
+#' pivot filters by entirely replacing existing PivotFilter objects.
+#' @field unionFilters The PivotFilters that will be combined with other
+#' pivot filters by unioning their lists of allowed values.
 #' @field allFilters The complete set of PivotFilters that will be combined with
 #' other pivot filters.
 
@@ -53,7 +53,7 @@
 #'   the field values documented above.}
 #'
 #'   \item{\code{add(filter=NULL, variableName=NULL, type="ALL", values=NULL,
-#'   action="and")}}{Add a pivot filter override, either from an existing
+#'   action="intersect")}}{Add a pivot filter override, either from an existing
 #'   PivotFilter object or by specifying a variableName and values.}
 #'   \item{\code{apply(filters)}}{Apply the filter overrides to a PivotFilters
 #'   object.}
@@ -68,7 +68,7 @@
 PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
   public = list(
     initialize = function(parentPivot=NULL, removeAllFilters=FALSE, keepOnlyFiltersFor=NULL, removeFiltersFor=NULL, overrideFunction=NULL,
-                          filter=NULL, variableName=NULL, type="ALL", values=NULL, action="and") {
+                          filter=NULL, variableName=NULL, type="ALL", values=NULL, action="replace") {
       if(parentPivot$argumentCheckMode > 0) {
         checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
         checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", removeAllFilters, missing(removeAllFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -79,7 +79,7 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
         checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
         checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
-        checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace", "or"))
+        checkArgument(parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "initialize", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("intersect", "replace", "union"))
       }
       private$p_parentPivot <- parentPivot
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilterOverrides$new", "Creating new Pivot Filter Overrides...",
@@ -90,28 +90,28 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
       private$p_keepOnlyFiltersFor=keepOnlyFiltersFor
       private$p_removeFiltersFor=removeFiltersFor
       private$p_overrideFunction <- overrideFunction
-      private$p_andFilters <- list()
+      private$p_intersectFilters <- list()
       private$p_replaceFilters <- list()
-      private$p_orFilters <- list()
+      private$p_unionFilters <- list()
       if(!missing(filter)) self$add(filter=filter, action=action)
       else if(!missing(variableName)) self$add(variableName=variableName, type=type, values=values, action=action)
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilterOverrides$new", "Created new Pivot Filter Overrides.")
     },
-    add = function(filter=NULL, variableName=NULL, type="ALL", values=NULL, action="and") {
+    add = function(filter=NULL, variableName=NULL, type="ALL", values=NULL, action="replace") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "add", filter, missing(filter), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilter")
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "add", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "add", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "add", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
-        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "add", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("and", "replace", "or"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "add", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("intersect", "replace", "union"))
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilterOverrides$add", "Adding filter override...")
       if(missing(filter)&&missing(variableName))
         stop("PivotFilterOverrides$add():  Either the filter parameter or the variableName parameter must be specified.", call. = FALSE)
       if(is.null(filter)) filter <- PivotFilter$new(private$p_parentPivot, variableName=variableName, type=type, values=values)
-      if(action=="and") private$p_andFilters[[length(private$p_andFilters)+1]] <- filter
+      if(action=="intersect") private$p_intersectFilters[[length(private$p_intersectFilters)+1]] <- filter
       else if(action=="replace") private$p_replaceFilters[[length(private$p_replaceFilters)+1]] <- filter
-      else if(action=="or") private$p_orFilters[[length(private$p_orFilters)+1]] <- filter
+      else if(action=="union") private$p_unionFilters[[length(private$p_unionFilters)+1]] <- filter
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilterOverrides$add", "Added filter override.")
     },
     apply = function(filters=NULL, cell=NULL) {
@@ -123,10 +123,10 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
       if(private$p_removeAllFilters) filters$clearFilters()
       if(length(private$p_keepOnlyFiltersFor)>0) filters$keepOnlyFiltersFor(private$p_keepOnlyFiltersFor)
       if(length(private$p_removeFiltersFor)>0) filters$removeFiltersFor(private$p_removeFiltersFor)
-      if(!is.null(private$p_andFilters)) {
-        if(length(private$p_andFilters)>0) {
-          for(i in 1:length(private$p_andFilters)) {
-            filters$setFilter(filter=private$p_andFilters[[i]], action="and")
+      if(!is.null(private$p_intersectFilters)) {
+        if(length(private$p_intersectFilters)>0) {
+          for(i in 1:length(private$p_intersectFilters)) {
+            filters$setFilter(filter=private$p_intersectFilters[[i]], action="intersect")
           }
         }
       }
@@ -137,10 +137,10 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
           }
         }
       }
-      if(!is.null(private$p_orFilters)) {
-        if(length(private$p_orFilters)>0) {
-          for(i in 1:length(private$p_orFilters)) {
-            filters$setFilter(filter=private$p_orFilters[[i]], action="or")
+      if(!is.null(private$p_unionFilters)) {
+        if(length(private$p_unionFilters)>0) {
+          for(i in 1:length(private$p_unionFilters)) {
+            filters$setFilter(filter=private$p_unionFilters[[i]], action="union")
           }
         }
       }
@@ -152,9 +152,9 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
       lstAnd <- list()
       lstReplace <- list()
       lstOr <- list()
-      if(length(private$p_andFilters) > 0) {
-        for (i in 1:length(private$p_andFilters)) {
-          lstAnd[[i]] = private$p_andFilters[[i]]$asList()
+      if(length(private$p_intersectFilters) > 0) {
+        for (i in 1:length(private$p_intersectFilters)) {
+          lstAnd[[i]] = private$p_intersectFilters[[i]]$asList()
         }
       }
       lst$andFilters <- lstAnd
@@ -164,9 +164,9 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
         }
       }
       lst$replaceFilters <- lstReplace
-      if(length(private$p_orFilters) > 0) {
-        for (i in 1:length(private$p_orFilters)) {
-          lstOr[[i]] = private$p_orFilters[[i]]$asList()
+      if(length(private$p_unionFilters) > 0) {
+        for (i in 1:length(private$p_unionFilters)) {
+          lstOr[[i]] = private$p_unionFilters[[i]]$asList()
         }
       }
       lst$orFilters <- lstOr
@@ -192,11 +192,11 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
         if(nchar(fstr) > 0) { sep <- seperator }
         fstr <- paste0(fstr, sep, "remove: ", paste(private$p_removeFiltersFor, collapse=","))
       }
-      if(length(private$p_andFilters)>0) {
-        for(i in 1:length(private$p_andFilters)) {
+      if(length(private$p_intersectFilters)>0) {
+        for(i in 1:length(private$p_intersectFilters)) {
           if(nchar(fstr) > 0) { sep <- seperator }
-          f <- private$p_andFilters[[i]]
-          fstr <- paste0(fstr, sep, "and: ", f$asString(includeVariableName=includeVariableName))
+          f <- private$p_intersectFilters[[i]]
+          fstr <- paste0(fstr, sep, "intersect: ", f$asString(includeVariableName=includeVariableName))
         }
       }
       if(length(private$p_replaceFilters)>0) {
@@ -206,11 +206,11 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
           fstr <- paste0(fstr, sep, "replace: ", f$asString(includeVariableName=includeVariableName))
         }
       }
-      if(length(private$p_orFilters)>0) {
-        for(i in 1:length(private$p_orFilters)) {
+      if(length(private$p_unionFilters)>0) {
+        for(i in 1:length(private$p_unionFilters)) {
           if(nchar(fstr) > 0) { sep <- seperator }
-          f <- private$p_orFilters[[i]]
-          fstr <- paste0(fstr, sep, "or: ", f$asString(includeVariableName=includeVariableName))
+          f <- private$p_unionFilters[[i]]
+          fstr <- paste0(fstr, sep, "union: ", f$asString(includeVariableName=includeVariableName))
         }
       }
       return(fstr)
@@ -221,14 +221,14 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
     keepOnlyFiltersFor = function(value) { return(invisible(private$p_keepOnlyFiltersFor)) },
     removeFiltersFor = function(value) { return(invisible(private$p_removeFiltersFor)) },
     overrideFunction = function(value) { return(invisible(private$overrideFunction)) },
-    countAnd = function(value) { return(invisible(length(private$p_andFilters))) },
+    countAnd = function(value) { return(invisible(length(private$p_intersectFilters))) },
     countReplace = function(value) { return(invisible(length(private$p_replaceFilters))) },
-    countOr = function(value) { return(invisible(length(private$p_orFilters))) },
-    countTotal = function(value) { return(invisible(length(private$p_andFilters)+length(private$p_replaceFilters)+length(private$p_orFilters))) },
-    andFilters = function(value) { return(invisible(private$p_andFilters)) },
+    countOr = function(value) { return(invisible(length(private$p_unionFilters))) },
+    countTotal = function(value) { return(invisible(length(private$p_intersectFilters)+length(private$p_replaceFilters)+length(private$p_unionFilters))) },
+    andFilters = function(value) { return(invisible(private$p_intersectFilters)) },
     replaceFilters = function(value) { return(invisible(private$p_replaceFilters)) },
-    orFilters = function(value) { return(invisible(private$p_orFilters)) },
-    allFilters = function(value) { return(invisible(union(private$p_andFilters, private$p_replaceFilters, private$p_orFilters))) }
+    orFilters = function(value) { return(invisible(private$p_unionFilters)) },
+    allFilters = function(value) { return(invisible(union(private$p_intersectFilters, private$p_replaceFilters, private$p_unionFilters))) }
   ),
   private = list(
     p_parentPivot = NULL,
@@ -236,8 +236,8 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
     p_keepOnlyFiltersFor = NULL,
     p_removeFiltersFor = NULL,
     p_overrideFunction = NULL,
-    p_andFilters = NULL,
+    p_intersectFilters = NULL,
     p_replaceFilters = NULL,
-    p_orFilters = NULL
+    p_unionFilters = NULL
   )
 )
