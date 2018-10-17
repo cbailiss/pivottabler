@@ -31,7 +31,7 @@
 #' @field countIntersect The number of PivotFilters that will be combined with other
 #' pivot filters by intersecting their lists of allowed values.
 #' @field countReplace The number of PivotFilters that will be combined with other
-#' pivot filters by entirely replaceing existing PivotFilter objects.
+#' pivot filters by entirely replacing existing PivotFilter objects.
 #' @field countUnion The number of PivotFilters that will be combined with other
 #' pivot filters by unioning their lists of allowed values.
 #' @field countTotal The total number of PivotFilters that will be combined with

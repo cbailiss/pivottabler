@@ -36,7 +36,7 @@ the filters for.  All other filters will be removed.}
 pivot filters by intersecting their lists of allowed values.}
 
 \item{\code{countReplace}}{The number of PivotFilters that will be combined with other
-pivot filters by entirely replaceing existing PivotFilter objects.}
+pivot filters by entirely replacing existing PivotFilter objects.}
 
 \item{\code{countUnion}}{The number of PivotFilters that will be combined with other
 pivot filters by unioning their lists of allowed values.}
