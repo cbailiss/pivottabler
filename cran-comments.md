@@ -1,7 +1,8 @@
 ## Background
 
-This is the 4th update to the pivottabler package.
+This is the 4th update to the pivottabler package (last update 2017-10-02).
 This package is written entirely in R with no external dependencies/components other than the packages listed in the DESCRIPTION file.
+This update has not made any significant changes to the structure of the package or dependencies.
 Development approach is aligned with practices described in:
 http://r-pkgs.had.co.nz/
 
@@ -21,23 +22,32 @@ The title of the package includes "in R" as a contrast clause to the other popul
 
 ### Local R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
+
+NOTE:  
+  installed size is  6.1Mb
+  sub-directories of 1Mb or more:
+    data   2.0Mb
+    doc    2.9Mb
 
 ### Travis-CI R CMD check results
 
 0 errors | 0 warnings | 1 note
 
 NOTE:  
-  installed size is  6.7Mb
+  installed size is  7.7Mb
   sub-directories of 1Mb or more:
-    data   3.8Mb
-    doc    2.4Mb
-
-Unsure of reason for discrepancy between Local R CMD and Travis-CI CMD check results. The sample data has been compressed into three rda files, total size 1 MB. Different compression options were explored and the option chosen that resulted in the smallest files.
+    data   3.5Mb
+    doc    3.0Mb
+    R      1.0Mb
 
 ### win-builder check results
 
 0 errors | 0 warnings | 0 notes
+
+### Comments on check results
+
+The sample data has been compressed into three rda files, total size 1 MB. Different compression options were explored and the option chosen that resulted in the smallest files.
 
 ## Downstream dependencies
 
