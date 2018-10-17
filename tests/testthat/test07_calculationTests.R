@@ -516,7 +516,7 @@ for(i in 1:nrow(scenarios)) {
 
     # comparison to yesterday
     # date filter function to return yesterday
-    getYesterdayDateFilter <- function(pt, filters) {
+    getYesterdayDateFilter <- function(pt, filters, cell) {
       # get the date filter
       filter <- filters$getFilter("GbttDate")
       if(is.null(filter)||(filter$type=="ALL")||(length(filter$values)>1)) {
@@ -578,7 +578,7 @@ for(i in 1:nrow(scenarios)) {
 
     # three day rolling average
     # date filter function to a three day range of dates
-    getThreeDayFilter <- function(pt, filters) {
+    getThreeDayFilter <- function(pt, filters, cell) {
       # get the date filter
       filter <- filters$getFilter("GbttDate")
       if(is.null(filter)||(filter$type=="ALL")||(length(filter$values)>1)) {
@@ -640,7 +640,7 @@ for(i in 1:nrow(scenarios)) {
     januaryDates <- seq(as.Date("2017-01-01"), as.Date("2017-01-07"), by="days")
 
     # date filter function to all dates since 1st jan
-    getCumulativeFilter <- function(pt, filters) {
+    getCumulativeFilter <- function(pt, filters, cell) {
       # get the date filter
       filter <- filters$getFilter("GbttDate")
       if(is.null(filter)||(filter$type=="ALL")||(length(filter$values)>1)) {

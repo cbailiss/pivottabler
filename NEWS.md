@@ -6,6 +6,7 @@ Breaking Changes
 
 * The default value of the `specifyCellsAsList` argument in the `pt$getCells()` function has been changed to `TRUE`.
 The previous usage of the `pt$getCells()` function is still supported (now you must explicitly specify `specifyCellsAsList=FALSE`).  This change has been planned since v0.3.0 (June 2017) and a warning message has been displayed since then.  See the Finding and Formatting vignette for more details on the `specifyCellsAsList` argument. 
+* Additional checks to prevent calculations being moved/added after the calculation row/column groups have been generated.   There is a small chance this will cause errors in existing user code - though this will only occur where user code is trying to move/add calculations after the calculations have already been set in the pivot table by a call to `pt$addColumnCalculationGroups()` or `pt$addRowCalculationGroups()` (previously this would silently fail).
 
 Improvements
 ----------------
@@ -16,10 +17,9 @@ Improvements
 * Row/column heading style settings for data groups can now be declared up-front using the `baseStyleName` and `styleDeclarations` arguments in `pt$addColumnDataGroups(...)` and `pt$addRowDataGroups(...)`.  See the Styling vignette for an example.
 * Row/column heading style settings for calculations can now be declared up-front using the `headingBaseStyleName` and `headingStyleDeclarations` arguments in `pt$defineCalculation(...)`.  See the Styling vignette for an example.
 * Cell style settings for calculations can now be declared up-front using the `cellBaseStyleName` and `cellStyleDeclarations` arguments in `pt$defineCalculation(...)`.  See the Styling vignette for an example.
-* Additional `exportOptions` parameter when exporting to HTML, Latex and Excel for controlling how NA, NaN, -Inf and Inf are exported.
-* Additional parameter `outputHeadingsAs` in `pt$writeToExcelWorksheet(...)` to control how row/column headings are formatted when exporting to Excel.
+* Additional `exportOptions` parameter when exporting to HTML, Latex and Excel for controlling how NA, NaN, -Inf and Inf are exported.  See the Details Appendix (A1) for more information.
+* Additional parameter `outputHeadingsAs` in `pt$writeToExcelWorksheet(...)` to control how row/column headings are formatted when exporting to Excel.  See the Excel Export vignette for more details.
 * `pt$asDataFrame(...)` and `pt$asTidyDataFrame(...)` now support additional parameter `stringsAsFactors` with default value `default.stringsAsFactors()`.
-* Additional checks to prevent calculations being moved/added after the calculation row/column groups have been generated.
 
 Bug Fixes
 ----------------

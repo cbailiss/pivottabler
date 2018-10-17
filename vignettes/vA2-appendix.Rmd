@@ -37,7 +37,9 @@ Many of the examples in this vignette leave working columns (i.e. intermediate v
 
 ## Basic Principle
 
-Every cell in a pivot table has a set of associated filters that specify what data is included in the calculation of the value of that cell, as explained in the [Cell Context](v08-cellcontext.html) vignette:
+Every cell in a pivot table has a set of associated filters that specify what data is included in the calculation of the value of that cell, as explained in the [Cell Context](v08-cellcontext.html) vignette.  By changing these filters it is possible to perform different sorts of calculations.  
+
+The filters associated with each cell can be made visible in the pivot table by specifying `pt$renderPivot(includeWorkingData=TRUE)` as shown in the example below.
 
 ```{r, message=FALSE, warning=FALSE}
 
@@ -50,17 +52,17 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot(includeWorkingData=TRUE)
 ```
 
-By changing these filters it is possible to perform different sorts of calculations.
-
 ## Modifying filters
 
-There are two possible ways to change the filters used when calculating values.
+There are two possible ways to change the filters that are used when calculating values.
 
 ### Method 1:  Further restricting the data using a `PivotFilters` object
 
 When defining a calculation, it is possible to specify a `PivotFilters` object as part of the calculation.  These additional filters are applied on top of the filters already related to that cell, effectively further restricting the subset of data that is covered by the calculation.
 
-As an example, the "Weekend Trains" calculation below specifies an extra filter that means only rows where the WeekdayOrWeekend variable equals "Weekend" are included in the row count.
+This approach has been supported since v0.3.0 of the `pivottabler` package.  A weakness of this method is that it can only be used to further restrict the data - it cannot be used to refer to data outside the scope of the current cell.
+
+As an example of this method, the "Weekend Trains" calculation below specifies an extra filter that means only rows where the WeekdayOrWeekend variable equals "Weekend" are included in the "Weekend Trains" count.
 
 ```{r, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -90,8 +92,6 @@ pt$defineCalculation(calculationName="WeekendTrainsPercentage",
 pt$renderPivot()
 ```
 
-This approach has been supported since v0.3.0 of the `pivottabler` package.  A weakness of this approach is that it can only be used to further restrict the data - it cannot be used to refer to data outside the scope of the current cell.
-
 ### Method 2:  Flexible filter changes using a `PivotFilterOverrides` object
 
 Newly added in v1.0.0 of the `pivottabler` package is the ability to specify a `PivotFilterOverrides` object as part of a calculation definition.  This provides a more flexible and more powerful way of controlling the filters used when calculating a cell value.  In particular, using a `PivotFilterOverrides` object it is possible to add new filters or change/remove existing filters - this enables many new calculation possibilities.  Many of the examples below use this approach.
@@ -111,16 +111,24 @@ Three different methods of combining filter criteria are supported:
 * replace - this removes the existing criteria for the specified variable and replaces it with the newly specified criteria for the variable.
 * or - this is an additional allowed value, alongside any existing criteria.
 
-The table below provides some examples of filter criteria applied to a hypothetical date variable:
+The tables below provide some examples of filter overrides applied to hypothetical GbttDate and TOC variables:
 
-| Existing Criteria           | Override Criteria | Combine Action | Resulting Criteria                   | 
-|:----------------------------|:------------------|:---------------|:-------------------------------------|
-| 1st, 2nd and 3rd March 2018 | 2nd March 2018    | and            | 2nd March 2018                       |
-| 1st, 2nd and 3rd March 2018 | 2nd March 2018    | replace        | 2nd March 2018                       |
-| 1st, 2nd and 3rd March 2018 | 2nd March 2018    | or             | 1st, 2nd and 3rd March 2018          |
-| 1st, 2nd and 3rd March 2018 | 9th March 2018    | and            | NONE (i.e. no matching data)         |
-| 1st, 2nd and 3rd March 2018 | 9th March 2018    | replace        | 9th March 2018                       |
-| 1st, 2nd and 3rd March 2018 | 9th March 2018    | or             | 1st, 2nd, 3rd and 9th March 2018     |
+| Existing Criteria             | Override Criteria    | Combine | Resulting Criteria                 | 
+|:------------------------------|:---------------------|:--------|:-----------------------------------|
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 2nd May 2018  | and     | Gbtt = 2nd May 2018                |
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 2nd May 2018  | replace | Gbtt = 2nd May 2018                |
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 2nd May 2018  | or      | Gbtt = 1st, 2nd, 3rd May 2018      |
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 9th May 2018  | and     | NONE (i.e. no matching data)       |
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 9th May 2018  | replace | Gbtt = 9th May 2018                |
+| Gbtt = 1st, 2nd, 3rd May 2018 | Gbtt = 9th May 2018  | or      | Gbtt = 1st, 2nd, 3rd, 9th May 2018 |
+
+Filters for different variables are combined completely independently.  Where no filter criteria exists for a particular variable, then there is an implicit filter that allows ALL values, i.e. in the tables above and below, in the Existing Criteria column there is an implicit "TOC = ALL".
+
+| Existing Criteria             | Override  | Combine | Resulting Criteria                      | 
+|:------------------------------|:----------|:--------|:----------------------------------------|
+| Gbtt = 1st, 2nd, 3rd May 2018 | TOC = c2c | and     | Gbtt = 1st, 2nd, 3rd May 2018, TOC=c2c  |
+| Gbtt = 1st, 2nd, 3rd May 2018 | TOC = c2c | replace | Gbtt = 1st, 2nd, 3rd May 2018, TOC=c2c  |
+| Gbtt = 1st, 2nd, 3rd May 2018 | TOC = c2c | or      | Gbtt = 1st, 2nd, 3rd May 2018, TOC=ALL  |
 
 ## Examples of Modifying Filters
 
@@ -311,7 +319,7 @@ pt$renderPivot()
 
 ### More filter combination examples
 
-While the above examples have practical use, the following couple of examples are more for illustrative purposes to show what happens when the filter overrides are specified using the same variable as in either the row or column headings.  These examples follow the rules described in the table above.
+While the above examples have practical use, the following couple of examples are more for illustrative purposes to show what happens when the filter overrides are specified using the same variable as in either the row or column headings.  Again, these examples follow the rules described in the table above.
 
 In the following examples, the TOC variable makes up the row headings and a filter override is specified where `TOC="London Midland"`.  This filter override is combined in three different ways with the existing filters from the row headings.
 
@@ -370,9 +378,9 @@ In the above example the filter override in the "Test Count" calculation combine
 
 ## Examples using a custom filter override function
 
-The above examples provide different basic ways of modifying filters.  For relative / more dynamic filters, a custom filter override function can be used.
+The above examples provide different basic ways of modifying filters.  For relative / more dynamic filters, a custom filter override function can be used.  The package will invoke this function once per cell.  Within the function it is possible to examine the existing filters and selectively change them on a cell by cell basis.  
 
-Some of these examples may be accomplished more simply in practice  by adding additional columns to the data frame before creating the pivot table.
+When invoked the custom function is provided with a reference to the existing filters and a reference to the current cell.  In the majority of cases, working with the filters only will be sufficient.  The reference to the cell is provided only for those rare cases where additional information is needed about the cell (e.g. to determine the exact cell location, whether it is a total cell, etc).  No changes should be made to the cell, only to the filters.
 
 ### Running Differences/Changes
 
@@ -383,6 +391,7 @@ We wish to show the change in the number of trains compared to the previous day 
 A custom filter override function is used to change the filter from the current date (i.e. the date in the current row) to the previous date:
 
 ```{r, message=FALSE, warning=FALSE}
+library(dplyr)
 trains <- bhmtrains %>%
   mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
          GbttDate=as.Date(GbttDateTime))
@@ -390,7 +399,7 @@ januaryDates <- seq(as.Date("2017-01-01"), as.Date("2017-01-07"), by="days")
 
 # comparison to yesterday
 # date filter function to return yesterday
-getYesterdayDateFilter <- function(pt, filters) {
+getYesterdayDateFilter <- function(pt, filters, cell) {
   # get the date filter
   filter <- filters$getFilter("GbttDate")
   if(is.null(filter)||(filter$type=="ALL")||(length(filter$values)>1)) {
@@ -437,6 +446,7 @@ We wish to show a three-day rolling average of train count for the first seven d
 A custom filter override function is used to change the filter to include the previous, current and following date:
 
 ```{r, message=FALSE, warning=FALSE}
+library(dplyr)
 trains <- bhmtrains %>%
   mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
          GbttDate=as.Date(GbttDateTime))
@@ -444,7 +454,7 @@ januaryDates <- seq(as.Date("2017-01-01"), as.Date("2017-01-07"), by="days")
 
 # three-day rolling average
 # date filter function to a three day range of dates
-getThreeDayFilter <- function(pt, filters) {
+getThreeDayFilter <- function(pt, filters, cell) {
   # get the date filter
   filter <- filters$getFilter("GbttDate")
   if(is.null(filter)||(filter$type=="ALL")||(length(filter$values)>1)) {
@@ -480,7 +490,59 @@ pt$defineCalculation(calculationName="ThreeDayAverage", type="calculation",
 pt$renderPivot()
 ```
 
-The above example also uses `visualTotals=TRUE` for the same reasons as described in the previous example.
+The above example also uses `visualTotals=TRUE` for the same reasons as described in the previous example.  
+
+Another variation of the above that is useful when full data for the rolling average is not available for the first and last days:
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(dplyr)
+
+# here the trains data frame does not contain data for 31st Dec and 8th Jan,
+# so the rolling average for 1st Jan and 7th Jan will be incomplete.
+trains <- bhmtrains %>%
+  mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+         GbttDate=as.Date(GbttDateTime)) %>%
+  filter((as.Date("2017-01-01") <= GbttDate) & (GbttDate <= as.Date("2017-01-07")))
+
+# three-day rolling average
+# date filter function to a three day range of dates
+getThreeDayFilter <- function(pt, filters, cell) {
+  # get the date filter
+  filter <- filters$getFilter("GbttDate")
+  if(is.null(filter)||(filter$type=="ALL")||(length(filter$values)>1)) {
+    # there is no filter on GbttDate in this cell
+    # i.e. we are in one of the total cells that covers all dates,
+    # so the concept of previous/next day has no meaning, so block all dates
+    newFilter <- PivotFilter$new(pt, variableName="GbttDate", type="NONE")
+    filters$setFilter(newFilter, action="replace")
+  }
+  else {
+    # get the date value and create three day filter
+    date <- filter$values
+    newDates <- seq(date-1, date+1, by="days")
+    filter$values <- newDates
+  }
+}
+# build the pivot
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("GbttDate")
+pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", 
+                     caption="Current Day Count")
+filterOverrides <- PivotFilterOverrides$new(pt, overrideFunction=getThreeDayFilter)
+pt$defineCalculation(calculationName="DaysWithDataCount", filters=filterOverrides, 
+                     summariseExpression="n_distinct(GbttDate)", caption="Days With Data")
+pt$defineCalculation(calculationName="ThreeDayCount", filters=filterOverrides, 
+                     summariseExpression="n()", caption="Three Day Total")
+pt$defineCalculation(calculationName="ThreeDayAverage", type="calculation", 
+     basedOn=c("DaysWithDataCount", "ThreeDayCount"),
+     calculationExpression="ifelse(values$DaysWithDataCount==3, values$ThreeDayCount/3, NA)", 
+     format="%.1f", caption="Three Day Rolling Average")
+pt$renderPivot()
+```
 
 ### Cumulative Sum
 
@@ -491,6 +553,7 @@ We wish to show a cumulative sum of the number of trains for the first seven day
 A custom filter override function is used to change the filter to include dates between the 1st January 2017 and the current date:
 
 ```{r, message=FALSE, warning=FALSE}
+library(dplyr)
 trains <- bhmtrains %>%
   mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
          GbttDate=as.Date(GbttDateTime)) %>%
@@ -498,7 +561,7 @@ trains <- bhmtrains %>%
 januaryDates <- seq(as.Date("2017-01-01"), as.Date("2017-01-07"), by="days")
 
 # date filter function to all dates since 1st jan
-getCumulativeFilter <- function(pt, filters) {
+getCumulativeFilter <- function(pt, filters, cell) {
   # get the date filter
   filter <- filters$getFilter("GbttDate")
   if(is.null(filter)||(filter$type=="ALL")||(length(filter$values)>1)) {

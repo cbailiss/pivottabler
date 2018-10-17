@@ -57,7 +57,7 @@
 #'   either an sprintf string, a list of arguments for the base::format()
 #'   function or using a custom R function.}
 #'   \item{\code{getCombinedFilters = function(rowColFilters=NULL,
-#'   calcFilters=NULL)}}{Get the working filters for a calculation.}
+#'   calcFilters=NULL, cell=NULL)}}{Get the working filters for a calculation.}
 #'   \item{\code{getFiltersForNamedCalculation = function(calculationName=NULL,
 #'   calculationGroupName=NULL, rowColFilters=NULL, cell=NULL)}}{Get the working
 #'   filters for a named calculation.}
@@ -316,10 +316,11 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$formatValue", "Formated value.")
      return(invisible(value))
    },
-   getCombinedFilters = function(rowColFilters=NULL, calcFilters=NULL) {
+   getCombinedFilters = function(rowColFilters=NULL, calcFilters=NULL, cell=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "getCombinedFilters", rowColFilters, missing(rowColFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "getCombinedFilters", calcFilters, missing(calcFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotFilters", "PivotFilterOverrides"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "getCombinedFilters", cell, missing(cell), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotCell")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getCombinedFilters", "Getting filters for calculation...")
      # get the final filter context for this calculation (calcFilters override row/col filters)
@@ -332,7 +333,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          if("PivotFilters" %in% class(calcFilters)) filters <- calcFilters$getCopy()
          else if("PivotFilterOverrides" %in% class(calcFilters)) {
            filters <- PivotFilters$new(private$p_parentPivot)
-           calcFilters$apply(filters)
+           calcFilters$apply(filters, cell)
            if(filters$isALL) filters <- NULL #i.e. if none of the calculation filters amounted to anything, then skip keeping the filters
          }
        }
@@ -341,7 +342,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        filters <- rowColFilters$getCopy()
        if(!is.null(calcFilters)) {
          if("PivotFilters" %in% class(calcFilters)) filters$setFilters(filters=calcFilters, action="and")
-         else if("PivotFilterOverrides" %in% class(calcFilters)) calcFilters$apply(filters)
+         else if("PivotFilterOverrides" %in% class(calcFilters)) calcFilters$apply(filters, cell)
        }
      }
      rf$workingFilters <- filters
@@ -372,16 +373,16 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          if((!is.null(cell))&&(cell$isTotal==TRUE)) {
            if(is.null(calc$summariseExpression)) { rf <- list() }
            else {
-             rf <- self$getCombinedFilters(rowColFilters=rowColFilters, calcFilters=calc$filters)
+             rf <- self$getCombinedFilters(rowColFilters=rowColFilters, calcFilters=calc$filters, cell)
            }
          }
          else {
-           rf <- self$getCombinedFilters(rowColFilters=rowColFilters, calcFilters=calc$filters)
+           rf <- self$getCombinedFilters(rowColFilters=rowColFilters, calcFilters=calc$filters, cell)
          }
          filters[[calc$calculationName]] <- rf
        }
        else if(calc$type=="summary") {
-         rf <- self$getCombinedFilters(rowColFilters=rowColFilters, calcFilters=calc$filters)
+         rf <- self$getCombinedFilters(rowColFilters=rowColFilters, calcFilters=calc$filters, cell)
          filters[[calc$calculationName]] <- rf
        }
        else if(calc$type=="calculation") {
@@ -389,7 +390,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          filters[[calc$calculationName]] <- rf
        }
        else if(calc$type=="function") {
-         rf <- self$getCombinedFilters(rowColFilters=rowColFilters, calcFilters=calc$filters)
+         rf <- self$getCombinedFilters(rowColFilters=rowColFilters, calcFilters=calc$filters, cell)
          filters[[calc$calculationName]] <- rf
        }
        else stop(paste0("PivotCalculator$getFiltersForNamedCalculation():  Unknown calculation type encountered '", calc$type,

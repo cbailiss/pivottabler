@@ -93,7 +93,7 @@ Within the `PivotCells` object is a list of rows, each of which is a list of `Pi
 
 Each cell has a raw value (typically of data type numeric) and a formatted value (typically of data type character).  These can be accessed via `cell$rawValue` and `cell$formattedValue` respectively.
 
-It is possible to find the leaf-level data groups (i.e. right-most row heading and bottom column heading) that relate to a cell using `cell$rowLeafGroup` and `cell$columnLeafGroup`.  If the data group has other parent groups, then these can be accessed recursively via `cell$rowLeafGroup$parentGroup`, `cell$rowLeafGroup$parentGroup$parentGroup`, etc.
+It is possible to find the leaf-level data groups (i.e. right-most row heading and bottom column heading) that relate to a cell using `cell$rowLeafGroup` and `cell$columnLeafGroup`.  If the data group has other parent groups, then these can be accessed recursively via `cell$rowLeafGroup`, `cell$rowLeafGroup$parentGroup`, `cell$rowLeafGroup$parentGroup$parentGroup`, etc.
 
 The [Finding and Formatting](v07-findingandformatting.html) vignette describes other ways of accessing cells and data group headings.
 
@@ -133,10 +133,10 @@ See the [Outputs](v04-outputs.html) vignette for more details.
 * `pt$data` is an instance of the `PivotData` class that wraps the data frames used to build the pivot table.
 * `pt$rowGroup` and `pt$columnGroup` are the invisible top-level data groups - each is an instance of the `PivotDataGroup` class.
 * Child data groups can be accessed recursively, e.g. via `pt$rowGroup$childGroups`, `pt$rowGroup$childGroups[[1]]$childGroups`, etc.
-* `pt$calculationGroups` contains the calculation groups present in a pivot table.  The calculation definitions within a group are accessed via `pt$calculationGroups$defaultGroup$calculations`.
+* `pt$calculationGroups` contains the calculation groups present in a pivot table.  The calculation definitions within the default calculation group are accessed via `pt$calculationGroups$defaultGroup$calculations`.
 * Check pivot table size using `pt$rowCount` and `pt$columnCount`.
 * Individual cells in a pivot table are represented by the `PivotCell` class and can be accessed via `pt$cells$getCell(r, c)`.
-* The data groups related to a cell can be accessed recursively via `cell$rowLeafGroup$parentGroup`, `cell$rowLeafGroup$parentGroup$parentGroup`, etc. 
+* The data groups related to a cell can be accessed recursively via `cell$rowLeafGroup`, `cell$rowLeafGroup$parentGroup`, `cell$rowLeafGroup$parentGroup$parentGroup`, etc. 
 
 ## Further Reading
 

@@ -125,7 +125,11 @@ pt$renderPivot(exportOptions=list(exportNegInfAs="-Infinity", exportPosInfAs="In
 
 For an overview of styling pivot tables see the [Styling](v06-styling.html) vignette.
 
-The following table details the styling properties that are supported.
+The table below details the common styling properties that are supported.  
+
+When outputting to HTML, any valid CSS styling can be used, even if not listed below.  
+
+When outputting to Excel, only the styling properties listed below are supported - either the CSS or XL properties can be used - see the [Excel Export](v12-excelexport.html) vignette for more information.
 
 | CSS Property       | XL Property         | XL Example              | Notes                                      | 
 |:-------------------|:--------------------|:------------------------|:-------------------------------------------|
@@ -151,7 +155,7 @@ The following table details the styling properties that are supported.
 |                    | xl-min-row-height   | 45                      | 0 to 400.                                  |
 |                    | xl-value-format     | #,###.00                | See notes below for full details.          |
 
-Notes:
+Excel Output Restrictions:
 
 * For CSS font-size, only the following units are supported:  in, cm, mm, pt, pc, px, em, %.
 * For CSS background-color, CSS color and border colours, only hex colours, named colours, RGB() and RGBA() values are supported.  HLS() and HLSA() values are not supported.  Examples of supported CSS values:  #0080FF, rgb(0, 128, 255), rgba(0, 128, 255, 0.5), red, black, darkolivegreen, etc.
@@ -159,7 +163,7 @@ Notes:
 * For XL border styles, the allowed range of values is:  none thin, medium, dashed, dotted, thick, double, hair, mediumDashed, dashDot, mediumDashDot, dashDotDot, mediumDashDotDot, slantDashDot
 * For xl-value-format, the following constants are supported: GENERAL, NUMBER, CURRENCY, ACCOUNTING, DATE, LONGDATE, TIME, PERCENTAGE, FRACTION, SCIENTIFIC, TEXT, COMMA.  Alternatively, custom format strings can be specified.  For date/datetime, specify a combination of d, m, y, e.g. dd/mm/yyyy.  For numeric rounding use 0.00 etc.
 
-Note that the following CSS properties are NOT supported:
+Note that the following CSS properties are NOT supported when outputting to Excel:
 
 * font - use font-family, font-size, etc. instead
 * Border side specific properties, e.g. border-left-style, border-top-color, etc.

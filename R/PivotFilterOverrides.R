@@ -114,9 +114,10 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
       else if(action=="or") private$p_orFilters[[length(private$p_orFilters)+1]] <- filter
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilterOverrides$add", "Added filter override.")
     },
-    apply = function(filters=NULL) {
+    apply = function(filters=NULL, cell=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "apply", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
+        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilterOverrides", "apply", cell, missing(cell), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotCell")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilterOverrides$add", "Applying overrides...")
       if(private$p_removeAllFilters) filters$clearFilters()
@@ -143,7 +144,7 @@ PivotFilterOverrides <- R6::R6Class("PivotFilterOverrides",
           }
         }
       }
-      if(!is.null(private$p_overrideFunction)) private$p_overrideFunction(private$p_parentPivot, filters)
+      if(!is.null(private$p_overrideFunction)) private$p_overrideFunction(private$p_parentPivot, filters, cell)
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilterOverrides$add", "Applied overrides.")
     },
     asList = function() {
