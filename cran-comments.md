@@ -1,6 +1,6 @@
 ## Background
 
-This is the 3rd update to a relatively new package.
+This is the 4th update to the pivottabler package.
 This package is written entirely in R with no external dependencies/components other than the packages listed in the DESCRIPTION file.
 Development approach is aligned with practices described in:
 http://r-pkgs.had.co.nz/
@@ -13,9 +13,9 @@ The title of the package includes "in R" as a contrast clause to the other popul
 
 ## Test environments
 
-* local OS (windows) install, R 3.4.2
-* Ubuntu 14.04.5 LTS (on travis-ci), R 3.4.1.
-* win-builder, R-devel = R 3.5.0.
+* local OS (windows) install, R 3.5.1
+* Ubuntu 14.04.5 LTS (on travis-ci), R 3.5.1.
+* win-builder, R-devel = R 3.6.0.
 
 ## R CMD check results
 

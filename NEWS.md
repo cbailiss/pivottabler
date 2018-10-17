@@ -1,4 +1,4 @@
-pivottabler 0.4.0.9000
+pivottabler 1.0.0
 ================
 
 Breaking Changes
