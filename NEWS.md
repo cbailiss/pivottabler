@@ -6,7 +6,7 @@ Breaking Changes
 
 * The default value of the `specifyCellsAsList` argument in the `pt$getCells()` function has been changed to `TRUE`.
 The previous usage of the `pt$getCells()` function is still supported (now you must explicitly specify `specifyCellsAsList=FALSE`).  This change has been planned since v0.3.0 (June 2017) and a warning message has been displayed since then.  See the Finding and Formatting vignette for more details on the `specifyCellsAsList` argument. 
-* Additional checks to prevent calculations being moved/added after the calculation row/column groups have been generated.   There is a small chance this will cause errors in existing user code - though this will only occur where user code is trying to move/add calculations after the calculations have already been set in the pivot table by a call to `pt$addColumnCalculationGroups()` or `pt$addRowCalculationGroups()` (previously this would silently fail).
+* Additional checks are now made to prevent calculations being moved/added after the calculation row/column groups have been generated.   There is a small chance this will cause errors in existing user code - though this will only occur where user code is trying to move/add calculations after the calculations have already been set in the pivot table by a call to `pt$addColumnCalculationGroups()` or `pt$addRowCalculationGroups()` (previously this would silently fail).
 
 Improvements
 ----------------
@@ -29,7 +29,7 @@ Bug Fixes
 Upcoming Changes
 ----------------
 
-TBC
+No breaking changes currently planned.
 
 pivottabler 0.4.0
 ================
