@@ -6,7 +6,7 @@
 #'
 #' @param argumentCheckMode A number between 0 and 4 specifying the checks to
 #'   perform.
-#' @param checkDataTypes A logical value specifiying whether the data types
+#' @param checkDataTypes A logical value specifying whether the data types
 #'   should be checked when argumentCheckMode=3
 #' @param className The name of the calling class, for inclusion in error
 #'   messages.
