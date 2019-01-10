@@ -15,7 +15,7 @@ checkArgument(argumentCheckMode, checkDataTypes, className, methodName,
 \item{argumentCheckMode}{A number between 0 and 4 specifying the checks to
 perform.}
 
-\item{checkDataTypes}{A logical value specifiying whether the data types
+\item{checkDataTypes}{A logical value specifying whether the data types
 should be checked when argumentCheckMode=3}
 
 \item{className}{The name of the calling class, for inclusion in error
