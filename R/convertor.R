@@ -43,7 +43,7 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL) {
   }
   basictblrversion <- utils::packageDescription("basictabler")$Version
   if(numeric_version(basictblrversion) < numeric_version("0.1.1.9000")) {
-    stop("convertPvtTblToBasicTbl():  Version 0.2.0 or above of the basictabler package is needed convert a pivot tabler to a basic table.  Please install an updated version of the basictabler package.", call. = FALSE)
+    stop("convertPvtTblToBasicTbl():  Version 0.2.0 or above of the basictabler package is needed to convert a pivot table to a basic table.  Please install an updated version of the basictabler package.", call. = FALSE)
   }
   # create the new basic table
   btbl <- basictabler::BasicTable$new()
