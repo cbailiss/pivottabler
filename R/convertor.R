@@ -76,10 +76,8 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL) {
   clearFlags <- function(dg) {
     dg$isRendered <- FALSE
   }
-  rowGroups <- pvt$rowGroup$getDescendantGroups(includeCurrentGroup=TRUE)
-  lapply(rowGroups, clearFlags)
-  columnGroups <- pvt$columnGroup$getDescendantGroups(includeCurrentGroup=TRUE)
-  lapply(columnGroups, clearFlags)
+  lapply(pvt$rowGroup$getDescendantGroups(includeCurrentGroup=TRUE), clearFlags)
+  lapply(pvt$columnGroup$getDescendantGroups(includeCurrentGroup=TRUE), clearFlags)
   # get the dimensions of the various parts of the table...
   # ...headings:
   rowGroupLevelCount <- pvt$rowGroup$getLevelCount(includeCurrentLevel=FALSE)
@@ -121,11 +119,12 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL) {
         btbl$cells$setCell(r=br, c=bc, cellType="columnHeader", visible=TRUE, colSpan=length(grp$leafGroups),
                            rawValue=grp$sortValue, formattedValue=exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue=""),
                            baseStyleName=grp$baseStyleName, styleDeclarations=getPvtStyleDeclarations(grp$style))
+        bc <- bc + length(grp$leafGroups) - 1
       }
     }
   }
   # render the rows
-  for(ri in 1:rowCount) {
+  for(r in 1:rowCount) {
     bc <- 0
     br <- br + 1
     # render the row headings
@@ -135,12 +134,12 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL) {
     }
     else {
       # get the leaf row group, then render any parent data groups that haven't yet been rendered
-      rg <- rowGroups[[ri]]
+      rg <- rowGroups[[r]]
       ancrgs <- rg$getAncestorGroups(includeCurrentGroup=TRUE)
-      for(ci in (length(ancrgs)-1):1) { # 2 (not 1) since the top ancestor is parentPivot private$rowGroup, which is just a container
-        ancg <- ancrgs[[ci]]
+      for(c in (length(ancrgs)-1):1) { # 2 (not 1) since the top ancestor is parentPivot private$rowGroup, which is just a container
+        ancg <- ancrgs[[c]]
+        bc <- bc + 1
         if(ancg$isRendered==FALSE) {
-          bc <- bc + 1
           btbl$cells$setCell(r=br, c=bc, cellType="rowHeader", visible=TRUE, rowSpan=length(ancg$leafGroups),
                              rawValue=ancg$sortValue, formattedValue=exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue=""),
                              baseStyleName=ancg$baseStyleName, styleDeclarations=getPvtStyleDeclarations(ancg$style))
@@ -149,8 +148,8 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL) {
       }
     }
     # render the cell values
-    for(ci in 1:columnCount) {
-      cell <- pvt$cells$getCell(ri, ci)
+    for(c in 1:columnCount) {
+      cell <- pvt$cells$getCell(r, c)
       cellType <- "cell"
       if(cell$isTotal) cellType <- "total"
       cllstyl <- NULL
