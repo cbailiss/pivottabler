@@ -9,7 +9,7 @@ TBC
 Improvements
 ----------------
 
-TBC
+* Convert a pivot table to a `basictabler` table - enabling flexible/arbitrary changes to be made to pivot tables after they have been created, e.g. inserting or deleting rows/columns/cells. 
 
 Bug Fixes
 ----------------
