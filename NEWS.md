@@ -9,7 +9,7 @@ TBC
 Improvements
 ----------------
 
-* New `pt$setStyling()` function simplifies setting styling on data groups and table cells. 
+* New function `pt$setStyling()` simplifies the setting of formatting and styling on data groups and table cells.  See the "Styling" vignette for details. 
 
 Bug Fixes
 ----------------
