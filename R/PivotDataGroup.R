@@ -153,7 +153,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_calculationGroupName <- calculationGroupName
      private$p_calculationName <- calculationName
      private$p_baseStyleName = baseStyleName
-     if (!is.null(styleDeclarations)) private$p_style = private$p_parentPivot$createInlineStyle(baseStyleName=baseStyleName, declarations=styleDeclarations)
+     if (!is.null(styleDeclarations)) private$p_style = private$p_parentPivot$createInlineStyle(declarations=styleDeclarations)
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$new", "Created new data group.")
    },
    getLevelNumber = function() {

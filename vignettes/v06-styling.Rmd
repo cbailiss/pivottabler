@@ -18,6 +18,8 @@ vignette: >
 * Simple Themes
 * Creating a New Theme
 * Changing the appearance of individual cells
+* Summary of Styling Rules
+* Styling Output
 * Styling Reference
 * Further Reading
 
@@ -237,7 +239,8 @@ Since a theme is a collection of styles, creating themes is relatively straightf
 
 *  tableStyle - the name of the style applied to the table (i.e. the HTML `<table>` element).
 *  rootStyle - the name of the style applied to the empty cell at the top left of the pivot table.
-*  rowHeaderStyle/colHeaderStyle - the name of the style applied to the row/column header cells.
+*  rowHeaderStyle - the name of the style applied to the row header cells.
+*  colHeaderStyle - the name of the style applied to the column header cells.
 *  cellStyle - the name of the style applied to the cells in the body of the pivot table.
 *  totalStyle - the name of the style applied to the total cells in the pivot table.
 
@@ -374,7 +377,7 @@ pt$renderPivot(styleNamePrefix="tcn")
 
 ## Changing the appearance of individual cells
 
-The individual cells in the pivot table can have their appearance changed by retrieving the cell then applying a style to the cell.  These styles typically apply in addition to the styles coming from the underlying theme, e.g. highlighting a cell:
+The individual cells in the pivot table can have their appearance changed by retrieving the cell then applying a style to the cell.  These styles typically apply in addition to the styles coming from the underlying theme, e.g. two different ways for highlighting a cell:
 
 ```{r, message=FALSE, warning=FALSE}
 # define the colours
@@ -399,7 +402,9 @@ theme <- getSimpleColoredTheme(parentPivot=pt, colors=orangeColors, fontName="Ga
 pt$theme <- theme
 # evaluate the pivot to generate the cells
 pt$evaluatePivot()
-# apply an additional highlight to one cell (3rd row, 2nd column)
+# applying a highlight - method 1 - 3rd row, 1st column
+pt$setStyling(3, 1, declarations=list("background-color"="#00FFFF"))
+# applying a highlight - method 2 - 3rd row, 2nd column
 cellHighlight <- pt$createInlineStyle(declarations=list("background-color"="#FFFF00"))
 cells <- pt$getCells(specifyCellsAsList=TRUE, cellCoordinates=list(c(3, 2)))
 cells[[1]]$style <- cellHighlight
@@ -409,7 +414,61 @@ pt$renderPivot(styleNamePrefix="t9")
 
 In the example above, the default cell style from the theme is still applied.  The highlight is applied in addition to the default styling.  To stop the base styling being applied, create a new named style and set the baseStyleName property on the cell to the name of the new style. 
 
+The `pt$setStyling()` function is used in the example above.  This function has the following arguments:
+
+* `rFrom` and `cFrom` are the coordinates of the cell where the styling is to be applied, excluding the row and column headers, i.e. (1, 1) is the first data cell.  If the styling is being applied to multiple cells, this is the top-left cell in the rectangular cell range where the styling is to be applied.
+* `rTo` and `cTo`  are the coordinates of the bottom right cell when styling is being applied to a rectangular range of cells.  If styling is only being applied to a single cell, these arguments are not needed. 
+* `groups` is a list of data groups to apply styling to.  Either `rFrom`/`cFrom`, `groups` or `cells` is typically specified.
+* `cells` is a list of cells to apply styling to.  Either `rFrom`/`cFrom`, `groups` or `cells` is typically specified.
+* `baseStyleName` is the name of a style in the table theme to apply to the specified cells.  Set this explicitly to NULL to revert to the default style specified in the table theme.
+* `style` is a `TableStyle` override object to apply to the specified cells.  This is created by calling `tbl$createInlineStyle()` as shown in the example above.
+* `declarations` is a list of style override declarations to apply to the specified cells. 
+
+The `pt$createInlineStyle()` function is also used in the example above.  This function creates a new unnamed style (that is not part of the table theme) and takes two arguments:  `baseStyleName` specifies the name of the style that the new style will be based on (i.e. will have it's style properties copied from) and `declarations` which specifies new/overriding style properties for the new style. 
+
 For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v07-findingandformatting.html) vignette.
+
+## Summary of Styling Rules
+
+`pivottabler` styles cells using the following rules:
+
+* Each cell in a table has an associated cell type (root / rowHeader / columnHeader / cell / total).  This controls the default styling applied to a cell.  The cell type is set by the `pivottabler` package automatically.
+* The styling theme applied to a pivot table defines a set of styles and the default style for each cell type.
+    + Create a new simple theme using:  `getSimpleColoredTblTheme()`
+    + Create a new custom theme by writing a function `createCustomTheme()`
+    + Assign a theme to the table `theme` property:  `pt$theme <- createCustomTheme(pt)`
+* Each individual cell can also have a different style, specified by settings the `baseStyleName` for the cell.
+    + Single cell example:  `pt$cells$getCell(3, 2)$baseStyleName <- "AltCellStyle"`
+    + Alternative single cell example:  `pt$setStyling(3, 2, baseStyleName="AltCellStyle")`
+    + Cell range example: `pt$setStyling(3, 2, 3, 6, baseStyleName="AltCellStyle")`
+* It is also possible to declare individual style overrides  (e.g. a different text colour).  These override specific style settings from the named styles.
+    + Single cell example:  `pt$setStyling(3, 2, declarations=list("text-align"="left", "background-color"="yellow"))`
+    + Cell range example: `pt$setStyling(3, 2, 3, 6, declarations=list("text-align"="left", "background-color"="yellow"))`
+* It is possible to specify a new base style and overrides together.  The declarations override the settings in the base style. 
+    + Single cell example:  `pt$setStyling(3, 2, baseStyleName="AltCellStyle", declarations=list("text-align"="left", "background-color"="yellow"))`
+    + Cell range example: `pt$setStyling(3, 2, 3, 6, baseStyleName="AltCellStyle", declarations=list("text-align"="left", "background-color"="yellow"))`
+* Instead of specifying the declarations as a list, an inline style can be declared.  This is an unnamed style object that is used for one or multiple cells and is not part of the table theme.
+    + See the "Changing cell appearance after cells have been created" section in this vignette for an example.
+    + See the "Finding and Formatting" vignette for more examples.
+    
+## Styling Output
+
+When rendering to HTML, two styles settings are written by `pivottabler` in the HTML for each table cell:
+
+**HTML class attribute**
+
+Example:  < td class="StyleName" >
+
+* The `cell$baseStyleName` is used as the HTML class name.
+* If no `cell$baseStyleName` has been explicitly set for a cell, then the base style name (for the relevant cell type) specified in the table theme is used.
+* The class names can be prefixed if required - useful when using several tables on the same HTML page.
+* It is also possible to generate class names that refer to styles not defined in the table - useful when the styles are defined in an external CSS file.
+
+**HTML style attribute**
+
+Example:  < td style="text-align:left;background-color:yellow;" >
+
+The cell style override declarations (= the declarations of the inline style) are used as the value of the HTML style attribute for each cell.  
 
 ## Styling Reference
 

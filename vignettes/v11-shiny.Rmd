@@ -15,6 +15,7 @@ vignette: >
 * Examples
 * Example 1:  Minimal Example
 * Example 2:  Comparing pairs of variables
+* Example 3:  Multiple rows, columns and measures
 
 ## About Shiny
 
