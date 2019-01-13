@@ -222,7 +222,8 @@ for(i in 1:nrow(scenarios)) {
     trains <- bhmtrains %>%
       group_by(TrainCategory, TOC) %>%
       summarise(NumberOfTrains=n()) %>%
-      ungroup()
+      ungroup() %>%
+      filter(NumberOfTrains>0) # added since dplyr 0.8 includes no-data lines when grouping on factors
 
     # display this pre-calculated data
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
@@ -259,7 +260,8 @@ for(i in 1:nrow(scenarios)) {
     trains <- bhmtrains %>%
       group_by(TrainCategory, TOC) %>%
       summarise(NumberOfTrains=n()) %>%
-      ungroup()
+      ungroup() %>%
+      filter(NumberOfTrains>0) # added since dplyr 0.8 includes no-data lines when grouping on factors
 
     # display this pre-calculated data
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
