@@ -107,6 +107,10 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", cellStyleDeclarations, missing(cellStyleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculationGroup$defineCalculation", "Defining calculation...")
+      if(calculationName == "pvttblrowcount") {
+        stop(paste0("PivotCalculationGroup$defineCalculation():  The calculation name",
+                    " 'pvttblrowcount' is a reserved name and cannot be used."), call. = FALSE)
+      }
       if(calculationName %in% names(private$p_calculations)) {
         stop(paste0("PivotCalculationGroup$defineCalculation():  A Calculation already exists",
                     " in the Calculation Group with the name '", calculationName, "'.  calculationName must unique."), call. = FALSE)

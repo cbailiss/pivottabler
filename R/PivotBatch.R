@@ -172,7 +172,15 @@ PivotBatch <- R6::R6Class("PivotBatch",
           stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
         if(length(private$p_calculations)==0)
           stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
-        calcStr <- ""
+        # FIX:  When dplyr performs a group_by on a column which has factor data type,
+        # then a call to summarise() will insert a row for every factor, even if
+        # no data exists for that data (e.g. due to an earlier call to filter()).
+        # Therefore, every batch now has a pvttblrowcount calculation, which is a simple
+        # row count.  If this is zero, then we know that no data exists for this
+        # value.  This additional columns does not add a significant overhead (checked
+        # by creating 10x10 pivot table based on a data frame with 100 million rows, and
+        # comparing pivot calculation time before and after this change was implemented).
+        calcStr <- "pvttblrowcount = n()"
         for(i in 1:length(private$p_calculations)) {
           calcNms <- private$p_calculations[[i]]
           calcInternalName <- calcNms["calcInternalName"]
@@ -205,7 +213,10 @@ PivotBatch <- R6::R6Class("PivotBatch",
           stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
         if(length(private$p_calculations)==0)
           stop(paste0("PivotBatch$evaluateBatch(): Batch encountered with no calculations."), call. = FALSE)
-        calcStr <- ""
+        # FIX:  Implement the same check for data.table here, as has been done for dplyr
+        # above, so that code that retrieves values from the batch can check the value
+        # of pvttblrowcount irrespective of whether dplyr or data.table was used.
+        calcStr <- "pvttblrowcount = .N"
         for(i in 1:length(private$p_calculations)) {
           calcNms <- private$p_calculations[[i]]
           calcInternalName <- calcNms["calcInternalName"]
@@ -254,7 +265,8 @@ PivotBatch <- R6::R6Class("PivotBatch",
           # no value
         }
         else if(nrow(private$p_results)==1) {
-          value <- private$p_results[[calculationInternalName]][1]
+          rowcount <- private$p_results[["pvttblrowcount"]][1]
+          if (rowcount>0) { value <- private$p_results[[calculationInternalName]][1] }
         }
         else {
           stop(paste0("PivotTable$getSummaryValueFromBatch:  An 'ALL' Filters object has matched ",
@@ -275,7 +287,8 @@ PivotBatch <- R6::R6Class("PivotBatch",
             # no value
           }
           else if(nrow(row)==1) {
-            value <- row[[calculationInternalName]][1]
+            rowcount <- row[["pvttblrowcount"]][1]
+            if (rowcount>0) { value <- row[[calculationInternalName]][1] }
           }
           else {
             stop(paste0("PivotTable$getSummaryValueFromBatch:  A 'VALUE' Filters object has matched ",
