@@ -16,8 +16,11 @@ vignette: >
 * XL Styles
 * Included Themes
 * Simple Themes
+* Styling with the quick pivot functions
+* Styling Data Groups
+* Styling Calculations
+* Changing styling/formating after table creation using `pt$setStyling()`
 * Creating a New Theme
-* Changing the appearance of individual cells
 * Summary of Styling Rules
 * Styling Output
 * Styling Reference
@@ -39,6 +42,8 @@ When rendered to HTML, the appearance of `pivottabler` pivot tables can be chang
 * A theme is a collection of styles that can easily be applied to a pivot table.
 
 The `pivottabler` package is supplied with some basic themes.  Additional themes can be defined.
+
+In addition, for each cell in the table, a set of style overrides can be set.  These are style declarations that apply to individual cells.
 
 ## Styles and CSS
 
@@ -111,11 +116,12 @@ pt$renderPivot(styleNamePrefix="t2")
 
 ## Simple Themes
 
-The `pivottabler` package includes the `getSimpleColoredTheme()` function that helps define basic new themes quickly.  Several examples of using this function are shown below. 
+Simple themes can be defined using a list.  Several examples are shown below.  
 
 ```{r, message=FALSE, warning=FALSE}
-# define the colours
-blue1Colors <- list(
+# define the font and colours
+simpleBlueTheme <- list(
+  fontName="Verdana, Arial",
   headerBackgroundColor = "rgb(68, 114, 196)",
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor = "rgb(255, 255, 255)",
@@ -132,14 +138,14 @@ pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 # define the theme
-theme <- getSimpleColoredTheme(parentPivot=pt, colors=blue1Colors, fontName="Verdana, Arial")
-pt$theme <- theme
+pt$theme <- simpleBlueTheme
 pt$renderPivot(styleNamePrefix="t3")
 ```
 
 ```{r, message=FALSE, warning=FALSE}
-# define the colours
-grayColors <- list(
+# define the font and colours
+simpleGrayTheme <- list(
+  fontName="Courier New, Courier",
   headerBackgroundColor = "rgb(128, 128, 128)",
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor = "rgb(255, 255, 255)",
@@ -156,10 +162,129 @@ pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 # define the theme
-theme <- getSimpleColoredTheme(parentPivot=pt, colors=grayColors, fontName="Courier New, Courier")
-pt$theme <- theme
+pt$theme <- simpleGrayTheme
 pt$renderPivot(styleNamePrefix="t4")
 ```
+
+```{r, message=FALSE, warning=FALSE}
+# define the font and colours
+simpleGreenTheme <- list(
+  fontName="Helvetica, arial",
+  headerBackgroundColor = "rgb(112, 173, 71)",
+  headerColor = "rgb(255, 255, 255)",
+  cellBackgroundColor="rgb(255, 255, 255)",
+  cellColor="rgb(0, 0, 0)",
+  totalBackgroundColor = "rgb(182, 216, 158)",
+  totalColor="rgb(0, 0, 0)",
+  borderColor = "rgb(84, 130, 53)"
+)
+# create the pivot table
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+# define the theme
+pt$theme <- simpleGreenTheme
+pt$renderPivot(styleNamePrefix="t6")
+```
+
+## Styling with the quick pivot functions
+
+The following example defines a simple theme and supplies this to the quick pivot function to specify styling:
+
+```{r, message=FALSE, warning=FALSE, comment=""}
+# define the font and colours
+simpleBlueTheme <- list(
+  fontName="Verdana, Arial",
+  headerBackgroundColor = "rgb(68, 114, 196)",
+  headerColor = "rgb(255, 255, 255)",
+  cellBackgroundColor = "rgb(255, 255, 255)",
+  cellColor = "rgb(0, 0, 0)",
+  totalBackgroundColor = "rgb(186, 202, 233)",
+  totalColor = "rgb(0, 0, 0)",
+  borderColor = "rgb(48, 84, 150)"
+)
+# create the pivot table
+library(pivottabler)
+qhpvt(bhmtrains, "TOC", "TrainCategory", "n()", 
+      theme=simpleBlueTheme, styleNamePrefix="qt1")
+```
+
+The next example demonstrates specifying more granuar style settings when using a quick pivot function:
+
+```{r, message=FALSE, warning=FALSE, comment=""}
+# create the pivot table
+library(pivottabler)
+qhpvt(bhmtrains, "TOC", "TrainCategory", "n()", 
+      tableStyle=list("border-color"="maroon"),
+      headingStyle=list("color"="cornsilk", "background-color"="maroon", 
+                        "font-style"="italic", "border-color"="maroon"), 
+      cellStyle=list("color"="maroon", "background-color"="cornsilk", 
+                     "border-color"="maroon"),
+      totalStyle=list("color"="maroon", "background-color"="cornsilk", 
+                     "border-color"="maroon", "font-weight"="bold"),
+      styleNamePrefix="qt2")
+```
+
+The quick pivot functions specify the same styling/formatting for all headers and all calculation cells.  To specify different styling/formatting for specific data groups and/or specifc calculation cells, use the more verbose syntax for creating the pivot table as shown in the examples below. 
+
+## Styling Data Groups
+
+The appearance of sets of data groups can be specified when adding the data groups to the pivot table either by specifying a `baseStyleName` or by specifying `styleDeclarations`.  If specifying a `baseStyleName`, the full style must be defined.  Alternatively specifying a set of style declarations allows just the style settings of interest to be overriden which tends to be simpler, e.g.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory", styleDeclarations=list("color"="red", "font-weight"="bold", "background-color"="yellow"))
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot(styleNamePrefix="tdg")
+```
+
+## Styling Calculations
+
+The appearance of calculation headings or cell values can be specified when defining the calculations by specifying any combination of `headingBaseStyleName`, `headingStyleDeclarations`, `cellBaseStyleName` and/or `cellStyleDeclarations`. If specifying a base style name, the full style must be defined.  Alternatively specifying a set of style declarations allows just the style settings of interest to be overriden which tends to be simpler.  The example below shows both approaches.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$styles$addStyle(styleName="NewHeadingStyle1", list(
+      "font-family"="Arial",
+      "font-size"="0.75em",
+      padding="2px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "text-align"="center",
+      "font-weight"="bold",
+      "background-color"="Gold",
+      "xl-wrap-text"="wrap"
+    ))
+pt$styles$addStyle(styleName="CellStyle1", list(
+      "font-family"="Arial",
+      "font-size"="0.75em",
+      padding="2px 2px 2px 8px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "background-color"="Yellow",
+      "text-align"="right"
+    ))
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains1", summariseExpression="n()",
+                     headingBaseStyleName="NewHeadingStyle1", cellBaseStyleName="CellStyle1")
+pt$defineCalculation(calculationName="TotalTrains2", summariseExpression="n()",
+                     headingStyleDeclarations=list("color"="red", "font-weight"="bold"),
+                     cellStyleDeclarations=list("color"="blue"))
+pt$renderPivot(styleNamePrefix="tcn")
+```
+
+## Changing styling/formating after table creation using `pt$setStyling()`
+
+The individual cells in the pivot table can have their appearance changed by retrieving the cell then applying a style to the cell.  These styles typically apply in addition to the styles coming from the underlying theme, e.g. two different ways for highlighting a cell:
 
 ```{r, message=FALSE, warning=FALSE}
 # define the colours
@@ -182,67 +307,44 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 # define the theme
 theme <- getSimpleColoredTheme(parentPivot=pt, colors=orangeColors, fontName="Garamond, arial")
 pt$theme <- theme
-pt$renderPivot(styleNamePrefix="t5")
+# evaluate the pivot to generate the cells
+pt$evaluatePivot()
+# applying a highlight - method 1 - 3rd row, 1st column
+pt$setStyling(3, 1, declarations=list("background-color"="#00FFFF"))
+# applying a highlight - method 2 - 3rd row, 2nd column
+cellHighlight <- pt$createInlineStyle(declarations=list("background-color"="#FFFF00"))
+cells <- pt$getCells(specifyCellsAsList=TRUE, cellCoordinates=list(c(3, 2)))
+cells[[1]]$style <- cellHighlight
+# draw the pivot table
+pt$renderPivot(styleNamePrefix="t9")
 ```
 
-```{r, message=FALSE, warning=FALSE}
-# define the colours
-greenColors <- list(
-  headerBackgroundColor = "rgb(112, 173, 71)",
-  headerColor = "rgb(255, 255, 255)",
-  cellBackgroundColor="rgb(255, 255, 255)",
-  cellColor="rgb(0, 0, 0)",
-  totalBackgroundColor = "rgb(182, 216, 158)",
-  totalColor="rgb(0, 0, 0)",
-  borderColor = "rgb(84, 130, 53)"
-)
-# create the pivot table
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-# define the theme
-theme <- getSimpleColoredTheme(parentPivot=pt, colors=greenColors, fontName="Helvetica, arial")
-pt$theme <- theme
-pt$renderPivot(styleNamePrefix="t6")
-```
+In the example above, the default cell style from the theme is still applied.  The highlight is applied in addition to the default styling.  To stop the base styling being applied, create a new named style and set the baseStyleName property on the cell to the name of the new style. 
 
-```{r, message=FALSE, warning=FALSE}
-# define the colours
-yellowColors <- list(
-  headerBackgroundColor = "rgb(255, 192, 0)",
-  headerColor = "rgb(255, 255, 255)",
-  cellBackgroundColor="rgb(255, 255, 255)",
-  cellColor="rgb(0, 0, 0)",
-  totalBackgroundColor = "rgb(255, 242, 204)",
-  totalColor="rgb(0, 0, 0)",
-  borderColor = "rgb(255, 192, 0)"
-)
-# create the pivot table
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-# define the theme
-theme <- getSimpleColoredTheme(parentPivot=pt, colors=yellowColors, fontName="Verdana")
-pt$theme <- theme
-pt$renderPivot(styleNamePrefix="t7")
-```
+The `pt$setStyling()` function is used in the example above.  This function has the following arguments:
+
+* `rFrom` and `cFrom` are the coordinates of the cell where the styling is to be applied, excluding the row and column headers, i.e. (1, 1) is the first data cell.  If the styling is being applied to multiple cells, this is the top-left cell in the rectangular cell range where the styling is to be applied.
+* `rTo` and `cTo`  are the coordinates of the bottom right cell when styling is being applied to a rectangular range of cells.  If styling is only being applied to a single cell, these arguments are not needed. 
+* `groups` is a list of data groups to apply styling to.  Either `rFrom`/`cFrom`, `groups` or `cells` is typically specified.
+* `cells` is a list of cells to apply styling to.  Either `rFrom`/`cFrom`, `groups` or `cells` is typically specified.
+* `baseStyleName` is the name of a style in the table theme to apply to the specified cells.  Set this explicitly to NULL to revert to the default style specified in the table theme.
+* `style` is a `TableStyle` override object to apply to the specified cells.  This is created by calling `tbl$createInlineStyle()` as shown in the example above.
+* `declarations` is a list of style override declarations to apply to the specified cells. 
+
+The `pt$createInlineStyle()` function is also used in the example above.  This function creates a new unnamed style (that is not part of the table theme) and takes two arguments:  `baseStyleName` specifies the name of the style that the new style will be based on (i.e. will have it's style properties copied from) and `declarations` which specifies new/overriding style properties for the new style. 
+
+For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v07-findingandformatting.html) vignette.
 
 ## Creating a New Theme
 
 Since a theme is a collection of styles, creating themes is relatively straightforward.  The names of the styles are then assigned to the different types of cells within a pivot table:
 
-*  tableStyle - the name of the style applied to the table (i.e. the HTML `<table>` element).
-*  rootStyle - the name of the style applied to the empty cell at the top left of the pivot table.
-*  rowHeaderStyle - the name of the style applied to the row header cells.
-*  colHeaderStyle - the name of the style applied to the column header cells.
-*  cellStyle - the name of the style applied to the cells in the body of the pivot table.
-*  totalStyle - the name of the style applied to the total cells in the pivot table.
+*  `tableStyle` - the name of the style applied to the table (i.e. the HTML `<table>` element).
+*  `rootStyle` - the name of the style applied to the empty cell at the top left of the pivot table.
+*  `rowHeaderStyle` - the name of the style applied to the row header cells.
+*  `colHeaderStyle` - the name of the style applied to the column header cells.
+*  `cellStyle` - the name of the style applied to the cells in the body of the pivot table.
+*  `totalStyle` - the name of the style applied to the total cells in the pivot table.
 
 E.g. creating a custom theme that displays a mixture of bright colours (a rather ugly bubble-gum theme):
 
@@ -322,111 +424,6 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$theme <- createCustomTheme(pt)
 pt$renderPivot(styleNamePrefix="t8")
 ```
-
-## Changing the appearance of data groups
-
-The appearance of sets of data groups can be specified when adding the data groups to the pivot table either by specifying a `baseStyleName` or by specifying `styleDeclarations`.  If specifying a `baseStyleName`, the full style must be defined.  Alternatively specifying a set of style declarations allows just the style settings of interest to be overriden which tends to be simpler, e.g.
-
-```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory", styleDeclarations=list("color"="red", "font-weight"="bold", "background-color"="yellow"))
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-pt$renderPivot(styleNamePrefix="tdg")
-```
-
-## Changing the appearance of calculations
-
-The appearance of calculation headings or cell values can be specified when defining the calculations by specifying any combination of `headingBaseStyleName`, `headingStyleDeclarations`, `cellBaseStyleName` and/or `cellStyleDeclarations`. If specifying a base style name, the full style must be defined.  Alternatively specifying a set of style declarations allows just the style settings of interest to be overriden which tends to be simpler.  The example below shows both approaches.
-
-```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$styles$addStyle(styleName="NewHeadingStyle1", list(
-      "font-family"="Arial",
-      "font-size"="0.75em",
-      padding="2px",
-      border="1px solid lightgray",
-      "vertical-align"="middle",
-      "text-align"="center",
-      "font-weight"="bold",
-      "background-color"="Gold",
-      "xl-wrap-text"="wrap"
-    ))
-pt$styles$addStyle(styleName="CellStyle1", list(
-      "font-family"="Arial",
-      "font-size"="0.75em",
-      padding="2px 2px 2px 8px",
-      border="1px solid lightgray",
-      "vertical-align"="middle",
-      "background-color"="Yellow",
-      "text-align"="right"
-    ))
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains1", summariseExpression="n()",
-                     headingBaseStyleName="NewHeadingStyle1", cellBaseStyleName="CellStyle1")
-pt$defineCalculation(calculationName="TotalTrains2", summariseExpression="n()",
-                     headingStyleDeclarations=list("color"="red", "font-weight"="bold"),
-                     cellStyleDeclarations=list("color"="blue"))
-pt$renderPivot(styleNamePrefix="tcn")
-```
-
-## Changing the appearance of individual cells
-
-The individual cells in the pivot table can have their appearance changed by retrieving the cell then applying a style to the cell.  These styles typically apply in addition to the styles coming from the underlying theme, e.g. two different ways for highlighting a cell:
-
-```{r, message=FALSE, warning=FALSE}
-# define the colours
-orangeColors <- list(
-  headerBackgroundColor = "rgb(237, 125, 49)",
-  headerColor = "rgb(255, 255, 255)",
-  cellBackgroundColor = "rgb(255, 255, 255)",
-  cellColor = "rgb(0, 0, 0)",
-  totalBackgroundColor = "rgb(248, 198, 165)",
-  totalColor = "rgb(0, 0, 0)",
-  borderColor = "rgb(198, 89, 17)"
-)
-# create the pivot table
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-# define the theme
-theme <- getSimpleColoredTheme(parentPivot=pt, colors=orangeColors, fontName="Garamond, arial")
-pt$theme <- theme
-# evaluate the pivot to generate the cells
-pt$evaluatePivot()
-# applying a highlight - method 1 - 3rd row, 1st column
-pt$setStyling(3, 1, declarations=list("background-color"="#00FFFF"))
-# applying a highlight - method 2 - 3rd row, 2nd column
-cellHighlight <- pt$createInlineStyle(declarations=list("background-color"="#FFFF00"))
-cells <- pt$getCells(specifyCellsAsList=TRUE, cellCoordinates=list(c(3, 2)))
-cells[[1]]$style <- cellHighlight
-# draw the pivot table
-pt$renderPivot(styleNamePrefix="t9")
-```
-
-In the example above, the default cell style from the theme is still applied.  The highlight is applied in addition to the default styling.  To stop the base styling being applied, create a new named style and set the baseStyleName property on the cell to the name of the new style. 
-
-The `pt$setStyling()` function is used in the example above.  This function has the following arguments:
-
-* `rFrom` and `cFrom` are the coordinates of the cell where the styling is to be applied, excluding the row and column headers, i.e. (1, 1) is the first data cell.  If the styling is being applied to multiple cells, this is the top-left cell in the rectangular cell range where the styling is to be applied.
-* `rTo` and `cTo`  are the coordinates of the bottom right cell when styling is being applied to a rectangular range of cells.  If styling is only being applied to a single cell, these arguments are not needed. 
-* `groups` is a list of data groups to apply styling to.  Either `rFrom`/`cFrom`, `groups` or `cells` is typically specified.
-* `cells` is a list of cells to apply styling to.  Either `rFrom`/`cFrom`, `groups` or `cells` is typically specified.
-* `baseStyleName` is the name of a style in the table theme to apply to the specified cells.  Set this explicitly to NULL to revert to the default style specified in the table theme.
-* `style` is a `TableStyle` override object to apply to the specified cells.  This is created by calling `tbl$createInlineStyle()` as shown in the example above.
-* `declarations` is a list of style override declarations to apply to the specified cells. 
-
-The `pt$createInlineStyle()` function is also used in the example above.  This function creates a new unnamed style (that is not part of the table theme) and takes two arguments:  `baseStyleName` specifies the name of the style that the new style will be based on (i.e. will have it's style properties copied from) and `declarations` which specifies new/overriding style properties for the new style. 
-
-For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v07-findingandformatting.html) vignette.
 
 ## Summary of Styling Rules
 

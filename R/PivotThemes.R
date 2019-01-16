@@ -16,7 +16,35 @@ getTheme <- function(parentPivot, themeName=NULL) {
   if(themeName=="default") return(getDefaultTheme(parentPivot=parentPivot))
   else if(themeName=="largeplain") return(getLargePlainTheme(parentPivot=parentPivot))
   else if(themeName=="compact") return(getCompactTheme(parentPivot=parentPivot))
+  else if(themeName=="blank") return(getBlankTheme(parentPivot=parentPivot))
   else stop(paste0("getTheme(): Theme '", themeName, "' is not a recognised theme."), call.=FALSE)
+}
+
+#' Get an empty theme for applying no styling to a table.
+#'
+#' @param parentTable Owning table.
+#' @param themeName The name to use as the new theme name.
+#' @return A TableStyles object.
+getBlankTheme <- function(parentPivot, themeName="blank") {
+  if(R6::is.R6Class(parentPivot)&&(parentPivot$classname=="PivotTable")) argumentCheckMode <- parentPivot$argumentCheckMode
+  else argumentCheckMode <- 4
+  if(argumentCheckMode > 0) {
+    checkArgument(argumentCheckMode, TRUE, "", "getBlankTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+    checkArgument(argumentCheckMode, TRUE, "", "getBlankTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  }
+  pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
+  pivotStyles$addStyle(styleName="Table", list())
+  pivotStyles$addStyle(styleName="ColumnHeader", list())
+  pivotStyles$addStyle(styleName="RowHeader", list())
+  pivotStyles$addStyle(styleName="Cell", list())
+  pivotStyles$addStyle(styleName="Total", list())
+  pivotStyles$tableStyle <- "Table"
+  pivotStyles$rootStyle <- "RowHeader"
+  pivotStyles$rowHeaderStyle <- "RowHeader"
+  pivotStyles$colHeaderStyle <- "ColumnHeader"
+  pivotStyles$cellStyle <- "Cell"
+  pivotStyles$totalStyle <- "Total"
+  return(invisible(pivotStyles))
 }
 
 #' Get the default theme for styling a pivot table.
@@ -66,12 +94,20 @@ getDefaultTheme <- function(parentPivot, themeName="default") {
       "vertical-align"="middle",
       "text-align"="right"
     ))
+  pivotStyles$addStyle(styleName="Total", list(
+    "font-family"="Arial",
+    "font-size"="0.75em",
+    padding="2px 2px 2px 8px",
+    border="1px solid lightgray",
+    "vertical-align"="middle",
+    "text-align"="right"
+  ))
   pivotStyles$tableStyle <- "Table"
   pivotStyles$rootStyle <- "RowHeader"
   pivotStyles$rowHeaderStyle <- "RowHeader"
   pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
-  pivotStyles$totalStyle <- "Cell"
+  pivotStyles$totalStyle <- "Total"
   return(invisible(pivotStyles))
 }
 
@@ -123,12 +159,21 @@ getLargePlainTheme <- function(parentPivot, themeName="largeplain") {
       "vertical-align"="middle",
       "text-align"="right"
     ))
+  pivotStyles$addStyle(styleName="Total", list(
+    "font-family"="Arial",
+    "font-size"="0.875em",
+    padding="4px",
+    "min-width"="100px",
+    border="1px solid lightgray",
+    "vertical-align"="middle",
+    "text-align"="right"
+  ))
   pivotStyles$tableStyle <- "Table"
   pivotStyles$rootStyle <- "RowHeader"
   pivotStyles$rowHeaderStyle <- "RowHeader"
   pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
-  pivotStyles$totalStyle <- "Cell"
+  pivotStyles$totalStyle <- "Total"
   return(invisible(pivotStyles))
 }
 
@@ -179,12 +224,20 @@ getCompactTheme <- function(parentPivot, themeName="compact") {
       "vertical-align"="middle",
       "text-align"="right"
     ))
+  pivotStyles$addStyle(styleName="Total", list(
+    "font-family"="Arial",
+    "font-size"="0.625em",
+    padding="2px 2px 2px 6px",
+    border="1px solid lightgray",
+    "vertical-align"="middle",
+    "text-align"="right"
+  ))
   pivotStyles$tableStyle <- "Table"
   pivotStyles$rootStyle <- "RowHeader"
   pivotStyles$rowHeaderStyle <- "RowHeader"
   pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
-  pivotStyles$totalStyle <- "Cell"
+  pivotStyles$totalStyle <- "Total"
   return(invisible(pivotStyles))
 }
 

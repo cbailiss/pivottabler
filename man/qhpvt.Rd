@@ -5,7 +5,8 @@
 \title{Quickly render a basic pivot table in HTML.}
 \usage{
 qhpvt(dataFrame, rows = NULL, columns = NULL, calculations = NULL,
-  ...)
+  theme = NULL, replaceExistingStyles = FALSE, tableStyle = NULL,
+  headingStyle = NULL, cellStyle = NULL, totalStyle = NULL, ...)
 }
 \arguments{
 \item{dataFrame}{The data frame containing the data to be summarised in the
@@ -21,8 +22,26 @@ calculations.}
 \item{calculations}{One or more summary calculations to use to calculate the
 values of the cells in the pivot table.}
 
-\item{...}{Additional arguments, currently format, formats, totals and/or
-argumentCheckMode.}
+\item{theme}{Either the name of a built-in theme (default, largeplain,
+compact or blank/none) or a list which specifies the default formatting for
+the table.}
+
+\item{replaceExistingStyles}{TRUE to completely replace the default styling
+with the specified tableStyle, headingStyle, cellStyle and/or totalStyle}
+
+\item{tableStyle}{A list of CSS style declarations that apply to the table.}
+
+\item{headingStyle}{A list of CSS style declarations that apply to the
+heading cells in the table.}
+
+\item{cellStyle}{A list of CSS style declarations that apply to the normal
+cells in the table.}
+
+\item{totalStyle}{A list of CSS style declarations that apply to the total
+cells in the table.}
+
+\item{...}{Additional arguments, currently format, formats, totals,
+styleNamePrefix and/or argumentCheckMode.}
 }
 \value{
 A HTML widget.

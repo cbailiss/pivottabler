@@ -145,6 +145,10 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   \item{\code{createInlineStyle(baseStyleName, declarations)}}{Create a
   PivotStyle object that can be used to style individual cell in the pivot
   table.}
+  \item{\code{setStyling(rFrom=NULL, cFrom=NULL, rTo=NULL, cTo=NULL,
+  groups=NULL, cells=NULL, baseStyleName=NULL, style=NULL,
+  declarations=NULL)}}{Set the styling for a one/multiple data groups and/or
+  cells in the pivot table.}
   \item{\code{generateCellStructure()}}{Generate the empty pivot table cells
   (after the row/column headings have been defined).}
   \item{\code{resetCells()}}{Clear the cells of the pivot table (should be
