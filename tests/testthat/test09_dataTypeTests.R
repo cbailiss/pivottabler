@@ -98,7 +98,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("SaleQuantityDupe")
@@ -126,7 +127,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("SaleAmount")
@@ -154,7 +156,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("IsNewCustomer")
@@ -182,7 +185,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("SaleDate")
@@ -210,7 +214,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("SaleDT")
@@ -245,7 +250,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("SaleQuantityDupe", dataFormat="%i")
@@ -273,7 +279,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("SaleAmount", dataFormat="%.1f")
@@ -301,7 +308,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("IsNewCustomer", dataFormat="%i")
@@ -329,7 +337,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("SaleDate", dataFormat="%i")
@@ -391,7 +400,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("SaleAmount", dataFormat=list(digits=4, nsmall=2))
@@ -419,7 +429,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("IsNewCustomer", dataFormat=c("Existing Customer", "New Customer"))
@@ -447,7 +458,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("SaleDate", dataFormat="%d %b %Y")
@@ -475,7 +487,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("SaleID")
     pt$addRowDataGroups("SaleDT", dataFormat="%d %b %Y %H:%M:%S")
@@ -506,7 +519,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -537,7 +551,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -568,7 +583,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -598,7 +614,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -628,7 +645,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -658,7 +676,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -695,7 +714,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -726,7 +746,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -757,7 +778,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -793,7 +815,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -825,7 +848,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -857,7 +881,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")
@@ -889,7 +914,8 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
     pt$addData(dtdata)
     pt$addColumnDataGroups("Colour")
     pt$addRowDataGroups("SaleItem")

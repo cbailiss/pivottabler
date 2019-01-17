@@ -22,8 +22,8 @@ calculations.}
 values of the cells in the pivot table.}
 
 \item{...}{Additional arguments, currently format, formats, totals,
-argumentCheckMode, caption and/or label.  See the Latex output vignette for
-a description of caption and label.}
+argumentCheckMode, compatibility, caption and/or label.  See the Latex
+output vignette for a description of caption and label.}
 }
 \value{
 Latex.

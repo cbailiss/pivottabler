@@ -63,9 +63,11 @@
 #' \describe{
 #'   \item{Documentation}{For more complete explanations and examples please see
 #'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(processingLibrary="auto", traceEnabled=FALSE,
-#'   traceFile=NULL, argumentCheckMode="auto")}}{Create a new pivot table,
-#'   including optionally enabling debug logging.}
+#'   \item{\code{new(processingLibrary="auto", evaluationMode="batch",
+#'   argumentCheckMode="auto", theme=NULL, replaceExistingStyles=FALSE,
+#'   tableStyle=NULL, headingStyle=NULL, cellStyle=NULL, totalStyle=NULL,
+#'   compatibility=NULL, traceEnabled=FALSE, traceFile=NULL)}}{Create a new
+#'   pivot table, optionally specifying styling and enabling debug logging.}
 #'
 #'   \item{\code{addData(df, dataName)}}{Add a data frame with the specified
 #'   name to the pivot table.}
@@ -218,7 +220,7 @@ PivotTable <- R6::R6Class("PivotTable",
     initialize = function(processingLibrary="auto", evaluationMode="batch", argumentCheckMode="auto",
                           theme=NULL, replaceExistingStyles=FALSE,
                           tableStyle=NULL, headingStyle=NULL, cellStyle=NULL, totalStyle=NULL,
-                          traceEnabled=FALSE, traceFile=NULL) {
+                          compatibility=NULL, traceEnabled=FALSE, traceFile=NULL) {
       checkArgument(4, TRUE, "PivotTable", "initialize", processingLibrary, missing(processingLibrary), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("auto", "dplyr", "data.table"))
       checkArgument(4, TRUE, "PivotTable", "initialize", evaluationMode, missing(evaluationMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("batch", "sequential"))
       checkArgument(4, TRUE, "PivotTable", "initialize", argumentCheckMode, missing(argumentCheckMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("auto", "none", "minimal", "basic", "balanced", "full"))
@@ -228,6 +230,7 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument(4, TRUE, "PivotTable", "initialize", headingStyle, missing(headingStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "PivotStyle"))
       checkArgument(4, TRUE, "PivotTable", "initialize", cellStyle, missing(cellStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "PivotStyle"))
       checkArgument(4, TRUE, "PivotTable", "initialize", totalStyle, missing(totalStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "PivotStyle"))
+      checkArgument(4, TRUE, "PivotTable", "initialize", compatibility, missing(compatibility), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric", "logical"))
       checkArgument(4, TRUE, "PivotTable", "initialize", traceEnabled, missing(traceEnabled), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument(4, TRUE, "PivotTable", "initialize", traceFile, missing(traceFile), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       if(argumentCheckMode=="auto") {
@@ -248,6 +251,7 @@ PivotTable <- R6::R6Class("PivotTable",
         private$p_traceFile <- file(traceFile, open="w")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$new", "Creating new Pivot Table...")
+      private$p_compatibility <- compatibility
       if(processingLibrary=="auto") {
         if(requireNamespace(package="dplyr", quietly=TRUE)==TRUE) private$p_processingLibrary <- "dplyr"
         else if(requireNamespace(package="data.table", quietly=TRUE)==TRUE) private$p_processingLibrary <- "data.table"
@@ -1731,6 +1735,7 @@ PivotTable <- R6::R6Class("PivotTable",
   ),
   active = list(
     argumentCheckMode = function(value) { return(private$p_argumentCheckMode) },
+    compatibility = function(value) { return(private$p_compatibility) },
     traceEnabled = function(value){
       if(missing(value)) return(invisible(private$p_traceEnabled))
       else {
@@ -1842,6 +1847,7 @@ PivotTable <- R6::R6Class("PivotTable",
     p_htmlRenderer = NULL,
     p_latexRenderer = NULL,
     p_openxlsxRenderer = NULL,
+    p_compatibility = NULL,
     p_traceFile = NULL,
     p_timings = NULL,
     clearIsRenderedFlags = function() {

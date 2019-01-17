@@ -7,9 +7,9 @@
 getBlankTheme(parentPivot, themeName = "blank")
 }
 \arguments{
-\item{themeName}{The name to use as the new theme name.}
+\item{parentPivot}{Owning pivot table.}
 
-\item{parentTable}{Owning table.}
+\item{themeName}{The name to use as the new theme name.}
 }
 \value{
 A TableStyles object.

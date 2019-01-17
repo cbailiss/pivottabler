@@ -77,9 +77,11 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
 \describe{
   \item{Documentation}{For more complete explanations and examples please see
   the extensive vignettes supplied with this package.}
-  \item{\code{new(processingLibrary="auto", traceEnabled=FALSE,
-  traceFile=NULL, argumentCheckMode="auto")}}{Create a new pivot table,
-  including optionally enabling debug logging.}
+  \item{\code{new(processingLibrary="auto", evaluationMode="batch",
+  argumentCheckMode="auto", theme=NULL, replaceExistingStyles=FALSE,
+  tableStyle=NULL, headingStyle=NULL, cellStyle=NULL, totalStyle=NULL,
+  compatibility=NULL, traceEnabled=FALSE, traceFile=NULL)}}{Create a new
+  pivot table, optionally specifying styling and enabling debug logging.}
 
   \item{\code{addData(df, dataName)}}{Add a data frame with the specified
   name to the pivot table.}

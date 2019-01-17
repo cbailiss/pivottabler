@@ -41,7 +41,7 @@ cells in the table.}
 cells in the table.}
 
 \item{...}{Additional arguments, currently format, formats, totals,
-styleNamePrefix and/or argumentCheckMode.}
+styleNamePrefix, compatibility and/or argumentCheckMode.}
 }
 \value{
 A HTML widget.

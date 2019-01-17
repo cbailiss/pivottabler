@@ -25,8 +25,8 @@
 #'   cells in the table.
 #' @param totalStyle A list of CSS style declarations that apply to the total
 #'   cells in the table.
-#' @param ... Additional arguments, currently format, formats, totals and/or
-#'   argumentCheckMode.
+#' @param ... Additional arguments, currently format, formats, totals,
+#'   compatibility and/or argumentCheckMode.
 #' @return A pivot table.
 #' @examples
 #' qpvt(bhmtrains, "TOC", "TrainCategory", "n()")
@@ -50,6 +50,7 @@ qpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL,
   checkArgument(3, TRUE, "", "qpvt", totalStyle, missing(totalStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "PivotStyle"))
   argumentCheckMode <- arguments$argumentCheckMode
   if(is.null(argumentCheckMode)) argumentCheckMode <- "auto"
+  compatibility <- arguments$compatibility
   dataName <- deparse(substitute(dataFrame))
   pt <- buildPivot(functionName="qpvt", argumentCheckMode=argumentCheckMode,
                    dataFrame=dataFrame, dataName=dataName,
@@ -58,7 +59,8 @@ qpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL,
                    totalsSpecified=("totals" %in% names(arguments)),
                    totals=arguments[["totals"]],
                    theme=theme, replaceExistingStyles=replaceExistingStyles,
-                   tableStyle=tableStyle, headingStyle=headingStyle, cellStyle=cellStyle, totalStyle=totalStyle)
+                   tableStyle=tableStyle, headingStyle=headingStyle, cellStyle=cellStyle, totalStyle=totalStyle,
+                   compatibility=compatibility)
   pt$evaluatePivot()
   return(pt)
 }
@@ -91,7 +93,7 @@ qpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL,
 #' @param totalStyle A list of CSS style declarations that apply to the total
 #'   cells in the table.
 #' @param ... Additional arguments, currently format, formats, totals,
-#'   styleNamePrefix and/or argumentCheckMode.
+#'   styleNamePrefix, compatibility and/or argumentCheckMode.
 #' @return A HTML widget.
 #' @examples
 #' qhpvt(bhmtrains, "TOC", "TrainCategory", "n()")
@@ -118,6 +120,7 @@ qhpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL,
   checkArgument(3, TRUE, "", "qhpvt", totalStyle, missing(totalStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "PivotStyle"))
   argumentCheckMode <- arguments$argumentCheckMode
   if(is.null(argumentCheckMode)) argumentCheckMode <- "auto"
+  compatibility <- arguments$compatibility
   styleNamePrefix <- arguments$styleNamePrefix
   dataName <- deparse(substitute(dataFrame))
   pt <- buildPivot(functionName="qhpvt", argumentCheckMode=argumentCheckMode,
@@ -127,7 +130,8 @@ qhpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL,
                    totalsSpecified=("totals" %in% names(arguments)),
                    totals=arguments[["totals"]],
                    theme=theme, replaceExistingStyles=replaceExistingStyles,
-                   tableStyle=tableStyle, headingStyle=headingStyle, cellStyle=cellStyle, totalStyle=totalStyle)
+                   tableStyle=tableStyle, headingStyle=headingStyle, cellStyle=cellStyle, totalStyle=totalStyle,
+                   compatibility=compatibility)
   w <- pt$renderPivot(styleNamePrefix=styleNamePrefix)
   return(w)
 }
@@ -148,8 +152,8 @@ qhpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL,
 #' @param calculations One or more summary calculations to use to calculate the
 #'   values of the cells in the pivot table.
 #' @param ... Additional arguments, currently format, formats, totals,
-#'   argumentCheckMode, caption and/or label.  See the Latex output vignette for
-#'   a description of caption and label.
+#'   argumentCheckMode, compatibility, caption and/or label.  See the Latex
+#'   output vignette for a description of caption and label.
 #' @return Latex.
 #' @examples
 #' qlpvt(bhmtrains, "TOC", "TrainCategory", "n()")
@@ -164,13 +168,15 @@ qlpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL, ...) {
   checkArgument(3, TRUE, "", "qlpvt", calculations, missing(calculations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
   argumentCheckMode <- arguments$argumentCheckMode
   if(is.null(argumentCheckMode)) argumentCheckMode <- "auto"
+  compatibility <- arguments$compatibility
   dataName <- deparse(substitute(dataFrame))
   pt <- buildPivot(functionName="qlpvt", argumentCheckMode=argumentCheckMode,
                    dataFrame=dataFrame, dataName=dataName,
                    rows=rows, columns=columns, calculations=calculations,
                    format=arguments[["format"]], formats=arguments[["formats"]], # can't use $format as this also matches formats
                    totalsSpecified=("totals" %in% names(arguments)),
-                   totals=arguments[["totals"]])
+                   totals=arguments[["totals"]],
+                   compatibility=compatibility)
   return(pt$getLatex(caption=arguments$caption, label=arguments$label))
 }
 
@@ -203,7 +209,8 @@ buildPivot <- function(functionName=NULL, argumentCheckMode=NULL,
                        format=NULL, formats=NULL,
                        totalsSpecified=FALSE, totals=NULL,
                        theme=NULL, replaceExistingStyles=FALSE,
-                       tableStyle=NULL, headingStyle=NULL, cellStyle=NULL, totalStyle=NULL) {
+                       tableStyle=NULL, headingStyle=NULL, cellStyle=NULL, totalStyle=NULL,
+                       compatibility=compatibility) {
   if(is.null(dataFrame)) stop(paste0(functionName, "():  dataFrame argument must not be NULL."), call. = FALSE)
   if(!is.data.frame(dataFrame)) stop(paste0(functionName, "():  dataFrame argument must be a data frame."), call. = FALSE)
   if((!is.null(rows))&&(!is.na(rows))) {
@@ -235,7 +242,8 @@ buildPivot <- function(functionName=NULL, argumentCheckMode=NULL,
     }
   }
   pt <- PivotTable$new(argumentCheckMode=argumentCheckMode, theme=theme, replaceExistingStyles=replaceExistingStyles,
-                       tableStyle=tableStyle, headingStyle=headingStyle, cellStyle=cellStyle, totalStyle=totalStyle)
+                       tableStyle=tableStyle, headingStyle=headingStyle, cellStyle=cellStyle, totalStyle=totalStyle,
+                       compatibility=compatibility)
   pt$addData(dataFrame, dataName=dataName)
   bCalculationsAdded <- FALSE
   if((!is.null(rows))&&(!is.na(rows))) {

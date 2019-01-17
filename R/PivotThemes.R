@@ -22,7 +22,7 @@ getTheme <- function(parentPivot, themeName=NULL) {
 
 #' Get an empty theme for applying no styling to a table.
 #'
-#' @param parentTable Owning table.
+#' @param parentPivot Owning pivot table.
 #' @param themeName The name to use as the new theme name.
 #' @return A TableStyles object.
 getBlankTheme <- function(parentPivot, themeName="blank") {
@@ -37,13 +37,15 @@ getBlankTheme <- function(parentPivot, themeName="blank") {
   pivotStyles$addStyle(styleName="ColumnHeader", list())
   pivotStyles$addStyle(styleName="RowHeader", list())
   pivotStyles$addStyle(styleName="Cell", list())
-  pivotStyles$addStyle(styleName="Total", list())
+  if(!isTRUE(parentPivot$compatibility$totalStyleIsCellStyle)) {
+    pivotStyles$addStyle(styleName="Total", list())
+  }
   pivotStyles$tableStyle <- "Table"
   pivotStyles$rootStyle <- "RowHeader"
   pivotStyles$rowHeaderStyle <- "RowHeader"
   pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
-  pivotStyles$totalStyle <- "Total"
+  pivotStyles$totalStyle <- ifelse(isTRUE(parentPivot$compatibility$totalStyleIsCellStyle), "Cell", "Total")
   return(invisible(pivotStyles))
 }
 
@@ -94,20 +96,22 @@ getDefaultTheme <- function(parentPivot, themeName="default") {
       "vertical-align"="middle",
       "text-align"="right"
     ))
-  pivotStyles$addStyle(styleName="Total", list(
-    "font-family"="Arial",
-    "font-size"="0.75em",
-    padding="2px 2px 2px 8px",
-    border="1px solid lightgray",
-    "vertical-align"="middle",
-    "text-align"="right"
-  ))
+  if(!isTRUE(parentPivot$compatibility$totalStyleIsCellStyle)) {
+    pivotStyles$addStyle(styleName="Total", list(
+      "font-family"="Arial",
+      "font-size"="0.75em",
+      padding="2px 2px 2px 8px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "text-align"="right"
+    ))
+  }
   pivotStyles$tableStyle <- "Table"
   pivotStyles$rootStyle <- "RowHeader"
   pivotStyles$rowHeaderStyle <- "RowHeader"
   pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
-  pivotStyles$totalStyle <- "Total"
+  pivotStyles$totalStyle <- ifelse(isTRUE(parentPivot$compatibility$totalStyleIsCellStyle), "Cell", "Total")
   return(invisible(pivotStyles))
 }
 
@@ -159,21 +163,23 @@ getLargePlainTheme <- function(parentPivot, themeName="largeplain") {
       "vertical-align"="middle",
       "text-align"="right"
     ))
-  pivotStyles$addStyle(styleName="Total", list(
-    "font-family"="Arial",
-    "font-size"="0.875em",
-    padding="4px",
-    "min-width"="100px",
-    border="1px solid lightgray",
-    "vertical-align"="middle",
-    "text-align"="right"
-  ))
+  if(!isTRUE(parentPivot$compatibility$totalStyleIsCellStyle)) {
+    pivotStyles$addStyle(styleName="Total", list(
+      "font-family"="Arial",
+      "font-size"="0.875em",
+      padding="4px",
+      "min-width"="100px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "text-align"="right"
+    ))
+  }
   pivotStyles$tableStyle <- "Table"
   pivotStyles$rootStyle <- "RowHeader"
   pivotStyles$rowHeaderStyle <- "RowHeader"
   pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
-  pivotStyles$totalStyle <- "Total"
+  pivotStyles$totalStyle <- ifelse(isTRUE(parentPivot$compatibility$totalStyleIsCellStyle), "Cell", "Total")
   return(invisible(pivotStyles))
 }
 
@@ -224,20 +230,22 @@ getCompactTheme <- function(parentPivot, themeName="compact") {
       "vertical-align"="middle",
       "text-align"="right"
     ))
-  pivotStyles$addStyle(styleName="Total", list(
-    "font-family"="Arial",
-    "font-size"="0.625em",
-    padding="2px 2px 2px 6px",
-    border="1px solid lightgray",
-    "vertical-align"="middle",
-    "text-align"="right"
-  ))
+  if(!isTRUE(parentPivot$compatibility$totalStyleIsCellStyle)) {
+    pivotStyles$addStyle(styleName="Total", list(
+      "font-family"="Arial",
+      "font-size"="0.625em",
+      padding="2px 2px 2px 6px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "text-align"="right"
+    ))
+  }
   pivotStyles$tableStyle <- "Table"
   pivotStyles$rootStyle <- "RowHeader"
   pivotStyles$rowHeaderStyle <- "RowHeader"
   pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
-  pivotStyles$totalStyle <- "Total"
+  pivotStyles$totalStyle <- ifelse(isTRUE(parentPivot$compatibility$totalStyleIsCellStyle), "Cell", "Total")
   return(invisible(pivotStyles))
 }
 
@@ -299,21 +307,23 @@ getSimpleColoredTheme <- function(parentPivot, themeName="coloredTheme", colors,
       color=colors$cellColor,
       "background-color"=colors$cellBackgroundColor
     ))
-  pivotStyles$addStyle(styleName="Total", list(
-      "font-family"=fontName,
-      "font-size"="0.75em",
-      padding="2px 2px 2px 8px",
-      "border"=paste0("1px solid ", colors$borderColor),
-      "vertical-align"="middle",
-      "text-align"="right",
-      color=colors$totalColor,
-      "background-color"=colors$totalBackgroundColor
-    ))
+  if(!isTRUE(parentPivot$compatibility$totalStyleIsCellStyle)) {
+    pivotStyles$addStyle(styleName="Total", list(
+        "font-family"=fontName,
+        "font-size"="0.75em",
+        padding="2px 2px 2px 8px",
+        "border"=paste0("1px solid ", colors$borderColor),
+        "vertical-align"="middle",
+        "text-align"="right",
+        color=colors$totalColor,
+        "background-color"=colors$totalBackgroundColor
+      ))
+  }
   pivotStyles$tableStyle <- "Table"
   pivotStyles$rootStyle <- "ColumnHeader"
   pivotStyles$rowHeaderStyle <- "RowHeader"
   pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
-  pivotStyles$totalStyle <- "Total"
+  pivotStyles$totalStyle <- ifelse(isTRUE(parentPivot$compatibility$totalStyleIsCellStyle), "Cell", "Total")
   return(invisible(pivotStyles))
 }
