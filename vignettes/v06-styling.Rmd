@@ -287,8 +287,9 @@ pt$renderPivot(styleNamePrefix="tcn")
 The individual cells in the pivot table can have their appearance changed by retrieving the cell then applying a style to the cell.  These styles typically apply in addition to the styles coming from the underlying theme, e.g. two different ways for highlighting a cell:
 
 ```{r, message=FALSE, warning=FALSE}
-# define the colours
-orangeColors <- list(
+# define the theme
+orangeTheme <- list(
+  fontName="Garamond, arial",
   headerBackgroundColor = "rgb(237, 125, 49)",
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor = "rgb(255, 255, 255)",
@@ -304,9 +305,8 @@ pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-# define the theme
-theme <- getSimpleColoredTheme(parentPivot=pt, colors=orangeColors, fontName="Garamond, arial")
-pt$theme <- theme
+# use the theme
+pt$theme <- orangeTheme
 # evaluate the pivot to generate the cells
 pt$evaluatePivot()
 # applying a highlight - method 1 - 3rd row, 1st column
