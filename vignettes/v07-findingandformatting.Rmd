@@ -17,6 +17,7 @@ vignette: >
 * Getting Cells by Row and/or Column Numbers 
 * Finding Cells
 * Conditional Formatting
+* Summary
 * Further Reading
 
 ## Finding and Formatting
@@ -24,6 +25,8 @@ vignette: >
 This vignette explains how to find parts of a pivot table - either one or more data groups (i.e. row/column headings) or one or more cells in the body of the pivot table.
 
 This is often useful to retrieve either a specific value/values, or to change the appearance of specific headings/cells - similar to the conditional formatting capabilities of many off-the-shelf tools.
+
+This is a long vignette.  Some readers may prefer to jump to the summary at the end for a more concise description of the functions and frequently used parameters.
 
 ## Example Pivot Table
 
@@ -279,7 +282,7 @@ pt$renderPivot()
 
 ## Getting Cells By Row and/or Column Numbers
 
-The `getCells()` function can be used to retrieve one or more cells by row/column number in the body of the pivot table.  The arguments can be specified in two different ways depending on the value of the `specifyCellsAsList` argument.
+The `getCells()` function is used to retrieve one or more cells by row/column number in the body of the pivot table.  The arguments can be specified in two different ways depending on the value of the `specifyCellsAsList` argument.
 
 In versions v0.4.0 and earlier, the default value of the `specifyCellsAsList` argument was `FALSE`.  The default value is now `TRUE`.
 
@@ -510,6 +513,7 @@ The `findCells()` function is used to search for cells within the body of the pi
 - `maxValue` - a numerical value specifying a maximum value threshold when matching cells.
 - `exactValues` - vector specifying a set of allowed values when matching cells.
 - `includeNA` - specify TRUE to include NA in the matched cells, FALSE to exclude NA values.
+- `includeNull` - specify TRUE to include cells with no value, FALSE to exclude cells with no value.
 
 If multiple variable names and values are specified, then `findCells()` searches for cells that match all of the criteria - i.e. the equivalent of the `combinations` match method described above.
 
@@ -809,15 +813,31 @@ backClrRed <- hexToClr("#FFC7CE")
 
 # specify some conditional formatting, calculating the appropriate text colour and back colour for each cell.
 cells <- pt$findCells(includeNull=FALSE, includeNA=FALSE)
-for(i in 1:length(cells)) {
-  cell <- cells[[i]]
+formatCell <- function(cell) {
   value <- cell$rawValue
   textClr <- scale3Colours(textClrGreen, textClrYellow, textClrRed, 0.5, 2, 4, value)
   backClr <- scale3Colours(backClrGreen, backClrYellow, backClrRed, 0.5, 2, 4, value)
-  cell$style <- pt$createInlineStyle(declarations=list("background-color"=backClr, "color"=textClr))
+  pt$setStyling(cells=cell, declarations=list("background-color"=backClr, "color"=textClr))
 }
+invisible(lapply(cells, formatCell))
 pt$renderPivot()
 ```
+
+## Summary
+
+* The `findRowDataGroups()` and `findColumnDataGroups()` functions are used to find data groups (i.e. row and/or column headings) that match specific criteria.
+    + The functions return a list of data group objects.
+    + `variableValues` is the most commonly used parameter and specifies the variable values (`matchMode="simple"`) or combination of values (`matchMode="combinations"`) to find.
+    + Example:  `pt$findColumnDataGroups(variableValues=list("PowerType"=c("DMU", "HST")))` returns all data groups where PowerType is either DMU or HST.
+* The `getCells()` function is used to retrieve one or more cells by row/column number in the body of the pivot table.
+    + `getCells()` returns a list of cell objects.
+    + Example: `pt$getCells(specifyCellsAsList=TRUE, rowNumbers=2, columnNumbers=4, cellCoordinates=list(c(5, 7)))` returns all cells in the second row, all cells in the fourth column and the cell in the seventh column on the fifth row. 
+* The `findCells()` function is used to search for cells within the body of the pivot table matching one or more criteria.
+    + `findCells()` returns a list of cell objects.
+    + `variableValues` is a commonly used parameter and specifies the variable values to find.
+    + The values of cells to find can be specified using the `minValue`, `maxValue` and `exactValues` parameters.
+    + Where a pivot table contains multiple calculations, the `calculationNames` parameter is used to only match those cells relating to specific calculations.
+    + Example:  `pt$findCells(variableValues=list("PowerType"=c("DMU", "HST")), minValue=500, maxValue=5000)` finds all cells where PowerType is either DMU or HST and the cell value is between 500 and 5000 inclusive. 
 
 ## Further Reading
 
