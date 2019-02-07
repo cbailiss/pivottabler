@@ -17,7 +17,7 @@ This version of `pivottabler` generates slightly different CSS/HTML for the buil
 
 More details:
 
-In version 1.0.0 and earlier versions of `pivottabler` the built-in themes used a shared set of style declarations for both calculation value cells and total cells.  From `pivottabler` version 1.1.0 onwards, total cells use a separate set of style declarations.  The visual appearance of pivot tables using the built-in themes has not changed, only the HTML/CSS that is generated is slightly different - so the great majority of users will not be affected.  
+In version 1.0.0 and earlier versions of `pivottabler`, the built-in themes used a shared set of style declarations for both calculation value cells and total cells.  From `pivottabler` version 1.1.0 onwards, total cells use a separate set of style declarations.  The visual appearance of pivot tables using the built-in themes has not changed, only the HTML/CSS that is generated is slightly different - so the great majority of users will not be affected.  
 
 This change reduces the risk of styling changes to totals accidentally affecting all calculation value cells and vice-versa.  
 
