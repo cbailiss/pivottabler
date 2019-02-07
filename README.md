@@ -141,7 +141,7 @@ pt$renderPivot()
 
 ![<http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png)
 
-### Styling Example
+#### Styling Example
 
 Styling can be specified when creating the pivot table. The example below shows specifying styling using a quick-pivot function and using the more verbose syntax.
 
