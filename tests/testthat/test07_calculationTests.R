@@ -62,149 +62,155 @@ testScenarios <- function(description="test", releaseEvaluationMode="batch", rel
 
 context("CALCULATION TESTS")
 
+if (requireNamespace("lubridate", quietly = TRUE)) {
 
-scenarios <- testScenarios("calculation tests:  calculate dply summarise")
-for(i in 1:nrow(scenarios)) {
-  evaluationMode <- scenarios$evaluationMode[i]
-  processingLibrary <- scenarios$processingLibrary[i]
-  description <- scenarios$description[i]
-  countFunction <- scenarios$countFunction[i]
+  scenarios <- testScenarios("calculation tests:  calculate dply summarise")
+  for(i in 1:nrow(scenarios)) {
+    evaluationMode <- scenarios$evaluationMode[i]
+    processingLibrary <- scenarios$processingLibrary[i]
+    description <- scenarios$description[i]
+    countFunction <- scenarios$countFunction[i]
 
-  test_that(description, {
+    test_that(description, {
 
-    library(pivottabler)
-    library(dplyr)
-    library(lubridate)
+      library(pivottabler)
+      library(dplyr)
+      library(lubridate)
 
-    # derive some additional data
-    trains <- mutate(bhmtrains,
-                     ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
-                     ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
+      # derive some additional data
+      trains <- mutate(bhmtrains,
+                       ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+                       ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
 
-    # create the pivot table
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
-    pt$addData(trains)
-    pt$addRowDataGroups("TOC", totalCaption="All TOCs")
-    pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains",
-                         summariseExpression=countFunction)
-    pt$defineCalculation(calculationName="MinArrivalDelay", caption="Min Arr. Delay",
-                         summariseExpression="min(ArrivalDelay, na.rm=TRUE)")
-    pt$defineCalculation(calculationName="MaxArrivalDelay", caption="Max Arr. Delay",
-                         summariseExpression="max(ArrivalDelay, na.rm=TRUE)")
-    pt$defineCalculation(calculationName="MeanArrivalDelay", caption="Mean Arr. Delay",
-                         summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", format="%.1f")
-    pt$defineCalculation(calculationName="MedianArrivalDelay", caption="Median Arr. Delay",
-                         summariseExpression="median(ArrivalDelay, na.rm=TRUE)")
-    pt$defineCalculation(calculationName="IQRArrivalDelay", caption="Delay IQR",
-                         summariseExpression="IQR(ArrivalDelay, na.rm=TRUE)")
-    pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev.",
-                         summariseExpression="sd(ArrivalDelay, na.rm=TRUE)", format="%.1f")
-    pt$evaluatePivot()
-    # pt$renderPivot()
-    # sprintf("%.6f", sum(pt$cells$asMatrix()))
-    # prepStr(as.character(pt$getHtml()))
-    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total Trains</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Min Arr. Delay</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Max Arr. Delay</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Mean Arr. Delay</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Median Arr. Delay</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Delay IQR</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Delay Std. Dev.</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3909</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">49</td>\n    <td class=\"Cell\">2.3</td>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">4.3</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">22928</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">273</td>\n    <td class=\"Cell\">3.5</td>\n    <td class=\"Cell\">2</td>\n    <td class=\"Cell\">4</td>\n    <td class=\"Cell\">8.1</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">48279</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">177</td>\n    <td class=\"Cell\">2.3</td>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">4.2</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">181</td>\n    <td class=\"Cell\">3.0</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">8.4</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">All TOCs</th>\n    <td class=\"Cell\">83710</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">273</td>\n    <td class=\"Cell\">2.7</td>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">6.1</td>\n  </tr>\n</table>"
+      # create the pivot table
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                           compatibility=list(totalStyleIsCellStyle=TRUE))
+      pt$addData(trains)
+      pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+      pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains",
+                           summariseExpression=countFunction)
+      pt$defineCalculation(calculationName="MinArrivalDelay", caption="Min Arr. Delay",
+                           summariseExpression="min(ArrivalDelay, na.rm=TRUE)")
+      pt$defineCalculation(calculationName="MaxArrivalDelay", caption="Max Arr. Delay",
+                           summariseExpression="max(ArrivalDelay, na.rm=TRUE)")
+      pt$defineCalculation(calculationName="MeanArrivalDelay", caption="Mean Arr. Delay",
+                           summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", format="%.1f")
+      pt$defineCalculation(calculationName="MedianArrivalDelay", caption="Median Arr. Delay",
+                           summariseExpression="median(ArrivalDelay, na.rm=TRUE)")
+      pt$defineCalculation(calculationName="IQRArrivalDelay", caption="Delay IQR",
+                           summariseExpression="IQR(ArrivalDelay, na.rm=TRUE)")
+      pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev.",
+                           summariseExpression="sd(ArrivalDelay, na.rm=TRUE)", format="%.1f")
+      pt$evaluatePivot()
+      # pt$renderPivot()
+      # sprintf("%.6f", sum(pt$cells$asMatrix()))
+      # prepStr(as.character(pt$getHtml()))
+      html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total Trains</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Min Arr. Delay</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Max Arr. Delay</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Mean Arr. Delay</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Median Arr. Delay</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Delay IQR</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Delay Std. Dev.</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3909</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">49</td>\n    <td class=\"Cell\">2.3</td>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">4.3</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">22928</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">273</td>\n    <td class=\"Cell\">3.5</td>\n    <td class=\"Cell\">2</td>\n    <td class=\"Cell\">4</td>\n    <td class=\"Cell\">8.1</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">48279</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">177</td>\n    <td class=\"Cell\">2.3</td>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">4.2</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">181</td>\n    <td class=\"Cell\">3.0</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">8.4</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">All TOCs</th>\n    <td class=\"Cell\">83710</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">273</td>\n    <td class=\"Cell\">2.7</td>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">6.1</td>\n  </tr>\n</table>"
 
-    expect_equal(sum(pt$cells$asMatrix()), 168438.858522)
-    expect_identical(as.character(pt$getHtml()), html)
-  })
+      expect_equal(sum(pt$cells$asMatrix()), 168438.858522)
+      expect_identical(as.character(pt$getHtml()), html)
+    })
+  }
 }
 
 
+if (requireNamespace("lubridate", quietly = TRUE)) {
 
-scenarios <- testScenarios("calculation tests:  calculate on rows dply summarise")
-for(i in 1:nrow(scenarios)) {
-  evaluationMode <- scenarios$evaluationMode[i]
-  processingLibrary <- scenarios$processingLibrary[i]
-  description <- scenarios$description[i]
-  countFunction <- scenarios$countFunction[i]
+  scenarios <- testScenarios("calculation tests:  calculate on rows dply summarise")
+  for(i in 1:nrow(scenarios)) {
+    evaluationMode <- scenarios$evaluationMode[i]
+    processingLibrary <- scenarios$processingLibrary[i]
+    description <- scenarios$description[i]
+    countFunction <- scenarios$countFunction[i]
 
-  test_that(description, {
+    test_that(description, {
 
-    library(pivottabler)
-    library(dplyr)
-    library(lubridate)
+      library(pivottabler)
+      library(dplyr)
+      library(lubridate)
 
-    # derive some additional data
-    trains <- mutate(bhmtrains,
-                     ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
-                     ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
+      # derive some additional data
+      trains <- mutate(bhmtrains,
+                       ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+                       ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
 
-    # create the pivot table
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
-    pt$addData(trains)
-    pt$addColumnDataGroups("TOC", totalCaption="All TOCs")
-    pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains",
-                         summariseExpression=countFunction)
-    pt$defineCalculation(calculationName="MinArrivalDelay", caption="Min Arr. Delay",
-                         summariseExpression="min(ArrivalDelay, na.rm=TRUE)")
-    pt$defineCalculation(calculationName="MaxArrivalDelay", caption="Max Arr. Delay",
-                         summariseExpression="max(ArrivalDelay, na.rm=TRUE)")
-    pt$defineCalculation(calculationName="MeanArrivalDelay", caption="Mean Arr. Delay",
-                         summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", format="%.1f")
-    pt$defineCalculation(calculationName="MedianArrivalDelay", caption="Median Arr. Delay",
-                         summariseExpression="median(ArrivalDelay, na.rm=TRUE)")
-    pt$defineCalculation(calculationName="IQRArrivalDelay", caption="Delay IQR",
-                         summariseExpression="IQR(ArrivalDelay, na.rm=TRUE)")
-    pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev.",
-                         summariseExpression="sd(ArrivalDelay, na.rm=TRUE)", format="%.1f")
-    pt$addRowCalculationGroups()
-    pt$evaluatePivot()
-    # pt$renderPivot()
-    # sprintf("%.6f", sum(pt$cells$asMatrix()))
-    # prepStr(as.character(pt$getHtml()))
-    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Arriva Trains Wales</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">CrossCountry</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">London Midland</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Virgin Trains</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">All TOCs</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total Trains</th>\n    <td class=\"Cell\">3909</td>\n    <td class=\"Cell\">22928</td>\n    <td class=\"Cell\">48279</td>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Min Arr. Delay</th>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">0</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Max Arr. Delay</th>\n    <td class=\"Cell\">49</td>\n    <td class=\"Cell\">273</td>\n    <td class=\"Cell\">177</td>\n    <td class=\"Cell\">181</td>\n    <td class=\"Cell\">273</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Mean Arr. Delay</th>\n    <td class=\"Cell\">2.3</td>\n    <td class=\"Cell\">3.5</td>\n    <td class=\"Cell\">2.3</td>\n    <td class=\"Cell\">3.0</td>\n    <td class=\"Cell\">2.7</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Median Arr. Delay</th>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\">2</td>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">1</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Delay IQR</th>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">4</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">3</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Delay Std. Dev.</th>\n    <td class=\"Cell\">4.3</td>\n    <td class=\"Cell\">8.1</td>\n    <td class=\"Cell\">4.2</td>\n    <td class=\"Cell\">8.4</td>\n    <td class=\"Cell\">6.1</td>\n  </tr>\n</table>"
+      # create the pivot table
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                           compatibility=list(totalStyleIsCellStyle=TRUE))
+      pt$addData(trains)
+      pt$addColumnDataGroups("TOC", totalCaption="All TOCs")
+      pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains",
+                           summariseExpression=countFunction)
+      pt$defineCalculation(calculationName="MinArrivalDelay", caption="Min Arr. Delay",
+                           summariseExpression="min(ArrivalDelay, na.rm=TRUE)")
+      pt$defineCalculation(calculationName="MaxArrivalDelay", caption="Max Arr. Delay",
+                           summariseExpression="max(ArrivalDelay, na.rm=TRUE)")
+      pt$defineCalculation(calculationName="MeanArrivalDelay", caption="Mean Arr. Delay",
+                           summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", format="%.1f")
+      pt$defineCalculation(calculationName="MedianArrivalDelay", caption="Median Arr. Delay",
+                           summariseExpression="median(ArrivalDelay, na.rm=TRUE)")
+      pt$defineCalculation(calculationName="IQRArrivalDelay", caption="Delay IQR",
+                           summariseExpression="IQR(ArrivalDelay, na.rm=TRUE)")
+      pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev.",
+                           summariseExpression="sd(ArrivalDelay, na.rm=TRUE)", format="%.1f")
+      pt$addRowCalculationGroups()
+      pt$evaluatePivot()
+      # pt$renderPivot()
+      # sprintf("%.6f", sum(pt$cells$asMatrix()))
+      # prepStr(as.character(pt$getHtml()))
+      html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Arriva Trains Wales</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">CrossCountry</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">London Midland</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Virgin Trains</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">All TOCs</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total Trains</th>\n    <td class=\"Cell\">3909</td>\n    <td class=\"Cell\">22928</td>\n    <td class=\"Cell\">48279</td>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Min Arr. Delay</th>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">0</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Max Arr. Delay</th>\n    <td class=\"Cell\">49</td>\n    <td class=\"Cell\">273</td>\n    <td class=\"Cell\">177</td>\n    <td class=\"Cell\">181</td>\n    <td class=\"Cell\">273</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Mean Arr. Delay</th>\n    <td class=\"Cell\">2.3</td>\n    <td class=\"Cell\">3.5</td>\n    <td class=\"Cell\">2.3</td>\n    <td class=\"Cell\">3.0</td>\n    <td class=\"Cell\">2.7</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Median Arr. Delay</th>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\">2</td>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\">0</td>\n    <td class=\"Cell\">1</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Delay IQR</th>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">4</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">3</td>\n    <td class=\"Cell\">3</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Delay Std. Dev.</th>\n    <td class=\"Cell\">4.3</td>\n    <td class=\"Cell\">8.1</td>\n    <td class=\"Cell\">4.2</td>\n    <td class=\"Cell\">8.4</td>\n    <td class=\"Cell\">6.1</td>\n  </tr>\n</table>"
 
-    expect_equal(sum(pt$cells$asMatrix()), 168438.858522)
-    expect_identical(as.character(pt$getHtml()), html)
-  })
+      expect_equal(sum(pt$cells$asMatrix()), 168438.858522)
+      expect_identical(as.character(pt$getHtml()), html)
+    })
+  }
 }
 
 
+if (requireNamespace("lubridate", quietly = TRUE)) {
 
-scenarios <- testScenarios("calculation tests:  deriving values from other calculations")
-for(i in 1:nrow(scenarios)) {
-  evaluationMode <- scenarios$evaluationMode[i]
-  processingLibrary <- scenarios$processingLibrary[i]
-  description <- scenarios$description[i]
-  countFunction <- scenarios$countFunction[i]
+  scenarios <- testScenarios("calculation tests:  deriving values from other calculations")
+  for(i in 1:nrow(scenarios)) {
+    evaluationMode <- scenarios$evaluationMode[i]
+    processingLibrary <- scenarios$processingLibrary[i]
+    description <- scenarios$description[i]
+    countFunction <- scenarios$countFunction[i]
 
-  test_that(description, {
+    test_that(description, {
 
-    library(pivottabler)
-    library(dplyr)
-    library(lubridate)
+      library(pivottabler)
+      library(dplyr)
+      library(lubridate)
 
-    # derive some additional data
-    trains <- mutate(bhmtrains,
-                     ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
-                     ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
-                     DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
+      # derive some additional data
+      trains <- mutate(bhmtrains,
+                       ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+                       ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
+                       DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
 
-    # create the pivot table
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
-    pt$addData(trains)
-    pt$addRowDataGroups("TOC", totalCaption="All TOCs")
-    pt$defineCalculation(calculationName="DelayedTrains", caption="Trains Arr. 5+ Mins Late",
-                         summariseExpression="sum(DelayedByMoreThan5Minutes, na.rm=TRUE)")
-    pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains",
-                         summariseExpression=countFunction)
-    pt$defineCalculation(calculationName="DelayedPercent", caption="% Trains Arr. 5+ Mins Late",
-                         type="calculation", basedOn=c("DelayedTrains", "TotalTrains"),
-                         format="%.1f %%",
-                         calculationExpression="values$DelayedTrains/values$TotalTrains*100")
-    pt$evaluatePivot()
-    # pt$renderPivot()
-    # sprintf("%.6f", sum(pt$cells$asMatrix()))
-    # prepStr(as.character(pt$getHtml()))
-    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Trains Arr. 5+ Mins Late</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total Trains</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">% Trains Arr. 5+ Mins Late</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">372</td>\n    <td class=\"Cell\">3909</td>\n    <td class=\"Cell\">9.5 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">2780</td>\n    <td class=\"Cell\">22928</td>\n    <td class=\"Cell\">12.1 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">3561</td>\n    <td class=\"Cell\">48279</td>\n    <td class=\"Cell\">7.4 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">770</td>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\">9.0 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">All TOCs</th>\n    <td class=\"Cell\">7483</td>\n    <td class=\"Cell\">83710</td>\n    <td class=\"Cell\">8.9 %</td>\n  </tr>\n</table>"
+      # create the pivot table
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                           compatibility=list(totalStyleIsCellStyle=TRUE))
+      pt$addData(trains)
+      pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+      pt$defineCalculation(calculationName="DelayedTrains", caption="Trains Arr. 5+ Mins Late",
+                           summariseExpression="sum(DelayedByMoreThan5Minutes, na.rm=TRUE)")
+      pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains",
+                           summariseExpression=countFunction)
+      pt$defineCalculation(calculationName="DelayedPercent", caption="% Trains Arr. 5+ Mins Late",
+                           type="calculation", basedOn=c("DelayedTrains", "TotalTrains"),
+                           format="%.1f %%",
+                           calculationExpression="values$DelayedTrains/values$TotalTrains*100")
+      pt$evaluatePivot()
+      # pt$renderPivot()
+      # sprintf("%.6f", sum(pt$cells$asMatrix()))
+      # prepStr(as.character(pt$getHtml()))
+      html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Trains Arr. 5+ Mins Late</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total Trains</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">% Trains Arr. 5+ Mins Late</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">372</td>\n    <td class=\"Cell\">3909</td>\n    <td class=\"Cell\">9.5 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">2780</td>\n    <td class=\"Cell\">22928</td>\n    <td class=\"Cell\">12.1 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">3561</td>\n    <td class=\"Cell\">48279</td>\n    <td class=\"Cell\">7.4 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">770</td>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\">9.0 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">All TOCs</th>\n    <td class=\"Cell\">7483</td>\n    <td class=\"Cell\">83710</td>\n    <td class=\"Cell\">8.9 %</td>\n  </tr>\n</table>"
 
-    expect_equal(sum(pt$cells$asMatrix()), 182432.916225)
-    expect_identical(as.character(pt$getHtml()), html)
-  })
+      expect_equal(sum(pt$cells$asMatrix()), 182432.916225)
+      expect_identical(as.character(pt$getHtml()), html)
+    })
+  }
 }
 
 

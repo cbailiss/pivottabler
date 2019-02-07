@@ -223,53 +223,55 @@ for(i in 1:nrow(scenarios)) {
   })
 }
 
+if (requireNamespace("lubridate", quietly = TRUE)) {
 
-scenarios <- testScenarios("smoke tests:  calculation filters")
-for(i in 1:nrow(scenarios)) {
-  evaluationMode <- scenarios$evaluationMode[i]
-  processingLibrary <- scenarios$processingLibrary[i]
-  description <- scenarios$description[i]
-  countFunction <- scenarios$countFunction[i]
+  scenarios <- testScenarios("smoke tests:  calculation filters")
+  for(i in 1:nrow(scenarios)) {
+    evaluationMode <- scenarios$evaluationMode[i]
+    processingLibrary <- scenarios$processingLibrary[i]
+    description <- scenarios$description[i]
+    countFunction <- scenarios$countFunction[i]
 
-  test_that(description, {
+    test_that(description, {
 
-    library(dplyr)
-    library(lubridate)
-    library(pivottabler)
+      library(dplyr)
+      library(lubridate)
+      library(pivottabler)
 
-    # get the date of each train and whether that date is a weekday or weekend
-    trains <- bhmtrains %>%
-      mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
-             DayNumber=wday(GbttDateTime),
-             WeekdayOrWeekend=ifelse(DayNumber %in% c(1,7), "Weekend", "Weekday"))
+      # get the date of each train and whether that date is a weekday or weekend
+      trains <- bhmtrains %>%
+        mutate(GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+               DayNumber=wday(GbttDateTime),
+               WeekdayOrWeekend=ifelse(DayNumber %in% c(1,7), "Weekend", "Weekday"))
 
-    # render the pivot table
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
-    pt$addData(trains)
-    pt$addColumnDataGroups("TrainCategory")
-    pt$addRowDataGroups("TOC")
-    weekendFilter <- PivotFilters$new(pt, variableName="WeekdayOrWeekend", values="Weekend")
-    pt$defineCalculation(calculationName="WeekendTrains", summariseExpression=countFunction,
-                         filters=weekendFilter, visible=FALSE)
-    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction, visible=FALSE)
-    pt$defineCalculation(calculationName="WeekendTrainsPercentage",
-                         type="calculation", basedOn=c("WeekendTrains", "TotalTrains"),
-                         format="%.1f %%",
-                         calculationExpression="values$WeekendTrains/values$TotalTrains*100")
-    pt$evaluatePivot()
-    # pt$renderPivot()
-    # sum(pt$cells$asMatrix(), na.rm=TRUE)
-    # cat(paste(as.vector(pt$cells$asMatrix()), sep=", ", collapse=", "))
-    # prepStr(as.character(pt$getHtml()))
-    res <- c(26.6320233842157, 23.7480865952329, 18.7892593359564, 24.4240167558762, 22.5823559408465, 17.710843373494, NA, 22.8693181818182, NA, 22.7043390514632, 24.7377845996419, 23.6828332170272, 21.6450216450216, 24.4240167558762, 22.6328992951858)
-    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">26.6 %</td>\n    <td class=\"Cell\">17.7 %</td>\n    <td class=\"Cell\">24.7 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">23.7 %</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">23.7 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">18.8 %</td>\n    <td class=\"Cell\">22.9 %</td>\n    <td class=\"Cell\">21.6 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">24.4 %</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">24.4 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\">22.6 %</td>\n    <td class=\"Cell\">22.7 %</td>\n    <td class=\"Cell\">22.6 %</td>\n  </tr>\n</table>"
+      # render the pivot table
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                           compatibility=list(totalStyleIsCellStyle=TRUE))
+      pt$addData(trains)
+      pt$addColumnDataGroups("TrainCategory")
+      pt$addRowDataGroups("TOC")
+      weekendFilter <- PivotFilters$new(pt, variableName="WeekdayOrWeekend", values="Weekend")
+      pt$defineCalculation(calculationName="WeekendTrains", summariseExpression=countFunction,
+                           filters=weekendFilter, visible=FALSE)
+      pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction, visible=FALSE)
+      pt$defineCalculation(calculationName="WeekendTrainsPercentage",
+                           type="calculation", basedOn=c("WeekendTrains", "TotalTrains"),
+                           format="%.1f %%",
+                           calculationExpression="values$WeekendTrains/values$TotalTrains*100")
+      pt$evaluatePivot()
+      # pt$renderPivot()
+      # sum(pt$cells$asMatrix(), na.rm=TRUE)
+      # cat(paste(as.vector(pt$cells$asMatrix()), sep=", ", collapse=", "))
+      # prepStr(as.character(pt$getHtml()))
+      res <- c(26.6320233842157, 23.7480865952329, 18.7892593359564, 24.4240167558762, 22.5823559408465, 17.710843373494, NA, 22.8693181818182, NA, 22.7043390514632, 24.7377845996419, 23.6828332170272, 21.6450216450216, 24.4240167558762, 22.6328992951858)
+      html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">26.6 %</td>\n    <td class=\"Cell\">17.7 %</td>\n    <td class=\"Cell\">24.7 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">23.7 %</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">23.7 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">18.8 %</td>\n    <td class=\"Cell\">22.9 %</td>\n    <td class=\"Cell\">21.6 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">24.4 %</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">24.4 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\">22.6 %</td>\n    <td class=\"Cell\">22.7 %</td>\n    <td class=\"Cell\">22.6 %</td>\n  </tr>\n</table>"
 
-    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 296.5828)
-    expect_equal(pt$cells$asMatrix(), matrix(res, nrow=5))
-    expect_identical(as.character(pt$getHtml()), html)
+      expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 296.5828)
+      expect_equal(pt$cells$asMatrix(), matrix(res, nrow=5))
+      expect_identical(as.character(pt$getHtml()), html)
 
-  })
+    })
+  }
 }
 
 
