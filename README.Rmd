@@ -127,6 +127,42 @@ pt$renderPivot()
 
 ![http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png](http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png)
 
+### Styling Example
+
+Styling can be specified when creating the pivot table.  The example below shows specifying styling using a quick-pivot function and using the more verbose syntax.
+
+```{r, eval=FALSE}
+library(pivottabler)
+qhpvt(bhmtrains, "TOC", "TrainCategory", "n()", 
+      tableStyle=list("border-color"="maroon"),
+      headingStyle=list("color"="cornsilk", "background-color"="maroon", 
+                        "font-style"="italic", "border-color"="maroon"), 
+      cellStyle=list("color"="maroon", "background-color"="cornsilk", 
+                     "border-color"="maroon"),
+      totalStyle=list("color"="maroon", "background-color"="cornsilk", 
+                      "border-color"="maroon", "font-weight"="bold")) 
+```
+
+```{r eval=FALSE}
+library(pivottabler)
+pt <- PivotTable$new(tableStyle=list("border-color"="maroon"),
+                     headingStyle=list("color"="cornsilk", "background-color"="maroon", 
+                                       "font-style"="italic", "border-color"="maroon"), 
+                     cellStyle=list("color"="maroon", "background-color"="cornsilk", 
+                                    "border-color"="maroon"),
+                     totalStyle=list("color"="maroon", "background-color"="cornsilk", 
+                                     "border-color"="maroon", "font-weight"="bold"))
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+![http://cbailiss.me.uk/pivottablerreadmeimgs/example5.png](http://cbailiss.me.uk/pivottablerreadmeimgs/example5.png)
+
+It is also possible to change the styling of single cells and ranges of cells after the pivot table has been created.
+
 #### Excel Output
 
 The same styling/formatting used for the HTML output is also used when outputting to Excel - greatly reducing the amount of script that needs to be written to create Excel output.
