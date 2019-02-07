@@ -15,7 +15,7 @@ All calculations for the pivot tables take place inside R, enabling the use of a
 
 Pivot tables are rendered as htmlwidgets, Latex or plain text. The HTML/Latex/text can be exported for use outside of R.
 
-Pivot tables can be converted to a standard R matrix or data frame. Pivot tables can also be exported to Excel.
+Pivot tables can be converted to a standard R matrix or data frame. Pivot tables can be exported to Excel. Pivot tables can also be converted to a `basictabler` table for further manipulation.
 
 `pivottabler` is a companion package to the `basictabler` package. `pivottabler` is focussed on generating pivot tables and can aggregate data. `basictabler` does not aggregate data but offers more control of table structure.
 

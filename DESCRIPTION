@@ -24,6 +24,7 @@ Suggests:
     lubridate (>= 1.5.0),
     listviewer (>= 1.4.0),
     openxlsx (>= 4.0.17),
+    basictabler (>= 0.2.0),
     shiny,
     knitr,
     rmarkdown,

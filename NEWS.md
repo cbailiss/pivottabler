@@ -6,7 +6,7 @@ Overview
 
 This release includes:
 
-* Compatibility with dplyr 0.8.0
+* Convert a pivot tabler to a basic table
 * Many small styling improvements
 * More styling information and examples in the vignettes
 
@@ -26,21 +26,12 @@ The output of earlier versions, where total cells and calculation value cells us
 Improvements
 ----------------
 
-* Changes to ensure compatibility with the dplyr 0.8.0 release.
+* Convert a pivot table to a `basictabler` table - enabling flexible/arbitrary changes to be made to pivot tables after they have been created, e.g. inserting or deleting rows/columns/cells.
 * New function `pt$setStyling()` simplifies the setting of formatting and styling on data groups and table cells.  See the "Styling" vignette for details.
 * Specifying styling/formatting when creating pivot tables using the `qpvt()` and `qhpvt()` functions is now possible.  See the "Introduction" vignette for a list of parameters for these functions.  See the "Styling" vignette for more examples.
 * Specifying styling/formatting when creating pivot tables using the verbose syntax is also now possible - styling can be specified when adding data groups and when adding calculations to pivot tables.  Again, see the "Styling" vignette for more details and examples.
 * A more detailed explanation of styling rules has been added to the "Styling" vignette.
 
-Bug Fixes
-----------------
-
-TBC
-
-Upcoming Changes
-----------------
-
-TBC
 
 pivottabler 1.0.0
 ================

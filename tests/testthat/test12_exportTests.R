@@ -223,3 +223,53 @@ for(i in 1:nrow(scenarios)) {
 
   })
 }
+
+basictblrversion <- utils::packageDescription("basictabler")$Version
+if (requireNamespace("lubridate", quietly = TRUE) &&
+    requireNamespace("basictabler", quietly = TRUE) &&
+    (numeric_version(basictblrversion) >= numeric_version("0.2.0"))) {
+
+  scenarios <- testScenarios("export tests:  as basictable")
+  for(i in 1:nrow(scenarios)) {
+    evaluationMode <- scenarios$evaluationMode[i]
+    processingLibrary <- scenarios$processingLibrary[i]
+    description <- scenarios$description[i]
+    countFunction <- scenarios$countFunction[i]
+
+    test_that(description, {
+
+      library(pivottabler)
+      library(dplyr)
+      library(lubridate)
+      trains <- mutate(bhmtrains,
+                       GbttDate=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                       GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
+
+      pt <- PivotTable$new()
+      pt$addData(trains)
+      pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+      pt$addColumnDataGroups("PowerType")
+      pt$addRowDataGroups("TOC")
+      pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+      pt$evaluatePivot()
+
+      # convert the pivot table to a basic table, insert a new row, merge cells and highlight
+      bt <- pt$asBasicTable()
+      bt$cells$insertRow(5)
+      bt$cells$setCell(5, 2, rawValue="The values below are significantly higher than expected.",
+                       styleDeclarations=list("text-align"="left", "background-color"="yellow",
+                                              "font-weight"="bold", "font-style"="italic"))
+      bt$mergeCells(rFrom=5, cFrom=2, rSpan=1, cSpan=13)
+      bt$setStyling(rFrom=6, cFrom=2, rTo=6, cTo=14,
+                    declarations=list("text-align"="left", "background-color"="yellow"))
+
+      # bt$renderTable()
+      # prepStr(as.character(bt$getHtml()))
+      # prepStr(as.character(bt$getCss()))
+      html <- "<table class=\"Table\">\n  <tr>\n    <td rowspan=\"2\" colspan=\"1\" class=\"RowHeader\"></td>\n    <td rowspan=\"1\" colspan=\"4\" class=\"ColumnHeader\">December 2016</td>\n    <td rowspan=\"1\" colspan=\"4\" class=\"ColumnHeader\">January 2017</td>\n    <td rowspan=\"1\" colspan=\"4\" class=\"ColumnHeader\">February 2017</td>\n    <td class=\"ColumnHeader\">Total</td>\n  </tr>\n  <tr>\n    <td class=\"ColumnHeader\">DMU</td>\n    <td class=\"ColumnHeader\">EMU</td>\n    <td class=\"ColumnHeader\">HST</td>\n    <td class=\"ColumnHeader\">Total</td>\n    <td class=\"ColumnHeader\">DMU</td>\n    <td class=\"ColumnHeader\">EMU</td>\n    <td class=\"ColumnHeader\">HST</td>\n    <td class=\"ColumnHeader\">Total</td>\n    <td class=\"ColumnHeader\">DMU</td>\n    <td class=\"ColumnHeader\">EMU</td>\n    <td class=\"ColumnHeader\">HST</td>\n    <td class=\"ColumnHeader\">Total</td>\n    <td class=\"ColumnHeader\"></td>\n  </tr>\n  <tr>\n    <td class=\"RowHeader\">Arriva Trains Wales</td>\n    <td class=\"Cell\">1291</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">1291</td>\n    <td class=\"Cell\">1402</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">1402</td>\n    <td class=\"Cell\">1216</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">1216</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <td class=\"RowHeader\">CrossCountry</td>\n    <td class=\"Cell\">7314</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">236</td>\n    <td class=\"Total\">7550</td>\n    <td class=\"Cell\">7777</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">256</td>\n    <td class=\"Total\">8033</td>\n    <td class=\"Cell\">7105</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">240</td>\n    <td class=\"Total\">7345</td>\n    <td class=\"Total\">22928</td>\n  </tr>\n  <tr>\n    <td class=\"RowHeader\"></td>\n    <td rowspan=\"1\" colspan=\"13\" class=\"Cell\" style=\"text-align: left; background-color: yellow; font-weight: bold; font-style: italic; \">The values below are significantly higher than expected.</td>\n  </tr>\n  <tr>\n    <td class=\"RowHeader\">London Midland</td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">3635</td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">11967</td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \"></td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">15602</td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">3967</td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">13062</td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \"></td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">17029</td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">3627</td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">12021</td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \"></td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">15648</td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">48279</td>\n  </tr>\n  <tr>\n    <td class=\"RowHeader\">Virgin Trains</td>\n    <td class=\"Cell\">740</td>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">2877</td>\n    <td class=\"Cell\">728</td>\n    <td class=\"Cell\">2276</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">3004</td>\n    <td class=\"Cell\">669</td>\n    <td class=\"Cell\">2044</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">2713</td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <td class=\"RowHeader\">Total</td>\n    <td class=\"Total\">12980</td>\n    <td class=\"Total\">14104</td>\n    <td class=\"Total\">236</td>\n    <td class=\"Total\">27320</td>\n    <td class=\"Total\">13874</td>\n    <td class=\"Total\">15338</td>\n    <td class=\"Total\">256</td>\n    <td class=\"Total\">29468</td>\n    <td class=\"Total\">12617</td>\n    <td class=\"Total\">14065</td>\n    <td class=\"Total\">240</td>\n    <td class=\"Total\">26922</td>\n    <td class=\"Total\">83710</td>\n  </tr>\n</table>"
+      css <- ".Table {border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; padding: 2px; border: 1px solid lightgray; vertical-align: middle; text-align: center; font-weight: bold; background-color: #F2F2F2; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; padding: 2px 8px 2px 2px; border: 1px solid lightgray; vertical-align: middle; text-align: left; font-weight: bold; background-color: #F2F2F2; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n"
+      expect_identical(as.character(bt$getHtml()), html)
+      expect_identical(bt$getCss(), css)
+    })
+  }
+}
