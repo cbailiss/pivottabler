@@ -16,7 +16,6 @@ Imports:
     R6 (>= 2.2.0),
     dplyr (>= 0.5.0),
     data.table (>= 1.10.0),
-    basictabler (>= 0.2.0),
     jsonlite (>= 1.1),
     htmltools(>= 0.3.5),
     htmlwidgets (>= 0.8)
@@ -25,6 +24,7 @@ Suggests:
     lubridate (>= 1.5.0),
     listviewer (>= 1.4.0),
     openxlsx (>= 4.0.17),
+    basictabler (>= 0.2.0),
     shiny,
     knitr,
     rmarkdown,
