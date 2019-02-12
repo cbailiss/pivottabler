@@ -98,7 +98,7 @@ pt$defineCalculation(type="calculation", basedOn=c("Total Sales", "Sale Count"),
 
 ## Output of NA, NaN, -Inf and Inf
 
-The `pt$getHtml(...)`, `pt$saveHtml(...)`, `pt$renderPivot(...)`, `pt$getLatex(...)` and `pt$writeToExcelWorksheet(...)` functions all support an `exportOptions` list parameter that provides control over how NA, NaN, -Inf and Inf values in R are outout.  
+The `pt$getHtml(...)`, `pt$saveHtml(...)`, `pt$renderPivot(...)`, `pt$getLatex(...)` and `pt$writeToExcelWorksheet(...)` functions all support an `exportOptions` list parameter that provides control over how NA, NaN, -Inf and Inf values in R are output.  
 
 `skipNegInf=TRUE, skipPosInf=TRUE, skipNA=TRUE, skipNaN=TRUE` specify that these values are exported as blanks.
 

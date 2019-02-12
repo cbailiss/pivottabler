@@ -27,7 +27,7 @@
 #' @field keepOnlyFiltersFor Specify the names of existing variables to retain
 #' the filters for.  All other filters will be removed.
 #' @field removeFiltersFor Specify the names of variables to remove filters for.
-#' @field overrideFunction A custom function to ammend the filters in each cell.
+#' @field overrideFunction A custom function to amend the filters in each cell.
 #' @field countIntersect The number of PivotFilters that will be combined with other
 #' pivot filters by intersecting their lists of allowed values.
 #' @field countReplace The number of PivotFilters that will be combined with other

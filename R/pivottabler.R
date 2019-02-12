@@ -9,7 +9,7 @@
 #' @param pt The pivot table to render.
 #' @param width The target width.
 #' @param height The target height.
-#' @param styleNamePrefix A text prefix to be prepennded to the CSS declarations
+#' @param styleNamePrefix A text prefix to be prepended to the CSS declarations
 #'   (to ensure uniqueness).
 #' @param includeRCFilters Show/hide filter detail for debugging.
 #' @param includeCalculationFilters Show/hide filter detail for debugging.

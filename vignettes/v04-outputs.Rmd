@@ -250,7 +250,7 @@ Where a data group represents multiple values, those values are concatenated and
 
 The `asBasicTable()` function allows a pivot table to be converted to a basic table - from the `basictabler` package.  
 
-The `basictabler` package allows free-form tables to be constructed, in constrast to `pivottabler` which creates pivot tables with relatively fixed structures.  `pivottabler` contains calculation logic - to calculate the values of cells within the pivot table.  `basictabler` contains no calculation logic - cell values must be provided either from a data frame, row-by-row, column-by-column or cell-by-cell.
+The `basictabler` package allows free-form tables to be constructed, in contrast to `pivottabler` which creates pivot tables with relatively fixed structures.  `pivottabler` contains calculation logic - to calculate the values of cells within the pivot table.  `basictabler` contains no calculation logic - cell values must be provided either from a data frame, row-by-row, column-by-column or cell-by-cell.
 
 Converting a pivot table to a basic table allows the structure of pivot tables to be altered after they have been created, e.g.
 

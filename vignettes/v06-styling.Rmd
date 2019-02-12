@@ -212,7 +212,7 @@ qhpvt(bhmtrains, "TOC", "TrainCategory", "n()",
       theme=simpleBlueTheme, styleNamePrefix="qt1")
 ```
 
-The next example demonstrates specifying more granuar style settings when using a quick pivot function:
+The next example demonstrates specifying more granular style settings when using a quick pivot function:
 
 ```{r, message=FALSE, warning=FALSE, comment=""}
 # create the pivot table

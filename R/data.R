@@ -21,7 +21,7 @@
 #'   \item{OriginActualDeparture}{Actual departure time from the origin station}
 #'   \item{GbttArrival}{Scheduled arrival time in Birmingham in the GBTT}
 #'   \item{ActualArrival}{Actual arrival time in Birmingham in the GBTT}
-#'   \item{GbttDeparture}{Scheduled departture time from Birmingham in the GBTT}
+#'   \item{GbttDeparture}{Scheduled departure time from Birmingham in the GBTT}
 #'   \item{ActualDeparture}{Actual departure time from Birmingham in the GBTT}
 #'   \item{Destination}{3-letter code denoting the scheduled destination of the train}
 #'   \item{DestinationGbttArrival}{Scheduled arrival time in the GBTT at the

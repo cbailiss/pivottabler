@@ -285,7 +285,7 @@ The arguments to all three functions are essentially the same:
 - `rows` specifies the names of the variables (as a character vector) used to generate the row data groups.
 - `columns` specifies the names of the variables (as a character vector) used to generate the column data groups.
 - `calculations` specifies the summary calculations (as a character vector) used to calculate the cell values in the pivot table.  The names of the elements in this vector become the calculation names (and so the calculation headings when more than one calculation is present in the pivot table).
-- `format` specifies the same formatting for all calculations (as either a character vaue, list or R function).  See the "Formatting calculated values" section of the Calculations vignette for more details.
+- `format` specifies the same formatting for all calculations (as either a character value, list or R function).  See the "Formatting calculated values" section of the Calculations vignette for more details.
 - `formats` specifies a different format for each calculation (as a list of the same length as `calculations` containing any combination of character values, lists or R functions).
 - `totals` specifies which totals are shown and can also control the captions of totals.  This is described in more detail below.
 
@@ -331,7 +331,7 @@ Totals can be controlled using the `totals` argument.  This works as follows:
 * To specify which variables have totals, specify the names of the variables in a character vector, e.g. in a pivot table containing the variables x, y and z, to display totals only for variables x and z, specify `totals=c("x", "z")`.
 * To specify which variables have totals and also rename the captions of the total cells, specify a list, e.g. to rename the totals for x to "All x" and y to "All y", specify `totals=list("x"="All x", "y"="All y")`.
 
-Returning to the previous quick pivot texample, the totals can now be renamed to "All ..." using:
+Returning to the previous quick pivot example, the totals can now be renamed to "All ..." using:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
