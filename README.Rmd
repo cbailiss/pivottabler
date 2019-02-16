@@ -127,6 +127,46 @@ pt$renderPivot()
 
 ![http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png](http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png)
 
+#### Multiple Calculations
+
+Multiple calculations are supported.  Calculations can be based on other calculations in the pivot table.  Calculations can be hidden - e.g. to hide calculations that only exist to provide values to other calculations.
+
+For example, looking at the total number of trains and the percentage of trains that arrive more than five minutes late for combinations of train operating company (TOC) and train category: 
+
+```{r, eval=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+
+# derive train delay data
+trains <- mutate(bhmtrains,
+                 ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+                 ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
+                 DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>=5,1,0))
+
+# create the pivot table
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$addColumnDataGroups("TrainCategory", totalCaption="All Trains")
+pt$defineCalculation(calculationName="TotalTrains", caption="Train Count", 
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="DelayedTrains", caption="Trains Arr. 5+ Mins Late", 
+                     summariseExpression="sum(DelayedByMoreThan5Minutes, na.rm=TRUE)",
+                     visible=FALSE)
+pt$defineCalculation(calculationName="DelayedPercent", caption="% Late Trains", 
+                     type="calculation", basedOn=c("DelayedTrains", "TotalTrains"), 
+                     format="%.1f %%",
+                     calculationExpression="values$DelayedTrains/values$TotalTrains*100")
+pt$renderPivot()
+```
+
+![http://cbailiss.me.uk/pivottablerreadmeimgs/example6.png](http://cbailiss.me.uk/pivottablerreadmeimgs/example6.png)
+
+It is also possible to change the axis (rows or columns) and level in which the calculations appear.  See the "Calculations" vignette for details.
+
+More advanced calculations such as % of row total, cumulative sums, etc are possible.  See the "A2. Appendix:  Calculations" vignette for details.
+
 #### Styling Example
 
 Styling can be specified when creating the pivot table.  The example below shows specifying styling using a quick-pivot function and using the more verbose syntax.
@@ -161,7 +201,7 @@ pt$renderPivot()
 
 ![http://cbailiss.me.uk/pivottablerreadmeimgs/example5.png](http://cbailiss.me.uk/pivottablerreadmeimgs/example5.png)
 
-It is also possible to change the styling of single cells and ranges of cells after the pivot table has been created.
+It is also possible to change the styling of single cells and ranges of cells after the pivot table has been created.  See the "Styling" and "Finding and Formatting" vignettes for more details.
 
 #### Excel Output
 
