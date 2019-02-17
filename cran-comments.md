@@ -45,7 +45,13 @@ NOTE:
 
 ### win-builder check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
+
+NOTE:  
+  installed size is  6.2Mb
+  sub-directories of 1Mb or more:
+    data   2.0Mb
+    doc    3.0Mb
 
 ### Comments on check results
 
