@@ -16,7 +16,7 @@ pivottabler(pt, width = NULL, height = NULL, styleNamePrefix = NULL,
 
 \item{height}{The target height.}
 
-\item{styleNamePrefix}{A text prefix to be prepennded to the CSS declarations
+\item{styleNamePrefix}{A text prefix to be prepended to the CSS declarations
 (to ensure uniqueness).}
 
 \item{includeRCFilters}{Show/hide filter detail for debugging.}

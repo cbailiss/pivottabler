@@ -30,7 +30,7 @@ the filters for.  All other filters will be removed.}
 
 \item{\code{removeFiltersFor}}{Specify the names of variables to remove filters for.}
 
-\item{\code{overrideFunction}}{A custom function to ammend the filters in each cell.}
+\item{\code{overrideFunction}}{A custom function to amend the filters in each cell.}
 
 \item{\code{countIntersect}}{The number of PivotFilters that will be combined with other
 pivot filters by intersecting their lists of allowed values.}

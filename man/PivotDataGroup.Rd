@@ -123,7 +123,7 @@ group (used as part of the rendering routines).}
   calculation result values.}
   \item{\code{addCalculationGroups(calculationGroupName, atLevel)}}{Add a
   calculation group to the data group hierarchy.}
-  \item{\code{normaliseDataGroup()}}{Normalise the data group hierachy so
+  \item{\code{normaliseDataGroup()}}{Normalise the data group hierarchy so
   that all branches have the same number of levels - accomplished by adding
   empty child data groups where needed.}
   \item{\code{getNetFilters()}}{Get a PivotFilters object that contains all
