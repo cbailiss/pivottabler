@@ -213,10 +213,10 @@ buildPivot <- function(functionName=NULL, argumentCheckMode=NULL,
                        compatibility=compatibility) {
   if(is.null(dataFrame)) stop(paste0(functionName, "():  dataFrame argument must not be NULL."), call. = FALSE)
   if(!is.data.frame(dataFrame)) stop(paste0(functionName, "():  dataFrame argument must be a data frame."), call. = FALSE)
-  if((!is.null(rows))&&(!is.na(rows))) {
+  if((!is.null(rows))&&(!anyNA(rows))) {
     if(!is.character(rows)) stop(paste0(functionName, "():  rows must be a character vector."), call. = FALSE)
   }
-  if((!is.null(columns))&&(!is.na(columns))) {
+  if((!is.null(columns))&&(!anyNA(columns))) {
     if(!is.character(columns)) stop(paste0(functionName, "():  columns must be a character vector."), call. = FALSE)
   }
   if((length(rows[rows=="="])+length(columns[columns=="="]))>1) {
@@ -246,7 +246,7 @@ buildPivot <- function(functionName=NULL, argumentCheckMode=NULL,
                        compatibility=compatibility)
   pt$addData(dataFrame, dataName=dataName)
   bCalculationsAdded <- FALSE
-  if((!is.null(rows))&&(!is.na(rows))) {
+  if((!is.null(rows))&&(!anyNA(rows))) {
     for(i in 1:length(rows)) {
       if(rows[i]=="=") {
         if(bCalculationsAdded==TRUE) stop(paste0(functionName, "():  Calculations cannot be added more than once."), call. = FALSE)
@@ -267,7 +267,7 @@ buildPivot <- function(functionName=NULL, argumentCheckMode=NULL,
       }
     }
   }
-  if((!is.null(columns))&&(!is.na(columns))) {
+  if((!is.null(columns))&&(!anyNA(columns))) {
     for(i in 1:length(columns)) {
       if(columns[i]=="=") {
         if(bCalculationsAdded==TRUE) stop(paste0(functionName, "():  Calculations cannot be added more than once."), call. = FALSE)

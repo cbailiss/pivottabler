@@ -11,7 +11,7 @@ isTextValue <- function(value) {
   l <- length(value)
   if(l==0) return(FALSE)
   else if(l==1) {
-    if(is.na(value)) return(FALSE)
+    if(anyNA(value)) return(FALSE)
     if(nchar(value)==0) return(FALSE)
     else return(TRUE)
   }
@@ -34,7 +34,7 @@ isNumericValue <- function(value) {
   l <- length(value)
   if(l==0) return(FALSE)
   else {
-    if(length(value[is.na(value)])>0) return(FALSE)
+    if(anyNA(value)) return(FALSE)
     if(is.numeric(value)) return(TRUE)
     else return(FALSE)
   }
