@@ -1,6 +1,7 @@
 ## Background
 
-This is the 4th update to the pivottabler package (last update 2017-10-02).
+This is the 5th update to the pivottabler package (last update 2018-10-17).
+
 This package is written entirely in R with no external dependencies/components other than the packages listed in the DESCRIPTION file.
 This update has not made any significant changes to the structure of the package or dependencies.
 Development approach is aligned with practices described in:
@@ -14,8 +15,8 @@ The title of the package includes "in R" as a contrast clause to the other popul
 
 ## Test environments
 
-* local OS (windows) install, R 3.5.1
-* Ubuntu 14.04.5 LTS (on travis-ci), R 3.5.1.
+* local OS (windows) install, R 3.5.2
+* Ubuntu 14.04.5 LTS (on travis-ci), R 3.5.2.
 * win-builder, R-devel = R 3.6.0.
 
 ## R CMD check results
@@ -25,20 +26,21 @@ The title of the package includes "in R" as a contrast clause to the other popul
 0 errors | 0 warnings | 1 note
 
 NOTE:  
-  installed size is  6.1Mb
+  installed size is  6.3Mb
   sub-directories of 1Mb or more:
     data   2.0Mb
-    doc    2.9Mb
+    doc    3.1Mb
+    R      1.0Mb
 
 ### Travis-CI R CMD check results
 
 0 errors | 0 warnings | 1 note
 
 NOTE:  
-  installed size is  7.7Mb
+  installed size is  6.3Mb
   sub-directories of 1Mb or more:
-    data   3.5Mb
-    doc    3.0Mb
+    data   2.0Mb
+    doc    3.1Mb
     R      1.0Mb
 
 ### win-builder check results
