@@ -6,7 +6,7 @@ Overview
 
 This release includes:
 
-* Convert a pivot tabler to a basic table
+* Ability to convert a pivot table to a basic table (from the basictabler package)
 * Many small styling improvements
 * More styling information and examples in the vignettes
 
