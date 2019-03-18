@@ -116,7 +116,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      if(insertDummyColumnHeading) {
        trow <- list()
        trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=columnGroupLevelCount, colspan=rowGroupLevelCount, htmltools::HTML("&nbsp;"))
-       trow[[2]] <- htmltools::tags$th(class=colHeaderStyle)
+       trow[[2]] <- htmltools::tags$th(class=colHeaderStyle, htmltools::HTML("&nbsp;"))
        trows[[1]] <- htmltools::tags$tr(trow)
      }
      else {

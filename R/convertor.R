@@ -100,15 +100,15 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL) {
   bc <- 0 # this is reset to 1 on each new row
   # render the column headings, with a large blank cell at the start over the row headings
   if(insertDummyColumnHeading) {
-    btbl$cells$setBlankCell(r=1, c=1, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=rowGroupLevelCount)
-    btbl$cells$setBlankCell(r=1, c=2, cellType="columnHeader", visible=TRUE)
+    btbl$cells$setBlankCell(r=1, c=1, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=rowGroupLevelCount, asNBSP=TRUE)
+    btbl$cells$setBlankCell(r=1, c=2, cellType="columnHeader", visible=TRUE, asNBSP=TRUE)
     br <- 1
   }
   else {
     for(r in 1:columnGroupLevelCount) {
       br <- br + 1
       if(r==1) { # generate the large top-left blank cell
-        btbl$cells$setBlankCell(r=1, c=1, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=rowGroupLevelCount)
+        btbl$cells$setBlankCell(r=1, c=1, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=rowGroupLevelCount, asNBSP=TRUE)
       }
       bc <- rowGroupLevelCount
       # get the groups at this level
@@ -130,7 +130,7 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL) {
     # render the row headings
     if(insertDummyRowHeading) {
       bc <- bc + 1
-      btbl$cells$setBlankCell(ri=br, c=bc, cellType="rowHeader", visible=TRUE)
+      btbl$cells$setBlankCell(ri=br, c=bc, cellType="rowHeader", visible=TRUE, asNBSP=TRUE)
     }
     else {
       # get the leaf row group, then render any parent data groups that haven't yet been rendered
