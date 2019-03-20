@@ -1,7 +1,5 @@
 ## Background
 
-This is the 5th update to the pivottabler package (last update 2018-10-17).
-
 This package is written entirely in R with no external dependencies/components other than the packages listed in the DESCRIPTION file.
 This update has not made any significant changes to the structure of the package or dependencies.
 Development approach is aligned with practices described in:
@@ -15,7 +13,7 @@ The title of the package includes "in R" as a contrast clause to the other popul
 
 ## Test environments
 
-* local OS (windows) install, R 3.5.2
+* local OS (windows) install, R 3.5.3
 * Ubuntu 14.04.5 LTS (on travis-ci), R 3.5.2.
 * win-builder, R-devel = R 3.6.0.
 

@@ -84,7 +84,7 @@
 #'   groups based on the distinct values in a data frame or using explicitly
 #'   specified data values.}
 #'   \item{\code{normaliseColumnGroups() }}{Normalise the column heading data
-#'   group hierachy so that all branches have the same number of levels -
+#'   group hierarchy so that all branches have the same number of levels -
 #'   accomplished by adding empty child data groups where needed.}
 #'   \item{\code{sortColumnDataGroups(levelNumber=1, orderBy="calculation",
 #'   sortOrder="desc", calculationGroupName="default", calculationName)}}{Sort
@@ -103,7 +103,7 @@
 #'   groups based on the distinct values in a data frame or using explicitly
 #'   specified data values.}
 #'   \item{\code{normaliseRowGroups()}}{Normalise the row heading data group
-#'   hierachy so that all branches have the same number of levels - accomplished
+#'   hierarchy so that all branches have the same number of levels - accomplished
 #'   by adding empty child data groups where needed.}
 #'   \item{\code{sortRowDataGroups(levelNumber=1, orderBy="calculation",
 #'   sortOrder="desc", calculationGroupName="default", calculationName)}}{Sort

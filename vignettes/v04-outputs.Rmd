@@ -26,7 +26,7 @@ vignette: >
 
 A `pivottabler` pivot table object has a fairly complex internal structure - containing two trees of data groups (the row groups and the column groups) plus a set of cells linked to the data groups.
 
-The `pivottabler` package supports outputing a pivot table in a number of different forms:
+The `pivottabler` package supports outputting a pivot table in a number of different forms:
 
 - A htmlwidget for R-Studio - using `pt$renderPivot()` to render the pivot table into the "Viewer" tab in R-Studio,
 - A htmlwidget for Shiny applications - using `pivottabler(pt)` to render the pivot table into the Shiny app,

@@ -20,7 +20,7 @@ vignette: >
 * Styling with the quick pivot functions
 * Styling Data Groups
 * Styling Calculations
-* Changing styling/formating after table creation using `pt$setStyling()`
+* Changing styling/formatting after table creation using `pt$setStyling()`
 * Creating a New Theme
 * Summary of Styling Rules
 * Styling Output
@@ -39,7 +39,7 @@ To apply styles to a single cell, e.g. at row 1, column 2 (in the body of the ta
 
 `pt$setStyling(1, 2, declarations=list("font-weight"="bold", "text-align"="center")`
 
-To apply styles to a rangle of cells, e.g. rows 2 to 3 and columns 1 to 5:
+To apply styles to a range of cells, e.g. rows 2 to 3 and columns 1 to 5:
 
 `pt$setStyling(2, 1, 3, 5, declarations=list("font-weight"="bold", "text-align"="center")`
 
@@ -303,7 +303,7 @@ pt$defineCalculation(calculationName="TotalTrains2", summariseExpression="n()",
 pt$renderPivot(styleNamePrefix="tcn")
 ```
 
-## Changing styling/formating after table creation using `pt$setStyling()`
+## Changing styling/formatting after table creation using `pt$setStyling()`
 
 The individual cells in the pivot table can have their appearance changed by retrieving the cell then applying a style to the cell.  These styles typically apply in addition to the styles coming from the underlying theme, e.g. two different ways for highlighting a cell:
 

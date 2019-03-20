@@ -4,10 +4,12 @@ pivottabler 1.2.0
 Overview
 --------
 
-This release includes one small breaking change and one bug fix.
+This release includes one small potentially breaking change and one bug fix.
 
 Breaking Changes
 ----------------
+
+**Changes to rowspan and colspan attributes in HTML**
 
 When generating HTML, previous versions of the package would always generate rowspan and colspan attributes for merged table cells, even if the number of rows or columns being spanned was only one.  Starting with v1.2.0, rowspan and colspan attributes are only generated where the number of rows or columns being spanned is greater than one.  This should make no difference to the visual appearance of the table, however it may cause issues for users who require the previous behaviour.  The previous behaviour is still available by specifying `compatibility=list(explicitHeaderSpansOfOne=TRUE)` as an argument when creating the pivot table, either in `PivotTable$new()` or one of the quick pivot functions such as `qpvt()`.
 
@@ -83,7 +85,7 @@ Improvements
 Bug Fixes
 ----------------
 
-* Bug fixed that would cause corrupt Excel files to be generated when exporting pivottables with no row/column groups to Excel.
+* Bug fixed that would cause corrupt Excel files to be generated when exporting pivot tables with no row/column groups to Excel.
 
 Upcoming Changes
 ----------------
