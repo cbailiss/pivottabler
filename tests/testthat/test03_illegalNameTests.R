@@ -75,7 +75,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(illegalNameTestData)
     pt$addColumnDataGroups("Sale$Item")
     pt$addRowDataGroups("Colour Name")

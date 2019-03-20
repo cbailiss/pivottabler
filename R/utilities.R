@@ -1,3 +1,20 @@
+#' Convert a value of 1 to a NULL value.
+#'
+#' \code{oneToNull} is a utility function that returns NULL when a value of
+#' 0 or 1 is passed to it, otherwise it returns the original value.
+#'
+#' @param value The value to check.
+#' @param convertOneToNULL TRUE to convert 1 to NULL.
+#' @return NULL if value==1, otherwise value.
+
+oneToNULL <- function(value, convertOneToNULL) {
+  if(!convertOneToNULL) return(value)
+  else if(is.null(value)) return(NULL)
+  else if(value==0) return(NULL)
+  else if(value==1) return(NULL)
+  else return(value)
+}
+
 #' Check whether a text value is present.
 #'
 #' \code{isTextValue} is a utility function returns TRUE only when a text value

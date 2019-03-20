@@ -101,6 +101,8 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      # ...cells:
      rowCount <- private$p_parentPivot$cells$rowCount
      columnCount <- private$p_parentPivot$cells$columnCount
+     # compatibility to keep the explicit row/col span even if span is only 1
+     o2n <- !isTRUE(private$p_parentPivot$compatibility$explicitHeaderSpansOfOne)
      # special case of no rows and no columns, return a blank empty table
      if((rowGroupLevelCount==0)&&(columnGroupLevelCount==0)) {
        tbl <- htmltools::tags$table(class=tableStyle, htmltools::tags$tr(
@@ -115,7 +117,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      # render the column headings, with a large blank cell at the start over the row headings
      if(insertDummyColumnHeading) {
        trow <- list()
-       trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=columnGroupLevelCount, colspan=rowGroupLevelCount, htmltools::HTML("&nbsp;"))
+       trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=oneToNULL(columnGroupLevelCount, o2n), colspan=oneToNULL(rowGroupLevelCount, o2n), htmltools::HTML("&nbsp;"))
        trow[[2]] <- htmltools::tags$th(class=colHeaderStyle, htmltools::HTML("&nbsp;"))
        trows[[1]] <- htmltools::tags$tr(trow)
      }
@@ -123,7 +125,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        for(r in 1:columnGroupLevelCount) {
          trow <- list()
          if(r==1) { # generate the large top-left blank cell
-           trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=columnGroupLevelCount, colspan=rowGroupLevelCount, htmltools::HTML("&nbsp;"))
+           trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=oneToNULL(columnGroupLevelCount, o2n), colspan=oneToNULL(rowGroupLevelCount, o2n), htmltools::HTML("&nbsp;"))
          }
          # get the groups at this level
          grps <- private$p_parentPivot$columnGroup$getLevelGroups(level=r)
@@ -157,9 +159,9 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
                detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", "Totals: ")
                detail[[length(detail)+1]] <- htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst)
              }
-             trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl,  colspan=length(grp$leafGroups), htmltools::tags$p(exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")), detail) # todo: check escaping
+             trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl,  colspan=oneToNULL(length(grp$leafGroups), o2n), htmltools::tags$p(exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")), detail) # todo: check escaping
            }
-           else trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl, colspan=length(grp$leafGroups), exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")) # todo: check escaping
+           else trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl, colspan=oneToNULL(length(grp$leafGroups), o2n), exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")) # todo: check escaping
          }
          trows[[length(trows)+1]] <- htmltools::tags$tr(trow)
        }
@@ -206,9 +208,9 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
                  detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", "Totals: ")
                  detail[[length(detail)+1]] <- htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst)
                }
-               trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl,  rowspan=length(ancg$leafGroups), htmltools::tags$p(exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")), detail) # todo: check escaping
+               trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl,  rowspan=oneToNULL(length(ancg$leafGroups), o2n), htmltools::tags$p(exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")), detail) # todo: check escaping
              }
-             else trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl, rowspan=length(ancg$leafGroups), exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")) # todo: check escaping
+             else trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl, rowspan=oneToNULL(length(ancg$leafGroups), o2n), exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")) # todo: check escaping
              ancg$isRendered <- TRUE
            }
          }

@@ -66,7 +66,7 @@ context("QUICK-PIVOT TESTS")
 test_that("quick-pivot tests:  qpvt pivot 1", {
 
   library(pivottabler)
-  pt <- qpvt(bhmtrains, "TOC", "TrainCategory", "n()", compatibility=list(totalStyleIsCellStyle=TRUE))
+  pt <- qpvt(bhmtrains, "TOC", "TrainCategory", "n()", compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -82,7 +82,7 @@ test_that("quick-pivot tests:  qpvt pivot 2", {
   library(pivottabler)
   pt <- qpvt(bhmtrains, c("=", "TOC"), c("TrainCategory", "PowerType"),
              c("Number of Trains"="n()", "Maximum Speed"="max(SchedSpeedMPH, na.rm=TRUE)"),
-             compatibility=list(totalStyleIsCellStyle=TRUE))
+             compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -97,7 +97,7 @@ test_that("quick-pivot tests:  qpvt pivot format 1 - single calc", {
 
   library(pivottabler)
   pt <- qpvt(bhmtrains, "TOC", "TrainCategory", "mean(SchedSpeedMPH, na.rm=TRUE)", format="%.0f",
-             compatibility=list(totalStyleIsCellStyle=TRUE))
+             compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -113,7 +113,7 @@ test_that("quick-pivot tests:  qpvt pivot format 2 - two calcs basic", {
   library(pivottabler)
   pt <- qpvt(bhmtrains, "TOC", "TrainCategory",
              c("Mean Speed"="mean(SchedSpeedMPH, na.rm=TRUE)", "Std Dev Speed"="sd(SchedSpeedMPH, na.rm=TRUE)"),
-             formats=list("%.0f", "%.1f"), compatibility=list(totalStyleIsCellStyle=TRUE))
+             formats=list("%.0f", "%.1f"), compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -129,7 +129,7 @@ test_that("quick-pivot tests:  qpvt pivot format 3 - two calcs list", {
   library(pivottabler)
   pt <- qpvt(bhmtrains, "TOC", "TrainCategory",
              c("Mean Speed"="mean(SchedSpeedMPH, na.rm=TRUE)", "Std Dev Speed"="sd(SchedSpeedMPH, na.rm=TRUE)"),
-             formats=list(list(digits = 3, nsmall=1), "%.1f"), compatibility=list(totalStyleIsCellStyle=TRUE))
+             formats=list(list(digits = 3, nsmall=1), "%.1f"), compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -146,7 +146,7 @@ test_that("quick-pivot tests:  qpvt pivot format 3 - two calcs function", {
   qf <- function(x) { return(paste0("**", sprintf("%.0f", x), "**"))}
   pt <- qpvt(bhmtrains, "TOC", "TrainCategory",
              c("Mean Speed"="mean(SchedSpeedMPH, na.rm=TRUE)", "Std Dev Speed"="sd(SchedSpeedMPH, na.rm=TRUE)"),
-             formats=list(qf, "%.1f"), compatibility=list(totalStyleIsCellStyle=TRUE))
+             formats=list(qf, "%.1f"), compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -161,7 +161,7 @@ test_that("quick-pivot tests:  qlpvt pivot 1", {
 
   library(pivottabler)
   lchr <- qlpvt(bhmtrains, "TOC", "TrainCategory", "n()", caption="my caption", label="mylabel",
-                compatibility=list(totalStyleIsCellStyle=TRUE))
+                compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # prepStr(lchr)
   latex <- "\\begin{table}[h!]\n  \\centering\n  \\caption{my caption}\n  \\label{tab:mylabel}\n  \\begin{tabular}{|l|rrr|}\n    \\hline\n    & Express Passenger & Ordinary Passenger & Total\\\\\n    \\hline\n    Arriva Trains Wales  & 3079 & 830 & 3909\\\\\n    CrossCountry  & 22865 & 63 & 22928\\\\\n    London Midland  & 14487 & 33792 & 48279\\\\\n    Virgin Trains  & 8594 &  & 8594\\\\\n    Total  & 49025 & 34685 & 83710\\\\\n    \\hline\n  \\end{tabular}\n\\end{table}"
 
@@ -173,7 +173,7 @@ test_that("quick-pivot tests:  totals base", {
 
   library(pivottabler)
   pt <- qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()",
-             compatibility=list(totalStyleIsCellStyle=TRUE))
+             compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -188,7 +188,7 @@ test_that("quick-pivot tests:  no totals", {
 
   library(pivottabler)
   pt <- qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()", totals=NULL,
-             compatibility=list(totalStyleIsCellStyle=TRUE))
+             compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -203,7 +203,7 @@ test_that("quick-pivot tests:  1 total out of 3 (chr)", {
 
   library(pivottabler)
   pt <- qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()", totals="TOC",
-             compatibility=list(totalStyleIsCellStyle=TRUE))
+             compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -218,7 +218,7 @@ test_that("quick-pivot tests:  2 totals out of 3 (chr)", {
 
   library(pivottabler)
   pt <- qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()", totals=c("TOC", "TrainCategory"),
-             compatibility=list(totalStyleIsCellStyle=TRUE))
+             compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -233,7 +233,7 @@ test_that("quick-pivot tests:  1 total out of 3 (list)", {
 
   library(pivottabler)
   pt <- qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()", totals=list("TOC"="All TOCs"),
-             compatibility=list(totalStyleIsCellStyle=TRUE))
+             compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -249,7 +249,7 @@ test_that("quick-pivot tests:  2 totals out of 3 (list)", {
   library(pivottabler)
   pt <- qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()",
              totals=list("TOC"="All TOCs", "TrainCategory"="All Categories"),
-             compatibility=list(totalStyleIsCellStyle=TRUE))
+             compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))

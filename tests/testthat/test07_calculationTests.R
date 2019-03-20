@@ -84,7 +84,7 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
 
       # create the pivot table
       pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                           compatibility=list(totalStyleIsCellStyle=TRUE))
+                           compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
       pt$addData(trains)
       pt$addRowDataGroups("TOC", totalCaption="All TOCs")
       pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains",
@@ -136,7 +136,7 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
 
       # create the pivot table
       pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                           compatibility=list(totalStyleIsCellStyle=TRUE))
+                           compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
       pt$addData(trains)
       pt$addColumnDataGroups("TOC", totalCaption="All TOCs")
       pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains",
@@ -190,7 +190,7 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
 
       # create the pivot table
       pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                           compatibility=list(totalStyleIsCellStyle=TRUE))
+                           compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
       pt$addData(trains)
       pt$addRowDataGroups("TOC", totalCaption="All TOCs")
       pt$defineCalculation(calculationName="DelayedTrains", caption="Trains Arr. 5+ Mins Late",
@@ -235,7 +235,7 @@ for(i in 1:nrow(scenarios)) {
 
     # display this pre-calculated data
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(trains)
     pt$addColumnDataGroups("TrainCategory", addTotal=FALSE)   #  <<  *** CODE CHANGE ***  <<
     pt$addRowDataGroups("TOC", addTotal=FALSE)                #  <<  *** CODE CHANGE ***  <<
@@ -273,7 +273,7 @@ for(i in 1:nrow(scenarios)) {
 
     # display this pre-calculated data
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(trains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("TOC")
@@ -303,7 +303,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(bhmtrains)
     pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains", summariseExpression=countFunction)
     pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)", summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
@@ -333,7 +333,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains", summariseExpression=countFunction)
@@ -392,7 +392,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("TOC")
@@ -428,7 +428,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("TOC")
@@ -460,7 +460,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("TOC")
@@ -494,7 +494,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("TOC")
@@ -553,7 +553,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(trains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("GbttDate", fromData=FALSE,
@@ -616,7 +616,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(trains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("GbttDate", fromData=FALSE,
@@ -677,7 +677,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
     pt$addData(trains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("GbttDate", fromData=FALSE,
