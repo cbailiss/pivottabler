@@ -34,9 +34,11 @@ getPvtStyleDeclarations <- function(pvtStyle=NULL) {
 #'
 #' @param pvt The pivot table to convert.
 #' @param exportOptions Options specifying how values are exported.
+#' @param compatibility Compatibility options specified when creating the
+#'   basictabler table.
 #' @return a basictabler table.
 
-convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL) {
+convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=NULL) {
   # pre-reqs
   if (!requireNamespace("basictabler", quietly = TRUE)) {
     stop("convertPvtTblToBasicTbl():  The basictabler package is needed convert a pivot tabler to a basic table.  Please install the basictabler package.", call. = FALSE)
@@ -47,7 +49,7 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL) {
   }
   isBasicTblrZeroPt3 <- numeric_version(basictblrversion) >= numeric_version("0.3.0")
   # create the new basic table
-  btbl <- basictabler::BasicTable$new()
+  btbl <- basictabler::BasicTable$new(compatibility=compatibility)
   # copy the styles over from the pivot table
   themeName <- pvt$theme
   if(is.null(themeName)) themeName <- "pivot_theme"
