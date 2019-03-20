@@ -49,7 +49,8 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=
   }
   isBasicTblrZeroPt3 <- numeric_version(basictblrversion) >= numeric_version("0.3.0")
   # create the new basic table
-  btbl <- basictabler::BasicTable$new(compatibility=compatibility)
+  if(isBasicTblrZeroPt3) btbl <- basictabler::BasicTable$new(compatibility=compatibility)
+  else btbl <- basictabler::BasicTable$new()
   # copy the styles over from the pivot table
   themeName <- pvt$theme
   if(is.null(themeName)) themeName <- "pivot_theme"
