@@ -11,6 +11,7 @@ vignette: >
 
 ## In This Vignette
 
+* Quick Styling
 * Styles and Themes
 * Styles and CSS
 * XL Styles
@@ -25,6 +26,26 @@ vignette: >
 * Styling Output
 * Styling Reference
 * Further Reading
+
+## Quick Styling
+
+This 'Quick Start' describes one easy method of styling table cells.  A fuller explanation is given in the other sections of this vignette.
+
+Cells in a table are styled using CSS.  The quickest way to apply styles to individual cells in a table is using:
+
+`pt$setStyling(rFrom, cFrom, rTo, cTo, groups, cells, baseStyleName, style, declarations)`
+
+To apply styles to a single cell, e.g. at row 1, column 2 (in the body of the table, i.e. excluding the headings):
+
+`pt$setStyling(1, 2, declarations=list("font-weight"="bold", "text-align"="center")`
+
+To apply styles to a rangle of cells, e.g. rows 2 to 3 and columns 1 to 5:
+
+`pt$setStyling(2, 1, 3, 5, declarations=list("font-weight"="bold", "text-align"="center")`
+
+The above examples specify the cells to be styled by their row and column numbers in the body of the table.  It is also possible to specify a list of cells using the `cells` argument or a list of data groups (i.e. row or column headings) using the `groups` argument.  Many examples of these can be found in the [Finding and Formatting](v07-findingandformatting.html) vignette.
+
+The above examples also set CSS style attributes on the individual cells.  This is quick and easy, though very verbose.  Named styles are more efficient for large pivot tables (hundreds/thousands of cells) and are described in the following sections. 
 
 ## Styles and Themes
 
