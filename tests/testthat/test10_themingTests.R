@@ -106,6 +106,40 @@ for(i in 1:nrow(scenarios)) {
 }
 
 
+scenarios <- testScenarios("theming tests:  applying styling multiple times to the same cell", runAllForReleaseVersion=TRUE)
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE))
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    pt$addRowDataGroups("TOC")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$evaluatePivot()
+    grps <- pt$rowGroup$childGroups
+    pt$setStyling(groups=grps, declarations=list("font-weight"="normal"))
+    pt$setStyling(groups=grps, declarations=list("color"="blue"))
+    cells <- pt$getCells(rowNumbers=4)
+    pt$setStyling(cells=cells, declarations=list("font-weight"="bold"))
+    pt$setStyling(cells=cells, declarations=list("color"="green"))
+    pt$setStyling(2, 1, declarations=list("color"="red"))
+    pt$setStyling(2, 1, declarations=list("font-weight"="bold"))
+    pt$renderPivot()
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">CrossCountry</th>\n    <td class=\"Cell\" style=\"color: red; font-weight: bold; \">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">London Midland</th>\n    <td class=\"Cell\">14487</td>\n    <td class=\"Cell\">33792</td>\n    <td class=\"Cell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">Virgin Trains</th>\n    <td class=\"Cell\" style=\"font-weight: bold; color: green; \">8594</td>\n    <td class=\"Cell\" style=\"font-weight: bold; color: green; \"></td>\n    <td class=\"Cell\" style=\"font-weight: bold; color: green; \">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">Total</th>\n    <td class=\"Cell\">49025</td>\n    <td class=\"Cell\">34685</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n</table>"
+
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}
+
+
 # The code for the following tests runs OK in R-Studio
 # But errors when used with testthat on my PC:
 #   Error PivotDataGroup.R:294:  object of type 'closure' is not subsettable
