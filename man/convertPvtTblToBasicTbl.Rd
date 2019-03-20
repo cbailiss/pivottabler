@@ -4,12 +4,16 @@
 \alias{convertPvtTblToBasicTbl}
 \title{Convert a pivot table to a basic table.}
 \usage{
-convertPvtTblToBasicTbl(pvt = NULL, exportOptions = NULL)
+convertPvtTblToBasicTbl(pvt = NULL, exportOptions = NULL,
+  compatibility = NULL)
 }
 \arguments{
 \item{pvt}{The pivot table to convert.}
 
 \item{exportOptions}{Options specifying how values are exported.}
+
+\item{compatibility}{Compatibility options specified when creating the
+basictabler table.}
 }
 \value{
 a basictabler table.
