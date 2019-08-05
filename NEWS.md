@@ -1,34 +1,11 @@
-pivottabler 1.2.0.9000
-================
+pivottabler 1.2.1
+=================
 
 Overview
 --------
 
-This release includes:
-
-* TBC
-* TBC
-* TBC
-
-Breaking Changes
-----------------
-
-TBC
-
-Improvements
-----------------
-
-TBC
-
-Bug Fixes
-----------------
-
-TBC
-
-Upcoming Changes
-----------------
-
-TBC
+This release includes one small bug fix only:
+Calling pt$asDataFrame() on a pivot table containing blank/NA cells now succeeds without an error (issue #20).
 
 
 pivottabler 1.2.0
