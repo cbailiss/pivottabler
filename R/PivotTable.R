@@ -1367,7 +1367,8 @@ PivotTable <- R6::R6Class("PivotTable",
           cell <- private$p_cells$getCell(r, c)
           v <- cell$rawValue
           if(!(("integer" %in% class(v))||("numeric" %in% class(v)))) v <- NA
-          if(is.null(v)) v <- NA
+          else if(is.null(v)) v <- NA
+          else if(length(v) == 0) v <- NA
           columnValues[r] <- v
         }
         dfColumns[[c]] <- columnValues
