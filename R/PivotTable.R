@@ -726,14 +726,16 @@ PivotTable <- R6::R6Class("PivotTable",
         if("PivotDataGroup" %in% class(groups)) {
           groups <- list(groups)
         }
-        for(i in 1:length(groups)) {
-          grp <- groups[[i]]
-          if(!is.null(grp)) {
-            if(!missing(baseStyleName)) { grp$baseStyleName <- baseStyleName }
-            if(!missing(style)) { grp$style <- ifelse(is.null(style), NULL, style$getCopy()) }
-            if((!missing(declarations))&&(!is.null(declarations))) {
-              if (is.null(grp$style)) { grp$style <- PivotStyle$new(parentPivot=self, declarations=declarations) }
-              else { grp$style$setPropertyValues(declarations) }
+        if(length(groups)>0) {
+          for(i in 1:length(groups)) {
+            grp <- groups[[i]]
+            if(!is.null(grp)) {
+              if(!missing(baseStyleName)) { grp$baseStyleName <- baseStyleName }
+              if(!missing(style)) { grp$style <- ifelse(is.null(style), NULL, style$getCopy()) }
+              if((!missing(declarations))&&(!is.null(declarations))) {
+                if (is.null(grp$style)) { grp$style <- PivotStyle$new(parentPivot=self, declarations=declarations) }
+                else { grp$style$setPropertyValues(declarations) }
+              }
             }
           }
         }
@@ -742,14 +744,16 @@ PivotTable <- R6::R6Class("PivotTable",
         if("PivotCell" %in% class(cells)) {
           cells <- list(cells)
         }
-        for(i in 1:length(cells)) {
-          cell <- cells[[i]]
-          if(!is.null(cell)) {
-            if(!missing(baseStyleName)) { cell$baseStyleName <- baseStyleName }
-            if(!missing(style)) { cell$style <- ifelse(is.null(style), NULL, style$getCopy()) }
-            if((!missing(declarations))&&(!is.null(declarations))) {
-              if (is.null(cell$style)) { cell$style <- PivotStyle$new(parentPivot=self, declarations=declarations) }
-              else { cell$style$setPropertyValues(declarations) }
+        if(length(cells)>0) {
+          for(i in 1:length(cells)) {
+            cell <- cells[[i]]
+            if(!is.null(cell)) {
+              if(!missing(baseStyleName)) { cell$baseStyleName <- baseStyleName }
+              if(!missing(style)) { cell$style <- ifelse(is.null(style), NULL, style$getCopy()) }
+              if((!missing(declarations))&&(!is.null(declarations))) {
+                if (is.null(cell$style)) { cell$style <- PivotStyle$new(parentPivot=self, declarations=declarations) }
+                else { cell$style$setPropertyValues(declarations) }
+              }
             }
           }
         }

@@ -1,3 +1,13 @@
+pivottabler 1.2.2
+=================
+
+Overview
+--------
+
+This release includes one small bug fix only:
+Calling pt$setStyling(cells=...) on an empty list of cells now succeeds without an error (issue #23).
+
+
 pivottabler 1.2.1
 =================
 
