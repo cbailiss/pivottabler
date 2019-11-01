@@ -788,7 +788,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      for (i in 1:calculationGroup$count) {
        calc <- calculationGroup$calculations[[i]]
        if(calc$visible==TRUE) {
-         cname <- paste0("calc", calc$displayOrder, "-", i)
+         cname <- paste0("calc", sprintf("%06d", calc$displayOrder), "-", sprintf("%06d", i))
          calculations[[cname]] <- calc
        }
      }
