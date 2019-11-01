@@ -1,3 +1,13 @@
+pivottabler 1.2.2.9000
+=================
+
+Overview
+--------
+
+This release includes one small bug fix only:
+Adding more than nine calculations causes the calculation columns to appear in the wrong order (issue #23).
+
+
 pivottabler 1.2.2
 =================
 
