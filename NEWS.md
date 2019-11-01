@@ -1,4 +1,4 @@
-pivottabler 1.2.2.9000
+pivottabler 1.2.3
 =================
 
 Overview
