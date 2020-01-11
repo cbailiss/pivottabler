@@ -5,7 +5,7 @@ Overview
 --------
 
 This release includes one small bug fix only:
-Adding more than nine calculations causes the calculation columns to appear in the wrong order (issue #23).
+Adding more than nine calculations causes the calculation columns to appear in the wrong order (issue #25).
 
 
 pivottabler 1.2.2
