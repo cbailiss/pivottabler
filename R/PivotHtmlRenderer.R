@@ -26,7 +26,8 @@
 #'   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
 #'   includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
 #'   includeCalculationNames=FALSE, includeRawValue=FALSE,
-#'   includeTotalInfo=FALSE, exportOptions=NULL)}}{Get a HTML
+#'   includeTotalInfo=FALSE, exportOptions=NULL,
+#'   showRowGroupHeaders=FALSE)}}{Get a HTML
 #'   representation of the pivot table,
 #'   optionally including additional detail for debugging purposes.}
 #' }
@@ -60,7 +61,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
    getTableHtml = function(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE,
                            includeCalculationFilters=FALSE, includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
                            includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE,
-                           exportOptions=exportOptions) {
+                           exportOptions=NULL, showRowGroupHeaders=FALSE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", includeHeaderValues, missing(includeHeaderValues), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -72,6 +73,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", includeTotalInfo, missing(includeTotalInfo), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", exportOptions, missing(exportOptions), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getTableHtml", showRowGroupHeaders, missing(showRowGroupHeaders), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$getTableHtml", "Getting table HTML...")
      # get the style names
@@ -117,15 +119,39 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      # render the column headings, with a large blank cell at the start over the row headings
      if(insertDummyColumnHeading) {
        trow <- list()
-       trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=oneToNULL(columnGroupLevelCount, o2n), colspan=oneToNULL(rowGroupLevelCount, o2n), htmltools::HTML("&nbsp;"))
-       trow[[2]] <- htmltools::tags$th(class=colHeaderStyle, htmltools::HTML("&nbsp;"))
+       if((showRowGroupHeaders==TRUE)&&(rowGroupLevelCount>0)) {
+          rowGrpHeaders <- private$p_parentPivot$rowGrpHeaders
+          for(c in 1:rowGroupLevelCount) {
+             rowGrpHeader <- NULL
+             if((0<c)&&(c<=length(rowGrpHeaders))) rowGrpHeader <- rowGrpHeaders[[c]]
+             if(is.null(rowGrpHeader)) rowGrpHeader <- "&nbsp;"
+             trow[[c]] <- htmltools::tags$th(class=rootStyle, rowspan=oneToNULL(columnGroupLevelCount, o2n), htmltools::HTML(rowGrpHeader))
+          }
+          trow[[rowGroupLevelCount+1]] <- htmltools::tags$th(class=colHeaderStyle, rowspan=oneToNULL(columnGroupLevelCount, o2n), htmltools::HTML("&nbsp;"))
+       }
+       else {
+          trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=oneToNULL(columnGroupLevelCount, o2n), colspan=oneToNULL(rowGroupLevelCount, o2n), htmltools::HTML("&nbsp;"))
+          trow[[2]] <- htmltools::tags$th(class=colHeaderStyle, rowspan=oneToNULL(columnGroupLevelCount, o2n), htmltools::HTML("&nbsp;"))
+       }
        trows[[1]] <- htmltools::tags$tr(trow)
      }
      else {
        for(r in 1:columnGroupLevelCount) {
          trow <- list()
-         if(r==1) { # generate the large top-left blank cell
-           trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=oneToNULL(columnGroupLevelCount, o2n), colspan=oneToNULL(rowGroupLevelCount, o2n), htmltools::HTML("&nbsp;"))
+         if(r==1) {
+            # generate the large top-left blank cell or cells
+            if((showRowGroupHeaders==TRUE)&&(rowGroupLevelCount>0)) {
+               rowGrpHeaders <- private$p_parentPivot$rowGrpHeaders
+               for(c in 1:rowGroupLevelCount) {
+                  rowGrpHeader <- NULL
+                  if((0<c)&&(c<=length(rowGrpHeaders))) rowGrpHeader <- rowGrpHeaders[[c]]
+                  if(is.null(rowGrpHeader)) rowGrpHeader <- "&nbsp;"
+                  trow[[c]] <- htmltools::tags$th(class=rootStyle, rowspan=oneToNULL(columnGroupLevelCount, o2n), htmltools::HTML(rowGrpHeader))
+               }
+            }
+            else {
+               trow[[1]] <- htmltools::tags$th(class=rootStyle, rowspan=oneToNULL(columnGroupLevelCount, o2n), colspan=oneToNULL(rowGroupLevelCount, o2n), htmltools::HTML("&nbsp;"))
+            }
          }
          # get the groups at this level
          grps <- private$p_parentPivot$columnGroup$getLevelGroups(level=r)

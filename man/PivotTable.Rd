@@ -115,7 +115,7 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
   totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
-  styleDeclarations=NULL)}}{Generate new row heading data
+  styleDeclarations=NULL, header=NULL)}}{Generate new row heading data
   groups based on the distinct values in a data frame or using explicitly
   specified data values.}
   \item{\code{normaliseRowGroups()}}{Normalise the row heading data group
@@ -195,7 +195,8 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
   includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
   includeCalculationNames=FALSE, includeRawValue=FALSE,
-  includeTotalInfo=FALSE, exportOptions=NULL)}}{Get
+  includeTotalInfo=FALSE, exportOptions=NULL,
+  showRowGroupHeaders=FALSE)}}{Get
   the HTML representation of the pivot table,
   specifying the CSS style name prefix to use and whether additional debug
   information should be included in the pivot table.}
@@ -204,13 +205,14 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   includeCalculationFilters=FALSE, includeWorkingData=FALSE,
   includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
   includeRawValue=FALSE, includeTotalInfo=FALSE,
-  exportOptions=NULL)}}{Save the HTML
+  exportOptions=NULL, showRowGroupHeaders=FALSE)}}{Save the HTML
   representation of the pivot table to a file.}
   \item{\code{renderPivot(width, height, styleNamePrefix,
   includeHeaderValues=FALSE, includeRCFilters=FALSE,
   includeCalculationFilters=FALSE, includeWorkingData=FALSE,
   includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
-  includeRawValue=FALSE, includeTotalInfo=FALSE, exportOptions=NULL)}}{
+  includeRawValue=FALSE, includeTotalInfo=FALSE,
+  exportOptions=NULL, showRowGroupHeaders=FALSE)}}{
   Render the pivot table as a htmlwidget.}
   \item{\code{getLatex(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL,
   fromColumn=NULL, toColumn=NULL, boldHeadings=FALSE,
