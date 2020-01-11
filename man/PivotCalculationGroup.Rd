@@ -38,7 +38,8 @@ Do not have spaces in this name.}
   \item{\code{getCalculation(calculationName=NULL)}}{Get the calculation with
   the specified name.}
   \item{\code{defineCalculation(calculationName=NULL, caption=NULL,
-  visible=TRUE, displayOrder=NULL, filters=NULL, format=NULL, dataName=NULL,
+  visible=TRUE, displayOrder=NULL, filters=NULL, format=NULL,
+  fmtFuncArgs=NULL, dataName=NULL,
   type="summary", executionOrder=NULL, valueName=NULL,
   summariseExpression=NULL, calculationExpression=NULL,
   calculationFunction=NULL, basedOn=NULL, noDataValue=NULL,

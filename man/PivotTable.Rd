@@ -90,7 +90,8 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   \item{\code{getLeafColumnGroups()}}{Get the PivotDataGroups at the bottom
   of the column heading parent-child hierarchy.}
   \item{\code{addColumnDataGroups(variableName, atLevel, fromData=TRUE,
-  dataName, dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
+  dataName, dataSortOrder="asc", dataFormat, dataFmtFuncArgs,
+  onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
   totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
@@ -109,7 +110,8 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   \item{\code{getLeafRowGroups()}}{Get the PivotDataGroups at the bottom of
   the row heading parent-child hierarchy.}
   \item{\code{addRowDataGroups(variableName, atLevel, fromData=TRUE,
-  dataName, dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
+  dataName, dataSortOrder="asc", dataFormat, dataFmtFuncArgs,
+  onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
   totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,

@@ -310,8 +310,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    # single pivot table row/column to represent multiple values)
    # atLevel is the number of levels below the current level
    addDataGroups = function(variableName=NULL, atLevel=NULL, fromData=TRUE, # atLevel=0 is the current level, 1 = one level below, etc
-                            dataName=NULL, dataSortOrder="asc", dataFormat=NULL, onlyCombinationsThatExist=TRUE,
-                            explicitListOfValues=NULL, calculationGroupName=NULL,
+                            dataName=NULL, dataSortOrder="asc", dataFormat=NULL, dataFmtFuncArgs=NULL,
+                            onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                             expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
                             preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
@@ -321,6 +321,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "none"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", dataFormat, missing(dataFormat), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", dataFmtFuncArgs, missing(dataFmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", onlyCombinationsThatExist, missing(onlyCombinationsThatExist), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", explicitListOfValues, missing(explicitListOfValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -579,7 +580,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          for(j in 1:length(distinctValues)) {
            caption <- NULL
            if((!is.null(distinctCaptions))&&(nchar(distinctCaptions[j])>0)) caption <- distinctCaptions[j]
-           if(is.null(caption)&&(!is.null(dataFormat))) caption <- private$formatValue(distinctValues[[j]], dataFormat)
+           if(is.null(caption)&&(!is.null(dataFormat))) caption <- private$formatValue(distinctValues[[j]], dataFormat, dataFmtFuncArgs)
            newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[[j]], caption=caption,
                                        calculationGroupName=calculationGroupName, isTotal=grp$isTotal,
                                        baseStyleName=baseStyleName, styleDeclarations=styleDeclarations)
@@ -607,7 +608,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          for(j in 1:length(distinctValues)) {
            caption <- NULL
            if((!is.null(distinctCaptions))&&(nchar(distinctCaptions[j])>0)) caption <- distinctCaptions[j]
-           if(is.null(caption)&&(!is.null(dataFormat))) caption <- private$formatValue(distinctValues[j], dataFormat)
+           if(is.null(caption)&&(!is.null(dataFormat))) caption <- private$formatValue(distinctValues[j], dataFormat, dataFmtFuncArgs)
            newGrp <- grp$addChildGroup(variableName=variableName, values=distinctValues[j], caption=caption,
                                        calculationGroupName=calculationGroupName, isTotal=grp$isTotal,
                                        baseStyleName=baseStyleName, styleDeclarations=styleDeclarations)
@@ -1215,10 +1216,11 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    p_isRendered = FALSE, # helper flag to keep track of which data groups have already been rendered
 
    # private functions:
-   formatValue = function(value=NULL, format=NULL) {
+   formatValue = function(value=NULL, format=NULL, dataFmtFuncArgs=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric", "character", "logical", "date", "Date", "POSIXct", "POSIXlt"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "formatValue", dataFmtFuncArgs, missing(dataFmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$formatValue", "Formatting value...")
      if(is.null(value)) return(invisible(NULL))
@@ -1232,7 +1234,14 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          args$x <- value
          value <- do.call(base::format, args)
        }
-       else if ("function" %in% class(format)) value <- format(value)
+       else if ("function" %in% class(format)) {
+          if (is.null(dataFmtFuncArgs)) value <- format(value)
+          else {
+             args <- dataFmtFuncArgs
+             args$x <- value
+             value <- do.call(format, args)
+          }
+       }
        else value <- base::as.character(value)
      }
      else if("logical" %in% clsv) {
@@ -1255,7 +1264,14 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          args$x <- value
          value <- do.call(base::format, args)
        }
-       else if ("function" %in% class(format)) value <- format(value)
+       else if ("function" %in% class(format)) {
+          if (is.null(dataFmtFuncArgs)) value <- format(value)
+          else {
+             args <- dataFmtFuncArgs
+             args$x <- value
+             value <- do.call(format, args)
+          }
+       }
        else value <- base::as.character(value)
      }
      else if(("Date" %in% clsv)||("POSIXct" %in% clsv)||("POSIXlt" %in% clsv)) {
@@ -1273,7 +1289,14 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          args$x <- value
          value <- do.call(base::format, args)
        }
-       else if ("function" %in% class(format)) value <- format(value)
+       else if ("function" %in% class(format)) {
+          if (is.null(dataFmtFuncArgs)) value <- format(value)
+          else {
+             args <- dataFmtFuncArgs
+             args$x <- value
+             value <- do.call(format, args)
+          }
+       }
        else value <- base::as.character(value)
      }
      else value <- base::as.character(value)

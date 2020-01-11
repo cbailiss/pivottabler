@@ -28,7 +28,8 @@
 #'   \item{\code{getCalculation(calculationName=NULL)}}{Get the calculation with
 #'   the specified name.}
 #'   \item{\code{defineCalculation(calculationName=NULL, caption=NULL,
-#'   visible=TRUE, displayOrder=NULL, filters=NULL, format=NULL, dataName=NULL,
+#'   visible=TRUE, displayOrder=NULL, filters=NULL, format=NULL,
+#'   fmtFuncArgs=NULL, dataName=NULL,
 #'   type="summary", executionOrder=NULL, valueName=NULL,
 #'   summariseExpression=NULL, calculationExpression=NULL,
 #'   calculationFunction=NULL, basedOn=NULL, noDataValue=NULL,
@@ -81,7 +82,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
       return(invisible(calculation))
     },
     defineCalculation = function(calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
-                         filters=NULL, format=NULL, dataName=NULL, type="summary", executionOrder=NULL,
+                         filters=NULL, format=NULL, fmtFuncArgs=NULL, dataName=NULL, type="summary", executionOrder=NULL,
                          valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
                          noDataValue=NULL, noDataCaption=NULL,
                          headingBaseStyleName=NULL, headingStyleDeclarations=NULL, cellBaseStyleName=NULL, cellStyleDeclarations=NULL) {
@@ -92,6 +93,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", displayOrder, missing(displayOrder), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", filters, missing(filters), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotFilters", "PivotFilterOverrides"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value", "summary", "calculation", "function"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", valueName, missing(valueName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -113,7 +115,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
       }
       if(is.null(displayOrder)) displayOrder <- length(private$p_calculations) + 1
       calculation <- PivotCalculation$new(private$p_parentPivot, calculationName=calculationName, caption=caption,
-                                          visible=visible, displayOrder=displayOrder, filters=filters, format=format,
+                                          visible=visible, displayOrder=displayOrder, filters=filters, format=format, fmtFuncArgs=fmtFuncArgs,
                                           dataName=dataName, type=type, valueName=valueName, summariseExpression=summariseExpression,
                                           calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn,
                                           noDataValue=noDataValue, noDataCaption=noDataCaption,

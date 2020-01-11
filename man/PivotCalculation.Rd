@@ -39,6 +39,9 @@ flexibility (and/or/replace).  See the Calculations vignette for details.}
 \item{\code{format}}{A character, list or custom function to format the calculation
 result.}
 
+\item{\code{fmtFuncArgs}}{A list that specifies any additional arguments to pass to a
+a custom format function.}
+
 \item{\code{dataName}}{Specifies which data frame in the pivot table is used for
 this calculation.}
 

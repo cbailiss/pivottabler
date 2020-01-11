@@ -25,6 +25,8 @@
 #'   flexibility (and/or/replace).  See the Calculations vignette for details.
 #' @field format A character, list or custom function to format the calculation
 #'   result.
+#' @field fmtFuncArgs A list that specifies any additional arguments to pass to a
+#'   a custom format function.
 #' @field dataName Specifies which data frame in the pivot table is used for
 #'   this calculation.
 #' @field type The calculation type:  "summary", "calculation", "function" or
@@ -58,7 +60,7 @@
 PivotCalculation <- R6::R6Class("PivotCalculation",
   public = list(
    initialize = function(parentPivot, calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
-                         filters=NULL, format=NULL, dataName=NULL, type="summary",
+                         filters=NULL, format=NULL, fmtFuncArgs=NULL, dataName=NULL, type="summary",
                          valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
                          noDataValue=NULL, noDataCaption=NULL,
                          headingBaseStyleName=NULL, headingStyleDeclarations=NULL, cellBaseStyleName=NULL, cellStyleDeclarations=NULL) {
@@ -70,6 +72,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", displayOrder, missing(displayOrder), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", filters, missing(filters), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotFilters", "PivotFilterOverrides"))
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", type, missing(type), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value", "summary", "calculation", "function"))
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", valueName, missing(valueName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -89,7 +92,8 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
      if(!is.null(filters)) fstr <- filters$asString()
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculation$new", "Creating new Pivot Calculation...",
                                                                              list(calculationName=calculationName, caption=caption, visible=visible,
-                                                                             displayOrder=displayOrder, filters=fstr, format=format, dataName=dataName,
+                                                                             displayOrder=displayOrder, filters=fstr,
+                                                                             format=format, fmtFuncArgs=fmtFuncArgs, dataName=dataName,
                                                                              valueName=valueName, summariseExpression=summariseExpression,
                                                                              calculationExpression=calculationExpression,
                                                                              calculationFunctionIsNull=is.null(calculationFunction), basedOn=basedOn,
@@ -134,6 +138,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
      private$p_displayOrder <- displayOrder
      private$p_filters <- filters
      private$p_format <- format
+     private$p_fmtFuncArgs <- fmtFuncArgs
      private$p_dataName <- dataName
      private$p_type <- type
      private$p_valueName <- valueName
@@ -157,6 +162,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
        displayOrder = private$p_displayOrder,
        filters = private$p_filters,
        format = private$p_format,
+       fmtFuncArgs = private$p_fmtFuncArgs,
        dataName = private$p_dataName,
        type = private$p_type,
        valueName = private$p_valueName,
@@ -192,6 +198,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
     displayOrder = function(value) { return(invisible(private$p_displayOrder)) },
     filters = function(value) { return(invisible(private$p_filters)) },
     format = function(value) { return(invisible(private$p_format)) },
+    fmtFuncArgs = function(value) { return(invisible(private$p_fmtFuncArgs)) },
     dataName = function(value) { return(invisible(private$p_dataName)) },
     type = function(value) { return(invisible(private$p_type)) },
     valueName = function(value) { return(invisible(private$p_valueName)) },
@@ -214,6 +221,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
     p_displayOrder = NULL,
     p_filters = NULL,
     p_format = NULL,
+    p_fmtFuncArgs = NULL,
     p_dataName = NULL,
     p_type = NULL,
     p_valueName = NULL,

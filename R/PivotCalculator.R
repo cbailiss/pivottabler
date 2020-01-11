@@ -53,9 +53,10 @@
 #'   PivotFilters object to a data frame, returning a new data frame.}
 #'   \item{\code{getDistinctValues(dataFrame, variableName)}}{Gets the distinct
 #'   values from the specified column of a data frame.}
-#'   \item{\code{formatValue(value, format)}}{Formats a numerical value using
+#'   \item{\code{formatValue(value, format, fmtFuncArgs)}}{Formats a value using
 #'   either an sprintf string, a list of arguments for the base::format()
-#'   function or using a custom R function.}
+#'   function or using a custom R function (where fmtFuncArgs is a list of
+#'   additional arguments to pass to the custom format function).}
 #'   \item{\code{getCombinedFilters = function(rowColFilters=NULL,
 #'   calcFilters=NULL, cell=NULL)}}{Get the working filters for a calculation.}
 #'   \item{\code{getFiltersForNamedCalculation = function(calculationName=NULL,
@@ -64,19 +65,19 @@
 #'   \item{\code{setWorkingData = function(cell=NULL)}}{Set the working
 #'   filters for a cell.}
 #'   \item{\code{evaluateSingleValue(dataFrame, workingFilters, valueName,
-#'   format, noDataValue, noDataCaption)}}{Get a single value from a data
-#'   frame.}
+#'   format, fmtFuncArgs, noDataValue, noDataCaption)}}{Get a single value from
+#'   a data frame.}
 #'   \item{\code{evaluateSummariseExpression(dataName=NULL, dataFrame=NULL,
 #'   workingFilters=NULL, calculationName=NULL, calculationGroupName=NULL,
 #'   summaryName=NULL, summariseExpression=NULL, format=NULL, noDataValue=NULL,
 #'   noDataCaption=NULL)}}{Calculate a summary value, either using a batch or
 #'   sequential calculation.}
 #'   \item{\code{evaluateCalculationExpression(values, calculationExpression,
-#'   format, noDataValue, noDataCaption)}}{Evaluates an R expression in order to
-#'   combine the results of other calculations.}
+#'   format, fmtFuncArgs, noDataValue, noDataCaption)}}{Evaluates an R
+#'   expression in order to combine the results of other calculations.}
 #'   \item{\code{evaluateCalculateFunction(workingFilters, calculationFunction,
-#'   format, baseValues, cell)}}{Invokes a user-provided custom R function to
-#'   aggregate data and perform calculations.}
+#'   format, fmtFuncArgs, baseValues, cell)}}{Invokes a user-provided custom R
+#'   function to aggregate data and perform calculations.}
 #'   \item{\code{evaluateNamedCalculationWD(calculationName,
 #'   calculationGroupName, workingData, cell)}}{Invokes the relevant
 #'   calculation function based upon the calculation type.}
@@ -248,10 +249,11 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getDistinctValues", "Got filtered data frame.")
      return(invisible(distinctValues))
    },
-   formatValue = function(value=NULL, format=NULL) {
+   formatValue = function(value=NULL, format=NULL, fmtFuncArgs=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses=c("integer", "numeric", "character", "logical", "date", "Date", "POSIXct"))
-       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses=c("integer", "numeric", "character", "logical", "date", "Date", "POSIXct"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "formatValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "formatValue", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$formatValue", "Formatting value...")
      if(is.null(value)) return(invisible(NULL))
@@ -265,7 +267,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          args$x <- value
          value <- do.call(base::format, args)
        }
-       else if ("function" %in% class(format)) value <- format(value)
+       else if ("function" %in% class(format)) {
+          if (is.null(fmtFuncArgs)) value <- format(value)
+          else {
+             args <- fmtFuncArgs
+             args$x <- value
+             value <- do.call(format, args)
+          }
+       }
        else value <- base::as.character(value)
      }
      else if("logical" %in% clsv) {
@@ -288,7 +297,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          args$x <- value
          value <- do.call(base::format, args)
        }
-       else if ("function" %in% class(format)) value <- format(value)
+       else if ("function" %in% class(format)) {
+          if (is.null(fmtFuncArgs)) value <- format(value)
+          else {
+             args <- fmtFuncArgs
+             args$x <- value
+             value <- do.call(format, args)
+          }
+       }
        else value <- base::as.character(value)
      }
      else if(("Date" %in% clsv)||("POSIXct" %in% clsv)||("POSIXlt" %in% clsv)) {
@@ -306,7 +322,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          args$x <- value
          value <- do.call(base::format, args)
        }
-       else if ("function" %in% class(format)) value <- format(value)
+       else if ("function" %in% class(format)) {
+          if (is.null(fmtFuncArgs)) value <- format(value)
+          else {
+             args <- fmtFuncArgs
+             args$x <- value
+             value <- do.call(format, args)
+          }
+       }
        else value <- base::as.character(value)
      }
      else value <- base::as.character(value)
@@ -431,12 +454,13 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setWorkingData", "Set working data for cell.")
    },
-   evaluateSingleValue = function(dataFrame=NULL, workingFilters=NULL, valueName=NULL, format=NULL, noDataValue=NULL, noDataCaption=NULL) {
+   evaluateSingleValue = function(dataFrame=NULL, workingFilters=NULL, valueName=NULL, format=NULL, fmtFuncArgs=NULL, noDataValue=NULL, noDataCaption=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", workingFilters, missing(workingFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", valueName, missing(valueName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
@@ -446,7 +470,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(workingFilters$isNONE) {
        value$rawValue <- noDataValue
        if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
-       else value$formattedValue <- self$formatValue(noDataValue, format=format)
+       else value$formattedValue <- self$formatValue(noDataValue, format=format, fmtFuncArgs=fmtFuncArgs)
      }
      else {
        # if we have some filters, filter the data frame
@@ -460,7 +484,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        if(nrow(data)==0) {
          value$rawValue <- noDataValue
          if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
-         else value$formattedValue <- self$formatValue(noDataValue, format=format)
+         else value$formattedValue <- self$formatValue(noDataValue, format=format, fmtFuncArgs=fmtFuncArgs)
        }
        else {
          # calculate the value
@@ -471,7 +495,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          data <- dplyr::collect(data)
          rv <- data[[valueName]][1] # data[[valueName]] will always return a column as a vector (even if data is still a tbl_df)
          value$rawValue <- rv
-         value$formattedValue <- self$formatValue(rv, format=format)
+         value$formattedValue <- self$formatValue(rv, format=format, fmtFuncArgs=fmtFuncArgs)
        }
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSingleValue", "Evaluated single value.")
@@ -479,7 +503,8 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
    },
    evaluateSummariseExpression = function(dataName=NULL, dataFrame=NULL, workingFilters=NULL, batchName=NULL,
                                           calculationName=NULL, calculationGroupName=NULL,
-                                          summaryName=NULL, summariseExpression=NULL, format=NULL, noDataValue=NULL, noDataCaption=NULL) {
+                                          summaryName=NULL, summariseExpression=NULL,
+                                          format=NULL, fmtFuncArgs=NULL, noDataValue=NULL, noDataCaption=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
@@ -490,6 +515,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", summaryName, missing(summaryName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", summariseExpression, missing(summariseExpression), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
@@ -501,7 +527,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(workingFilters$isNONE) {
        value$rawValue <- noDataValue
        if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
-       else value$formattedValue <- self$formatValue(noDataValue, format=format)
+       else value$formattedValue <- self$formatValue(noDataValue, format=format, fmtFuncArgs=fmtFuncArgs)
      }
      else {
        if(private$p_parentPivot$evaluationMode=="batch") {
@@ -521,12 +547,12 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
              if(is.null(batchValue$value)) {
                value$rawValue <- noDataValue
                if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
-               else value$formattedValue <- self$formatValue(noDataValue, format=format)
+               else value$formattedValue <- self$formatValue(noDataValue, format=format, fmtFuncArgs=fmtFuncArgs)
              }
              else {
                # format the value
                value$rawValue <- batchValue$value
-               value$formattedValue <- self$formatValue(batchValue$value, format=format)
+               value$formattedValue <- self$formatValue(batchValue$value, format=format, fmtFuncArgs=fmtFuncArgs)
              }
              valFromBatch <- TRUE
            }
@@ -548,7 +574,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
            if(nrow(data)==0) {
              value$rawValue <- noDataValue
              if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
-             else value$formattedValue <- self$formatValue(noDataValue, format=format)
+             else value$formattedValue <- self$formatValue(noDataValue, format=format, fmtFuncArgs=fmtFuncArgs)
            }
            else {
              # calculate the value
@@ -562,7 +588,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
              data <- dplyr::collect(data)
              rv <- data[[1]][1] # data[[colIndex]] will always return a column as a vector (even if data is still a tbl_df)
              value$rawValue <- rv
-             value$formattedValue <- self$formatValue(rv, format=format)
+             value$formattedValue <- self$formatValue(rv, format=format, fmtFuncArgs=fmtFuncArgs)
            }
          }
          else if(private$p_parentPivot$processingLibrary=="data.table") {
@@ -604,14 +630,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
            if(checkCount==0) {                                         # opt: if(nrow(data)==0) {
              value$rawValue <- noDataValue
              if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
-             else value$formattedValue <- self$formatValue(noDataValue, format=format)
+             else value$formattedValue <- self$formatValue(noDataValue, format=format, fmtFuncArgs=fmtFuncArgs)
            }
            else {
              # data.table query 2
              dtqry <- paste0("rv <- data[", filterCmd, ", ", summariseExpression, "]")    # opt: dtqry <- paste0("rv <- data[, ", summariseExpression, "]")
              eval(parse(text=dtqry))
              value$rawValue <- rv
-             value$formattedValue <- self$formatValue(rv, format=format)
+             value$formattedValue <- self$formatValue(rv, format=format, fmtFuncArgs=fmtFuncArgs)
            }
          }
          else stop(paste0("PivotBatch$evaluateBatch(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
@@ -620,11 +646,12 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSummariseExpression", "Evaluated summary expression.")
      return(invisible(value))
    },
-   evaluateCalculationExpression = function(values=NULL, calculationExpression=NULL, format=NULL, noDataValue=NULL, noDataCaption=NULL) {
+   evaluateCalculationExpression = function(values=NULL, calculationExpression=NULL, format=NULL, fmtFuncArgs=NULL, noDataValue=NULL, noDataCaption=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", values, missing(values), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", calculationExpression, missing(calculationExpression), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
@@ -642,23 +669,24 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(noData==TRUE) {
        value$rawValue <- noDataValue
        if(!is.null(noDataCaption)) value$formattedValue <- noDataCaption
-       else value$formattedValue <- self$formatValue(noDataValue, format=format)
+       else value$formattedValue <- self$formatValue(noDataValue, format=format, fmtFuncArgs=fmtFuncArgs)
      }
      else {
        # calculate the value
        rv <- eval(parse(text=calculationExpression))
        value <- list()
        value$rawValue <- rv
-       value$formattedValue <- self$formatValue(rv, format=format)
+       value$formattedValue <- self$formatValue(rv, format=format, fmtFuncArgs=fmtFuncArgs)
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSCalculationExpression", "Evaluated summary expression.")
      return(invisible(value))
    },
-   evaluateCalculateFunction = function(workingFilters=NULL, calculationFunction=NULL, format=NULL, baseValues=NULL, cell=NULL) {
+   evaluateCalculateFunction = function(workingFilters=NULL, calculationFunction=NULL, format=NULL, fmtFuncArgs=NULL, baseValues=NULL, cell=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", workingFilters, missing(workingFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", calculationFunction, missing(calculationFunction), allowMissing=FALSE, allowNull=FALSE, allowedClasses="function")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", baseValues, missing(baseValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", cell, missing(cell), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotCell")
      }
@@ -666,7 +694,21 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      value <- list()
      value$evaluationFilters <- workingFilters
      # calculate the value by calling the calculation function
-     rv <- calculationFunction(pivotCalculator=self, netFilters=workingFilters, format=format, baseValues=baseValues, cell=cell)
+     # first check mandatory parameters are supplied
+     argNames <- methods::formalArgs(calculationFunction)
+     if(!("pivotCalculator" %in% argNames)) stop("Custom calculation function missing 'pivotCalculator' argument.", call. = FALSE)
+     if(!("netFilters" %in% argNames)) stop("Custom calculation function missing 'netFilters' argument.", call. = FALSE)
+     if(!("format" %in% argNames)) stop("Custom calculation function missing 'format' argument.", call. = FALSE)
+     if(!("baseValues" %in% argNames)) stop("Custom calculation function missing 'baseValues' argument.", call. = FALSE)
+     if(!("cell" %in% argNames)) stop("Custom calculation function missing 'cell' argument.", call. = FALSE)
+     # if users have older code that does not support the fmtFuncArgs argument, then call the custom function without that, otherwise invoke as normal
+     if("fmtFuncArgs" %in% argNames) {
+        rv <- calculationFunction(pivotCalculator=self, netFilters=workingFilters, format=format, fmtFuncArgs=fmtFuncArgs, baseValues=baseValues, cell=cell)
+     }
+     else {
+        rv <- calculationFunction(pivotCalculator=self, netFilters=workingFilters, format=format, baseValues=baseValues, cell=cell)
+     }
+     # build return value
      value$evaluationFilters <- rv$filters # the calculationfunction may have updated the filters
      value$rawValue <- rv$rawValue
      value$formattedValue <- rv$formattedValue
@@ -705,12 +747,13 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
              value <- self$evaluateSummariseExpression(dataName=calc$dataName, dataFrame=df, workingFilters=filters, batchName=batchName,
                                                         calculationName=calc$calculationName, calculationGroupName=calculationGroupName,
                                                         summaryName=calc$calculationName, summariseExpression=calc$summariseExpression,
-                                                        format=calc$format, noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
+                                                        format=calc$format, fmtFuncArgs=calc$fmtFuncArgs,
+                                                        noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
            }
          }
          else {
            value <- self$evaluateSingleValue(dataFrame=df, workingFilters=filters,
-                                             valueName=calc$valueName, format=calc$format,
+                                             valueName=calc$valueName, format=calc$format, fmtFuncArgs=calc$fmtFuncArgs,
                                              noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
          }
          results[[calc$calculationName]] <- value
@@ -721,7 +764,8 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
          value <- self$evaluateSummariseExpression(dataName=calc$dataName, dataFrame=df, workingFilters=filters, batchName=batchName,
                                                     calculationName=calc$calculationName, calculationGroupName=calculationGroupName,
                                                     summaryName=calc$calculationName, summariseExpression=calc$summariseExpression,
-                                                    format=calc$format, noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
+                                                    format=calc$format, fmtFuncArgs=calc$fmtFuncArgs,
+                                                    noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
          results[[calc$calculationName]] <- value
        }
        else if(calc$type=="calculation") {
@@ -731,7 +775,8 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
              values[[names(results)[[j]]]] <- results[[j]]$rawValue
            }
          }
-         value <- self$evaluateCalculationExpression(values=values, calculationExpression=calc$calculationExpression, format=calc$format,
+         value <- self$evaluateCalculationExpression(values=values, calculationExpression=calc$calculationExpression,
+                                                     format=calc$format, fmtFuncArgs=calc$fmtFuncArgs,
                                                      noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
          results[[calc$calculationName]] <- value
        }
@@ -742,8 +787,8 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
              values[[names(results)[[j]]]] <- results[[j]]$rawValue
            }
          }
-         value <- self$evaluateCalculateFunction(workingFilters=filters,
-                                            calculationFunction=calc$calculationFunction, format=calc$format, baseValues=values, cell=cell)
+         value <- self$evaluateCalculateFunction(workingFilters=filters, calculationFunction=calc$calculationFunction,
+                                                 format=calc$format, fmtFuncArgs=calc$fmtFuncArgs, baseValues=values, cell=cell)
          results[[calc$calculationName]] <- value
        }
        else stop(paste0("PivotCalculator$evaluateNamedCalculationWD():  Unknown calculation type encountered '", calc$type,

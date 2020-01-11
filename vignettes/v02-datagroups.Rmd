@@ -145,7 +145,11 @@ Adding data groups one-at-a-time for fine-grained control to create a pivot tabl
 
 ## Formatting data groups
 
-Each data group has two values:  A `sortValue` that is used to order the group within the set of groups.  The `sortValue` is the same data type as the variable the data group is based on.  The `caption` is the value that is displayed in the pivot table.  The data type of the `caption` is typically character.
+Each data group has two values:  
+
+* A `sortValue` that is used to order the group within the set of groups.  The `sortValue` is the same data type as the variable the data group is based on.  
+
+* A `caption` that is the value that is displayed in the pivot table.  The data type of the `caption` is typically character.
 
 In all of the examples above, the data groups are text values (i.e. are based on data frame columns of data type character).  When data groups are numerical or date/time values, then typically some form of formatting is required.  Formatting generates a caption for each data group, i.e. a more readable version of the underlying data group value.
 
@@ -225,6 +229,34 @@ pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
+
+An example of passing additional parameters to the custom formatting function using the ´dataFmtFuncArgs´ argument:
+
+```{r, message=FALSE, warning=FALSE}
+# derive the date of each train (from the arrival/dep times), then the month of each train from the date of each train
+library(dplyr)
+library(lubridate)
+library(pivottabler)
+trains <- mutate(bhmtrains, 
+   GbttDate=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+   GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
+
+# define a custom formatting function
+formatDate <- function(x, formatCode) {
+  base::format(x, format=formatCode)
+}
+
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("GbttMonth", 
+                       dataFormat=formatDate, dataFmtFuncArgs=list(formatCode="%B %Y"))
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+Note that when passing multiple arguments to the custom formatting function, the value parameter must always be named ´x´ in the custom function.
 
 ## Sorting data groups
 

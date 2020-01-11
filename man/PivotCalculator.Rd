@@ -61,9 +61,10 @@ calculating the value of a cell in a pivot table.
   PivotFilters object to a data frame, returning a new data frame.}
   \item{\code{getDistinctValues(dataFrame, variableName)}}{Gets the distinct
   values from the specified column of a data frame.}
-  \item{\code{formatValue(value, format)}}{Formats a numerical value using
+  \item{\code{formatValue(value, format, fmtFuncArgs)}}{Formats a value using
   either an sprintf string, a list of arguments for the base::format()
-  function or using a custom R function.}
+  function or using a custom R function (where fmtFuncArgs is a list of
+  additional arguments to pass to the custom format function).}
   \item{\code{getCombinedFilters = function(rowColFilters=NULL,
   calcFilters=NULL, cell=NULL)}}{Get the working filters for a calculation.}
   \item{\code{getFiltersForNamedCalculation = function(calculationName=NULL,
@@ -72,19 +73,19 @@ calculating the value of a cell in a pivot table.
   \item{\code{setWorkingData = function(cell=NULL)}}{Set the working
   filters for a cell.}
   \item{\code{evaluateSingleValue(dataFrame, workingFilters, valueName,
-  format, noDataValue, noDataCaption)}}{Get a single value from a data
-  frame.}
+  format, fmtFuncArgs, noDataValue, noDataCaption)}}{Get a single value from
+  a data frame.}
   \item{\code{evaluateSummariseExpression(dataName=NULL, dataFrame=NULL,
   workingFilters=NULL, calculationName=NULL, calculationGroupName=NULL,
   summaryName=NULL, summariseExpression=NULL, format=NULL, noDataValue=NULL,
   noDataCaption=NULL)}}{Calculate a summary value, either using a batch or
   sequential calculation.}
   \item{\code{evaluateCalculationExpression(values, calculationExpression,
-  format, noDataValue, noDataCaption)}}{Evaluates an R expression in order to
-  combine the results of other calculations.}
+  format, fmtFuncArgs, noDataValue, noDataCaption)}}{Evaluates an R
+  expression in order to combine the results of other calculations.}
   \item{\code{evaluateCalculateFunction(workingFilters, calculationFunction,
-  format, baseValues, cell)}}{Invokes a user-provided custom R function to
-  aggregate data and perform calculations.}
+  format, fmtFuncArgs, baseValues, cell)}}{Invokes a user-provided custom R
+  function to aggregate data and perform calculations.}
   \item{\code{evaluateNamedCalculationWD(calculationName,
   calculationGroupName, workingData, cell)}}{Invokes the relevant
   calculation function based upon the calculation type.}

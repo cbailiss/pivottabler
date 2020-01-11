@@ -321,9 +321,117 @@ A number of different approaches to formatting are supported:
 * If `format` is an R function, then this is invoked for each value.
 * If `format` is not specified, then `base::as.character()` is invoked to provide a default formatted value.
 
-The above are the same approaches used when formatting data groups.  Examples of the first two approaches above can be found in previous examples in this vignette.  An example of the third approach and more details can be found in the [Data Groups](v02-datagroups.html) vignette.
+The above are the same approaches used when formatting data groups.  
 
 Some formatting behaviour depends on the data type of the value being formatted.  For details see the [Appendix: Details](vA1-appendix.html) vignette. 
+
+### Formatting examples with `base::sprintf()` and `base::format()`
+
+The example below shows two different ways of formatting a value to 2dp.  The "Mean Arr. Delay 1" column below is formatted using `base::sprintf("%.2f", x)`.  The "Mean Arr. Delay 2" column below is formatted using `base::format(x, digits=2, nsmall=2)`.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+
+# derive some additional data
+trains <- mutate(bhmtrains,
+                 ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+                 ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
+
+# create the pivot table
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains", 
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MeanArrivalDelay1", caption="Mean Arr. Delay 1", 
+                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", 
+                     format="%.2f")
+pt$defineCalculation(calculationName="MeanArrivalDelay2", caption="Mean Arr. Delay 2", 
+                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", 
+                     format=list(digits=2, nsmall=2))
+pt$renderPivot()
+```
+
+### Formatting examples with custom R function
+
+Using a custom R format function allows bespoke formatting logic to be used.  In following (contrived) example, "Mean Arr. Delay 2" includes a descriptive prefix that shows whether a number is less than, roughly equal to or greater than 3. 
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+
+# derive some additional data
+trains <- mutate(bhmtrains,
+                 ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+                 ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
+
+# custom format function
+fmtAddComment <- function(x) {
+  formattedNumber <- sprintf("%.1f", x)
+  comment <- "-"
+  if (x < 2.95) comment <- "Below 3:  "
+  else if ((2.95 <= x) && (x < 3.05)) comment <- "Equals 3:  "
+  else if (x >= 3.05) comment <- "Over 3:  "
+  return(paste0(comment, " ", formattedNumber))
+}
+
+# create the pivot table
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains", 
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MeanArrivalDelay1", 
+                     caption="Mean Arr. Delay 1", 
+                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", 
+                     format="%.1f")
+pt$defineCalculation(calculationName="MeanArrivalDelay2", 
+                     caption="Mean Arr. Delay 2", 
+                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", 
+                     format=fmtAddComment)
+pt$renderPivot()
+```
+
+Using the `fmtFuncArgs` argument it is also possible to pass additional arguments to a custom R function used for formatting.  When passing multiple arguments to the custom R function, the cell value is always passed to the custom function as `x`.  In the example below, the number of decimal places is specified using the `fmtFuncArgs` argument:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+
+# derive some additional data
+trains <- mutate(bhmtrains,
+                 ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+                 ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
+
+# custom format function
+fmtNumDP <- function(x, numDP) {
+  formatCode <- paste0("%.", numDP, "f")
+  formattedNumber <- sprintf(formatCode, x)
+  return(formattedNumber)
+}
+
+# create the pivot table
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains", 
+                     summariseExpression="n()")
+
+# define calculations
+# note the use of the same custom format function (fmtNumDP) 
+# but specifying different decimal places
+pt$defineCalculation(calculationName="MeanArrivalDelay1", caption="Mean Arr. Delay 1", 
+                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", 
+                     format=fmtNumDP, fmtFuncArgs=list(numDP=1))
+pt$defineCalculation(calculationName="MeanArrivalDelay2", caption="Mean Arr. Delay 2", 
+                     summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", 
+                     format=fmtNumDP, fmtFuncArgs=list(numDP=2))
+pt$renderPivot()
+```
 
 ## Empty cells
 
