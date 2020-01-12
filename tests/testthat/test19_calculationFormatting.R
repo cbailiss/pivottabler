@@ -83,11 +83,11 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
                        ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta))
 
       # create the pivot table
-      pt <- PivotTable$new()
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
       pt$addData(trains)
       pt$addRowDataGroups("TOC", totalCaption="All TOCs")
       pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains",
-                           summariseExpression="n()")
+                           summariseExpression=countFunction)
       pt$defineCalculation(calculationName="MeanArrivalDelay1", caption="Mean Arr. Delay 1",
                            summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", format="%.2f")
       pt$defineCalculation(calculationName="MeanArrivalDelay2", caption="Mean Arr. Delay 2",
@@ -136,11 +136,11 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
       }
 
       # create the pivot table
-      pt <- PivotTable$new()
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
       pt$addData(trains)
       pt$addRowDataGroups("TOC", totalCaption="All TOCs")
       pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains",
-                           summariseExpression="n()")
+                           summariseExpression=countFunction)
       pt$defineCalculation(calculationName="MeanArrivalDelay1", caption="Mean Arr. Delay 1",
                            summariseExpression="mean(ArrivalDelay, na.rm=TRUE)", format="%.1f")
       pt$defineCalculation(calculationName="MeanArrivalDelay2", caption="Mean Arr. Delay 2",
@@ -186,11 +186,11 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
       }
 
       # create the pivot table
-      pt <- PivotTable$new()
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
       pt$addData(trains)
       pt$addRowDataGroups("TOC", totalCaption="All TOCs")
       pt$defineCalculation(calculationName="TotalTrains", caption="Total Trains",
-                           summariseExpression="n()")
+                           summariseExpression=countFunction)
 
       # define calculations - note the use of the same custom format function (fmtNumDP) but specifying different decimal places
       pt$defineCalculation(calculationName="MeanArrivalDelay1", caption="Mean Arr. Delay 1",

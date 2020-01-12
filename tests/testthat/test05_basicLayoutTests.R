@@ -585,7 +585,7 @@ for(i in 1:nrow(scenarios)) {
                     X11Qty=c(1, 2, 3), X12Qty=c(1, 2, 3))
 
     # create the pivot table
-    pt <- PivotTable$new()
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
     pt$addData(d)
     pt$addRowDataGroups("a")
     pt$addColumnDataGroups("b")

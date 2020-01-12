@@ -196,12 +196,12 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
         base::format(x, format="%B %Y")
       }
 
-      pt <- PivotTable$new()
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
       pt$addData(trains)
       pt$addColumnDataGroups("GbttMonth", dataFormat=formatDate)
       pt$addColumnDataGroups("PowerType")
       pt$addRowDataGroups("TOC")
-      pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+      pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
       pt$evaluatePivot()
       # pt$renderPivot()
       # sum(pt$cells$asMatrix(), na.rm=TRUE)
@@ -237,12 +237,12 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
         base::format(x, format=formatCode)
       }
 
-      pt <- PivotTable$new()
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
       pt$addData(trains)
       pt$addColumnDataGroups("GbttMonth", dataFormat=formatDate, dataFmtFuncArgs=list(formatCode="%B %Y"))
       pt$addColumnDataGroups("PowerType")
       pt$addRowDataGroups("TOC")
-      pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+      pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
       pt$evaluatePivot()
       # pt$renderPivot()
       # sum(pt$cells$asMatrix(), na.rm=TRUE)
