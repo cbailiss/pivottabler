@@ -242,101 +242,10 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
          }
        }
        # render the cell values
-       for(c in 1:columnCount) {
-         cell <- private$p_parentPivot$cells$getCell(r, c)
-         if(cell$isTotal) cssCell <- totalStyle
-         else cssCell <- cellStyle
-         if(!is.null(cell$baseStyleName)) cssCell <- paste0(styleNamePrefix, cell$baseStyleName)
-         cllstyl <- NULL
-         if(!is.null(cell$style)) cllstyl <- cell$style$asCSSRule()
-         detail <- list()
-         if(includeRCFilters|includeCalculationFilters|includeWorkingData|includeEvaluationFilters|includeCalculationNames|includeRawValue)
-         {
-           if(includeRawValue) {
-             detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", paste0("raw value = ", cell$rawValue))
-           }
-           if(includeRCFilters) {
-             lst <- NULL
-             if(is.null(cell$rowColFilters)) { lst <- "No RC filters" }
-             else {
-               lst <- list()
-               if(cell$rowColFilters$count > 0) {
-                 for(i in 1:cell$rowColFilters$count){
-                   lst[[length(lst)+1]] <- htmltools::tags$li(cell$rowColFilters$filters[[i]]$asString(seperator=", "))
-                 }
-               }
-             }
-             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "RC Filters: "),
-                                                htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
-           }
-           if(includeCalculationNames) {
-             cstr <- paste0("Calc: ",  cell$calculationGroupName, ": ", cell$calculationName)
-             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", cstr))
-           }
-           if(includeCalculationFilters) {
-             lst <- NULL
-             if(is.null(cell$calculationFilters)) { lst <- "No calculation filters" }
-             else {
-               lst <- list()
-               if("PivotFilters" %in% class(cell$calculationFilters)) {
-                 if(cell$calculationFilters$count > 0) {
-                   for(i in 1:cell$calculationFilters$count){
-                     lst[[length(lst)+1]] <- htmltools::tags$li(cell$calculationFilters$filters[[i]]$asString(seperator=", "))
-                   }
-                 }
-               }
-               else if("PivotFilterOverrides" %in% class(cell$calculationFilters)) {
-                 if(length(cell$calculationFilters) > 0) {
-                   lst[[length(lst)+1]] <- htmltools::tags$li(cell$calculationFilters$asString(seperator=", "))
-                 }
-               }
-             }
-             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Calc. Filters: "),
-                                                htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
-           }
-           if(includeWorkingData) {
-             if(length(cell$workingData)>0) {
-               wdNames <- names(cell$workingData)
-               for(w in 1:length(cell$workingData)) {
-                 wd <- cell$workingData[[w]]
-                 if(is.null(wd)) next
-                 lst <- list()
-                 if(is.null(wd$batchName)) lst[[length(lst)+1]] <- htmltools::tags$li("No batch")
-                 else {
-                   lst[[length(lst)+1]] <- htmltools::tags$li(paste0("Batch = ", wd$batchName))
-                 }
-                 if(is.null(wd$workingFilters)) { lst[[length(lst)+1]] <- htmltools::tags$li("No working filters") }
-                 else {
-                   if(wd$workingFilters$count > 0) {
-                     for(i in 1:wd$workingFilters$count){
-                       lst[[length(lst)+1]] <- htmltools::tags$li(wd$workingFilters$filters[[i]]$asString(seperator=", "))
-                     }
-                   }
-                 }
-                 detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;",
-                                                                      paste0("Working Data for ", wdNames[w], ":")),
-                                                    htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
-               }
-             }
-           }
-           if(includeEvaluationFilters) {
-             lst <- NULL
-             if(is.null(cell$evaluationFilters)) { lst <- "No evaluation filters" }
-             else {
-               lst <- list()
-               if(cell$evaluationFilters$count > 0) {
-                 for(i in 1:cell$evaluationFilters$count){
-                   lst[[length(lst)+1]] <- htmltools::tags$li(cell$evaluationFilters$filters[[i]]$asString(seperator=", "))
-                 }
-               }
-             }
-             detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Eval. Filters: "),
-                                                htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
-           }
-           trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, htmltools::tags$p(exportValueAs(cell$rawValue, cell$formattedValue, exportOptions, blankValue="")), detail) # todo: check escaping
-         }
-         else { trow[[length(trow)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, exportValueAs(cell$rawValue, cell$formattedValue, exportOptions, blankValue="")) } # todo: check escaping
-       }
+       trowcells <- private$getCellsInRowHtml(r=r, columnCount=columnCount, exportOptions=exportOptions, styleNamePrefix=styleNamePrefix, cellStyle=cellStyle, totalStyle=totalStyle,
+                                      includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters, includeWorkingData=includeWorkingData,
+                                      includeEvaluationFilters=includeEvaluationFilters, includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
+       trow <- append(trow, trowcells)
        # finished this row
        trows[[length(trows)+1]] <- htmltools::tags$tr(trow)
      }
@@ -346,6 +255,122 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
    }
   ),
   private = list(
-    p_parentPivot = NULL
+    p_parentPivot = NULL,
+    getCellsInRowHtml = function(r=NULL, columnCount=NULL, exportOptions=NULL, styleNamePrefix=NULL, cellStyle=NULL, totalStyle=NULL,
+                                 includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeWorkingData=FALSE, includeEvaluationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE) {
+       if(private$p_parentPivot$argumentCheckMode > 0) {
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", columnCount, missing(columnCount), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", exportOptions, missing(exportOptions), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", styleNamePrefix, missing(styleNamePrefix), allowMissing=FALSE, allowNull=TRUE, allowedClasses="character")
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", cellStyle, missing(cellStyle), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", totalStyle, missing(totalStyle), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", includeRCFilters, missing(includeRCFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", includeCalculationFilters, missing(includeCalculationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", includeWorkingData, missing(includeWorkingData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", includeEvaluationFilters, missing(includeEvaluationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", includeCalculationNames, missing(includeCalculationNames), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", includeRawValue, missing(includeRawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       }
+       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$getCellsInRowHtml", "Getting row cells HTML...")
+       trowcells <- list()
+       for(c in 1:columnCount) {
+          cell <- private$p_parentPivot$cells$getCell(r, c)
+          if(cell$isTotal) cssCell <- totalStyle
+          else cssCell <- cellStyle
+          if(!is.null(cell$baseStyleName)) cssCell <- paste0(styleNamePrefix, cell$baseStyleName)
+          cllstyl <- NULL
+          if(!is.null(cell$style)) cllstyl <- cell$style$asCSSRule()
+          detail <- list()
+          if(includeRCFilters|includeCalculationFilters|includeWorkingData|includeEvaluationFilters|includeCalculationNames|includeRawValue)
+          {
+             if(includeRawValue) {
+                detail[[length(detail)+1]] <- htmltools::tags$p(style="text-align: left; font-size: 75%;", paste0("raw value = ", cell$rawValue))
+             }
+             if(includeRCFilters) {
+                lst <- NULL
+                if(is.null(cell$rowColFilters)) { lst <- "No RC filters" }
+                else {
+                   lst <- list()
+                   if(cell$rowColFilters$count > 0) {
+                      for(i in 1:cell$rowColFilters$count){
+                         lst[[length(lst)+1]] <- htmltools::tags$li(cell$rowColFilters$filters[[i]]$asString(seperator=", "))
+                      }
+                   }
+                }
+                detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "RC Filters: "),
+                                                   htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
+             }
+             if(includeCalculationNames) {
+                cstr <- paste0("Calc: ",  cell$calculationGroupName, ": ", cell$calculationName)
+                detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", cstr))
+             }
+             if(includeCalculationFilters) {
+                lst <- NULL
+                if(is.null(cell$calculationFilters)) { lst <- "No calculation filters" }
+                else {
+                   lst <- list()
+                   if("PivotFilters" %in% class(cell$calculationFilters)) {
+                      if(cell$calculationFilters$count > 0) {
+                         for(i in 1:cell$calculationFilters$count){
+                            lst[[length(lst)+1]] <- htmltools::tags$li(cell$calculationFilters$filters[[i]]$asString(seperator=", "))
+                         }
+                      }
+                   }
+                   else if("PivotFilterOverrides" %in% class(cell$calculationFilters)) {
+                      if(length(cell$calculationFilters) > 0) {
+                         lst[[length(lst)+1]] <- htmltools::tags$li(cell$calculationFilters$asString(seperator=", "))
+                      }
+                   }
+                }
+                detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Calc. Filters: "),
+                                                   htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
+             }
+             if(includeWorkingData) {
+                if(length(cell$workingData)>0) {
+                   wdNames <- names(cell$workingData)
+                   for(w in 1:length(cell$workingData)) {
+                      wd <- cell$workingData[[w]]
+                      if(is.null(wd)) next
+                      lst <- list()
+                      if(is.null(wd$batchName)) lst[[length(lst)+1]] <- htmltools::tags$li("No batch")
+                      else {
+                         lst[[length(lst)+1]] <- htmltools::tags$li(paste0("Batch = ", wd$batchName))
+                      }
+                      if(is.null(wd$workingFilters)) { lst[[length(lst)+1]] <- htmltools::tags$li("No working filters") }
+                      else {
+                         if(wd$workingFilters$count > 0) {
+                            for(i in 1:wd$workingFilters$count){
+                               lst[[length(lst)+1]] <- htmltools::tags$li(wd$workingFilters$filters[[i]]$asString(seperator=", "))
+                            }
+                         }
+                      }
+                      detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;",
+                                                                           paste0("Working Data for ", wdNames[w], ":")),
+                                                         htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
+                   }
+                }
+             }
+             if(includeEvaluationFilters) {
+                lst <- NULL
+                if(is.null(cell$evaluationFilters)) { lst <- "No evaluation filters" }
+                else {
+                   lst <- list()
+                   if(cell$evaluationFilters$count > 0) {
+                      for(i in 1:cell$evaluationFilters$count){
+                         lst[[length(lst)+1]] <- htmltools::tags$li(cell$evaluationFilters$filters[[i]]$asString(seperator=", "))
+                      }
+                   }
+                }
+                detail[[length(detail)+1]] <- list(htmltools::tags$p(style="text-align: left; font-size: 75%;", "Eval. Filters: "),
+                                                   htmltools::tags$ul(style="text-align: left; font-size: 75%; padding-left: 1em;", lst))
+             }
+             trowcells[[length(trowcells)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, htmltools::tags$p(exportValueAs(cell$rawValue, cell$formattedValue, exportOptions, blankValue="")), detail) # todo: check escaping
+          }
+          else { trowcells[[length(trowcells)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, exportValueAs(cell$rawValue, cell$formattedValue, exportOptions, blankValue="")) } # todo: check escaping
+       }
+       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$getCellsInRowHtml", "Got row cells HTML.")
+       return(invisible(trowcells))
+    }
   )
 )
