@@ -350,7 +350,7 @@ This can be useful when building a pivot table interactively, to quickly reset t
 
 ## Pivot tables as standard tables (row group headings)
 
-It is possible to make a pivot table appear more like a standard table by adding headings to the row group columns at the left of the table.  To do this, specify the `header` argument in `addRowDataGroups()` and specify `showRowGroupHeaders=TRUE` in `renderPivot()`.
+It is possible to make a pivot table appear more like a standard table by adding headings to the row group columns at the left of the table.  To do this, specify the `header` argument in `addRowDataGroups()` and specify `showRowGroupHeaders=TRUE` in `renderPivot()`, `getHtml()`, `saveHtml()` or `writeToWorksheet()`.  (Note this is currently not supported for Latex output).
 
 ```{r, message=FALSE, warning=FALSE}
 library(dplyr)
