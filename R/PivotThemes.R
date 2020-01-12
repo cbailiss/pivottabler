@@ -59,8 +59,8 @@ getDefaultTheme <- function(parentPivot, themeName="default") {
   if(R6::is.R6Class(parentPivot)&&(parentPivot$classname=="PivotTable")) argumentCheckMode <- parentPivot$argumentCheckMode
   else argumentCheckMode <- 4
   if(argumentCheckMode > 0) {
-    checkArgument(argumentCheckMode, TRUE, "", "getPlainTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
-    checkArgument(argumentCheckMode, TRUE, "", "getPlainTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+    checkArgument(argumentCheckMode, TRUE, "", "getDefaultTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+    checkArgument(argumentCheckMode, TRUE, "", "getDefaultTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
   }
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
@@ -111,6 +111,82 @@ getDefaultTheme <- function(parentPivot, themeName="default") {
   pivotStyles$rowHeaderStyle <- "RowHeader"
   pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
+  pivotStyles$totalStyle <- ifelse(isTRUE(parentPivot$compatibility$totalStyleIsCellStyle), "Cell", "Total")
+  return(invisible(pivotStyles))
+}
+
+#' Get the a theme for styling to a pivot table that looks more like a standard table (i.e. no row column headings).
+#'
+#' @export
+#' @param parentPivot Owning pivot table.
+#' @param themeName The name to use as the new theme name.
+#' @return A PivotStyles object.
+getStandardTableTheme <- function(parentPivot, themeName="standardtable") {
+  if(R6::is.R6Class(parentPivot)&&(parentPivot$classname=="PivotTable")) argumentCheckMode <- parentPivot$argumentCheckMode
+  else argumentCheckMode <- 4
+  if(argumentCheckMode > 0) {
+    checkArgument(argumentCheckMode, TRUE, "", "getStandardTableTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
+    checkArgument(argumentCheckMode, TRUE, "", "getStandardTableTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+  }
+  pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
+  pivotStyles$addStyle(styleName="Table", list(
+    "border-collapse"="collapse"
+  ))
+  pivotStyles$addStyle(styleName="LeftColumnHeader", list(
+    "font-family"="Arial",
+    "font-size"="0.75em",
+    padding="2px",
+    border="1px solid lightgray",
+    "vertical-align"="middle",
+    "text-align"="left",
+    "font-weight"="bold",
+    "background-color"="#F2F2F2",
+    "xl-wrap-text"="wrap"
+  ))
+  pivotStyles$addStyle(styleName="CentreColumnHeader", list(
+    "font-family"="Arial",
+    "font-size"="0.75em",
+    padding="2px",
+    border="1px solid lightgray",
+    "vertical-align"="middle",
+    "text-align"="center",
+    "font-weight"="bold",
+    "background-color"="#F2F2F2",
+    "xl-wrap-text"="wrap"
+  ))
+  pivotStyles$addStyle(styleName="LeftCell", list(
+    "font-family"="Arial",
+    "font-size"="0.75em",
+    padding="2px 8px 2px 2px",
+    border="1px solid lightgray",
+    "vertical-align"="middle",
+    "text-align"="left",
+    "font-weight"="normal",
+    "xl-wrap-text"="wrap"
+  ))
+  pivotStyles$addStyle(styleName="RightCell", list(
+    "font-family"="Arial",
+    "font-size"="0.75em",
+    padding="2px 2px 2px 8px",
+    border="1px solid lightgray",
+    "vertical-align"="middle",
+    "text-align"="right"
+  ))
+  if(!isTRUE(parentPivot$compatibility$totalStyleIsCellStyle)) {
+    pivotStyles$addStyle(styleName="Total", list(
+      "font-family"="Arial",
+      "font-size"="0.75em",
+      padding="2px 2px 2px 8px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "text-align"="right"
+    ))
+  }
+  pivotStyles$tableStyle <- "Table"
+  pivotStyles$rootStyle <- "LeftColumnHeader"
+  pivotStyles$rowHeaderStyle <- "LeftCell"
+  pivotStyles$colHeaderStyle <- "CentreColumnHeader"
+  pivotStyles$cellStyle <- "RightCell"
   pivotStyles$totalStyle <- ifelse(isTRUE(parentPivot$compatibility$totalStyleIsCellStyle), "Cell", "Total")
   return(invisible(pivotStyles))
 }

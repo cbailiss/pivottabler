@@ -19,6 +19,7 @@ vignette: >
     + More complex layouts of data groups
 * Formatting data groups
 * Sorting data groups
+* Pivot tables as standard tables (row group headings)
 
 ## Data Group Terminology
 
@@ -230,7 +231,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-An example of passing additional parameters to the custom formatting function using the ´dataFmtFuncArgs´ argument:
+An example of passing additional parameters to the custom formatting function using the `dataFmtFuncArgs` argument:
 
 ```{r, message=FALSE, warning=FALSE}
 # derive the date of each train (from the arrival/dep times), then the month of each train from the date of each train
@@ -256,7 +257,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-Note that when passing multiple arguments to the custom formatting function, the value parameter must always be named ´x´ in the custom function.
+Note that when passing multiple arguments to the custom formatting function, the value parameter must always be named `x` in the custom function.
 
 ## Sorting data groups
 
@@ -346,6 +347,53 @@ pt$renderPivot()
 ```
 
 This can be useful when building a pivot table interactively, to quickly reset the sort order without needing to rebuild the entire pivot table. 
+
+## Pivot tables as standard tables (row group headings)
+
+It is possible to make a pivot table appear more like a standard table by adding headings to the row group columns at the left of the table.  To do this, specify the `header` argument in `addRowDataGroups()` and specify `showRowGroupHeaders=TRUE` in `renderPivot()`.
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(lubridate)
+library(pivottabler)
+trains <- mutate(bhmtrains, 
+                 GbttDate=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                 GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
+trains <- filter(trains, GbttMonth>=make_date(year=2017, month=1, day=1))
+
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC", header="Train Company")
+pt$addRowDataGroups("TrainCategory", header="Train Category")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot(showRowGroupHeaders=TRUE)
+```
+
+This can be taken a step further by switching off totals for the row data groups and using a different table theme which styles the row data groups to match the cells in the body of the pivot table.
+
+```{r, message=FALSE, warning=FALSE}
+# derive the date of each train (from the arrival/dep times),
+# then the month of each train from the date of each train
+library(dplyr)
+library(lubridate)
+library(pivottabler)
+trains <- mutate(bhmtrains, 
+                 GbttDate=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                 GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
+trains <- filter(trains, GbttMonth>=make_date(year=2017, month=1, day=1))
+
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC", header="Train Company", addTotal=FALSE)
+pt$addRowDataGroups("TrainCategory", header="Train Category", addTotal=FALSE)
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$theme <- getStandardTableTheme(pt)
+pt$renderPivot(showRowGroupHeaders=TRUE)
+```
 
 ## Further Reading
 

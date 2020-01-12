@@ -9,8 +9,8 @@ This release ....
 Improvements
 ----------------
 
-* Additional arguments can now be passed to custom functions used to format calculation values.  See the ´fmtFuncArgs´ parameter in the "Calculations" vignette for details.
-* Additional arguments can now be passed to custom functions used to format data group values.  See the ´fmtFuncArgs´ parameter in the "Data Groups" vignette for details.
+* Additional arguments can now be passed to custom functions used to format calculation values.  See the `fmtFuncArgs` parameter in the "Calculations" vignette for details.
+* Additional arguments can now be passed to custom functions used to format data group values.  See the `fmtFuncArgs` parameter in the "Data Groups" vignette for details.
 
 
 pivottabler 1.2.3
