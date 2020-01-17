@@ -5,9 +5,6 @@
 \alias{PivotFilterOverrides}
 \title{A class that defines a set of filter overrides}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotFilterOverrides
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that
   define a set of filters and associated override actions
@@ -90,4 +87,3 @@ filter <- PivotFilter$new(pt, variableName="Country", values="England")
 # Add the filter to the set of overrides
 filterOverrides$add(filter=filter, action="replace")
 }
-\keyword{datasets}

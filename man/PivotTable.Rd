@@ -5,9 +5,6 @@
 \alias{PivotTable}
 \title{A class that defines a pivot table.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotTable
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that
   define a pivot table.
@@ -189,6 +186,10 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   includeGroupValues=TRUE, separator=" ")}}{Gets the pivot table as a tidy
   data frame, where each cell in the body of the pivot table becomes one row
   in the data frame.}
+  \item{\code{asBasicTable = function(exportOptions=NULL, compatibility=NULL,
+  showRowGroupHeaders=FALSE))}}{Generates a basictabler table (from the
+  basictabler R package) which allows further custom manipulation of the
+  pivot table.}
   \item{\code{getCss(styleNamePrefix)}}{Get the CSS declarations for the
   entire pivot table.}
   \item{\code{getHtml(styleNamePrefix, includeHeaderValues=FALSE,
@@ -246,4 +247,3 @@ pt$defineCalculation(calculationName="TotalTrains",
 summariseExpression="n()")
 pt$renderPivot()
 }
-\keyword{datasets}

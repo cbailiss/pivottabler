@@ -4,9 +4,19 @@
 \alias{qhpvt}
 \title{Quickly render a basic pivot table in HTML.}
 \usage{
-qhpvt(dataFrame, rows = NULL, columns = NULL, calculations = NULL,
-  theme = NULL, replaceExistingStyles = FALSE, tableStyle = NULL,
-  headingStyle = NULL, cellStyle = NULL, totalStyle = NULL, ...)
+qhpvt(
+  dataFrame,
+  rows = NULL,
+  columns = NULL,
+  calculations = NULL,
+  theme = NULL,
+  replaceExistingStyles = FALSE,
+  tableStyle = NULL,
+  headingStyle = NULL,
+  cellStyle = NULL,
+  totalStyle = NULL,
+  ...
+)
 }
 \arguments{
 \item{dataFrame}{The data frame containing the data to be summarised in the

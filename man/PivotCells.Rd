@@ -5,9 +5,6 @@
 \alias{PivotCells}
 \title{A class that contains the cells from a pivot table.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotCells
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods relating
   to the cells of a pivot table.
@@ -62,4 +59,3 @@ in the pivot table.}
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{datasets}

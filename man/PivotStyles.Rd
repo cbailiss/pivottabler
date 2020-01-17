@@ -5,9 +5,6 @@
 \alias{PivotStyles}
 \title{A class that defines a collection of styles.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotStyles
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that
   define styles/a theme for a pivot table.
@@ -84,4 +81,3 @@ pivotStyles$addStyle(styleName="MyNewStyle", list(
     "background-color"="#F2F2F2"
   ))
 }
-\keyword{datasets}

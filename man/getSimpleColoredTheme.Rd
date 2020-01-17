@@ -4,8 +4,12 @@
 \alias{getSimpleColoredTheme}
 \title{Get a simple coloured theme.}
 \usage{
-getSimpleColoredTheme(parentPivot, themeName = "coloredTheme", colors,
-  fontName)
+getSimpleColoredTheme(
+  parentPivot,
+  themeName = "coloredTheme",
+  colors,
+  fontName
+)
 }
 \arguments{
 \item{parentPivot}{Owning pivot table.}

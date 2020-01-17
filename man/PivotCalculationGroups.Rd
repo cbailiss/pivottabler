@@ -5,9 +5,6 @@
 \alias{PivotCalculationGroups}
 \title{A class that contains multiple calculation groups.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotCalculationGroups
-}
 \value{
 Object of \code{\link{R6Class}}.
 }
@@ -48,4 +45,3 @@ pivot table.
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{datasets}

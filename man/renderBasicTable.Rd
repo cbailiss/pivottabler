@@ -4,8 +4,7 @@
 \alias{renderBasicTable}
 \title{Output a table into a package vignette.}
 \usage{
-renderBasicTable(matrix = NULL, stylePrefix = NULL,
-  rowNamesAsHeader = FALSE)
+renderBasicTable(matrix = NULL, stylePrefix = NULL, rowNamesAsHeader = FALSE)
 }
 \arguments{
 \item{matrix}{Tabular data to render.}

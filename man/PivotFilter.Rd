@@ -5,9 +5,6 @@
 \alias{PivotFilter}
 \title{A class that defines a filter condition.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotFilter
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that
   define a single pivot table filter.
@@ -64,4 +61,3 @@ pt <- PivotTable$new()
 # ...
 PivotFilter$new(pt, variableName="Country", values="England")
 }
-\keyword{datasets}

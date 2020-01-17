@@ -5,9 +5,6 @@
 \alias{PivotCalculator}
 \title{A class that computes the value of a cell.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotCalculator
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that help
   calculate the value of a pivot table cell.
@@ -102,4 +99,3 @@ calculating the value of a cell in a pivot table.
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{datasets}

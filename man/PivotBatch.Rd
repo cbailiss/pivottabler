@@ -5,9 +5,6 @@
 \alias{PivotBatch}
 \title{A class that represents a batch calculation.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotBatch
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that help
   to (do xyz).
@@ -57,4 +54,3 @@ that are needed when calculating the values of cells in a pivot table.
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{datasets}

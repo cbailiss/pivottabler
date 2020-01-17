@@ -5,9 +5,6 @@
 \alias{PivotOpenXlsxStyle}
 \title{A class that specifies Excel styling as used by the openxlsx package.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotOpenXlsxStyle
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that help
   define styles.
@@ -112,4 +109,3 @@ etc.}
 # PivotOpenXlsxStyle objects are created by the PivotOpenXlsxRenderer class.
 # See that class for details.
 }
-\keyword{datasets}

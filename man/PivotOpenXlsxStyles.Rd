@@ -6,9 +6,6 @@
 \title{A class that defines a collection of Excel styles as used by the openxlsx
 package.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotOpenXlsxStyles
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that
   define styles/a theme for a pivot table.
@@ -48,4 +45,3 @@ objects.
 \examples{
 # This class is used internally by the Pivot Table.
 }
-\keyword{datasets}

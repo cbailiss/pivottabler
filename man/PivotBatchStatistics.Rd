@@ -5,9 +5,6 @@
 \alias{PivotBatchStatistics}
 \title{A class that provides summary statistics for batch calculations.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotBatchStatistics
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that help
   to (do xyz).
@@ -42,4 +39,3 @@ track how many calculations are batch compatible/incompatible.
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{datasets}

@@ -5,9 +5,6 @@
 \alias{PivotStyle}
 \title{A class that specifies styling.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotStyle
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that help
   define styles.
@@ -57,4 +54,3 @@ name-value pairs.
 # methods.
 # For an example, see the PivotStyles class.
 }
-\keyword{datasets}

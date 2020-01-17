@@ -4,10 +4,18 @@
 \alias{pivottabler}
 \title{Render a pivot table as a HTML widget.}
 \usage{
-pivottabler(pt, width = NULL, height = NULL, styleNamePrefix = NULL,
-  includeRCFilters = FALSE, includeCalculationFilters = FALSE,
-  includeWorkingData = FALSE, includeEvaluationFilters = FALSE,
-  includeCalculationNames = FALSE, includeRawValue = FALSE)
+pivottabler(
+  pt,
+  width = NULL,
+  height = NULL,
+  styleNamePrefix = NULL,
+  includeRCFilters = FALSE,
+  includeCalculationFilters = FALSE,
+  includeWorkingData = FALSE,
+  includeEvaluationFilters = FALSE,
+  includeCalculationNames = FALSE,
+  includeRawValue = FALSE
+)
 }
 \arguments{
 \item{pt}{The pivot table to render.}

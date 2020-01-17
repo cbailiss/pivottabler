@@ -5,9 +5,6 @@
 \alias{PivotData}
 \title{A class that contains named data frames.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotData
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that help
   quickly storing and retrieving data frames.
@@ -48,4 +45,3 @@ table.
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{datasets}

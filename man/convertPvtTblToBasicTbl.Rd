@@ -4,8 +4,12 @@
 \alias{convertPvtTblToBasicTbl}
 \title{Convert a pivot table to a basic table.}
 \usage{
-convertPvtTblToBasicTbl(pvt = NULL, exportOptions = NULL,
-  compatibility = NULL)
+convertPvtTblToBasicTbl(
+  pvt = NULL,
+  exportOptions = NULL,
+  compatibility = NULL,
+  showRowGroupHeaders = FALSE
+)
 }
 \arguments{
 \item{pvt}{The pivot table to convert.}
@@ -14,6 +18,9 @@ convertPvtTblToBasicTbl(pvt = NULL, exportOptions = NULL,
 
 \item{compatibility}{Compatibility options specified when creating the
 basictabler table.}
+
+\item{showRowGroupHeaders}{Show captions at the top of the columns that
+comprise the row groups (i.e. in the top left root of then pivot table).}
 }
 \value{
 a basictabler table.

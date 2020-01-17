@@ -5,9 +5,6 @@
 \alias{PivotOpenXlsxRenderer}
 \title{A class that renders a pivot table into an Excel worksheet.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotOpenXlsxRenderer
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that
   render to Excel via the openxlsx package
@@ -46,4 +43,3 @@ The PivotOpenXlsxRenderer class creates a representation of a pivot table in an 
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{datasets}

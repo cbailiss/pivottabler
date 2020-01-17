@@ -5,9 +5,6 @@
 \alias{PivotFilters}
 \title{A class that defines a set of filter conditions}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotFilters
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that
   define a set of filter conditions.
@@ -89,4 +86,3 @@ filters$setFilterValues(variableName="Product", values="Cadbury Dairy Milk
 Chocolate 100g")
 # filters now contains criteria for Year, Country and Product
 }
-\keyword{datasets}

@@ -4,8 +4,12 @@
 \alias{exportValueAs}
 \title{Replace the current value with a placeholder during export.}
 \usage{
-exportValueAs(rawValue, formattedValue, exportOptions,
-  blankValue = character(0))
+exportValueAs(
+  rawValue,
+  formattedValue,
+  exportOptions,
+  blankValue = character(0)
+)
 }
 \arguments{
 \item{rawValue}{The raw value to check.}

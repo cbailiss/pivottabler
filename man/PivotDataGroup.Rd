@@ -5,9 +5,6 @@
 \alias{PivotDataGroup}
 \title{A class that defines a row or column heading.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotDataGroup
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that help
   define the row and column headings in a pivot table.
@@ -146,4 +143,3 @@ group (used as part of the rendering routines).}
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{datasets}

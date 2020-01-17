@@ -4,9 +4,19 @@
 \alias{qpvt}
 \title{Quickly build a basic pivot table.}
 \usage{
-qpvt(dataFrame, rows = NULL, columns = NULL, calculations = NULL,
-  theme = NULL, replaceExistingStyles = FALSE, tableStyle = NULL,
-  headingStyle = NULL, cellStyle = NULL, totalStyle = NULL, ...)
+qpvt(
+  dataFrame,
+  rows = NULL,
+  columns = NULL,
+  calculations = NULL,
+  theme = NULL,
+  replaceExistingStyles = FALSE,
+  tableStyle = NULL,
+  headingStyle = NULL,
+  cellStyle = NULL,
+  totalStyle = NULL,
+  ...
+)
 }
 \arguments{
 \item{dataFrame}{The data frame containing the data to be summarised in the

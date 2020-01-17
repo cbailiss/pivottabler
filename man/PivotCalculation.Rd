@@ -5,9 +5,6 @@
 \alias{PivotCalculation}
 \title{A class that defines a calculation.}
 \format{\code{\link{R6Class}} object.}
-\usage{
-PivotCalculation
-}
 \value{
 Object of \code{\link{R6Class}} with properties and methods that
   define a single pivot table calculation.
@@ -88,4 +85,3 @@ table if no  data exists for a particular cell.}
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
-\keyword{datasets}
