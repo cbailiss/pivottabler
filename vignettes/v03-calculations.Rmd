@@ -354,6 +354,24 @@ pt$defineCalculation(calculationName="MeanArrivalDelay2", caption="Mean Arr. Del
 pt$renderPivot()
 ```
 
+In some countries around the world, the thousand separator character is "." and the decimal separator character is "," (i.e. the opposite to countries such as the UK and USA).  This can be accomplished in `pivottabler` using:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory", totalCaption="All Categories")
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="Value1", caption="Value 1", 
+                     summariseExpression="mean(SchedSpeedMPH, na.rm=TRUE)*33.33333",
+                     format=list(digits=1, nsmall=0, big.mark=".", decimal.mark=","))
+pt$defineCalculation(calculationName="Value2", caption="Value 2", 
+                     summariseExpression="sd(SchedSpeedMPH,na.rm=TRUE)*333.33333",
+                     format=list(digits=1, nsmall=1, big.mark=".", decimal.mark=","))
+pt$renderPivot()
+```
+
 ### Formatting examples with custom R function
 
 Using a custom R format function allows bespoke formatting logic to be used.  In following (contrived) example, "Mean Arr. Delay 2" includes a descriptive prefix that shows whether a number is less than, roughly equal to or greater than 3. 
