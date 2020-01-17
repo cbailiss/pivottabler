@@ -418,14 +418,16 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          parentGroups[[1]] <- self
        }
      }
-     else if(atLevel==0) {
+     else if(atLevel<=0) {
        # immediately below this data group
        parentGroups <- list()
        parentGroups[[1]] <- self
      }
      else {
        # at some number of levels below this group
-       parentGroups <- self$getLevelGroups(level=atLevel-1)
+       levelsBelowThisLevel <- self$getLevelCount()
+       if (atLevel>levelsBelowThisLevel) atLevel <- levelsBelowThisLevel
+       parentGroups <- self$getLevelGroups(level=atLevel)
        if((is.null(parentGroups))||(length(parentGroups)==0)) {
          parentGroups <- list()
          parentGroups[[1]] <- self
