@@ -246,12 +246,12 @@ if (requireNamespace("lubridate", quietly = TRUE) &&
                        GbttDate=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
                        GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
 
-      pt <- PivotTable$new()
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
       pt$addData(trains)
       pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
       pt$addColumnDataGroups("PowerType")
       pt$addRowDataGroups("TOC")
-      pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+      pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
       pt$evaluatePivot()
 
       # convert the pivot table to a basic table, insert a new row, merge cells and highlight
@@ -328,6 +328,60 @@ if (requireNamespace("basictabler", quietly = TRUE) &&
       expect_identical(btcss, expbtcss)
       expect_identical(htmlMatch, TRUE)
       expect_identical(cssMatch, TRUE)
+    })
+  }
+}
+
+
+
+basictblrversion <- utils::packageDescription("basictabler")$Version
+if (requireNamespace("lubridate", quietly = TRUE) &&
+    requireNamespace("basictabler", quietly = TRUE) &&
+    (numeric_version(basictblrversion) >= numeric_version("0.2.0"))) {
+
+  scenarios <- testScenarios("export tests:  basictable with row group headings")
+  for(i in 1:nrow(scenarios)) {
+    evaluationMode <- scenarios$evaluationMode[i]
+    processingLibrary <- scenarios$processingLibrary[i]
+    description <- scenarios$description[i]
+    countFunction <- scenarios$countFunction[i]
+
+    test_that(description, {
+
+      library(dplyr)
+      library(lubridate)
+      library(pivottabler)
+      trains <- mutate(bhmtrains,
+                       GbttDate=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                       GbttMonth=make_date(year=year(GbttDate), month=month(GbttDate), day=1))
+      trains <- filter(trains, GbttMonth>=make_date(year=2017, month=1, day=1))
+
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+      pt$addData(trains)
+      pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+      pt$addColumnDataGroups("PowerType")
+      pt$addRowDataGroups("TOC", header="Train Company", addTotal=FALSE)
+      pt$addRowDataGroups("TrainCategory", header="Train Category", addTotal=FALSE)
+      pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+      pt$theme <- getStandardTableTheme(pt)
+      pt$evaluatePivot()
+      bt <- pt$asBasicTable(showRowGroupHeaders=TRUE)
+
+      # bt$renderTable()
+      # prepStr(as.character(bt$getHtml()))
+      # prepStr(as.character(bt$getCss()))
+
+      if (numeric_version(basictblrversion) >= numeric_version("0.3.0")) {
+        html <- "<table class=\"Table\">\n  <tr>\n    <th rowspan=\"2\" class=\"LeftColumnHeader\">Train Company</th>\n    <th rowspan=\"2\" class=\"LeftColumnHeader\">Train Category</th>\n    <th colspan=\"4\" class=\"CentreColumnHeader\">January 2017</th>\n    <th colspan=\"4\" class=\"CentreColumnHeader\">February 2017</th>\n    <th class=\"CentreColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"CentreColumnHeader\">DMU</th>\n    <th class=\"CentreColumnHeader\">EMU</th>\n    <th class=\"CentreColumnHeader\">HST</th>\n    <th class=\"CentreColumnHeader\">Total</th>\n    <th class=\"CentreColumnHeader\">DMU</th>\n    <th class=\"CentreColumnHeader\">EMU</th>\n    <th class=\"CentreColumnHeader\">HST</th>\n    <th class=\"CentreColumnHeader\">Total</th>\n    <th class=\"CentreColumnHeader\"></th>\n  </tr>\n  <tr>\n    <th rowspan=\"2\" class=\"LeftCell\">Arriva Trains Wales</th>\n    <th class=\"LeftCell\">Express Passenger</th>\n    <td class=\"RightCell\">1088</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">1088</td>\n    <td class=\"RightCell\">974</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">974</td>\n    <td class=\"Total\">2062</td>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\">Ordinary Passenger</th>\n    <td class=\"RightCell\">314</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">314</td>\n    <td class=\"RightCell\">242</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">242</td>\n    <td class=\"Total\">556</td>\n  </tr>\n  <tr>\n    <th rowspan=\"2\" class=\"LeftCell\">CrossCountry</th>\n    <th class=\"LeftCell\">Express Passenger</th>\n    <td class=\"RightCell\">7755</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"RightCell\">256</td>\n    <td class=\"Total\">8011</td>\n    <td class=\"RightCell\">7085</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"RightCell\">240</td>\n    <td class=\"Total\">7325</td>\n    <td class=\"Total\">15336</td>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\">Ordinary Passenger</th>\n    <td class=\"RightCell\">22</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">22</td>\n    <td class=\"RightCell\">20</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">20</td>\n    <td class=\"Total\">42</td>\n  </tr>\n  <tr>\n    <th rowspan=\"2\" class=\"LeftCell\">London Midland</th>\n    <th class=\"LeftCell\">Express Passenger</th>\n    <td class=\"RightCell\">1956</td>\n    <td class=\"RightCell\">3108</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">5064</td>\n    <td class=\"RightCell\">1793</td>\n    <td class=\"RightCell\">2879</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">4672</td>\n    <td class=\"Total\">9736</td>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\">Ordinary Passenger</th>\n    <td class=\"RightCell\">2011</td>\n    <td class=\"RightCell\">9954</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">11965</td>\n    <td class=\"RightCell\">1834</td>\n    <td class=\"RightCell\">9142</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">10976</td>\n    <td class=\"Total\">22941</td>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\">Virgin Trains</th>\n    <th class=\"LeftCell\">Express Passenger</th>\n    <td class=\"RightCell\">728</td>\n    <td class=\"RightCell\">2276</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">3004</td>\n    <td class=\"RightCell\">669</td>\n    <td class=\"RightCell\">2044</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">2713</td>\n    <td class=\"Total\">5717</td>\n  </tr>\n</table>"
+        css <- ".Table {border-collapse: collapse; }\r\n.LeftColumnHeader {font-family: Arial; font-size: 0.75em; padding: 2px; border: 1px solid lightgray; vertical-align: middle; text-align: left; font-weight: bold; background-color: #F2F2F2; }\r\n.CentreColumnHeader {font-family: Arial; font-size: 0.75em; padding: 2px; border: 1px solid lightgray; vertical-align: middle; text-align: center; font-weight: bold; background-color: #F2F2F2; }\r\n.LeftCell {font-family: Arial; font-size: 0.75em; padding: 2px 8px 2px 2px; border: 1px solid lightgray; vertical-align: middle; text-align: left; font-weight: normal; }\r\n.RightCell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n"
+
+        expect_identical(as.character(bt$getHtml()), html)
+        expect_identical(bt$getCss(), css)
+      }
+      else {
+        # ignore this test for versions < 0.3.0
+        expect_identical(1, 1)
+      }
     })
   }
 }

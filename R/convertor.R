@@ -36,9 +36,11 @@ getPvtStyleDeclarations <- function(pvtStyle=NULL) {
 #' @param exportOptions Options specifying how values are exported.
 #' @param compatibility Compatibility options specified when creating the
 #'   basictabler table.
+#' @param showRowGroupHeaders Show captions at the top of the columns that
+#' comprise the row groups (i.e. in the top left root of then pivot table).
 #' @return a basictabler table.
 
-convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=NULL) {
+convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=NULL, showRowGroupHeaders=FALSE) {
   # pre-reqs
   if (!requireNamespace("basictabler", quietly = TRUE)) {
     stop("convertPvtTblToBasicTbl():  The basictabler package is needed convert a pivot tabler to a basic table.  Please install the basictabler package.", call. = FALSE)
@@ -105,7 +107,23 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=
   # render the column headings, with a large blank cell at the start over the row headings
   if(insertDummyColumnHeading) {
     if(isBasicTblrZeroPt3) {
-      btbl$cells$setBlankCell(r=1, c=1, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=rowGroupLevelCount, asNBSP=TRUE)
+      if((showRowGroupHeaders==TRUE)&&(rowGroupLevelCount>0)) {
+        rowGrpHeaders <- pvt$rowGrpHeaders
+        for(c in 1:rowGroupLevelCount) {
+          rowGrpHeader <- NULL
+          if((0<c)&&(c<=length(rowGrpHeaders))) rowGrpHeader <- rowGrpHeaders[[c]]
+          if(is.null(rowGrpHeader)) {
+            btbl$cells$setBlankCell(r=1, c=c, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=1, asNBSP=TRUE)
+          }
+          else {
+            btbl$cells$setCell(r=1, c=c, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=1,
+                               rawValue=rowGrpHeader, formattedValue=rowGrpHeader, baseStyleName=btStyles$rootStyle)
+          }
+        }
+      }
+      else {
+        btbl$cells$setBlankCell(r=1, c=1, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=rowGroupLevelCount, asNBSP=TRUE)
+      }
       btbl$cells$setBlankCell(r=1, c=2, cellType="columnHeader", visible=TRUE, asNBSP=TRUE)
     }
     else {
@@ -118,7 +136,25 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=
     for(r in 1:columnGroupLevelCount) {
       br <- br + 1
       if(r==1) { # generate the large top-left blank cell
-        if(isBasicTblrZeroPt3) { btbl$cells$setBlankCell(r=1, c=1, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=rowGroupLevelCount, asNBSP=TRUE) }
+        if(isBasicTblrZeroPt3) {
+          if((showRowGroupHeaders==TRUE)&&(rowGroupLevelCount>0)) {
+            rowGrpHeaders <- pvt$rowGrpHeaders
+            for(c in 1:rowGroupLevelCount) {
+              rowGrpHeader <- NULL
+              if((0<c)&&(c<=length(rowGrpHeaders))) rowGrpHeader <- rowGrpHeaders[[c]]
+              if(is.null(rowGrpHeader)) {
+                btbl$cells$setBlankCell(r=1, c=c, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=1, asNBSP=TRUE)
+              }
+              else {
+                btbl$cells$setCell(r=1, c=c, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=1,
+                                   rawValue=rowGrpHeader, formattedValue=rowGrpHeader, baseStyleName=btStyles$rootStyle)
+              }
+            }
+          }
+          else {
+            btbl$cells$setBlankCell(r=1, c=1, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=rowGroupLevelCount, asNBSP=TRUE)
+          }
+        }
         else { btbl$cells$setBlankCell(r=1, c=1, cellType="root", visible=TRUE, rowSpan=columnGroupLevelCount, colSpan=rowGroupLevelCount) }
       }
       bc <- rowGroupLevelCount
