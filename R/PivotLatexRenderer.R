@@ -254,7 +254,7 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
        grp <- columnGroups[[c]]
        parentGrp <- grp$parentGroup
        if(!is.null(lastParentGrp)) {
-         if(!identical(parentGrp, lastParentGrp)) s <- paste0(s, "|")
+         if(parentGrp$instanceId!=lastParentGrp$instanceId) s <- paste0(s, "|")
        }
        lastParentGrp <- parentGrp
        s <- paste0(s, "r")
@@ -374,7 +374,7 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
        grp <- columnGroups[[c]]
        parentGrp <- grp$parentGroup
        if(!is.null(lastParentGrp)) {
-         if(!identical(parentGrp, lastParentGrp)) s <- paste0(s, "|")
+         if(parentGrp$instanceId!=lastParentGrp$instanceId) s <- paste0(s, "|")
        }
        lastParentGrp <- parentGrp
        s <- paste0(s, "r")
@@ -399,14 +399,14 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
        parentGrp <- rg$parentGroup
        # draw a partial horizontal line before this row?
        if(!is.null(lastParentGrp)) {
-         if(!identical(parentGrp, lastParentGrp)) {
+         if(parentGrp$instanceId!=lastParentGrp$instanceId) {
            # need to work out how where to draw the line from
            # get the ancestors of this and the previous group and compare
            prevAncs <- rowGroups[[r-1]]$getAncestorGroups(includeCurrentGroup=TRUE)
            thisAncs <- rg$getAncestorGroups(includeCurrentGroup=TRUE)
            startLineFromColumn <- 0
            for(i in 1:length(prevAncs)) { # length(ancrgs)-1):1
-             if(!identical(prevAncs[[length(ancrgs)-i+1]], thisAncs[[length(ancrgs)-i+1]])) {
+             if((prevAncs[[length(ancrgs)-i+1]]$instanceId)!=(thisAncs[[length(ancrgs)-i+1]]$instanceId)) {
                startLineFromColumn <- i
                break
              }
@@ -512,7 +512,7 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
        grp <- columnGroups[[c]]
        parentGrp <- grp$parentGroup
        if(!is.null(lastParentGrp)) {
-         if(!identical(parentGrp, lastParentGrp)) s <- paste0(s, "|")
+         if(parentGrp$instanceId!=lastParentGrp$instanceId) s <- paste0(s, "|")
        }
        lastParentGrp <- parentGrp
        s <- paste0(s, "r")
@@ -560,14 +560,14 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
        parentGrp <- rg$parentGroup
        # draw a partial horizontal line before this row?
        if(!is.null(lastParentGrp)) {
-         if(!identical(parentGrp, lastParentGrp)) {
+         if(parentGrp$instanceId!=lastParentGrp$instanceId) {
            # need to work out how where to draw the line from
            # get the ancestors of this and the previous group and compare
            prevAncs <- rowGroups[[r-1]]$getAncestorGroups(includeCurrentGroup=TRUE)
            thisAncs <- rg$getAncestorGroups(includeCurrentGroup=TRUE)
            startLineFromColumn <- 0
            for(i in 1:length(prevAncs)) { # length(ancrgs)-1):1
-             if(!identical(prevAncs[[length(ancrgs)-i+1]], thisAncs[[length(ancrgs)-i+1]])) {
+             if((prevAncs[[length(ancrgs)-i+1]]$instanceId)!=(thisAncs[[length(ancrgs)-i+1]]$instanceId)) {
                startLineFromColumn <- i
                break
              }

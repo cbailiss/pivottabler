@@ -79,8 +79,13 @@
 #'   at a specific level in the data group hierarchy.}
 #'   \item{\code{addChildGroup(variableName, values, caption, isTotal=FALSE,
 #'   isLevelSubTotal=FALSE, isLevelTotal=FALSE, calculationGroupName=NULL,
-#'   calculationName=NULL, baseStyleName=NULL, styleDeclarations=NULL)}}{
+#'   calculationName=NULL, baseStyleName=NULL, styleDeclarations=NULL,
+#'   insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL)}}{
 #'   Add a new data group as the child of the current data group.}
+#'   \item{\code{removeChildGroup(index=NULL, group=NULL)}}{
+#'   Remove a data group that is a child of the current data group.}
+#'   \item{\code{removeGroup()}}{
+#'   Remove the current data group.}
 #'   \item{\code{addDataGroups(variableName, atLevel, fromData=TRUE,  dataName,
 #'   dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
 #'   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
@@ -141,6 +146,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                         variableName=variableName, filterType=filterType, values=values,
                                         calculationGroupName=calculationGroupName, calculationName=calculationName))
      if(!(rowOrColumn %in% c("row", "column"))) stop("PivotDataGroup$new(): rowOrColumn must be either row or column", call. = FALSE)
+     private$p_instanceId <- parentPivot$getNextInstanceId()
      private$p_parentGroup <- parentGroup
      private$p_rowOrColumn <- rowOrColumn
      private$p_caption <- caption
@@ -268,10 +274,29 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getLevelGroups", "Got level groups", list(count=length(lgs)))
      return(invisible(lgs))
    },
+   getChildIndex = function(childGroup=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "childGroup", childGroup, missing(childGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addChildGroup", "Getting child index...")
+      childIndex <- NULL
+      if (length(private$p_groups) > 0) {
+         instanceId <- childGroup$instanceId
+         for (i in 1:length(private$p_groups)) {
+            if(private$p_groups[[i]]$instanceId==instanceId) {
+               childIndex <- i
+               break
+            }
+         }
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addChildGroup", "Got child index.", list(index=childIndex))
+      return(invisible(childIndex))
+   },
    addChildGroup = function(variableName=NULL, filterType="ALL", values=NULL, caption=NULL,
                             isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
                             calculationGroupName=NULL, calculationName=NULL,
-                            baseStyleName=NULL, styleDeclarations=NULL) {
+                            baseStyleName=NULL, styleDeclarations=NULL,
+                            insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", filterType, missing(filterType), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
@@ -284,6 +309,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", insertAtIndex, missing(insertAtIndex), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", insertBeforeGroup, missing(insertBeforeGroup), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotDataGroup")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", insertAfterGroup, missing(insertAfterGroup), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotDataGroup")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addChildGroup", "Adding child group...",
                                    list(caption=caption, isTotal=isTotal, variableName=variableName, values=values,
@@ -297,10 +325,61 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                           variableName=variableName, filterType=filterType, values=values,
                           calculationGroupName=calculationGroupName, calculationName=calculationName,
                           baseStyleName=baseStyleName, styleDeclarations=styleDeclarations)
-     index <- length(private$p_groups) + 1
-     private$p_groups[[index]] <- grp
+     if(is.null(insertAtIndex) && is.null(insertBeforeGroup) && is.null(insertAfterGroup)) {
+        # append to end
+        index <- length(private$p_groups) + 1
+        private$p_groups[[index]] <- grp
+     }
+     else {
+        if (!is.null(insertAtIndex)) {
+           # do nothing more, we know the index
+        }
+        else if (!is.null(insertBeforeGroup)) {
+           beforeIndex <- self$getChildIndex(insertBeforeGroup)
+           if(is.null(beforeIndex)) stop("PivotDataGroup$addChildGroup():  Data group insertBeforeGroup is not a child of the current data group.", call. = FALSE)
+           insertAtIndex <- beforeIndex
+        }
+        else if (!is.null(insertAfterGroup)) {
+           afterIndex <- self$getChildIndex(insertAfterGroup)
+           if(is.null(afterIndex)) stop("PivotDataGroup$addChildGroup():  Data group insertAfterGroup is not a child of the current data group.", call. = FALSE)
+           insertAtIndex <- afterIndex + 1
+        }
+        newGroupLength <- length(private$p_groups) + 1
+        if(insertAtIndex<1) insertAtIndex <- 1
+        else if (insertAtIndex > newGroupLength) insertAtIndex <- newGroupLength
+        for(i in newGroupLength:insertAtIndex) {
+           if(i==1) break
+           private$p_groups[[i]] <- private$p_groups[[i-1]]
+        }
+        private$p_groups[[insertAtIndex]] <- grp
+     }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addChildGroup", "Added child group.")
      return(invisible(grp))
+   },
+   removeChildGroup = function(index=NULL, group=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "removeChildGroup", index, missing(index), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "removeChildGroup", group, missing(group), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotDataGroup")
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeChildGroup", "Removing child group...")
+      if(is.null(index)&&is.null(group)) stop("PivotDataGroup$removeChildGroup():  Either index or group must be specified.", call. = FALSE)
+      if(is.null(index)) {
+        index <- self$getChildIndex(group)
+        if(is.null(index)) stop("PivotDataGroup$removeChildGroup():  Specified group is not a child of this data group.", call. = FALSE)
+      }
+      if(index < length(private$p_groups)) {
+         for(i in index:(length(private$p_groups) - 1)) {
+            private$p_groups[[i]] <- private$p_groups[[i+1]]
+         }
+      }
+      private$p_groups[[length(private$p_groups)]] <- NULL # can set last cell in the list to NULL to shorten the array
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeChildGroup", "Removed child group.")
+   },
+   removeGroup = function() {
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeGroup", "Removing group...")
+      if(is.null(private$p_parentGroup)) stop("PivotDataGroup$removeGroup():  Cannot remove the top group on rows/columns.", call. = FALSE)
+      private$p_parentGroup$removeChildGroup(group=self)
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeGroup", "Removed group.")
    },
    # permutations:
    # dataName="...", fromData=TRUE, onlyCombinationsThatExist=TRUE >> generate the list (from the data at leaf level), 1 value per group
@@ -1036,6 +1115,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    asJSON = function() { return(jsonlite::toJSON(self$asList())) }
   ),
   active = list(
+   instanceId = function(value) { return(invisible(private$p_instanceId)) },
    parentGroup = function(value) { return(invisible(private$p_parentGroup)) },
    childGroups = function(value) { return(invisible(private$p_groups)) },
    leafGroups = function(value) { return(invisible(self$getLeafGroups())) },
@@ -1197,6 +1277,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
   private = list(
    p_parentGroup = NULL,
    p_parentPivot = NULL,
+   p_instanceId = NULL,
    p_rowOrColumn = NULL,
    p_caption = NULL,
    p_sortValue = NULL,

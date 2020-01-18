@@ -69,6 +69,7 @@
 #'   compatibility=NULL, traceEnabled=FALSE, traceFile=NULL)}}{Create a new
 #'   pivot table, optionally specifying styling and enabling debug logging.}
 #'
+#'   \item{\code{getNextInstanceId()}}{Return a unique object identifier.}
 #'   \item{\code{addData(df, dataName)}}{Add a data frame with the specified
 #'   name to the pivot table.}
 #'   \item{\code{getTopColumnGroups()}}{Get the very top column PivotDataGroup
@@ -279,6 +280,7 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       else stop("PivotTable$initialize():  Unknown processingLibrary encountered.", call. = FALSE)
       private$p_evaluationMode <- evaluationMode
+      private$p_lastInstanceId <- 0
       # Create the basic parts of the pivot table
       private$p_data <- PivotData$new(parentPivot=self)
       private$p_rowGroup <- PivotDataGroup$new(parentPivot=self, parentGroup=NULL, rowOrColumn="row", isLevelTotal=TRUE)
@@ -391,6 +393,10 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$new", "Created new Pivot Table.")
       return(invisible())
+    },
+    getNextInstanceId = function() { # used for reliable object instance comparisons (since R6 cannot easily compare object instances)
+      private$p_lastInstanceId <- private$p_lastInstanceId + 1
+      return(invisible(private$p_lastInstanceId))
     },
     addData = function(dataFrame=NULL, dataName=NULL) {
       timeStart <- proc.time()
@@ -594,6 +600,15 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$sortRowDataGroups", "Sorted row data groups.")
       private$addTiming("sortRowDataGroups", timeStart)
       return(invisible())
+    },
+    setRowDataGroupHeader = function(levelNumber=NULL, header=NULL) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setRowDataGroupHeader", levelNumber, missing(levelNumber), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setRowDataGroupHeader", header, missing(header), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$setRowDataGroupHeader", "Setting row group header...")
+      private$p_rowGrpHeaders[[levelNumber]] <- header
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$setRowDataGroupHeader", "Set row group header.")
     },
     addCalculationGroup = function(calculationGroupName=NULL) {
       timeStart <- proc.time()
@@ -1891,6 +1906,7 @@ PivotTable <- R6::R6Class("PivotTable",
     p_argumentCheckMode = 4,
     p_traceEnabled = FALSE,
     p_processingLibrary = NULL,
+    p_lastInstanceId = NULL,
     p_data = NULL,
     p_styles = NULL,
     p_rowGroup = NULL,
