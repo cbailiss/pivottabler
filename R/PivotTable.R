@@ -846,15 +846,21 @@ PivotTable <- R6::R6Class("PivotTable",
       rowFilters <- list()
       rowCalculationGroupNames <- list()
       rowCalculationNames <- list()
+      rowIsEmptyFlags <- list()
       for(i in 1:rowCount) {
         # set the rowColumnNumber on the leaf cell
         rowGrps[[i]]$rowColumnNumber <- as.integer(i)
         # get the ancestor groups for this group, starting with the current object
         ancestors <- rowGrps[[i]]$getAncestorGroups(includeCurrentGroup=TRUE)
+        # construct the isEmpty flag using OR
+        rowIsEmptyFlag <- FALSE
         # construct the parent filter settings using "intersect" filter logic
         rowColFilters <- PivotFilters$new(self)
         for(j in length(ancestors):1) {
           acs <- ancestors[[j]]
+          if(!is.null(acs$isEmpty)) {
+            rowIsEmptyFlag <- rowIsEmptyFlag||acs$isEmpty
+          }
           filters <- acs$filters
           if(is.null(filters)) next
           if(filters$count==0) next
@@ -863,6 +869,7 @@ PivotTable <- R6::R6Class("PivotTable",
             rowColFilters$setFilter(filter, action="intersect")
           }
         }
+        rowIsEmptyFlags[[i]] <- rowIsEmptyFlag
         rowFilters[[i]] <- rowColFilters
         # find the calculation
         for(j in 1:length(ancestors)) {
@@ -878,15 +885,21 @@ PivotTable <- R6::R6Class("PivotTable",
       columnFilters <- list()
       columnCalculationGroupNames <- list()
       columnCalculationNames <- list()
+      columnIsEmptyFlags <- list()
       for(i in 1:columnCount) {
         # set the rowColumnNumber on the leaf cell
         columnGrps[[i]]$rowColumnNumber <- as.integer(i)
         # get the ancestor groups for this group, starting with the current object
         ancestors <- columnGrps[[i]]$getAncestorGroups(includeCurrentGroup=TRUE)
+        # construct the isEmpty flag using OR
+        columnIsEmptyFlag <- FALSE
         # construct the parent filter settings using "intersect" filter logic
         rowColFilters <- PivotFilters$new(self)
         for(j in length(ancestors):1) {
           acs <- ancestors[[j]]
+          if(!is.null(acs$isEmpty)) {
+            columnIsEmptyFlag <- columnIsEmptyFlag||acs$isEmpty
+          }
           filters <- acs$filters
           if(is.null(filters)) next
           if(filters$count==0) next
@@ -895,6 +908,7 @@ PivotTable <- R6::R6Class("PivotTable",
             rowColFilters$setFilter(filter, action="intersect")
           }
         }
+        columnIsEmptyFlags[[i]] <- columnIsEmptyFlag
         columnFilters[[i]] <- rowColFilters
         # find the calculation
         for(j in 1:length(ancestors)) {
@@ -932,6 +946,8 @@ PivotTable <- R6::R6Class("PivotTable",
         for(r in 1:rowCount) {
           if(columnCount>0) {
             for(c in 1:columnCount) {
+              # determine if this cell is empty
+              isEmpty <- rowIsEmptyFlags[[r]]||columnIsEmptyFlags[[c]]
               # calculate the net filters
               if(is.null(rowFilters[[r]])) {
                 if(!is.null(columnFilters[[c]])) { rowColFilters <- columnFilters[[c]]$getCopy() }
@@ -956,7 +972,7 @@ PivotTable <- R6::R6Class("PivotTable",
                 else calcNme<- NULL
               }
               # create the cell
-              cell <- PivotCell$new(self, rowNumber=as.integer(r), columnNumber=as.integer(c),
+              cell <- PivotCell$new(self, rowNumber=as.integer(r), columnNumber=as.integer(c), isEmpty=isEmpty,
                                     calculationName=calcNme, calculationGroupName=calcGrpNme,
                                     rowColFilters=rowColFilters, rowFilters=rowFilters[[r]], columnFilters=columnFilters[[c]],
                                     rowLeafGroup=rowGrps[[r]], columnLeafGroup=columnGrps[[c]])
@@ -1020,6 +1036,9 @@ PivotTable <- R6::R6Class("PivotTable",
       for(r in 1:rowCount) {
         for(c in 1:columnCount) {
           cell <- private$p_cells$getCell(r, c)
+          # ignore empty cells
+          if(cell$isEmpty) next
+          # calculate cell
           calculator$evaluateCell(cell)
         }
       }

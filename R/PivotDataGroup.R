@@ -19,6 +19,8 @@
 #' @field parentPivot Owning pivot table.
 #' @field rowOrColumn "row" or "column" indicating which axis this data group
 #'   exists on.
+#' @field isEmpty Indicates whether this data group contains no data (e.g. if
+#'   it is part of a header / outline row).
 #' @field caption The friendly display name for this data group.
 #' @field variableName The name of the related column in the data frame(s) of
 #'   the pivot table.
@@ -119,15 +121,16 @@
 
 PivotDataGroup <- R6::R6Class("PivotDataGroup",
   public = list(
-   initialize = function(parentGroup=NULL, parentPivot=NULL, rowOrColumn=NULL, caption=NULL, # common properties
+   initialize = function(parentGroup=NULL, parentPivot=NULL, rowOrColumn=NULL, isEmpty=FALSE, caption=NULL, # common properties
                          isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE, # total properties
                          variableName=NULL, filterType="ALL", values=NULL, # filter properties
-                         calculationGroupName=NULL, calculationName=NULL,
+                         calculationGroupName=NULL, calculationName=NULL, # calculation properties
                          baseStyleName=NULL, styleDeclarations=NULL) {
      if(parentPivot$argumentCheckMode > 0) {
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", parentGroup, missing(parentGroup), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotDataGroup")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", rowOrColumn, missing(rowOrColumn), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("row", "column"))
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", isEmpty, missing(isEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", isTotal, missing(isTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", isLevelSubTotal, missing(isLevelSubTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -149,6 +152,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_instanceId <- parentPivot$getNextInstanceId()
      private$p_parentGroup <- parentGroup
      private$p_rowOrColumn <- rowOrColumn
+     private$p_isEmpty <- isEmpty
      private$p_caption <- caption
      private$p_sortValue <- values[1]
      private$p_isTotal <- isTotal
@@ -292,7 +296,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addChildGroup", "Got child index.", list(index=childIndex))
       return(invisible(childIndex))
    },
-   addChildGroup = function(variableName=NULL, filterType="ALL", values=NULL, caption=NULL,
+   addChildGroup = function(variableName=NULL, filterType="ALL", values=NULL, isEmpty=FALSE, caption=NULL,
                             isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
                             calculationGroupName=NULL, calculationName=NULL,
                             baseStyleName=NULL, styleDeclarations=NULL,
@@ -301,6 +305,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", filterType, missing(filterType), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", isEmpty, missing(isEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", isTotal, missing(isTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", isLevelSubTotal, missing(isLevelSubTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -314,13 +319,13 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", insertAfterGroup, missing(insertAfterGroup), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotDataGroup")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addChildGroup", "Adding child group...",
-                                   list(caption=caption, isTotal=isTotal, variableName=variableName, values=values,
+                                   list(caption=caption, isEmpty=isEmpty, isTotal=isTotal, variableName=variableName, values=values,
                                    calculationGroupName=calculationGroupName, calculationName=calculationName,
                                    baseStyleName=baseStyleName, styleDeclarations=styleDeclarations))
      private$p_parentPivot$resetCells()
      total <- isTotal | self$isTotal
      grp <- PivotDataGroup$new(parentGroup=self, parentPivot=private$p_parentPivot,
-                          rowOrColumn=private$p_rowOrColumn, caption=caption,
+                          rowOrColumn=private$p_rowOrColumn, isEmpty=isEmpty, caption=caption,
                           isTotal=total, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
                           variableName=variableName, filterType=filterType, values=values,
                           calculationGroupName=calculationGroupName, calculationName=calculationName,
@@ -551,6 +556,15 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      for(i in 1:length(parentGroups))
      {
        grp <- parentGroups[[i]]
+       # if this is an empty group, then don't expand it (just add an empty child)
+       if(grp$isEmpty) {
+          # add a single group that is also empty
+          newGrp <- grp$addChildGroup(isEmpty=TRUE)
+          index <- length(newGroups) + 1
+          newGroups[[index]] <- newGrp
+          next
+       }
+       # total?
        if((grp$isTotal==TRUE)&&(expandExistingTotals==FALSE)) {
          # add a single group that is an unexpanded total
          newGrp <- grp$addChildGroup(variableName=variableName, values=NULL, # so that the totals have a reference to the variable
@@ -1153,6 +1167,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    isTotal = function(value) { return(invisible(private$p_isTotal)) },
    isLevelSubTotal = function(value) { return(invisible(private$p_isLevelSubTotal)) },
    isLevelTotal = function(value) { return(invisible(private$p_isLevelTotal)) },
+   isEmpty = function(value) { return(invisible(private$p_isEmpty)) },
    caption = function(value) {
      if(missing(value)) {
        if(is.null(private$p_caption)) {
@@ -1279,6 +1294,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    p_parentPivot = NULL,
    p_instanceId = NULL,
    p_rowOrColumn = NULL,
+   p_isEmpty = NULL,
    p_caption = NULL,
    p_sortValue = NULL,
    p_isTotal = NULL,

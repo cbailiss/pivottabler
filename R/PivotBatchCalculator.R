@@ -217,6 +217,9 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
         for(c in 1:columnCount) {
           # for each cell
           cell <- private$p_parentPivot$cells$getCell(r, c)
+          # ignore empty cells
+          if(cell$isEmpty) next
+          # check calculation present
           if(is.null(cell$calculationName)) next
           if(is.null(cell$calculationGroupName)) next
           # examine the calculation and filters, generate a new batch or add to an existing batch
