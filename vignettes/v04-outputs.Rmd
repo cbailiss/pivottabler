@@ -117,7 +117,55 @@ Please see the [Excel Export](v12-excelexport.html) vignette.
 
 ## Results as an R Matrix
 
-Converting a pivot table to a matrix can be accomplished as follows:
+### As a Data Matrix
+
+Converting a pivot table to a matrix is possible.  The row/column headers become the row/column names in the matrix:
+
+```{r, message=FALSE, warning=FALSE, eval=TRUE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$asDataMatrix()
+```
+
+If only the cell values are required, the headings can be removed from the matrix by setting the `includeHeaders` parameter to `FALSE`.
+
+By default, `asDataMatrix()` populates the matrix with the raw cell values.  Setting the `rawValue` parameter to `FALSE` specifies that the matrix should contain the formatted `character` values instead of the raw values.
+
+```{r, message=FALSE, warning=FALSE, eval=TRUE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$asDataMatrix(rawValue=FALSE)
+```
+
+When there are multiple levels of headers, headers are concatenated.  A separator can be specified:
+
+```{r, message=FALSE, warning=FALSE, comment=""}
+library(dplyr)
+library(pivottabler)
+data <- filter(bhmtrains, (Status=="A")|(Status=="C"))
+pt <- PivotTable$new()
+pt$addData(data)
+pt$addColumnDataGroups("PowerType", addTotal=FALSE)
+pt$addColumnDataGroups("Status", addTotal=FALSE)
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+pt$asDataMatrix(separator=" | ")
+```
+
+### As a `character` matrix
+
+It is also possible to convert a pivot table to a `character` matrix, where the row/column names are within the body of the matrix:
 
 ```{r, message=FALSE, warning=FALSE, eval=TRUE, comment=""}
 library(pivottabler)
@@ -132,27 +180,16 @@ pt$asMatrix()
 
 If only the cell values are required, the headings can be removed from the matrix by setting the `includeHeaders` parameter to `FALSE`.
 
-The `rawValue` parameter specifies that the matrix should contain the numerical result values, not the formatted values.
-
-```{r, message=FALSE, warning=FALSE, eval=TRUE, comment=""}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("PowerType")
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-pt$evaluatePivot()
-pt$asMatrix(includeHeaders=FALSE, rawValue=TRUE)
-```
-
 When there are multiple levels of headers, by default the column headers are not repeated:
 
 ```{r, message=FALSE, warning=FALSE, comment=""}
+library(dplyr)
 library(pivottabler)
+data <- filter(bhmtrains, (Status=="A")|(Status=="C"))
 pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addColumnDataGroups("PowerType")
+pt$addData(data)
+pt$addColumnDataGroups("PowerType", addTotal=FALSE)
+pt$addColumnDataGroups("Status", addTotal=FALSE)
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
@@ -162,14 +199,6 @@ pt$asMatrix()
 However, the `repeatHeaders` parameter can be used to specify repeating headings:
 
 ```{r, message=FALSE, warning=FALSE, comment=""}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addColumnDataGroups("PowerType")
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-pt$evaluatePivot()
 pt$asMatrix(repeatHeaders=TRUE)
 ```
 

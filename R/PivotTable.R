@@ -165,11 +165,14 @@
 #'   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
 #'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells in the
 #'   body of the pivot table matching the specified criteria.}
-#'   \item{\code{print(asCharacter=FALSE)}}{Either print the pivot table to the
-#'   console or retrieve it as a character value.}
+#'   \item{\code{print(asCharacter=FALSE, showRowGroupHeaders=TRUE)}}{Either
+#'   print the pivot table to the console or retrieve it as a character value.}
 #'   \item{\code{asMatrix(includeHeaders=TRUE, repeatHeaders=FALSE,
-#'   rawValue=FALSE)}}{Gets the pivot table as a matrix, with or without
-#'   headings.}
+#'   rawValue=FALSE)}}{Gets the pivot table as a character matrix, with the
+#'   pivot table row/column headings within the body of the matrix.}
+#'   \item{\code{asDataMatrix = function(includeHeaders=TRUE, rawValue=TRUE,
+#'   separator=" ")}}{Gets the pivot table as a matrix, with the pivot table
+#'   row/column headings set as the row/column names in the matrix.}
 #'   \item{\code{asDataFrame(separator=" ")}}{Gets the pivot table as a data
 #'   frame, combining multiple levels of headings with the specified separator.}
 #'   \item{\code{asTidyDataFrame(includeGroupCaptions=TRUE,
@@ -1325,10 +1328,11 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$print", "Printed matrix.")
       return(invisible(paste0(returnLines, sep="", collapse="\n")))
     },
-    asMatrix = function(includeHeaders=TRUE, repeatHeaders=FALSE, rawValue=FALSE) {
+    asMatrix = function(includeHeaders=TRUE, repeatHeaders=FALSE, rawValue=FALSE, showRowGroupHeaders=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asMatrix", includeHeaders, missing(includeHeaders), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asMatrix", rawValue, missing(rawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asMatrix", showRowGroupHeaders, missing(showRowGroupHeaders), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asMatrix", "Getting pivot table as a matrix...",
                     list(includeHeaders=includeHeaders, repeatHeaders=repeatHeaders, rawValue=rawValue))
@@ -1349,7 +1353,13 @@ PivotTable <- R6::R6Class("PivotTable",
       # set the root cells
       for(r in 1:columnHeaderLevelCount) {
         for(c in 1:rowHeaderLevelCount) {
-          m[r, c] <- ""
+          if((r==1)&&(showRowGroupHeaders==TRUE)&&(!is.null(private$p_rowGrpHeaders))&&
+             (c<=length(private$p_rowGrpHeaders))&&(!is.null(private$p_rowGrpHeaders[[c]]))) {
+            m[r, c] <- private$p_rowGrpHeaders[[c]]
+          }
+          else {
+            m[r, c] <- ""
+          }
         }
       }
       # set the column headers
@@ -1400,10 +1410,68 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asMatrix", "Got pivot table as a matrix.")
       return(m)
     },
+    asDataMatrix = function(includeHeaders=TRUE, rawValue=TRUE, separator=" ") {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataMatrix", includeHeaders, missing(includeHeaders), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataMatrix", rawValue, missing(rawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asDataMatrix", "Getting pivot table as a data matrix...",
+                                                  list(rawValue=rawValue, separator=separator))
+      if(!private$p_evaluated) stop("PivotTable$asDataMatrix():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$asDataMatrix():  No cells exist to retrieve.", call. = FALSE)
+      if(includeHeaders==FALSE) {
+        return(private$p_cells$asMatrix(rawValue=rawValue))
+      }
+      # get the headings dimensions
+      rowHeaderLevelCount <- private$p_rowGroup$getLevelCount()
+      columnHeaderLevelCount <- private$p_columnGroup$getLevelCount()
+      rowCount <- private$p_cells$rowCount
+      columnCount <- private$p_cells$columnCount
+      # column names
+      colHeaderLeafGroups <- private$p_columnGroup$getLeafGroups()
+      colNames <-  vector("list", length = columnCount)
+      for(c in 1:columnCount) {
+        colName <- NULL
+        grps <- colHeaderLeafGroups[[c]]$getAncestorGroups(includeCurrentGroup=TRUE)
+        for(cl in 1:columnHeaderLevelCount) {
+          if(cl==1) {
+            colName <- grps[[columnHeaderLevelCount-cl+1]]$caption
+          }
+          else {
+            colName <- paste0(colName, separator, grps[[columnHeaderLevelCount-cl+1]]$caption)
+          }
+        }
+        colNames[[c]] <- colName
+      }
+      # row names
+      rowHeaderLeafGroups <- private$p_rowGroup$getLeafGroups()
+      rowNames <-  vector("list", length = rowCount)
+      for(r in 1:rowCount) {
+        rowName <- NULL
+        grps <- rowHeaderLeafGroups[[r]]$getAncestorGroups(includeCurrentGroup=TRUE)
+        for(rl in 1:rowHeaderLevelCount) {
+          if(rl==1) {
+            rowName <- grps[[rowHeaderLevelCount-rl+1]]$caption
+          }
+          else {
+            rowName <- paste0(rowName, separator, grps[[rowHeaderLevelCount-rl+1]]$caption)
+          }
+        }
+        rowNames[[r]] <- rowName
+      }
+      # data
+      m <- private$p_cells$asMatrix(rawValue=rawValue)
+      # apply names
+      colnames(m) <- colNames
+      rownames(m) <- rowNames
+      # done
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asDataMatrix", "Got pivot table as a data matrix.")
+      return(m)
+    },
     asDataFrame = function(separator=" ", stringsAsFactors=default.stringsAsFactors()) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataFrame", separator, missing(separator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asTidyDataFrame", stringsAsFactors, missing(stringsAsFactors), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataFrame", stringsAsFactors, missing(stringsAsFactors), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asDataFrame", "Getting pivot table as a data frame...", list(separator=separator, stringsAsFactors=stringsAsFactors))
       if(!private$p_evaluated) stop("PivotTable$asDataFrame():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
