@@ -80,6 +80,7 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   compatibility=NULL, traceEnabled=FALSE, traceFile=NULL)}}{Create a new
   pivot table, optionally specifying styling and enabling debug logging.}
 
+  \item{\code{getNextInstanceId()}}{Return a unique object identifier.}
   \item{\code{addData(df, dataName)}}{Add a data frame with the specified
   name to the pivot table.}
   \item{\code{getTopColumnGroups()}}{Get the very top column PivotDataGroup
@@ -175,11 +176,14 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells in the
   body of the pivot table matching the specified criteria.}
-  \item{\code{print(asCharacter=FALSE)}}{Either print the pivot table to the
-  console or retrieve it as a character value.}
+  \item{\code{print(asCharacter=FALSE, showRowGroupHeaders=TRUE)}}{Either
+  print the pivot table to the console or retrieve it as a character value.}
   \item{\code{asMatrix(includeHeaders=TRUE, repeatHeaders=FALSE,
-  rawValue=FALSE)}}{Gets the pivot table as a matrix, with or without
-  headings.}
+  rawValue=FALSE)}}{Gets the pivot table as a character matrix, with the
+  pivot table row/column headings within the body of the matrix.}
+  \item{\code{asDataMatrix = function(includeHeaders=TRUE, rawValue=TRUE,
+  separator=" ")}}{Gets the pivot table as a matrix, with the pivot table
+  row/column headings set as the row/column names in the matrix.}
   \item{\code{asDataFrame(separator=" ")}}{Gets the pivot table as a data
   frame, combining multiple levels of headings with the specified separator.}
   \item{\code{asTidyDataFrame(includeGroupCaptions=TRUE,

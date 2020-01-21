@@ -24,6 +24,9 @@ PivotDataGroup can have one or more child PivotDataGroups.
 \item{\code{rowOrColumn}}{"row" or "column" indicating which axis this data group
 exists on.}
 
+\item{\code{isEmpty}}{Indicates whether this data group contains no data (e.g. if
+it is part of a header / outline row).}
+
 \item{\code{caption}}{The friendly display name for this data group.}
 
 \item{\code{variableName}}{The name of the related column in the data frame(s) of
@@ -105,8 +108,13 @@ group (used as part of the rendering routines).}
   at a specific level in the data group hierarchy.}
   \item{\code{addChildGroup(variableName, values, caption, isTotal=FALSE,
   isLevelSubTotal=FALSE, isLevelTotal=FALSE, calculationGroupName=NULL,
-  calculationName=NULL, baseStyleName=NULL, styleDeclarations=NULL)}}{
+  calculationName=NULL, baseStyleName=NULL, styleDeclarations=NULL,
+  insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL)}}{
   Add a new data group as the child of the current data group.}
+  \item{\code{removeChildGroup(index=NULL, group=NULL)}}{
+  Remove a data group that is a child of the current data group.}
+  \item{\code{removeGroup()}}{
+  Remove the current data group.}
   \item{\code{addDataGroups(variableName, atLevel, fromData=TRUE,  dataName,
   dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,

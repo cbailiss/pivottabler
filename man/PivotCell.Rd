@@ -34,6 +34,9 @@ cell.}
 \item{\code{calculationGroupName}}{The name of the calculation group that owns the
 above calculation.}
 
+\item{\code{isEmpty}}{Indicates whether this cell contains no data (e.g. if it is
+part of a header / outline row).}
+
 \item{\code{rowFilters}}{The data filters applied to this cell from the row
 headings.}
 
