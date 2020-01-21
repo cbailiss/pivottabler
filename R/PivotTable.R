@@ -1130,11 +1130,17 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findCells", "Found cells.")
       return(invisible(cells))
     },
-    print = function(asCharacter=FALSE) {
+    print = function(asCharacter=FALSE, showRowGroupHeaders=TRUE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "print", asCharacter, missing(asCharacter), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "print", showRowGroupHeaders, missing(showRowGroupHeaders), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$print", "Printing matrix...")
+      # if not yet evaluated, need to normalise the row/column groups, otherwise errors occur for pivots of more than one level on row/columns
+      if(!private$p_evaluated) {
+        self$normaliseColumnGroups()
+        self$normaliseRowGroups()
+      }
       lineIndex <- 0
       if(asCharacter==TRUE) returnLines <- vector("list", self$rowCount + private$p_columnGroup$getLevelCount())
       else returnLines <- NULL
@@ -1204,8 +1210,19 @@ PivotTable <- R6::R6Class("PivotTable",
       rowLevelWidths <- vector("integer", rowLevelCount)
       if(rowLevelCount>0) {
         for(l in 1:rowLevelCount) {
-          levelGroups <- private$p_rowGroup$getLevelGroups(l)
           maxWidth <- 0
+          # row group header
+          if(showRowGroupHeaders==TRUE) {
+            if(!is.null(private$p_rowGrpHeaders)) {
+              if(l<=length(private$p_rowGrpHeaders)) {
+                if(!is.null(private$p_rowGrpHeaders[[l]])) {
+                  maxWidth <- max(maxWidth, nchar(private$p_rowGrpHeaders[[l]]))
+                }
+              }
+            }
+          }
+          # row groups
+          levelGroups <- private$p_rowGroup$getLevelGroups(l)
           for(r in 1:length(levelGroups)) {
             grp <- levelGroups[[r]]
             maxWidth <- max(maxWidth, nchar(grp$caption))
@@ -1229,11 +1246,17 @@ PivotTable <- R6::R6Class("PivotTable",
         # column headings
         for(cl in 1:columnLevelCount) {
           currentLine <- NULL
-          # empty cells at top left
+          # empty cells at top left or row group headings
           if(rowLevelCount==0) currentLine <- paste0(currentLine, "  ")
           else {
             for(rl in 1:rowLevelCount) {
-              currentLine <- paste0(currentLine, repStr(" ", rowLevelWidths[rl]))
+              if((showRowGroupHeaders==TRUE)&&(!is.null(private$p_rowGrpHeaders))&&
+                 (rl<=length(private$p_rowGrpHeaders))&&(!is.null(private$p_rowGrpHeaders[[rl]]))) {
+                currentLine <- paste0(currentLine, private$p_rowGrpHeaders[[rl]], repStr(" ", rowLevelWidths[rl]-nchar(private$p_rowGrpHeaders[[rl]])))
+              }
+              else {
+                currentLine <- paste0(currentLine, repStr(" ", rowLevelWidths[rl]))
+              }
             }
           }
           # column headings at this level
