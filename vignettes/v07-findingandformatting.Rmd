@@ -67,6 +67,7 @@ These functions also accept the following arguments:
     + `only` to match only total data groups.
 - `calculationNames` - a character vector specifying the name/names of the calculations to find.
 - `includeDescendantGroups` - a logical value specifying whether only the top-most matching data group for each row/column is returned, or whether the descendant groups are also included.
+- `excludeEmptyGroups` - a logical value specifying whether to exclude empty groups (such as the empty groups associated with rows/columns in outlined layouts). 
 
 Several examples follow below.  In each of the examples the data groups that have been found are highlighted in yellow by specifying a different style.
 
@@ -514,6 +515,7 @@ The `findCells()` function is used to search for cells within the body of the pi
 - `exactValues` - vector specifying a set of allowed values when matching cells.
 - `includeNA` - specify TRUE to include NA in the matched cells, FALSE to exclude NA values.
 - `includeNull` - specify TRUE to include cells with no value, FALSE to exclude cells with no value.
+- `excludeEmptyCells` - a logical value specifying whether to exclude empty cells (such as the empty cells associated with rows/columns in outlined layouts). 
 
 If multiple variable names and values are specified, then `findCells()` searches for cells that match all of the criteria - i.e. the equivalent of the `combinations` match method described above.
 

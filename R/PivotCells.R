@@ -30,12 +30,12 @@
 #'   \item{\code{setCell(r, c, cell))}}{Set the PivotCell at the specified row
 #'   and column coordinates in the pivot table.}
 #'   \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
-#'   columnNumbers=NULL, cellCoordinates=NULL)}}{Retrieve cells by a combination
-#'   of row and/or column numbers.}
+#'   columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE)}}{
+#'   Retrieve cells by a combination of row and/or column numbers.}
 #'   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
 #'   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
-#'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells matching
-#'   the specified criteria.}
+#'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
+#'   excludeEmptyCells=TRUE)}}{Find cells matching the specified criteria.}
 #'   \item{\code{getColumnWidths())}}{Retrieve the width of the longest value
 #'   (in characters) in each column.}
 #'   \item{\code{asMatrix(rawValue=TRUE))}}{Get a matrix containing all of the
@@ -111,12 +111,13 @@ PivotCells <- R6::R6Class("PivotCells",
      private$p_rows[[r]][[c]] <- cell
      return(invisible())
    },
-   getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL) {
+   getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", specifyCellsAsList, missing(specifyCellsAsList), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", columnNumbers, missing(columnNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", cellCoordinates, missing(cellCoordinates), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", excludeEmptyCells, missing(excludeEmptyCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Getting cells...")
      if(specifyCellsAsList==FALSE) {
@@ -174,6 +175,7 @@ PivotCells <- R6::R6Class("PivotCells",
              for(c in 1:length(private$p_rows[[r]])) {
                if(length(private$p_rows[[r]]) < c) next
                cell <- private$p_rows[[r]][[c]]
+               if(excludeEmptyCells && cell$isEmpty) next
                cells[[length(cells)+1]] <- cell
              }
            }
@@ -211,6 +213,7 @@ PivotCells <- R6::R6Class("PivotCells",
              cellMatch <- sum((r==cellRowNumbers)&(c==cellColumnNumbers)) > 0
              if(rowMatch||columnMatch||cellMatch) {
                cell <- private$p_rows[[r]][[c]]
+               if(excludeEmptyCells && cell$isEmpty) next
                cells[[length(cells)+1]] <- cell
              }
            }
@@ -221,7 +224,7 @@ PivotCells <- R6::R6Class("PivotCells",
      return(invisible(cells))
    },
    findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
-                        minValue=NULL, maxValue=NULL, exactValues=NULL, includeNull=TRUE, includeNA=TRUE) {
+                        minValue=NULL, maxValue=NULL, exactValues=NULL, includeNull=TRUE, includeNA=TRUE, excludeEmptyCells=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
@@ -232,6 +235,7 @@ PivotCells <- R6::R6Class("PivotCells",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", exactValues, missing(exactValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", includeNull, missing(includeNull), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", includeNA, missing(includeNA), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", excludeEmptyCells, missing(excludeEmptyCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findCells", "Finding cells...")
      matches <- list()
@@ -240,23 +244,25 @@ PivotCells <- R6::R6Class("PivotCells",
          if(length(private$p_rows[[r]]) > 0) {
            for(c in 1:length(private$p_rows[[r]])) {
              cell <- private$p_rows[[r]][[c]]
+             # a) check isEmpty
+             if(excludeEmptyCells && cell$isEmpty) next
+             # b) check the filter match
              rowColFilters <- cell$rowColFilters
-             # a) check the filter match
              if((!is.null(variableNames))||(!is.null(variableValues))) {
                if(is.null(rowColFilters)) next
                isMatch <- rowColFilters$isFilterMatch(matchMode="combinations", variableNames=variableNames, variableValues=variableValues)
                if(isMatch==FALSE) next
              }
-             # b) check totals criteria
+             # c) check totals criteria
              if((totals=="exclude")&&(cell$isTotal==TRUE)) next
              if((totals=="only")&&(cell$isTotal==FALSE)) next
-             # c) check calculation criteria
+             # d) check calculation criteria
              if(!is.null(calculationNames)) {
                calcName <- cell$calculationName
                if(is.null(calcName)) next
                if(!(calcName %in% calculationNames)) next
              }
-             # d) value tests:  is null, NA, minValue, maxValue, exactValues
+             # e) value tests:  is null, NA, minValue, maxValue, exactValues
              if(is.null(cell$rawValue)) {
                if(includeNull==FALSE) next
              }
