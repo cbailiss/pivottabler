@@ -163,18 +163,19 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   evaluateCells() in sequence.}
   \item{\code{findRowDataGroups(matchMode="simple", variableNames=NULL,
   variableValues=NULL, totals="include", calculationNames=NULL,
-  includeDescendantGroups=FALSE)}}{Find row data groups matching the
-  specified criteria.}
+  includeDescendantGroups=FALSE, excludeEmptyGroups=TRUE)}}{Find row data
+  groups matching the specified criteria.}
   \item{\code{findColumnDataGroups(matchMode="simple", variableNames=NULL,
   variableValues=NULL, totals="include", calculationNames=NULL,
-  includeDescendantGroups=FALSE)}}{Find column data groups matching the
-  specified criteria.}
+  includeDescendantGroups=FALSE, excludeEmptyGroups=TRUE)}}{Find column
+  data groups matching the specified criteria.}
   \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
-  columnNumbers=NULL, cellCoordinates=NULL)}}{Retrieve cells by a combination
-  of row and/or column numbers.}
+  columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE)}}{
+  Retrieve cells by a combination of row and/or column numbers.}
   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
-  exactValues=NULL, includeNull=TRUE, includeNA=TRUE)}}{Find cells in the
+  exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
+  excludeEmptyCells=TRUE)}}{Find cells in the
   body of the pivot table matching the specified criteria.}
   \item{\code{print(asCharacter=FALSE, showRowGroupHeaders=TRUE)}}{Either
   print the pivot table to the console or retrieve it as a character value.}
@@ -187,9 +188,9 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   \item{\code{asDataFrame(separator=" ")}}{Gets the pivot table as a data
   frame, combining multiple levels of headings with the specified separator.}
   \item{\code{asTidyDataFrame(includeGroupCaptions=TRUE,
-  includeGroupValues=TRUE, separator=" ")}}{Gets the pivot table as a tidy
-  data frame, where each cell in the body of the pivot table becomes one row
-  in the data frame.}
+  includeGroupValues=TRUE, separator=" ", excludeEmptyCells=TRUE)}}{Gets the
+  pivot table as a tidy data frame, where each cell in the body of the pivot
+  table becomes one row in the data frame.}
   \item{\code{asBasicTable = function(exportOptions=NULL, compatibility=NULL,
   showRowGroupHeaders=FALSE))}}{Generates a basictabler table (from the
   basictabler R package) which allows further custom manipulation of the

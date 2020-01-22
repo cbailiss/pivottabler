@@ -136,12 +136,14 @@ group (used as part of the rendering routines).}
   \item{\code{getNetCalculationName()}}{Get the calculation name applied in
   this data group or its nearest ancestor.}
   \item{\code{isFindMatch(matchMode="simple", variableNames=NULL,
-  variableValues=NULL, totals="include", calculationNames=NULL)}}{Tests
-  whether this data group matches the specified criteria.}
+  variableValues=NULL, totals="include", calculationNames=NULL,
+  excludeEmptyGroups=TRUE)}}{Tests whether this data group matches the
+  specified criteria.}
   \item{\code{findDataGroups(matchMode="simple", variableNames=NULL,
   variableValues=NULL, totals="include", calculationNames=NULL,
-  includeChildGroups=FALSE)}}{Searches all data groups underneath this data
-  group to find groups that match the specified criteria.}
+  includeChildGroups=FALSE, excludeEmptyGroups=TRUE)}}{Searches all data
+  groups underneath this data group to find groups that match the specified
+  criteria.}
   \item{\code{asList()}}{Get a list representation of the data group(s).}
   \item{\code{asJSON()}}{Get a JSON representation of the data group(s).}
 }

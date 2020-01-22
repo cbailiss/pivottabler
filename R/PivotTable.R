@@ -159,8 +159,8 @@
 #'   includeDescendantGroups=FALSE, excludeEmptyGroups=TRUE)}}{Find column
 #'   data groups matching the specified criteria.}
 #'   \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
-#'   columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE)}}
-#'   {Retrieve cells by a combination of row and/or column numbers.}
+#'   columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE)}}{
+#'   Retrieve cells by a combination of row and/or column numbers.}
 #'   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
 #'   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
 #'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
