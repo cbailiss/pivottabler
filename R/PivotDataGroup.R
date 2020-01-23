@@ -19,8 +19,11 @@
 #' @field parentPivot Owning pivot table.
 #' @field rowOrColumn "row" or "column" indicating which axis this data group
 #'   exists on.
+#' @field doNotExpand Indicates whether addDataGroups() will expand this group.
 #' @field isEmpty Indicates whether this data group contains no data (e.g. if
 #'   it is part of a header / outline row).
+#' @field isOutline Indicates whether this data group is an outline group used
+#'   in outlined layouts (e.g. a header row for each data group).
 #' @field caption The friendly display name for this data group.
 #' @field variableName The name of the related column in the data frame(s) of
 #'   the pivot table.
@@ -45,6 +48,15 @@
 #'   applies to column data groups, not row data groups.
 #' @field style A PivotStyle object that can apply overrides to the base style
 #'   for this data group.
+#' @field mergeEmptySpace Specifies if/how empty space groups/cells should be
+#'   merged when the pivot table is rendered.
+#' @field mergedCellsStyleName Specifies the name of the style applied to
+#'   empty space groups/cells when the pivot is rendered.  Only applicable
+#'   when mergeEmptySpace specifies that empty space cells are to be merged.
+#' @field mergedCellsStyleDeclarations A PivotStyle object that can apply
+#'   overrides to the style applied to empty space groups/cells when the
+#'   pivot is rendered.  Only applicable when mergeEmptySpace specifies that
+#'   empty space cells are to be merged.
 #' @field isMatch Whether or not this data group matches the criteria of the
 #'   last find.
 #' @field isRendered Whether or not this data group has been rendered yet (used
@@ -79,16 +91,20 @@
 #'   levels in the data group hierarchy.}
 #'   \item{\code{getLevelGroups(level, levelGroups)}}{Get all of the data groups
 #'   at a specific level in the data group hierarchy.}
-#'   \item{\code{addChildGroup(variableName, values, caption, isTotal=FALSE,
-#'   isLevelSubTotal=FALSE, isLevelTotal=FALSE, calculationGroupName=NULL,
-#'   calculationName=NULL, baseStyleName=NULL, styleDeclarations=NULL,
-#'   insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL)}}{
+#'   \item{\code{addChildGroup(variableName, filterType="ALL", values=NULL,
+#'   doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
+#'   isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
+#'   calculationGroupName=NULL, calculationName=NULL,
+#'   baseStyleName=NULL, styleDeclarations=NULL,
+#'   insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL,
+#'   mergeEmptySpace=NULL, mergedCellsStyleName=NULL,
+#'   mergedCellsStyleDeclarations=NULL)}}{
 #'   Add a new data group as the child of the current data group.}
 #'   \item{\code{removeChildGroup(index=NULL, group=NULL)}}{
 #'   Remove a data group that is a child of the current data group.}
 #'   \item{\code{removeGroup()}}{
 #'   Remove the current data group.}
-#'   \item{\code{addDataGroups(variableName, atLevel, fromData=TRUE,  dataName,
+#'   \item{\code{addDataGroups(variableName, atLevel, fromData=TRUE, dataName,
 #'   dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
 #'   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
 #'   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
@@ -123,16 +139,20 @@
 
 PivotDataGroup <- R6::R6Class("PivotDataGroup",
   public = list(
-   initialize = function(parentGroup=NULL, parentPivot=NULL, rowOrColumn=NULL, isEmpty=FALSE, caption=NULL, # common properties
+   initialize = function(parentGroup=NULL, parentPivot=NULL, rowOrColumn=NULL, # common properties
+                         doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL, # common properties
                          isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE, # total properties
                          variableName=NULL, filterType="ALL", values=NULL, # filter properties
                          calculationGroupName=NULL, calculationName=NULL, # calculation properties
-                         baseStyleName=NULL, styleDeclarations=NULL) {
+                         baseStyleName=NULL, styleDeclarations=NULL,
+                         mergeEmptySpace=NULL, mergedCellsStyleName=NULL, mergedCellsStyleDeclarations=NULL) {
      if(parentPivot$argumentCheckMode > 0) {
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", parentGroup, missing(parentGroup), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotDataGroup")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", rowOrColumn, missing(rowOrColumn), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("row", "column"))
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", doNotExpand, missing(doNotExpand), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", isEmpty, missing(isEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", isOutline, missing(isOutline), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", isTotal, missing(isTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", isLevelSubTotal, missing(isLevelSubTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -144,6 +164,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", mergeEmptySpace, missing(mergeEmptySpace), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2"))
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", mergedCellsStyleName, missing(mergedCellsStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "initialize", mergedCellsStyleDeclarations, missing(mergedCellsStyleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
      }
      private$p_parentPivot <- parentPivot
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$new", "Creating new data group...",
@@ -154,7 +177,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_instanceId <- parentPivot$getNextInstanceId()
      private$p_parentGroup <- parentGroup
      private$p_rowOrColumn <- rowOrColumn
+     private$p_doNotExpand <- doNotExpand
      private$p_isEmpty <- isEmpty
+     private$p_isOutline <- isOutline
      private$p_caption <- caption
      private$p_sortValue <- values[1]
      private$p_isTotal <- isTotal
@@ -166,6 +191,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      private$p_calculationName <- calculationName
      private$p_baseStyleName = baseStyleName
      if (!is.null(styleDeclarations)) private$p_style = private$p_parentPivot$createInlineStyle(declarations=styleDeclarations)
+     private$p_mergeEmptySpace <- mergeEmptySpace
+     private$p_mergedCellsStyleName <- mergedCellsStyleName
+     if (!is.null(mergedCellsStyleDeclarations)) private$p_mergedCellsStyleDeclarations = private$p_parentPivot$createInlineStyle(declarations=mergedCellsStyleDeclarations)
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$new", "Created new data group.")
    },
    getLevelNumber = function() {
@@ -298,16 +326,20 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addChildGroup", "Got child index.", list(index=childIndex))
       return(invisible(childIndex))
    },
-   addChildGroup = function(variableName=NULL, filterType="ALL", values=NULL, isEmpty=FALSE, caption=NULL,
+   addChildGroup = function(variableName=NULL, filterType="ALL", values=NULL,
+                            doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
                             isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
                             calculationGroupName=NULL, calculationName=NULL,
                             baseStyleName=NULL, styleDeclarations=NULL,
-                            insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL) {
+                            insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL,
+                            mergeEmptySpace=NULL, mergedCellsStyleName=NULL, mergedCellsStyleDeclarations=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", filterType, missing(filterType), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("ALL", "VALUES", "NONE"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", values, missing(values), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", doNotExpand, missing(doNotExpand), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", isEmpty, missing(isEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", isOutline, missing(isOutline), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", isTotal, missing(isTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", isLevelSubTotal, missing(isLevelSubTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -319,19 +351,32 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", insertAtIndex, missing(insertAtIndex), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", insertBeforeGroup, missing(insertBeforeGroup), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotDataGroup")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", insertAfterGroup, missing(insertAfterGroup), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotDataGroup")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", mergeEmptySpace, missing(mergeEmptySpace), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", mergedCellsStyleName, missing(mergedCellsStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addChildGroup", mergedCellsStyleDeclarations, missing(mergedCellsStyleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addChildGroup", "Adding child group...",
-                                   list(caption=caption, isEmpty=isEmpty, isTotal=isTotal, variableName=variableName, values=values,
-                                   calculationGroupName=calculationGroupName, calculationName=calculationName,
-                                   baseStyleName=baseStyleName, styleDeclarations=styleDeclarations))
+                                   list(caption=caption, doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, isTotal=isTotal,
+                                        variableName=variableName, values=values,
+                                        calculationGroupName=calculationGroupName, calculationName=calculationName,
+                                        baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
+                                        mergeEmptySpace=mergeEmptySpace, mergedCellsStyleName=mergedCellsStyleName,
+                                        mergedCellsStyleDeclarations=mergedCellsStyleDeclarations))
      private$p_parentPivot$resetCells()
      total <- isTotal | self$isTotal
-     grp <- PivotDataGroup$new(parentGroup=self, parentPivot=private$p_parentPivot,
-                          rowOrColumn=private$p_rowOrColumn, isEmpty=isEmpty, caption=caption,
-                          isTotal=total, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
-                          variableName=variableName, filterType=filterType, values=values,
-                          calculationGroupName=calculationGroupName, calculationName=calculationName,
-                          baseStyleName=baseStyleName, styleDeclarations=styleDeclarations)
+     grp <- PivotDataGroup$new(parentGroup=self, parentPivot=private$p_parentPivot, rowOrColumn=private$p_rowOrColumn,
+                               doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, caption=caption,
+                               isTotal=total, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
+                               variableName=variableName, filterType=filterType, values=values,
+                               calculationGroupName=calculationGroupName, calculationName=calculationName,
+                               baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
+                               mergeEmptySpace=mergeEmptySpace, mergedCellsStyleName=mergedCellsStyleName,
+                               mergedCellsStyleDeclarations=mergedCellsStyleDeclarations)
+     # outline groups must either be marked doNotExpand, isEmpty or isTotal (otherwise we will accidentally expand them, which would look odd)
+     if(isOutline) {
+        if((!doNotExpand)&&(!isEmpty)&&(!total)) stop("PivotDataGroup$addChildGroup():  Outline groups must either be set as doNotExpand=TRUE, isEmpty=TRUE or isTotal=TRUE.", call. = FALSE)
+     }
+     # insert the group...
      if(is.null(insertAtIndex) && is.null(insertBeforeGroup) && is.null(insertAfterGroup)) {
         # append to end
         index <- length(private$p_groups) + 1
@@ -558,19 +603,19 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      for(i in 1:length(parentGroups))
      {
        grp <- parentGroups[[i]]
-       # if this is an empty group, then don't expand it (just add an empty child)
-       if(grp$isEmpty) {
+       # if this group is marked not to be expanded, or if this is an empty group, then don't expand it (just add an empty child)
+       if(grp$doNotExpand || grp$isEmpty) {
           # add a single group that is also empty
-          newGrp <- grp$addChildGroup(isEmpty=TRUE)
+          newGrp <- grp$addChildGroup(doNotExpand=grp$doNotExpand, isEmpty=grp$isEmpty, isOutline=grp$isOutline)
           index <- length(newGroups) + 1
           newGroups[[index]] <- newGrp
           next
        }
        # total?
-       if((grp$isTotal==TRUE)&&(expandExistingTotals==FALSE)) {
+       if((grp$isTotal==TRUE)&&(grp$isOutline||(expandExistingTotals==FALSE))) {
          # add a single group that is an unexpanded total
          newGrp <- grp$addChildGroup(variableName=variableName, values=NULL, # so that the totals have a reference to the variable
-                                     calculationGroupName=calculationGroupName,
+                                     calculationGroupName=calculationGroupName, isOutline=grp$isOutline,
                                      isTotal=TRUE, isLevelSubTotal=grp$isLevelSubTotal, isLevelTotal=grp$isLevelTotal,
                                      baseStyleName=baseStyleName, styleDeclarations=styleDeclarations)
          index <- length(newGroups) + 1
@@ -1119,6 +1164,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        caption = self$caption,
        sortValue = private$p_sortValue,
        filters = private$p_filters$asList(),
+       doNotExpand = private$p_doNotExpand,
+       isEmpty = private$p_isEmpty,
+       isOutline = private$p_isOutline,
        isTotal = private$p_isTotal,
        isLevelSubTotal = private$p_isLevelSubTotal,
        isLevelTotal = private$p_isLevelTotal,
@@ -1170,10 +1218,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        return(invisible())
      }
    },
-   isTotal = function(value) { return(invisible(private$p_isTotal)) },
-   isLevelSubTotal = function(value) { return(invisible(private$p_isLevelSubTotal)) },
-   isLevelTotal = function(value) { return(invisible(private$p_isLevelTotal)) },
+   doNotExpand = function(value) { return(invisible(private$p_doNotExpand)) },
    isEmpty = function(value) { return(invisible(private$p_isEmpty)) },
+   isOutline = function(value) { return(invisible(private$p_isOutline)) },
    caption = function(value) {
      if(missing(value)) {
        if(is.null(private$p_caption)) {
@@ -1192,6 +1239,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      }
    },
    sortValue = function(value) { return(invisible(private$p_sortValue)) },
+   isTotal = function(value) { return(invisible(private$p_isTotal)) },
+   isLevelSubTotal = function(value) { return(invisible(private$p_isLevelSubTotal)) },
+   isLevelTotal = function(value) { return(invisible(private$p_isLevelTotal)) },
    rowColumnNumber = function(value) {
      if(missing(value)) { return(invisible(private$p_rowColumnNumber)) }
      else {
@@ -1298,9 +1348,11 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
   private = list(
    p_parentGroup = NULL,
    p_parentPivot = NULL,
-   p_instanceId = NULL,
+   p_instanceId = NULL,              # a unique identifier (unique across all row/column groups and cells) to allow "grp1 is grp2" type comparisons
    p_rowOrColumn = NULL,
-   p_isEmpty = NULL,
+   p_doNotExpand = NULL,             # used to control whether addDataGroups expands the group (or just adds a single group underneath)
+   p_isEmpty = NULL,                 # used to guarantee that a row/column/cells will have no value (PivotCalculator bypasses these cells)
+   p_isOutline = NULL,               # used to indicate this is an outline row/column (i.e. will pickup the outline style)
    p_caption = NULL,
    p_sortValue = NULL,
    p_isTotal = NULL,
@@ -1315,6 +1367,11 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    p_baseStyleName = NULL,
    p_style = NULL, # this should be unique per data group (not shared across multiple data groups).
                    # See a discussion of the p_style private variable in the PivotCells class for more details.
+   p_mergeEmptySpace = NULL,
+   p_mergedCellsStyleName = NULL,
+   p_mergedCellsStyleDeclarations = NULL,
+
+   # internal fields to help with complex operations
    p_fixedWidthSize = 0,
    p_isMatch = FALSE, # helper flag used when searching through data groups
    p_isWithinVisibleRange = TRUE, # helper flag to allow a subsection of the pivot table to be output
