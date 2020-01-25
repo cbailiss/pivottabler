@@ -1723,11 +1723,11 @@ PivotTable <- R6::R6Class("PivotTable",
         if(isTRUE(grp$isOutline)) isOutline <- TRUE  #isTRUE() works with NULL
         if(is.null(mergeFromLevel)) {
           # no merge possible for this group
-          mergeInfo[[i]] <- list(merge=FALSE)
+          mergeInfo[[i]] <- list(merge=FALSE, mergeGroups=FALSE, mergeCells=FALSE)
         }
         else if(mergeEmptySpace=="dataGroupsOnly") {
           if(mergeFromLevel==mergeToLevel) {
-            mergeInfo[[i]] <- list(merge=FALSE)
+            mergeInfo[[i]] <- list(merge=FALSE, mergeGroups=FALSE, mergeCells=FALSE)
           }
           else {
             mergeInfo[[i]] <- list(merge=TRUE, mergeEmptySpace="dataGroupsOnly", isOutline=isOutline,
@@ -1737,7 +1737,7 @@ PivotTable <- R6::R6Class("PivotTable",
         }
         else if(mergeEmptySpace=="cellsOnly") {
           if(cellsAlongAxis==1) {
-            mergeInfo[[i]] <- list(merge=FALSE)
+            mergeInfo[[i]] <- list(merge=FALSE, mergeGroups=FALSE, mergeCells=FALSE)
           }
           else {
             mergeInfo[[i]] <- list(merge=TRUE, mergeEmptySpace="cellsOnly", isOutline=isOutline,
@@ -1752,7 +1752,7 @@ PivotTable <- R6::R6Class("PivotTable",
         }
         else if(mergeEmptySpace=="dataGroupsAndCellsAs2") {
           if((cellsAlongAxis==1)&&(mergeFromLevel==mergeToLevel)) {
-            mergeInfo[[i]] <- list(merge=FALSE)
+            mergeInfo[[i]] <- list(merge=FALSE, mergeGroups=FALSE, mergeCells=FALSE)
           }
           else if(mergeFromLevel==mergeToLevel){
             mergeInfo[[i]] <- list(merge=TRUE, mergeEmptySpace="cellsOnly", isOutline=isOutline,
