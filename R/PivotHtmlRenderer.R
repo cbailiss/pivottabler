@@ -103,6 +103,9 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      # ...cells:
      rowCount <- private$p_parentPivot$cells$rowCount
      columnCount <- private$p_parentPivot$cells$columnCount
+     # ... merges
+     rowMerges <- private$p_parentPivot$getMerges(axis="row")
+     columnMerges <- private$p_parentPivot$getMerges(axis="column")
      # compatibility to keep the explicit row/col span even if span is only 1
      o2n <- !isTRUE(private$p_parentPivot$compatibility$explicitHeaderSpansOfOne)
      # special case of no rows and no columns, return a blank empty table

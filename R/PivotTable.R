@@ -1663,6 +1663,120 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asTidyDataFrame", "Got pivot table as a tidy data frame.")
       return(invisible(as.data.frame(df, stringsAsFactors=stringsAsFactors)))
     },
+    getMerges = function(axis=NULL) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getMerges", axis, missing(axis), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("row", "column"))
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getMerges", "Getting merges...", list(axis=axis))
+      if(!private$p_evaluated) stop("PivotTable$getMerges():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$getMerges():  No cells exist.", call. = FALSE)
+      # get axis objects/info and allowed merges:  doNotMerge, dataGroupsOnly, cellsOnly, dataGroupsAndCellsAs1, dataGroupsAndCellsAs2
+      if(axis=="column") {
+        groups <- private$p_cells$columnGroups # leaf-level groups
+        levelCount <- private$p_columnGroup$getLevelCount(includeCurrentLevel=FALSE)
+        cellsAlongAxis <- private$p_cells$rowCount
+        defaultMergeEmptySpace <- private$p_mergeEmptyRowSpace
+        if(private$p_mergeEmptySpaceDirection=="row") {
+          if(defaultMergeEmptySpace=="cellsOnly") defaultMergeEmptySpace <- "doNotMerge"
+          if(defaultMergeEmptySpace=="dataGroupsAndCellsAs1") defaultMergeEmptySpace <- "dataGroupsOnly"
+          if(defaultMergeEmptySpace=="dataGroupsAndCellsAs2") defaultMergeEmptySpace <- "dataGroupsOnly"
+        }
+      }
+      else {
+        groups <- private$p_cells$rowGroups
+        levelCount <- private$p_rowGroup$getLevelCount(includeCurrentLevel=FALSE)
+        cellsAlongAxis <- private$p_cells$columnCount
+        defaultMergeEmptySpace <- private$p_mergeEmptyColumnSpace
+        if(private$p_mergeEmptySpaceDirection=="column") {
+          if(defaultMergeEmptySpace=="cellsOnly") defaultMergeEmptySpace <- "doNotMerge"
+          if(defaultMergeEmptySpace=="dataGroupsAndCellsAs1") defaultMergeEmptySpace <- "dataGroupsOnly"
+          if(defaultMergeEmptySpace=="dataGroupsAndCellsAs2") defaultMergeEmptySpace <- "dataGroupsOnly"
+        }
+      }
+      # build the merge info
+      mergeInfo <- list()
+      for(i in 1:length(groups)) {
+        grp <- groups[[i]]
+        mergeEmptySpace <- grp$mergeEmptySpace
+        if(is.null(mergeEmptySpace)) mergeEmptySpace <- defaultMergeEmptySpace
+        if(mergeEmptySpace=="doNotMerge") {
+          mergeInfo[[i]] <- list(merge=FALSE)
+          next
+        }
+        ancgrps <- grp$getAncestorGroups(includeCurrentGroup=TRUE) # top-most parent is at bottom of returned list
+        ancgrps <- rev(ancgrps) # top-most element is at top of list
+        mergeFromLevel <- NULL
+        mergeToLevel <- NULL
+        for(l in 1:length(ancgrps)) {
+          lgrp <- ancgrps[[l]]
+          if(lgrp$isEmpty) {
+            if(is.null(mergeFromLevel)) mergeFromLevel <- l - 1
+            mergeToLevel <- l - 1
+          }
+          else {
+            # reset back to null if descendant becomes non-empty again
+            mergeFromLevel <- NULL
+            mergeToLevel <- NULL
+          }
+        }
+        isOutline <- FALSE
+        if(isTRUE(grp$isOutline)) isOutline <- TRUE  #isTRUE() works with NULL
+        if(is.null(mergeFromLevel)) {
+          # no merge possible for this group
+          mergeInfo[[i]] <- list(merge=FALSE)
+        }
+        else if(mergeEmptySpace=="dataGroupsOnly") {
+          if(mergeFromLevel==mergeToLevel) {
+            mergeInfo[[i]] <- list(merge=FALSE)
+          }
+          else {
+            mergeInfo[[i]] <- list(merge=TRUE, mergeEmptySpace="dataGroupsOnly", isOutline=isOutline,
+                                   mergeGroups=TRUE, mergeGroupsFromLevel=mergeFromLevel, mergeGroupSpan=mergeToLevel-mergeFromLevel+1,
+                                   mergeCells=FALSE, skipCells=FALSE)
+          }
+        }
+        else if(mergeEmptySpace=="cellsOnly") {
+          if(cellsAlongAxis==1) {
+            mergeInfo[[i]] <- list(merge=FALSE)
+          }
+          else {
+            mergeInfo[[i]] <- list(merge=TRUE, mergeEmptySpace="cellsOnly", isOutline=isOutline,
+                                   mergeGroups=FALSE,
+                                   mergeCells=TRUE, skipCells=FALSE, mergeCellSpan=cellsAlongAxis)
+          }
+        }
+        else if(mergeEmptySpace=="dataGroupsAndCellsAs1") {
+          mergeInfo[[i]] <- list(merge=TRUE, mergeEmptySpace="dataGroupsAndCellsAs1", isOutline=isOutline,
+                                 mergeGroups=TRUE, mergeGroupSpan= mergeToLevel-mergeFromLevel+1+cellsAlongAxis,
+                                 mergeCells=FALSE, skipCells=TRUE)
+        }
+        else if(mergeEmptySpace=="dataGroupsAndCellsAs2") {
+          if((cellsAlongAxis==1)&&(mergeFromLevel==mergeToLevel)) {
+            mergeInfo[[i]] <- list(merge=FALSE)
+          }
+          else if(mergeFromLevel==mergeToLevel){
+            mergeInfo[[i]] <- list(merge=TRUE, mergeEmptySpace="cellsOnly", isOutline=isOutline,
+                                   mergeGroups=FALSE,
+                                   mergeCells=TRUE, skipCells=FALSE, mergeCellSpan=cellsAlongAxis)
+          }
+          else if(cellsAlongAxis==1) {
+            mergeInfo[[i]] <- list(merge=TRUE, mergeEmptySpace="dataGroupsOnly", isOutline=isOutline,
+                                   mergeGroups=TRUE, mergeGroupsFromLevel=mergeFromLevel, mergeGroupSpan=mergeToLevel-mergeFromLevel+1,
+                                   mergeCells=FALSE, skipCells=FALSE)
+          }
+          else {
+            mergeInfo[[i]] <- list(merge=TRUE, mergeEmptySpace="dataGroupsAndCellsAs2", isOutline=isOutline,
+                                   mergeGroups=TRUE, mergeGroupsFromLevel=mergeFromLevel, mergeGroupSpan=mergeToLevel-mergeFromLevel+1,
+                                   mergeCells=TRUE, skipCells=FALSE, mergeCellSpan=cellsAlongAxis)
+          }
+        }
+        #message(paste0("Merge: ", ifelse(axis=="column", "c", "r"), " ", i, " mg=", mergeInfo[[i]]$merge, " mges=", mergeInfo[[i]]$mergeEmptySpace,
+        #               " outln=", mergeInfo[[i]]$isOutline, " mggrps=", mergeInfo[[i]]$mergeGroups, " mgrpsfl=", mergeInfo[[i]]$mergeGroupsFromLevel,
+        #               " mgrpssp=", mergeInfo[[i]]$mergeGroupSpan, " mrgclls=", mergeInfo[[i]]$mergeCells, " skpclls=", mergeInfo[[i]]$skipCells, " mrgcllspn=", mergeInfo[[i]]$mergeCellSpan))
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getMerges", "Got merges.")
+      return(invisible(mergeInfo))
+    },
     asBasicTable = function(exportOptions=NULL, compatibility=NULL, showRowGroupHeaders=FALSE) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
@@ -2018,6 +2132,36 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+    mergeEmptyRowSpace = function(value) {
+      if(missing(value)) return(invisible(private$p_mergeEmptyRowSpace))
+      else {
+        if(private$p_argumentCheckMode > 0) {
+          checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "mergeEmptyRowSpace", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2"))
+        }
+        private$p_mergeEmptyRowSpace <- value
+        return(invisible())
+      }
+    },
+    mergeEmptyColumnSpace = function(value) {
+      if(missing(value)) return(invisible(private$p_mergeEmptyColumnSpace))
+      else {
+        if(private$p_argumentCheckMode > 0) {
+          checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "mergeEmptyColumnSpace", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2"))
+        }
+        private$p_mergeEmptyColumnSpace <- value
+        return(invisible())
+      }
+    },
+    mergeEmptySpaceDirection = function(value) {
+      if(missing(value)) return(invisible(private$p_mergeEmptySpaceDirection))
+      else {
+        if(private$p_argumentCheckMode > 0) {
+          checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "mergeEmptySpaceDirection", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("row", "column"))
+        }
+        private$p_mergeEmptySpaceDirection <- value
+        return(invisible())
+      }
+    },
     allTimings = function(value) {
       descriptions <- sapply(private$p_timings, function(x) { return(ifelse(is.null(x$desc), NA, x$desc)) })
       user <- sapply(private$p_timings, function(x) { return(ifelse(is.null(x$time["user.self"]), NA, x$time["user.self"])) })
@@ -2049,6 +2193,9 @@ PivotTable <- R6::R6Class("PivotTable",
     p_cells = NULL,
     p_lastCellBatchInfo = NULL,
     p_fixedWidthSized = FALSE,
+    p_mergeEmptyRowSpace = "dataGroupsAndCellsAs2",
+    p_mergeEmptyColumnSpace = "dataGroupsAndCellsAs2",
+    p_mergeEmptySpaceDirection = "row",
     p_htmlRenderer = NULL,
     p_latexRenderer = NULL,
     p_openxlsxRenderer = NULL,
