@@ -35,8 +35,14 @@
 #'   table.
 #' @field colHeaderStyle The name of the style for the column headers in the
 #'   pivot table.
+#' @field outlineRowHeaderStyle The name of the style for the outline row
+#'   headers in the pivot table.
+#' @field outlineColHeaderStyle The name of the style for the outline column
+#'   headers in the pivot table.
 #' @field cellStyle The name of the cell style for the non-total cells in the
 #'   body of the pivot table.
+#' @field outlineCellStyle The name of the cell style for the non-total
+#'   outline cells in the body of the pivot table.
 #' @field totalStyle The name of the cell style for the total cells in the pivot
 #'   table.
 
@@ -241,6 +247,32 @@ PivotStyles <- R6::R6Class("PivotStyles",
         return(invisible())
       }
     },
+    outlineRowHeaderStyle = function(value) {
+      if(missing(value)) return(invisible(private$p_outlineRowHeaderStyle))
+      else {
+        if(private$p_parentPivot$argumentCheckMode > 0) {
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyles", "outlineRowHeaderStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        }
+        if(private$p_allowExternalStyles==FALSE) {
+          if(!(value %in% names(private$p_styles))) stop(paste0("PivotStyles$outlineRowHeaderStyle: '", value, "' style not found in styles list."))
+        }
+        private$p_outlineRowHeaderStyle <- value
+        return(invisible())
+      }
+    },
+    outlineColHeaderStyle = function(value) {
+      if(missing(value)) return(invisible(private$p_outlineColHeaderStyle))
+      else {
+        if(private$p_parentPivot$argumentCheckMode > 0) {
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyles", "outlineColHeaderStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        }
+        if(private$p_allowExternalStyles==FALSE) {
+          if(!(value %in% names(private$p_styles))) stop(paste0("PivotStyles$outlineColHeaderStyle: '", value, "' style not found in styles list."))
+        }
+        private$p_outlineColHeaderStyle <- value
+        return(invisible())
+      }
+    },
     cellStyle = function(value) {
       if(missing(value)) return(invisible(private$p_cellStyle))
       else {
@@ -251,6 +283,19 @@ PivotStyles <- R6::R6Class("PivotStyles",
           if(!(value %in% names(private$p_styles))) stop(paste0("PivotStyles$cellStyle: '", value, "' style not found in styles list."))
         }
         private$p_cellStyle <- value
+        return(invisible())
+      }
+    },
+    outlineCellStyle = function(value) {
+      if(missing(value)) return(invisible(private$p_outlineCellStyle))
+      else {
+        if(private$p_parentPivot$argumentCheckMode > 0) {
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyles", "outlineCellStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        }
+        if(private$p_allowExternalStyles==FALSE) {
+          if(!(value %in% names(private$p_styles))) stop(paste0("PivotStyles$outlineCellStyle: '", value, "' style not found in styles list."))
+        }
+        private$p_outlineCellStyle <- value
         return(invisible())
       }
     },
@@ -277,7 +322,10 @@ PivotStyles <- R6::R6Class("PivotStyles",
     p_rootStyle = NULL,
     p_rowHeaderStyle = NULL,
     p_colHeaderStyle = NULL,
+    p_outlineRowHeaderStyle = NULL,
+    p_outlineColHeaderStyle = NULL,
     p_cellStyle = NULL,
+    p_outlineCellStyle = NULL,
     p_totalStyle = NULL
   )
 )
