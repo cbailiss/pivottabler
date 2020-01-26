@@ -88,6 +88,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      defaultOutlineColHeaderStyle = private$p_parentPivot$styles$outlineColHeaderStyle
      if(is.null(defaultOutlineColHeaderStyle)) defaultOutlineColHeaderStyle <- defaultColHeaderStyle
      defaultOutlineCellStyle = private$p_parentPivot$styles$outlineCellStyle
+     if(is.null(defaultOutlineCellStyle)) defaultOutlineCellStyle <- defaultCellStyle
      defaultTotalStyle = private$p_parentPivot$styles$totalStyle
      # get the actual style names to use, including the styleNamePrefix
      tableStyle <- paste0(styleNamePrefix, defaultTableStyle)
@@ -217,7 +218,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
          # get the leaf row group, then render any parent data groups that haven't yet been rendered
          rg <- rowGroups[[r]]
          ancrgs <- rg$getAncestorGroups(includeCurrentGroup=TRUE)
-         for(c in (length(ancrgs)-1):1) { # start iterating at last item minus 1, which is first visible level (level number=1), since the top ancestor (at the bottom of the ancrgs list) is the not visible parentPivot$rowGroup, which is just a container
+         for(c in (length(ancrgs)-1):1) { # start iterating at last item minus 1, which is first visible level in the pivot (level number=1)
            ancg <- ancrgs[[c]]
            if(ancg$isRendered) next
            rowGroupLevelNumber <- rowGroupLevelCount - c + 1
