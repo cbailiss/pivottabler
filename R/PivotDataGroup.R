@@ -445,7 +445,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                             dataName=NULL, dataSortOrder="asc", dataFormat=NULL, dataFmtFuncArgs=NULL,
                             onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                             expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
-                            preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL) {
+                            preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL, outlineTotal=FALSE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
@@ -467,6 +467,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", outlineBefore, missing(outlineBefore), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", outlineAfter, missing(outlineAfter), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", outlineTotal, missing(outlineTotal), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addDataGroups", "Adding data groups...",
                                    list(variableName=variableName, atLevel=atLevel, fromData=fromData,
@@ -476,7 +477,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                         expandExistingTotals=expandExistingTotals, addTotal=addTotal, visualTotals=visualTotals,
                                         totalPosition=totalPosition, totalCaption=totalCaption, preGroupData=preGroupData,
                                         baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
-                                        outlineBefore=outlineBefore, outlineAfter=outlineAfter))
+                                        outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal))
      private$p_parentPivot$resetCells()
      # check variable name
      if(missing(variableName)||is.null(variableName)) stop("PivotDataGroup$addDataGroups(): variableName must be specified.", call. = FALSE)
@@ -484,6 +485,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      # check outline settings
      outlineBefore <- private$cleanOutlineArg(outlineBefore)
      outlineAfter <- private$cleanOutlineArg(outlineAfter, defaultCaption="")
+     outlineTotal <- private$cleanOutlineArg(outlineTotal, defaultCaption="Total", defaultIsEmpty=FALSE)
      # visual totals
      if(addTotal==TRUE){ private$p_visualTotals <- visualTotals }
      # data values
@@ -616,7 +618,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        # if this group is marked not to be expanded, or if this is an empty group, then don't expand it (just add an empty child)
        if(grp$doNotExpand || grp$isEmpty) {
           # add a single group that is also empty
-          newGrp <- grp$addChildGroup(doNotExpand=grp$doNotExpand, isEmpty=grp$isEmpty, isOutline=grp$isOutline)
+          newGrp <- grp$addChildGroup(doNotExpand=grp$doNotExpand, isEmpty=grp$isEmpty, isOutline=grp$isOutline,
+                                      mergeEmptySpace=grp$mergeEmptySpace, mergedCellsBaseStyleName=grp$mergedCellsBaseStyleName,
+                                      mergedCellsStyleDeclarations=grp$mergedCellsStyle$declarations)
           index <- length(newGroups) + 1
           newGroups[[index]] <- newGrp
           next
@@ -722,7 +726,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        # append the child groups
        else {
          # total before?
-         if((addTotal==TRUE)&&(totalPosition=="before")) {
+         if((addTotal==TRUE)&&(totalPosition=="before")&&(!outlineTotal$outline)) {
            newGrp <- grp$addChildGroup(variableName=variableName, values=NULL, # so that the totals have a reference to the variable
                                        caption=totalCaption, calculationGroupName=calculationGroupName,
                                        isTotal=TRUE, isLevelSubTotal=!grp$isLevelTotal, isLevelTotal=grp$isLevelTotal,
@@ -768,13 +772,22 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            }
          }
          # total after?
-         if((addTotal==TRUE)&&(totalPosition=="after")) {
+         if((addTotal==TRUE)&&(totalPosition=="after")&&(!outlineTotal$outline)) {
            newGrp <- grp$addChildGroup(variableName=variableName, values=NULL, # so that the totals have a reference to the variable
                                        caption=totalCaption, calculationGroupName=calculationGroupName,
                                        isTotal=TRUE, isLevelSubTotal=!grp$isLevelTotal, isLevelTotal=grp$isLevelTotal,
                                        baseStyleName=baseStyleName, styleDeclarations=styleDeclarations)
            index <- length(newGroups) + 1
            newGroups[[index]] <- newGrp
+         }
+         # outline total?
+         if(outlineTotal$outline) {
+            newGrp <- private$createOutlineGroup(parentGroup=grp, outline=outlineTotal, caption=totalCaption,
+                                                 variableName=variableName, values=NULL, calculationGroupName=calculationGroupName,
+                                                 baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
+                                                 isLevelTotal=TRUE)
+            index <- length(newGroups) + 1
+            newGroups[[index]] <- newGrp
          }
        }
      }
@@ -1419,10 +1432,11 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    p_isRendered = FALSE, # helper flag to keep track of which data groups have already been rendered
 
    # private functions:
-   cleanOutlineArg = function(outline=NULL, defaultCaption="{value}") { # checks values and provides defaults for settings (so following code does not need is.null checks)
+   cleanOutlineArg = function(outline=NULL, defaultCaption="{value}", defaultIsEmpty=TRUE) { # checks values and provides defaults for settings (so following code does not need is.null checks)
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "cleanOutlineArg", outline, missing(outline), allowMissing=FALSE, allowNull=TRUE, allowedClasses=c("logical", "list"))
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "cleanOutlineArg", defaultCaption, missing(defaultCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "cleanOutlineArg", defaultIsEmpty, missing(defaultIsEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$cleanOutlineArg", "Cleaning outline argument...")
       if("logical" %in% class(outline)) {
@@ -1443,14 +1457,14 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          clean$caption <- outline$caption
       }
       # setting: isEmpty
-      if(is.null(outline$isEmpty)) clean$isEmpty <- TRUE
+      if(is.null(outline$isEmpty)) clean$isEmpty <- defaultIsEmpty
       else {
          if(!("logical" %in% class(outline$isEmpty))) stop("PivotDataGroup$cleanOutlineArg(): The isEmpty value for the outline data group must be a logical (TRUE/FALSE) value.", call. = FALSE)
          clean$isEmpty <- outline$isEmpty
       }
       # setting: mergeSpace
       allowedMergeSpaceValues <- c("doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2")
-      if(is.null(outline$mergeSpace)) clean$mergeSpace <- "dataGroupsAndCellsAs2"
+      if(is.null(outline$mergeSpace)) clean$mergeSpace <- ifelse(defaultIsEmpty, "dataGroupsAndCellsAs2", "dataGroupsOnly")
       else {
          if(!("character" %in% class(outline$mergeSpace))) stop("PivotDataGroup$cleanOutlineArg(): The mergeSpace value for the outline data group must be a character value.", call. = FALSE)
          if(!(outline$mergeSpace %in% allowedMergeSpaceValues)) stop("PivotDataGroup$cleanOutlineArg(): The mergeSpace value for the outline data group must be one of the following values: doNotMerge, dataGroupsOnly, cellsOnly, dataGroupsAndCellsAs1, dataGroupsAndCellsAs2.", call. = FALSE)
@@ -1494,7 +1508,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       return(clean)
    },
    createOutlineGroup = function(parentGroup=NULL, outline=NULL, variableName=NULL, values=NULL, caption=NULL,
-                                 calculationGroupName=NULL, baseStyleName=NULL, styleDeclarations=NULL) {
+                                 calculationGroupName=NULL, baseStyleName=NULL, styleDeclarations=NULL, isLevelTotal=FALSE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", parentGroup, missing(parentGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", outline, missing(outline), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list")
@@ -1504,17 +1518,31 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", isLevelTotal, missing(isLevelTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$createOutlineGroup", "Creating outline group...")
       # preparation
       if(is.null(caption)) caption <- as.character(values)
-      if(!is.null(caption)) {
+      if((!is.null(caption))&&(length(caption)>0)) {
          caption <- gsub("\\{value\\}", caption, outline$caption)
       }
       isEmpty <- outline$isEmpty
       isOutline <- FALSE
+      isTotal <- FALSE
+      isLevelTotal <- FALSE
+      isLevelSubTotal <- FALSE
+      if(isLevelTotal) {
+         isEmpty <- FALSE
+         isTotal <- TRUE
+         isLevelTotal <- TRUE
+      }
+      else if(!isTRUE(isEmpty)) {
+         isEmpty <- FALSE
+         isTotal <- TRUE
+         isLevelSubTotal <- TRUE
+      }
       mergeSpace <- outline$mergeSpace
-      if(outline$styling=="outline") isOutline <- TRUE
+      if(isTRUE(outline$styling=="outline")) isOutline <- TRUE
       groupStyleName <- baseStyleName
       groupStyleDeclarations <- styleDeclarations
       if(!is.null(outline$groupStyleName)) groupStyleName <- outline$baseStyleName
@@ -1527,6 +1555,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       newGrp <- parentGroup$addChildGroup(variableName=variableName, values=values, # so that group has a reference to the variable & values
                                   caption=caption, calculationGroupName=calculationGroupName,
                                   doNotExpand=TRUE, isEmpty=isEmpty, isOutline=isOutline, mergeEmptySpace=mergeSpace,
+                                  isTotal=isTotal, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
                                   baseStyleName=groupStyleName, styleDeclarations=groupStyleDeclarations,
                                   mergedCellsBaseStyleName=cellStyleName, mergedCellsStyleDeclarations=cellStyleDeclarations)
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$createOutlineGroup", "Created outline group.")

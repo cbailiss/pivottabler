@@ -101,7 +101,8 @@ getDefaultTheme <- function(parentPivot, themeName="default") {
     "text-align"="right"
   )
   outlineCellList <- cellList
-  outlineCellList[["background-color"]] <- "#F5F5F5"
+  outlineCellList[["background-color"]] <- "#F8F8F8"
+  outlineCellList[["font-weight"]] <- "bold"
   # build styles
   pivotStyles$addStyle(styleName="ColumnHeader", colHeaderList)
   pivotStyles$addStyle(styleName="RowHeader", rowHeaderList)
@@ -240,6 +241,7 @@ getLargePlainTheme <- function(parentPivot, themeName="largeplain") {
   )
   outlineCellList <- cellList
   outlineCellList[["background-color"]] <- "#F5F5F5"
+  outlineCellList[["font-weight"]] <- "bold"
   # build styles
   pivotStyles$addStyle(styleName="ColumnHeader", columnHeaderList)
   pivotStyles$addStyle(styleName="RowHeader", rowHeaderList)
@@ -307,6 +309,7 @@ getCompactTheme <- function(parentPivot, themeName="compact") {
   )
   outlineCellList <- cellList
   outlineCellList[["background-color"]] <- "#F5F5F5"
+  outlineCellList[["font-weight"]] <- "bold"
   # build styles
   pivotStyles$addStyle(styleName="ColumnHeader", columnHeaderList)
   pivotStyles$addStyle(styleName="RowHeader", rowHeaderList)
@@ -387,6 +390,7 @@ getSimpleColoredTheme <- function(parentPivot, themeName="coloredTheme", colors,
   outlineCellList <- cellList
   outlineCellList[["color"]] <-  ifelse(is.null(colors$outlineCellColor), colors$cellColor, colors$outlineCellColor)
   outlineCellList[["background-color"]] <- ifelse(is.null(colors$outlineCellBackgroundColor), colors$cellBackgroundColor, colors$outlineCellBackgroundColor)
+  outlineCellList[["font-weight"]] <- "bold"
   totalCellList <- cellList
   totalCellList[["color"]] <-  colors$totalColor
   totalCellList[["background-color"]] <-  colors$totalBackgroundColor

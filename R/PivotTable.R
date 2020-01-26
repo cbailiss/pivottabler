@@ -525,7 +525,8 @@ PivotTable <- R6::R6Class("PivotTable",
                                 dataName=NULL, dataSortOrder="asc", dataFormat=NULL, dataFmtFuncArgs=NULL,
                                 onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                                 expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
-                                preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, header=NULL, outlineBefore=NULL, outlineAfter=NULL) {
+                                preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, header=NULL,
+                                outlineBefore=NULL, outlineAfter=NULL, outlineTotal=NULL) {
      timeStart <- proc.time()
      if(private$p_argumentCheckMode > 0) {
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -549,6 +550,7 @@ PivotTable <- R6::R6Class("PivotTable",
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", header, missing(header), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", outlineBefore, missing(outlineBefore), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", outlineAfter, missing(outlineAfter), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
+       checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", outlineTotal, missing(outlineTotal), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
      }
      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addRowDataGroups", "Adding row groups...",
                    list(variableName=variableName, atLevel=atLevel, fromData=fromData,
@@ -557,7 +559,7 @@ PivotTable <- R6::R6Class("PivotTable",
                    calculationGroupName=calculationGroupName, expandExistingTotals=expandExistingTotals,
                    addTotal=addTotal, visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
                    preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations), header=header,
-                   outlineBefore=outlineBefore, outlineAfter=outlineAfter)
+                   outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal)
      if((!is.null(styleDeclarations))&&(length(styleDeclarations)!=length(names(styleDeclarations))))
        stop("PivotTable$addRowDataGroups(): One or more style declarations are missing a name.", call. = FALSE)
       self$resetCells()
@@ -571,7 +573,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                                expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                                                visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
                                                preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
-                                               outlineBefore=outlineBefore, outlineAfter=outlineAfter)
+                                               outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal)
       if (!is.null(header)) {
         if (length(grps)>0) {
           levelNumber <- grps[[1]]$getLevelNumber()
@@ -1695,7 +1697,7 @@ PivotTable <- R6::R6Class("PivotTable",
         mergeEmptySpace <- grp$mergeEmptySpace
         if(is.null(mergeEmptySpace)) mergeEmptySpace <- defaultMergeEmptySpace
         if(mergeEmptySpace=="doNotMerge") {
-          mergeInfo[[i]] <- list(merge=FALSE)
+          mergeInfo[[i]] <- list(merge=FALSE, mergeGroups=FALSE, mergeCells=FALSE)
           next
         }
         ancgrps <- grp$getAncestorGroups(includeCurrentGroup=TRUE) # top-most parent is at bottom of returned list
@@ -1704,7 +1706,7 @@ PivotTable <- R6::R6Class("PivotTable",
         mergeToLevel <- NULL
         for(l in 1:length(ancgrps)) {
           lgrp <- ancgrps[[l]]
-          if(lgrp$isEmpty) {
+          if(lgrp$isEmpty||lgrp$isOutline) {
             if(is.null(mergeFromLevel)) mergeFromLevel <- l - 1
             mergeToLevel <- l - 1
           }
@@ -1742,7 +1744,8 @@ PivotTable <- R6::R6Class("PivotTable",
         }
         else if(mergeEmptySpace=="dataGroupsAndCellsAs1") {
           mergeInfo[[i]] <- list(merge=TRUE, mergeEmptySpace="dataGroupsAndCellsAs1", isOutline=isOutline,
-                                 mergeGroups=TRUE, mergeGroupSpan= mergeToLevel-mergeFromLevel+1+cellsAlongAxis,
+                                 mergeGroups=TRUE, mergeGroupsFromLevel=mergeFromLevel,
+                                 mergeGroupSpan= mergeToLevel-mergeFromLevel+1+cellsAlongAxis,
                                  mergeCells=FALSE, skipCells=TRUE)
         }
         else if(mergeEmptySpace=="dataGroupsAndCellsAs2") {
@@ -1765,9 +1768,9 @@ PivotTable <- R6::R6Class("PivotTable",
                                    mergeCells=TRUE, skipCells=FALSE, mergeCellSpan=cellsAlongAxis)
           }
         }
-        #message(paste0("Merge: ", ifelse(axis=="column", "c", "r"), " ", i, " mg=", mergeInfo[[i]]$merge, " mges=", mergeInfo[[i]]$mergeEmptySpace,
-        #               " outln=", mergeInfo[[i]]$isOutline, " mggrps=", mergeInfo[[i]]$mergeGroups, " mgrpsfl=", mergeInfo[[i]]$mergeGroupsFromLevel,
-        #               " mgrpssp=", mergeInfo[[i]]$mergeGroupSpan, " mrgclls=", mergeInfo[[i]]$mergeCells, " skpclls=", mergeInfo[[i]]$skipCells, " mrgcllspn=", mergeInfo[[i]]$mergeCellSpan))
+        # message(paste0("Merge: ", ifelse(axis=="column", "c", "r"), " ", i, " mg=", mergeInfo[[i]]$merge, " mges=", mergeInfo[[i]]$mergeEmptySpace,
+        #                " outln=", mergeInfo[[i]]$isOutline, " mggrps=", mergeInfo[[i]]$mergeGroups, " mgrpsfl=", mergeInfo[[i]]$mergeGroupsFromLevel,
+        #                " mgrpssp=", mergeInfo[[i]]$mergeGroupSpan, " mrgclls=", mergeInfo[[i]]$mergeCells, " skpclls=", mergeInfo[[i]]$skipCells, " mrgcllspn=", mergeInfo[[i]]$mergeCellSpan))
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getMerges", "Got merges.")
       return(invisible(mergeInfo))
