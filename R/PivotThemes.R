@@ -162,12 +162,13 @@ getStandardTableTheme <- function(parentPivot, themeName="standardtable") {
   baseCellList <- list(
     "font-family"="Arial",
     "font-size"="0.75em",
-    padding="2px 8px 2px 2px",
+    padding="2px 2px 2px 8px",
     border="1px solid lightgray",
     "vertical-align"="middle",
     "font-weight"="normal"
   )
   leftCellList <- baseCellList
+  leftCellList[["padding"]] <- "2px 8px 2px 2px"
   leftCellList[["text-align"]] <- "left"
   leftCellList[["xl-wrap-text"]] <- "wrap"
   rightCellList <- baseCellList
@@ -246,7 +247,7 @@ getLargePlainTheme <- function(parentPivot, themeName="largeplain") {
   pivotStyles$addStyle(styleName="ColumnHeader", columnHeaderList)
   pivotStyles$addStyle(styleName="RowHeader", rowHeaderList)
   pivotStyles$addStyle(styleName="Cell", cellList)
-  pivotStyles$addStyle(styleName="OutlineColumnHeader", colHeaderList)
+  pivotStyles$addStyle(styleName="OutlineColumnHeader", columnHeaderList)
   pivotStyles$addStyle(styleName="OutlineRowHeader", rowHeaderList)
   pivotStyles$addStyle(styleName="OutlineCell", outlineCellList)
   if(!isTRUE(parentPivot$compatibility$totalStyleIsCellStyle)) {
@@ -314,7 +315,7 @@ getCompactTheme <- function(parentPivot, themeName="compact") {
   pivotStyles$addStyle(styleName="ColumnHeader", columnHeaderList)
   pivotStyles$addStyle(styleName="RowHeader", rowHeaderList)
   pivotStyles$addStyle(styleName="Cell", cellList)
-  pivotStyles$addStyle(styleName="OutlineColumnHeader", colHeaderList)
+  pivotStyles$addStyle(styleName="OutlineColumnHeader", columnHeaderList)
   pivotStyles$addStyle(styleName="OutlineRowHeader", rowHeaderList)
   pivotStyles$addStyle(styleName="OutlineCell", outlineCellList)
   if(!isTRUE(parentPivot$compatibility$totalStyleIsCellStyle)) {
