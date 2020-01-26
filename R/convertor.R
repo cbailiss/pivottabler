@@ -184,6 +184,7 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=
     bc <- 0
     br <- br + 1
     rowMerge <- rowMerges[[r]]
+    rg <- NULL
     # render the row headings
     if(insertDummyRowHeading) {
       bc <- bc + 1

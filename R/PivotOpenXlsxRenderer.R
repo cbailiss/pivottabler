@@ -279,6 +279,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         # merge info
         rowMerge <- rowMerges[[r]]
         # render the row headings
+        rg <- NULL
         if(insertDummyRowHeading) {
           self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=character(0),
                            applyStyles=applyStyles, baseStyleName=rowHeaderStyle, style=NULL, mapFromCss=mapStylesFromCSS)#, debugMsg="dummy row heading")

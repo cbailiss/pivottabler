@@ -209,6 +209,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      for(r in 1:rowCount) {
        trow <- list()
        rowMerge <- rowMerges[[r]]
+       rg <- NULL
        # render the row headings
        if(insertDummyRowHeading) {
          # special case of no row groups existing
