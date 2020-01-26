@@ -208,6 +208,7 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=
           lastDataGroupInRow <- TRUE
         }
         # style info
+        rhs <- NULL
         if(ancg$isOutline) rhs <- outlineRowHeaderStyle
         if(!is.null(ancg$baseStyleName)) rhs <- ancg$baseStyleName
         # render headers

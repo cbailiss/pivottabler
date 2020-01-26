@@ -165,7 +165,7 @@ getStandardTableTheme <- function(parentPivot, themeName="standardtable") {
     padding="2px 8px 2px 2px",
     border="1px solid lightgray",
     "vertical-align"="middle",
-    "font-weight"="normal",
+    "font-weight"="normal"
   )
   leftCellList <- baseCellList
   leftCellList[["text-align"]] <- "left"
