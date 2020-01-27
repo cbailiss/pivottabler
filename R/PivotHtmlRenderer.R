@@ -271,17 +271,17 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        # render the cell values
        if(!(rowMerge$merge && isTRUE(rowMerge$skipCells))) {
          isOutlineCells <- FALSE
-         rgMergedCellsBaseStyleName <- NULL
-         rgMergedCellsStyle <- NULL
+         rgCellBaseStyleName <- NULL
+         rgCellStyle <- NULL
          if(!is.null(rg)) {
            isOutlineCells <- rg$isOutline
-           rgMergedCellsBaseStyleName <- rg$mergedCellsBaseStyleName
-           rgMergedCellsStyle <- rg$mergedCellsStyle
+           rgCellBaseStyleName <- rg$cellBaseStyleName
+           rgCellStyle <- rg$cellStyle
          }
          trowcells <- private$getCellsInRowHtml(r=r, columnCount=columnCount, exportOptions=exportOptions,
                                                 styleNamePrefix=styleNamePrefix, cellStyle=cellStyle, totalStyle=totalStyle,
                                                 isOutline=isOutlineCells, outlineCellStyle=outlineCellStyle,  mergeCells=rowMerge$mergeCells,
-                                                mergedCellsBaseStyleName=rgMergedCellsBaseStyleName, mergedCellsStyle=rgMergedCellsStyle,
+                                                rowGroupCellBaseStyleName=rgCellBaseStyleName, rowGroupCellStyle=rgCellStyle,
                                                 includeRCFilters=includeRCFilters, includeCalculationFilters=includeCalculationFilters,
                                                 includeWorkingData=includeWorkingData, includeEvaluationFilters=includeEvaluationFilters,
                                                 includeCalculationNames=includeCalculationNames, includeRawValue=includeRawValue)
@@ -298,7 +298,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
   private = list(
     p_parentPivot = NULL,
     getCellsInRowHtml = function(r=NULL, columnCount=NULL, exportOptions=NULL, styleNamePrefix=NULL, cellStyle=NULL, totalStyle=NULL,
-                                 isOutline=FALSE, outlineCellStyle=NULL, mergeCells=FALSE, mergedCellsBaseStyleName=NULL, mergedCellsStyle=NULL,
+                                 isOutline=FALSE, outlineCellStyle=NULL, mergeCells=FALSE, rowGroupCellBaseStyleName=NULL, rowGroupCellStyle=NULL, # the last two are forcing cell styles from the row groups (that override the default cell styles, but does not override cell styles specified on the cell)
                                  includeRCFilters=FALSE, includeCalculationFilters=FALSE, includeWorkingData=FALSE, includeEvaluationFilters=FALSE, includeCalculationNames=FALSE, includeRawValue=FALSE) {
        if(private$p_parentPivot$argumentCheckMode > 0) {
           checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -310,8 +310,8 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
           checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", isOutline, missing(isOutline), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
           checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", outlineCellStyle, missing(outlineCellStyle), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
           checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", mergeCells, missing(mergeCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", mergedCellsBaseStyleName, missing(mergedCellsBaseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", mergedCellsStyle, missing(mergedCellsStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotStyle")
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", rowGroupCellBaseStyleName, missing(rowGroupCellBaseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", rowGroupCellStyle, missing(rowGroupCellStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotStyle")
           checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", includeRCFilters, missing(includeRCFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
           checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", includeCalculationFilters, missing(includeCalculationFilters), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
           checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "getCellsInRowHtml", includeWorkingData, missing(includeWorkingData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -324,22 +324,24 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        if(mergeCells) {
          # special case of all the cells being merged
          cssCell <- cellStyle
-         if(isOutline && !is.null(outlineCellStyle)) cssCell <- outlineCellStyle
-         if(!is.null(mergedCellsBaseStyleName)) cssCell <-  paste0(styleNamePrefix, mergedCellsBaseStyleName)
+         if(!is.null(rowGroupCellBaseStyleName)) cssCell <-  paste0(styleNamePrefix, rowGroupCellBaseStyleName)
+         else if(isOutline && !is.null(outlineCellStyle)) cssCell <- outlineCellStyle
          cllstyl <- NULL
-         if(!is.null(mergedCellsStyle)) cllstyl <- mergedCellsStyle$asCSSRule()
+         if(!is.null(rowGroupCellStyle)) cllstyl <- rowGroupCellStyle$asCSSRule()
          trowcells[[length(trowcells)+1]] <- htmltools::tags$td(class=cssCell, style=cllstyl, colspan=columnCount, htmltools::HTML("&nbsp;"))
        }
        else {
          # normal case
          for(c in 1:columnCount) {
             cell <- private$p_parentPivot$cells$getCell(r, c)
-            if(isOutline && (!is.null(outlineCellStyle))) cssCell <- outlineCellStyle
+            if(!is.null(cell$baseStyleName)) cssCell <- paste0(styleNamePrefix, cell$baseStyleName)
+            else if(!is.null(rowGroupCellBaseStyleName)) cssCell <- paste0(styleNamePrefix, rowGroupCellBaseStyleName)
+            else if(isOutline && (!is.null(outlineCellStyle))) cssCell <- outlineCellStyle
             else if(cell$isTotal) cssCell <- totalStyle
             else cssCell <- cellStyle
-            if(!is.null(cell$baseStyleName)) cssCell <- paste0(styleNamePrefix, cell$baseStyleName)
             cllstyl <- NULL
             if(!is.null(cell$style)) cllstyl <- cell$style$asCSSRule()
+            else if (!is.null(rowGroupCellStyle)) cllstyl <- rowGroupCellStyle$asCSSRule()
             detail <- list()
             if(includeRCFilters|includeCalculationFilters|includeWorkingData|includeEvaluationFilters|includeCalculationNames|includeRawValue)
             {

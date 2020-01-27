@@ -225,20 +225,20 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=
     # render the cell values
     if(!(rowMerge$merge && isTRUE(rowMerge$skipCells))) {
       isOutlineCells <- FALSE
-      rgMergedCellsBaseStyleName <- NULL
-      rgMergedCellsStyle <- NULL
+      rgCellBaseStyleName <- NULL
+      rgCellStyle <- NULL
       if(!is.null(rg)) {
         isOutlineCells <- rg$isOutline
-        rgMergedCellsBaseStyleName <- rg$mergedCellsBaseStyleName
-        rgMergedCellsStyle <- rg$mergedCellsStyle
+        rgCellBaseStyleName <- rg$cellBaseStyleName
+        rgCellStyle <- rg$cellStyle
       }
       if(rowMerge$mergeCells) {
         # special case of all the cells being merged
         cs <- NULL
-        if(isOutlineCells && !is.null(outlineCellStyle)) cs <- outlineCellStyle
-        if(!is.null(rgMergedCellsBaseStyleName)) cs <-  rgMergedCellsBaseStyleName
+        if(!is.null(rgCellBaseStyleName)) cs <-  rgCellBaseStyleName
+        else if(isOutlineCells && !is.null(outlineCellStyle)) cs <- outlineCellStyle
         sd <- NULL
-        if(!is.null(rgMergedCellsStyle)) sd <- rgMergedCellsStyle$asCSSRule()
+        if(!is.null(rgCellStyle)) sd <- rgCellStyle
         bc <- bc + 1
         btbl$cells$setCell(r=br, c=bc, cellType="cell", visible=TRUE,
                            rawValue="", formattedValue="", colSpan=columnCount,
@@ -251,12 +251,16 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=
           cellType <- "cell"
           if(cell$isTotal) cellType <- "total"
           cs <- NULL
-          if(isOutlineCells && (!is.null(outlineCellStyle))) cs <- outlineCellStyle
           if(!is.null(cell$baseStyleName)) cs <-  cell$baseStyleName
+          else if(!is.null(rgCellBaseStyleName)) cs <-  rgCellBaseStyleName
+          else if(isOutlineCells && (!is.null(outlineCellStyle))) cs <- outlineCellStyle
+          sd <- NULL
+          if(!is.null(cell$style)) sd <- cell$style
+          else if(!is.null(rgCellStyle)) sd <- rgCellStyle
           bc <- bc + 1
           btbl$cells$setCell(r=br, c=bc, cellType=cellType, visible=TRUE,
                              rawValue=cell$rawValue, formattedValue=exportValueAs(cell$rawValue, cell$formattedValue, exportOptions, blankValue=""),
-                             baseStyleName=cs, styleDeclarations=getPvtStyleDeclarations(cell$style))
+                             baseStyleName=cs, styleDeclarations=getPvtStyleDeclarations(sd))
         }
       }
     }

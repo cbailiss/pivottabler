@@ -320,22 +320,22 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         # render the cell values
         if(!(rowMerge$merge && isTRUE(rowMerge$skipCells))) {
           isOutlineCells <- FALSE
-          rgMergedCellsBaseStyleName <- NULL
-          rgMergedCellsStyle <- NULL
+          rgCellBaseStyleName <- NULL
+          rgCellStyle <- NULL
           if(!is.null(rg)) {
             isOutlineCells <- rg$isOutline
-            rgMergedCellsBaseStyleName <- rg$mergedCellsBaseStyleName
-            rgMergedCellsStyle <- rg$mergedCellsStyle
+            rgCellBaseStyleName <- rg$cellBaseStyleName
+            rgCellStyle <- rg$cellStyle
           }
           if(rowMerge$mergeCells) {
             # special case of all the cells being merged
             xlRowNumber <- topRowNumber + columnGroupLevelCount + r - 1 + rowOffsetDueToDummyColumn
             xlColumnNumber <- leftMostColumnNumber + rowGroupLevelCount + columnOffsetDueToDummyRow
             cs <- cellStyle
-            if(isOutlineCells && !is.null(outlineCellStyle)) cs <- outlineCellStyle
-            if(!is.null(rgMergedCellsBaseStyleName)) cs <-  rgMergedCellsBaseStyleName
+            if(!is.null(rgCellBaseStyleName)) cs <-  rgCellBaseStyleName
+            else if(isOutlineCells && !is.null(outlineCellStyle)) cs <- outlineCellStyle
             sd <- NULL
-            if(!is.null(rgMergedCellsStyle)) sd <- rgMergedCellsStyle$asCSSRule()
+            if(!is.null(rgCellStyle)) sd <- rgCellStyle
             self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber,
                              mergeRows=xlRowNumber, mergeColumns=xlColumnNumber:(xlColumnNumber+columnCount-1), value="",
                              applyStyles=applyStyles, baseStyleName=cs, style=sd, mapFromCss=mapStylesFromCSS)
@@ -346,15 +346,19 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
               xlRowNumber <- topRowNumber + columnGroupLevelCount + r - 1 + rowOffsetDueToDummyColumn
               xlColumnNumber <- leftMostColumnNumber + rowGroupLevelCount + c - 1 + columnOffsetDueToDummyRow
               cell <- private$p_parentPivot$cells$getCell(r, c)
-              if(isOutlineCells && (!is.null(outlineCellStyle))) cs <- outlineCellStyle
+              if(!is.null(cell$baseStyleName)) cs <- cell$baseStyleName
+              else if(!is.null(rgCellBaseStyleName)) cs <-  rgCellBaseStyleName
+              else if(isOutlineCells && (!is.null(outlineCellStyle))) cs <- outlineCellStyle
               else if(cell$isTotal) cs <- totalStyle
               else cs <- cellStyle
-              if(!is.null(cell$baseStyleName)) cs <- cell$baseStyleName
+              sd <- NULL
+              if(!is.null(cell$style)) sd <- cell$style
+              else if(!is.null(rgCellStyle)) sd <- rgCellStyle
               value <- private$getExportValue(cell$rawValue, cell$formattedValue, outputValuesAs,
                                               useCaptionIfRawValueNull=FALSE)
               value <- exportValueAs(cell$rawValue, value, exportOptions, blankValue=character(0))
               self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber, value=value,
-                               applyStyles=applyStyles, baseStyleName=cs, style=cell$style, mapFromCss=mapStylesFromCSS)#, debugMsg="value")
+                               applyStyles=applyStyles, baseStyleName=cs, style=sd, mapFromCss=mapStylesFromCSS)#, debugMsg="value")
             }
           }
         }
