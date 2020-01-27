@@ -138,7 +138,7 @@ Each line above works as follows:
 3. Specify the data frame that contains the data for the pivot table.
 4. Add the distinct values from the TrainCategory column in the data frame as columns in the pivot table.
 5. Add the distinct values from the TOC column in the data frame as rows in the pivot table.
-6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function.  `pivottabler` also supports data.table - see the [Performance](v10-performance.html) vignette for more details.
+6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function.  `pivottabler` also supports data.table - see the [Performance](v11-performance.html) vignette for more details.
 7. Generate the pivot table.
 
 ## Constructing the Basic Pivot Table
@@ -467,13 +467,13 @@ pt$evaluatePivot()
 pt$asMatrix()
 ```
 
-See the [Outputs](v04-outputs.html) vignette for more details, including other conversion options such as converting a pivot table to a data frame.
+See the [Outputs](v05-outputs.html) vignette for more details, including other conversion options such as converting a pivot table to a data frame.
 
 ### Latex Output
 
 ![Latex Output](latex4.png)
 
-See the [Latex Output](v05-latexoutput.html) vignette for more details.
+See the [Latex Output](v06-latexoutput.html) vignette for more details.
 
 ### Styling
 
@@ -501,7 +501,7 @@ pt$theme <- theme
 pt$renderPivot(styleNamePrefix="t3")
 ```
 
-See the [Styling](v06-styling.html) vignette for more details.
+See the [Styling](v07-styling.html) vignette for more details.
 
 ### Finding and Formatting Data Groups
 
@@ -521,7 +521,7 @@ groupCount <- lapply(groups, function(grp) {grp$style <- highlight})
 pt$renderPivot()
 ```
 
-See the [Finding and Formatting](v07-findingandformatting.html) vignette for more details.
+See the [Finding and Formatting](v08-findingandformatting.html) vignette for more details.
 
 ### Finding and Formatting Cells
 
@@ -540,7 +540,7 @@ cellCount <- lapply(cells, function(cell) {cell$style <- highlight})
 pt$renderPivot()
 ```
 
-See the [Finding and Formatting](v07-findingandformatting.html) vignette for more details.
+See the [Finding and Formatting](v08-findingandformatting.html) vignette for more details.
 
 ### Conditional Formatting
 
@@ -640,7 +640,7 @@ for(i in 1:length(cells)) {
 pt$renderPivot()
 ```
 
-See the [Finding and Formatting](v07-findingandformatting.html) vignette for more details.
+See the [Finding and Formatting](v08-findingandformatting.html) vignette for more details.
 
 ### Irregular Layout
 
@@ -661,7 +661,7 @@ cg4$addCalculationGroups("calcGrp2")
 pt$renderPivot()
 ```
 
-See the [Irregular Layout](v09-irregularlayout.html) vignette for more details.
+See the [Irregular Layout](v10-irregularlayout.html) vignette for more details.
 
 ## Further Reading
 
@@ -670,15 +670,16 @@ The full set of vignettes is:
 1. [Introduction](v01-introduction.html)
 2. [Data Groups](v02-datagroups.html)
 3. [Calculations](v03-calculations.html)
-4. [Outputs](v04-outputs.html)
-5. [Latex Output](v05-latexoutput.html)
-6. [Styling](v06-styling.html)
-7. [Finding and Formatting](v07-findingandformatting.html)
-8. [Cell Context](v08-cellcontext.html)
-9. [Irregular Layout](v09-irregularlayout.html)
-10. [Performance](v10-performance.html)
-11. [Shiny](v11-shiny.html)
+4. [Regular Layout](v04-regularlayout.html)
+5. [Outputs](v05-outputs.html)
+6. [Latex Output](v06-latexoutput.html)
+7. [Styling](v07-styling.html)
+8. [Finding and Formatting](v08-findingandformatting.html)
+9. [Cell Context](v09-cellcontext.html)
+10. [Irregular Layout](v10-irregularlayout.html)
+11. [Performance](v11-performance.html)
 12. [Excel Export](v12-excelexport.html)
-13. [Appendix: Details](vA1-appendix.html)
-14. [Appendix: Calculations](vA2-appendix.html)
-15. [Appendix: Class Overview](vA3-appendix.html)
+13. [Shiny](v13-shiny.html)
+14. [Appendix: Details](vA1-appendix.html)
+15. [Appendix: Calculations](vA2-appendix.html)
+16. [Appendix: Class Overview](vA3-appendix.html)

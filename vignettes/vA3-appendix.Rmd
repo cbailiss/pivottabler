@@ -77,7 +77,7 @@ pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (
 pt$renderPivot()
 ```
 
-It is possible (though not typical) for a pivot table to contain multiple calculation groups.  See the [Irregular Layout](v09-irregularlayout.html) vignette for an example.
+It is possible (though not typical) for a pivot table to contain multiple calculation groups.  See the [Irregular Layout](v10-irregularlayout.html) vignette for an example.
 
 `pt$calculationGroups` contains the calculation groups present in a pivot table.  The calculation definitions within the default group are accessed via `pt$calculationGroups$defaultGroup$calculations`.
 
@@ -95,11 +95,11 @@ Each cell has a raw value (typically of data type numeric) and a formatted value
 
 It is possible to find the leaf-level data groups (i.e. right-most row heading and bottom column heading) that relate to a cell using `cell$rowLeafGroup` and `cell$columnLeafGroup`.  If the data group has other parent groups, then these can be accessed recursively via `cell$rowLeafGroup`, `cell$rowLeafGroup$parentGroup`, `cell$rowLeafGroup$parentGroup$parentGroup`, etc.
 
-The [Finding and Formatting](v07-findingandformatting.html) vignette describes other ways of accessing cells and data group headings.
+The [Finding and Formatting](v08-findingandformatting.html) vignette describes other ways of accessing cells and data group headings.
 
 ## Filter Classes
 
-Each data group typically acts as a filter for the data in that row/column of the pivot table.  E.g. a heading of "France" typically implies "Country=France".  This filter condition is represented by the `PivotFilter` class.  Every cell in a pivot table has a set of filters (one filter from each row/column heading) and these filters are represented by the `PivotFilters` class.  See the [Cell Context](v08-cellcontext.html) vignette for more details.
+Each data group typically acts as a filter for the data in that row/column of the pivot table.  E.g. a heading of "France" typically implies "Country=France".  This filter condition is represented by the `PivotFilter` class.  Every cell in a pivot table has a set of filters (one filter from each row/column heading) and these filters are represented by the `PivotFilters` class.  See the [Cell Context](v09-cellcontext.html) vignette for more details.
 
 The `PivotFilterOverrides` class provides a mechanism for individual calculation definitions to override the default filters associated with a cell.  See the [Calculations](v03-calculations.html) vignette for more details.
 
@@ -119,13 +119,13 @@ The `PivotOpenXlsxStyle` and `PivotOpenXlsxStyles` classes are similar, except t
 
 The `PivotThemes` class represents a set of styles to apply to the different parts (headings, cells, totals, etc) of a pivot table.
 
-See the [Styling](v06-styling.html) vignette for more details.
+See the [Styling](v07-styling.html) vignette for more details.
 
 ## Rendering Classes
 
 The `PivotHtmlRenderer`, `PivotLatexRenderer` and `PivotOpenXlsxRenderer` classes provide rendering logic for each of the formats that a pivot table can be output in.
 
-See the [Outputs](v04-outputs.html) vignette for more details.
+See the [Outputs](v05-outputs.html) vignette for more details.
 
 ## Summary
 
@@ -145,15 +145,16 @@ The full set of vignettes is:
 1. [Introduction](v01-introduction.html)
 2. [Data Groups](v02-datagroups.html)
 3. [Calculations](v03-calculations.html)
-4. [Outputs](v04-outputs.html)
-5. [Latex Output](v05-latexoutput.html)
-6. [Styling](v06-styling.html)
-7. [Finding and Formatting](v07-findingandformatting.html)
-8. [Cell Context](v08-cellcontext.html)
-9. [Irregular Layout](v09-irregularlayout.html)
-10. [Performance](v10-performance.html)
-11. [Shiny](v11-shiny.html)
+4. [Regular Layout](v04-regularlayout.html)
+5. [Outputs](v05-outputs.html)
+6. [Latex Output](v06-latexoutput.html)
+7. [Styling](v07-styling.html)
+8. [Finding and Formatting](v08-findingandformatting.html)
+9. [Cell Context](v09-cellcontext.html)
+10. [Irregular Layout](v10-irregularlayout.html)
+11. [Performance](v11-performance.html)
 12. [Excel Export](v12-excelexport.html)
-13. [Appendix: Details](vA1-appendix.html)
-14. [Appendix: Calculations](vA2-appendix.html)
-15. [Appendix: Class Overview](vA3-appendix.html)
+13. [Shiny](v13-shiny.html)
+14. [Appendix: Details](vA1-appendix.html)
+15. [Appendix: Calculations](vA2-appendix.html)
+16. [Appendix: Class Overview](vA3-appendix.html)

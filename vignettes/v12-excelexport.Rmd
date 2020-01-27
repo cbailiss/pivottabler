@@ -60,11 +60,11 @@ saveWorkbook(wb, file="C:\\test.xlsx", overwrite = TRUE)
 
 ## Styling and Formatting
 
-The Excel output from the `pivottabler` package has been written so that, as much as possible, the same styling used for HTML output also works for the Excel output, i.e. most of the styling described in the [Styling](v06-styling.html) vignette can also be used when writing a pivot table to an Excel file.
+The Excel output from the `pivottabler` package has been written so that, as much as possible, the same styling used for HTML output also works for the Excel output, i.e. most of the styling described in the [Styling](v07-styling.html) vignette can also be used when writing a pivot table to an Excel file.
 
-More specifically, the styling described in the [Styling](v06-styling.html) vignette uses CSS (Cascading Style Sheet) definitions for styles.  The `pivottabler` package interprets these CSS definitions and maps them to the styling used in Excel/by the openxlsx package.
+More specifically, the styling described in the [Styling](v07-styling.html) vignette uses CSS (Cascading Style Sheet) definitions for styles.  The `pivottabler` package interprets these CSS definitions and maps them to the styling used in Excel/by the openxlsx package.
 
-This means, once a pivot table has been styled as described in the [Styling](v06-styling.html) vignette, the pivot table in the Excel workbook can be styled simply by specifying `applyStyles=TRUE`.
+This means, once a pivot table has been styled as described in the [Styling](v07-styling.html) vignette, the pivot table in the Excel workbook can be styled simply by specifying `applyStyles=TRUE`.
 
 ```{r, message=FALSE, warning=FALSE, eval=FALSE}
 library(pivottabler)
@@ -242,15 +242,16 @@ The full set of vignettes is:
 1. [Introduction](v01-introduction.html)
 2. [Data Groups](v02-datagroups.html)
 3. [Calculations](v03-calculations.html)
-4. [Outputs](v04-outputs.html)
-5. [Latex Output](v05-latexoutput.html)
-6. [Styling](v06-styling.html)
-7. [Finding and Formatting](v07-findingandformatting.html)
-8. [Cell Context](v08-cellcontext.html)
-9. [Irregular Layout](v09-irregularlayout.html)
-10. [Performance](v10-performance.html)
-11. [Shiny](v11-shiny.html)
+4. [Regular Layout](v04-regularlayout.html)
+5. [Outputs](v05-outputs.html)
+6. [Latex Output](v06-latexoutput.html)
+7. [Styling](v07-styling.html)
+8. [Finding and Formatting](v08-findingandformatting.html)
+9. [Cell Context](v09-cellcontext.html)
+10. [Irregular Layout](v10-irregularlayout.html)
+11. [Performance](v11-performance.html)
 12. [Excel Export](v12-excelexport.html)
-13. [Appendix: Details](vA1-appendix.html)
-14. [Appendix: Calculations](vA2-appendix.html)
-15. [Appendix: Class Overview](vA3-appendix.html)
+13. [Shiny](v13-shiny.html)
+14. [Appendix: Details](vA1-appendix.html)
+15. [Appendix: Calculations](vA2-appendix.html)
+16. [Appendix: Class Overview](vA3-appendix.html)

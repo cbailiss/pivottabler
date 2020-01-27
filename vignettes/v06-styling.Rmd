@@ -43,7 +43,7 @@ To apply styles to a range of cells, e.g. rows 2 to 3 and columns 1 to 5:
 
 `pt$setStyling(2, 1, 3, 5, declarations=list("font-weight"="bold", "text-align"="center")`
 
-The above examples specify the cells to be styled by their row and column numbers in the body of the table.  It is also possible to specify a list of cells using the `cells` argument or a list of data groups (i.e. row or column headings) using the `groups` argument.  Many examples of these can be found in the [Finding and Formatting](v07-findingandformatting.html) vignette.
+The above examples specify the cells to be styled by their row and column numbers in the body of the table.  It is also possible to specify a list of cells using the `cells` argument or a list of data groups (i.e. row or column headings) using the `groups` argument.  Many examples of these can be found in the [Finding and Formatting](v08-findingandformatting.html) vignette.
 
 The above examples also set CSS style attributes on the individual cells.  This is quick and easy, though very verbose.  Named styles are more efficient for large pivot tables (hundreds/thousands of cells) and are described in the following sections. 
 
@@ -51,7 +51,7 @@ The above examples also set CSS style attributes on the individual cells.  This 
 
 `pivottabler` can render pivot tables in HTML and Latex.  The focus of this vignette is styling when rendering to HTML.  
 
-`pivottabler` offers only limited styling options when rendering to Latex.  Please see the [Latex Output](v05-latexoutput.html) vignette for details.
+`pivottabler` offers only limited styling options when rendering to Latex.  Please see the [Latex Output](v06-latexoutput.html) vignette for details.
 
 When rendered to HTML, the appearance of `pivottabler` pivot tables can be changed using styles and themes:
 
@@ -354,7 +354,7 @@ The `pt$setStyling()` function is used in the example above.  This function has 
 
 The `pt$createInlineStyle()` function is also used in the example above.  This function creates a new unnamed style (that is not part of the table theme) and takes two arguments:  `baseStyleName` specifies the name of the style that the new style will be based on (i.e. will have it's style properties copied from) and `declarations` which specifies new/overriding style properties for the new style. 
 
-For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v07-findingandformatting.html) vignette.
+For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v08-findingandformatting.html) vignette.
 
 ## Creating a New Theme
 
@@ -499,15 +499,16 @@ The full set of vignettes is:
 1. [Introduction](v01-introduction.html)
 2. [Data Groups](v02-datagroups.html)
 3. [Calculations](v03-calculations.html)
-4. [Outputs](v04-outputs.html)
-5. [Latex Output](v05-latexoutput.html)
-6. [Styling](v06-styling.html)
-7. [Finding and Formatting](v07-findingandformatting.html)
-8. [Cell Context](v08-cellcontext.html)
-9. [Irregular Layout](v09-irregularlayout.html)
-10. [Performance](v10-performance.html)
-11. [Shiny](v11-shiny.html)
+4. [Regular Layout](v04-regularlayout.html)
+5. [Outputs](v05-outputs.html)
+6. [Latex Output](v06-latexoutput.html)
+7. [Styling](v07-styling.html)
+8. [Finding and Formatting](v08-findingandformatting.html)
+9. [Cell Context](v09-cellcontext.html)
+10. [Irregular Layout](v10-irregularlayout.html)
+11. [Performance](v11-performance.html)
 12. [Excel Export](v12-excelexport.html)
-13. [Appendix: Details](vA1-appendix.html)
-14. [Appendix: Calculations](vA2-appendix.html)
-15. [Appendix: Class Overview](vA3-appendix.html)
+13. [Shiny](v13-shiny.html)
+14. [Appendix: Details](vA1-appendix.html)
+15. [Appendix: Calculations](vA2-appendix.html)
+16. [Appendix: Class Overview](vA3-appendix.html)
