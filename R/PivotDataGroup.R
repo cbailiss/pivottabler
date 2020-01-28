@@ -126,11 +126,12 @@
 #'   this data group or its nearest ancestor.}
 #'   \item{\code{isFindMatch(matchMode="simple", variableNames=NULL,
 #'   variableValues=NULL, totals="include", calculationNames=NULL,
-#'   excludeEmptyGroups=TRUE)}}{Tests whether this data group matches the
+#'   emptyGroups="exclude", outlineGroups="exclude")}}{Tests whether this data group matches the
 #'   specified criteria.}
 #'   \item{\code{findDataGroups(matchMode="simple", variableNames=NULL,
 #'   variableValues=NULL, totals="include", calculationNames=NULL,
-#'   includeChildGroups=FALSE, excludeEmptyGroups=TRUE)}}{Searches all data
+#'   includeChildGroups=FALSE, emptyGroups="exclude",
+#'   outlineGroups="exclude")}}{Searches all data
 #'   groups underneath this data group to find groups that match the specified
 #'   criteria.}
 #'   \item{\code{clearSortGroups()}}{Used internally during sort operations.}
@@ -1141,19 +1142,24 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getNetCalculationName", "Got net calculation.")
      return(invisible())
    },
-   isFindMatch = function(matchMode="simple", variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL, excludeEmptyGroups=TRUE) {
+   isFindMatch = function(matchMode="simple", variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL, emptyGroups="exclude", outlineGroups="exclude") {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", excludeEmptyGroups, missing(excludeEmptyGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", emptyGroups, missing(emptyGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", outlineGroups, missing(outlineGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$isFindMatch", "Checking if matches criteria...")
      # a) check empty space
-     if(excludeEmptyGroups && self$isEmpty) return(invisible(FALSE))
-     # b) check the filter match
+     if((emptyGroups=="exclude")&&(self$isEmpty==TRUE)) return(invisible(FALSE))
+     if((emptyGroups=="only")&&(self$isEmpty==FALSE)) return(invisible(FALSE))
+     # b) check outline
+     if((outlineGroups=="exclude")&&(isTRUE(self$isOutline))) return(invisible(FALSE))
+     if((outlineGroups=="only")&&(!isTRUE(self$isOutline))) return(invisible(FALSE))
+     # c) check the filter match
      if((!is.null(variableNames))||(!is.null(variableValues))) {
        if(matchMode=="simple") filters <- private$p_filters
        else filters <- self$getNetFilters()
@@ -1161,10 +1167,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        isMatch <- filters$isFilterMatch(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues)
        if(isMatch==FALSE) return(invisible(FALSE))
      }
-     # c) check totals criteria
+     # d) check totals criteria
      if((totals=="exclude")&&(self$isTotal==TRUE)) return(invisible(FALSE))
      if((totals=="only")&&(self$isTotal==FALSE)) return(invisible(FALSE))
-     # d) check calculation criteria
+     # e) check calculation criteria
      if(!is.null(calculationNames)) {
        if(matchMode=="simple") calcName <- private$p_calculationName
        else calcName <- self$getNetCalculationName()
@@ -1175,7 +1181,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      return(invisible(TRUE))
    },
    findDataGroups = function(matchMode="simple", variableNames=NULL, variableValues=NULL,
-                             totals="include", calculationNames=NULL, includeDescendantGroups=FALSE, excludeEmptyGroups=TRUE) {
+                             totals="include", calculationNames=NULL, includeDescendantGroups=FALSE, emptyGroups="exclude", outlineGroups="exclude") {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -1183,7 +1189,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", excludeEmptyGroups, missing(excludeEmptyGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", emptyGroups, missing(emptyGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", outlineGroups, missing(outlineGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$findDataGroups", "Finding data groups...")
      # clear the isMatch flag across all descendants
@@ -1203,7 +1210,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          grp <- grps[[i]]
          if(grp$isMatch==TRUE) next
          if(grp$isFindMatch(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues,
-                              totals=totals, calculationNames=calculationNames, excludeEmptyGroups=excludeEmptyGroups)) {
+                            totals=totals, calculationNames=calculationNames, emptyGroups=emptyGroups, outlineGroups=outlineGroups)) {
            grp$isMatch <- TRUE
            if(includeDescendantGroups==TRUE) {
              descgrps <- grp$getDescendantGroups(includeCurrentGroup=FALSE)
@@ -1224,7 +1231,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          grp <- leafgrps[[i]]
          while(!is.null(grp)) {
            if(grp$isFindMatch(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues,
-                              totals=totals, calculationNames=calculationNames, excludeEmptyGroups=excludeEmptyGroups)) {
+                              totals=totals, calculationNames=calculationNames, emptyGroups=emptyGroups, outlineGroups=outlineGroups)) {
              matches[[length(matches)+1]] <- grp
              grp <- grp$parentGroup
            }
