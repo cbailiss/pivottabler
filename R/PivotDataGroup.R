@@ -831,102 +831,80 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        calculation <- calculationGroup$getCalculation(calculationName)
      }
      # sort at this level, or a level below?
-     if(levelNumber==0) {
-       # sort at this level
-       if(orderBy=="value") {
-         # sorting by value
-         groups <- list()
-         values <- list()
-         j <- 0
-         for(i in 1:length(private$p_groups)) {
-           grp <- private$p_groups[[i]]
-           if(grp$isTotal==TRUE) next
-           j <- j + 1
-           groups[[j]] <- grp
-           values[[j]] <- grp$sortValue
-         }
-         if(length(values)>0){
-           if(sortOrder=="asc") sortIndexes <- order(unlist(values))
-           else sortIndexes <- order(unlist(values), decreasing=TRUE)
-           j <- 0
-           for(i in 1:length(private$p_groups)) {
-             if(private$p_groups[[i]]$isTotal==TRUE) next
-             j <- j + 1
-             private$p_groups[[i]] <- groups[[sortIndexes[j]]]
-           }
-         }
+     if(levelNumber>0) {
+        # sort below this level
+        for(i in 1:length(private$p_groups)) {
+           private$p_groups[[i]]$sortDataGroups(levelNumber=levelNumber-1, orderBy=orderBy, sortOrder=sortOrder,
+                                                calculationGroupName=calculationGroupName, calculationName=calculationName)
+        }
+        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$sortDataGroups", "Sorted data groups.")
+        return(invisible())
+     }
+     # sort at this level
+     if(orderBy %in% c("value", "caption")) {
+        # sorting by a simple property of the data group
+       groups <- list()
+       values <- list()
+       j <- 0
+       for(i in 1:length(private$p_groups)) {
+         grp <- private$p_groups[[i]]
+         if(grp$isTotal==TRUE) next
+         j <- j + 1
+         groups[[j]] <- grp
+         if(orderBy=="value") values[[j]] <- grp$sortValue # sorting by value
+         else if(orderBy=="caption") values[[j]] <- grp$caption # sorting by caption
        }
-       else if(orderBy=="caption") {
-         # sorting by caption
-         groups <- list()
-         captions <- list()
+       if(length(values)>0){
+         if(sortOrder=="asc") sortIndexes <- order(unlist(values))
+         else sortIndexes <- order(unlist(values), decreasing=TRUE)
          j <- 0
          for(i in 1:length(private$p_groups)) {
-           grp <- private$p_groups[[i]]
-           if(grp$isTotal==TRUE) next
+           if(private$p_groups[[i]]$isTotal==TRUE) next
            j <- j + 1
-           groups[[j]] <- grp
-           captions[[j]] <- grp$caption
-         }
-         if(length(captions)>0) {
-           if(sortOrder=="asc") sortIndexes <- order(unlist(captions))
-           else sortIndexes <- order(unlist(captions), decreasing=TRUE)
-           j <- 0
-           for(i in 1:length(private$p_groups)) {
-             if(private$p_groups[[i]]$isTotal==TRUE) next
-             j <- j + 1
-             private$p_groups[[i]] <- groups[[sortIndexes[j]]]
-           }
-         }
-       }
-       else {
-         # sorting by calculation
-         groups <- list()
-         rawValues <- list()
-         pivotCalculator <- PivotCalculator$new(private$p_parentPivot)
-         j <- 0
-         for(i in 1:length(private$p_groups)) {
-           grp <- private$p_groups[[i]]
-           if(grp$isTotal==TRUE) next
-           j <- j + 1
-           groups[[j]] <- grp
-           # get the filter criteria from the top-most parent group down to this one
-           ancestors <- grp$getAncestorGroups(includeCurrentGroup=TRUE)
-           netFilters <- PivotFilters$new(private$p_parentPivot)
-           for(k in length(ancestors):1) {
-             acs <- ancestors[[k]]
-             filters <- acs$filters
-             if(is.null(filters)) next
-             if(filters$count==0) next
-             for(l in 1:length(filters$filters)) {
-               filter <- filters$filters[[l]]
-               netFilters$setFilter(filter, action="intersect")
-             }
-           }
-           # calculate the value
-           results <- pivotCalculator$evaluateNamedCalculation(calculationName=calculationName,
-                                                               calculationGroupName=calculationGroupName,
-                                                               rowColFilters=netFilters)
-           calcResults <- results[[calculationName]]
-           rawValues[[j]] <- calcResults$rawValue
-         }
-         if(length(rawValues)>0) {
-           if(sortOrder=="asc") sortIndexes <- order(unlist(rawValues))
-           else sortIndexes <- order(unlist(rawValues), decreasing=TRUE)
-           j <- 0
-           for(i in 1:length(private$p_groups)) {
-             if(private$p_groups[[i]]$isTotal==TRUE) next
-             j <- j + 1
-             private$p_groups[[i]] <- groups[[sortIndexes[j]]]
-           }
+           private$p_groups[[i]] <- groups[[sortIndexes[j]]]
          }
        }
      }
      else {
-       # sort below this level
+       # sorting by calculation
+       groups <- list()
+       rawValues <- list()
+       pivotCalculator <- PivotCalculator$new(private$p_parentPivot)
+       j <- 0
        for(i in 1:length(private$p_groups)) {
-         private$p_groups[[i]]$sortDataGroups(levelNumber=levelNumber-1, orderBy=orderBy, sortOrder=sortOrder,
-                                              calculationGroupName=calculationGroupName, calculationName=calculationName)
+         grp <- private$p_groups[[i]]
+         if(grp$isTotal==TRUE) next
+         j <- j + 1
+         groups[[j]] <- grp
+         # get the filter criteria from the top-most parent group down to this one
+         ancestors <- grp$getAncestorGroups(includeCurrentGroup=TRUE)
+         netFilters <- PivotFilters$new(private$p_parentPivot)
+         for(k in length(ancestors):1) {
+           acs <- ancestors[[k]]
+           filters <- acs$filters
+           if(is.null(filters)) next
+           if(filters$count==0) next
+           for(l in 1:length(filters$filters)) {
+             filter <- filters$filters[[l]]
+             netFilters$setFilter(filter, action="intersect")
+           }
+         }
+         # calculate the value
+         results <- pivotCalculator$evaluateNamedCalculation(calculationName=calculationName,
+                                                             calculationGroupName=calculationGroupName,
+                                                             rowColFilters=netFilters)
+         calcResults <- results[[calculationName]]
+         rawValues[[j]] <- calcResults$rawValue
+       }
+       if(length(rawValues)>0) {
+         if(sortOrder=="asc") sortIndexes <- order(unlist(rawValues))
+         else sortIndexes <- order(unlist(rawValues), decreasing=TRUE)
+         j <- 0
+         for(i in 1:length(private$p_groups)) {
+           if(private$p_groups[[i]]$isTotal==TRUE) next
+           j <- j + 1
+           private$p_groups[[i]] <- groups[[sortIndexes[j]]]
+         }
        }
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$sortDataGroups", "Sorted data groups.")

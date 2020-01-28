@@ -295,6 +295,8 @@ The data groups can also be sorted using the `sortColumnDataGroups` or `sortRowD
 * By the data group caption (e.g. if formatting has been applied) - using `orderBy="caption"`,
 * By the result of a calculation - the default, or set explicitly using `orderBy="calculation"`.
 
+Note that "data group value" above refers to the value in the row/group header.  In the example pivot table above and below, the headers are text values, e.g. "Express Passenger", "DMU", "London Midland", etc.  To sort by a number in the cells of the pivot table, which is typically the result of a calculation, use `orderBy="calculation"`.
+
 For example, to sort the train operating companies into descending order by the total number of trains:
 
 ```{r, message=FALSE, warning=FALSE}
@@ -303,7 +305,7 @@ pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addColumnDataGroups("PowerType")
-pt$addRowDataGroups("TOC", dataSortOrder="desc")
+pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$sortRowDataGroups(levelNumber=1, orderBy="calculation", sortOrder="desc")
 pt$renderPivot()
