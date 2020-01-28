@@ -1711,6 +1711,12 @@ PivotTable <- R6::R6Class("PivotTable",
         grp <- groups[[i]]
         mergeEmptySpace <- grp$mergeEmptySpace
         if(is.null(mergeEmptySpace)) mergeEmptySpace <- defaultMergeEmptySpace
+        # validate the mergeEmptySpace for this row
+        if((!(grp$isEmpty))||(grp$isTotal)) {
+          if(mergeEmptySpace=="cellsOnly") mergeEmptySpace <- "doNotMerge"
+          else if(mergeEmptySpace %in% c("dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2")) mergeEmptySpace <- "dataGroupsOnly"
+        }
+        # generate the merge info
         if(mergeEmptySpace=="doNotMerge") {
           mergeInfo[[i]] <- list(merge=FALSE, mergeGroups=FALSE, mergeCells=FALSE)
           next

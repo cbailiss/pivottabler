@@ -1603,9 +1603,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       }
       # check mergeSpace and isEmpty are compatible
       if(!(clean$isEmpty)) {
-         if(clean$mergeSpace %in% c("cellsOnly", "dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2")) {
-            stop("PivotDataGroup$cleanOutlineArg(): The mergeSpace value for the outline data group must be either doNotMerge or dataGroupsOnly when the outline data group isEmpty value is FALSE", call. = FALSE)
-         }
+         if(clean$mergeSpace=="cellsOnly") clean$mergeSpace <- "doNotMerge"
+         else if(clean$mergeSpace %in% c("dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2")) clean$mergeSpace <- "dataGroupsOnly"
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$cleanOutlineArg", "Cleaned outline argument.")
       return(clean)
