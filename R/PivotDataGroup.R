@@ -636,13 +636,15 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        }
        # total?
        if((grp$isTotal==TRUE)&&(grp$isOutline||(expandExistingTotals==FALSE))) {
-         # add a single group that is an unexpanded total
-         newGrp <- grp$addChildGroup(variableName=variableName, values=NULL, # so that the totals have a reference to the variable
-                                     calculationGroupName=calculationGroupName, isOutline=grp$isOutline,
-                                     isTotal=TRUE, isLevelSubTotal=grp$isLevelSubTotal, isLevelTotal=grp$isLevelTotal,
-                                     baseStyleName=baseStyleName, styleDeclarations=styleDeclarations, sortAnchor="fixed")
-         index <- length(newGroups) + 1
-         newGroups[[index]] <- newGrp
+         if(length(grp$childGroups)==0) { # if there is a total cell present already, don't add another (this can happen if addDataGroups(atLevel=N) is called multiple times with the same level N)
+           # add a single group that is an unexpanded total
+           newGrp <- grp$addChildGroup(variableName=variableName, values=NULL, # so that the totals have a reference to the variable
+                                       calculationGroupName=calculationGroupName, isOutline=grp$isOutline,
+                                       isTotal=TRUE, isLevelSubTotal=grp$isLevelSubTotal, isLevelTotal=grp$isLevelTotal,
+                                       baseStyleName=baseStyleName, styleDeclarations=styleDeclarations, sortAnchor="fixed")
+           index <- length(newGroups) + 1
+           newGroups[[index]] <- newGrp
+         }
          next
        }
 
