@@ -67,7 +67,14 @@ These functions also accept the following arguments:
     + `only` to match only total data groups.
 - `calculationNames` - a character vector specifying the name/names of the calculations to find.
 - `includeDescendantGroups` - a logical value specifying whether only the top-most matching data group for each row/column is returned, or whether the descendant groups are also included.
-- `excludeEmptyGroups` - a logical value specifying whether to exclude empty groups (such as the empty groups associated with rows/columns in outlined layouts). 
+- `emptyGroups` - a character value specifying whether empty groups are to be matched - must be one of:
+    + `include` to match empty and non-empty data groups.
+    + `exclude` to match only non-empty data groups.
+    + `only` to match only empty data groups.
+- `outlineGroups` - a character value specifying whether outline groups are to be matched - must be one of:
+    + `include` to match outline and normal data groups.
+    + `exclude` to match only normal data groups.
+    + `only` to match only outline data groups.
 
 Several examples follow below.  In each of the examples the data groups that have been found are highlighted in yellow by specifying a different style.
 
@@ -350,7 +357,8 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$evaluatePivot()
 cells <- pt$getCells(specifyCellsAsList=TRUE, cellCoordinates=list(c(2, 3)))
 pt$setStyling(cells=cells, declarations=list("background-color"="#FFCC66"))
-cat("The raw value of the cell is", cells[[1]]$rawValue, "and the formatted value is", cells[[1]]$formattedValue, ".")
+cat("The raw value of the cell is", cells[[1]]$rawValue, 
+    "and the formatted value is", cells[[1]]$formattedValue, ".")
 pt$renderPivot()
 ```
 
@@ -383,7 +391,9 @@ pt$addColumnDataGroups("PowerType")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$evaluatePivot()
-cells <- pt$getCells(specifyCellsAsList=TRUE, rowNumbers=2, columnNumbers=4, cellCoordinates=list(c(5, 7)))
+cells <- pt$getCells(specifyCellsAsList=TRUE, 
+                     rowNumbers=2, columnNumbers=4, 
+                     cellCoordinates=list(c(5, 7)))
 pt$setStyling(cells=cells, declarations=list("background-color"="#FFCC66"))
 pt$renderPivot()
 ```
@@ -456,7 +466,8 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$evaluatePivot()
 cells <- pt$getCells(specifyCellsAsList=FALSE, rowNumbers=2, columnNumbers=3)
 pt$setStyling(cells=cells, declarations=list("background-color"="#00FF00"))
-cat("The raw value of the cell is", cells[[1]]$rawValue, "and the formatted value is", cells[[1]]$formattedValue, ".")
+cat("The raw value of the cell is", cells[[1]]$rawValue, 
+    "and the formatted value is", cells[[1]]$formattedValue, ".")
 pt$renderPivot()
 ```
 
@@ -515,8 +526,15 @@ The `findCells()` function is used to search for cells within the body of the pi
 - `exactValues` - vector specifying a set of allowed values when matching cells.
 - `includeNA` - specify TRUE to include NA in the matched cells, FALSE to exclude NA values.
 - `includeNull` - specify TRUE to include cells with no value, FALSE to exclude cells with no value.
-- `excludeEmptyCells` - a logical value specifying whether to exclude empty cells (such as the empty cells associated with rows/columns in outlined layouts). 
-
+- `emptyCells` - a word that specifies how empty cells are matched - must be one of:
+    + `include` to match empty and non-empty cells.
+    + `exclude` to match only non-empty cells.
+    + `only` to match only empty cells.
+- `outlineCells` - a word that specifies how outline cells are matched - must be one of:
+    + `include` to match outline and non-outline cells.
+    + `exclude` to match only non-outline cells.
+    + `only` to match only outline cells.
+    
 If multiple variable names and values are specified, then `findCells()` searches for cells that match all of the criteria - i.e. the equivalent of the `combinations` match method described above.
 
 Several examples of the above are given below.

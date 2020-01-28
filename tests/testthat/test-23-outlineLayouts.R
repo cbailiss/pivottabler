@@ -269,7 +269,7 @@ for(i in 1:nrow(scenarios)) {
 
 
 
-scenarios <- testScenarios("Basic outline layout (with totals)")
+scenarios <- testScenarios("Outline layout - with totals")
 for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
@@ -298,7 +298,7 @@ for(i in 1:nrow(scenarios)) {
 
 
 
-scenarios <- testScenarios("Basic outline layout (simple 3 row group levels)")
+scenarios <- testScenarios("Outline layout - simple 3 row group levels)")
 for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
@@ -328,7 +328,7 @@ for(i in 1:nrow(scenarios)) {
 
 
 
-scenarios <- testScenarios("Basic outline layout (formatted 3 row group levels)")
+scenarios <- testScenarios("Outline layout - formatted 3 row group levels")
 for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
@@ -364,7 +364,7 @@ for(i in 1:nrow(scenarios)) {
 
 
 
-scenarios <- testScenarios("Basic outline layout (simple 3 row group levels part tabular)")
+scenarios <- testScenarios("Outline layout - simple 3 row group levels part tabular")
 for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
@@ -394,7 +394,7 @@ for(i in 1:nrow(scenarios)) {
 
 
 
-scenarios <- testScenarios("Basic outline layout (simple 3 row group levels part tabular)")
+scenarios <- testScenarios("Outline layout - formatted 3 row group levels part tabular")
 for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
@@ -428,7 +428,7 @@ for(i in 1:nrow(scenarios)) {
 
 
 
-scenarios <- testScenarios("Basic outline layout (outlined calculations on rows)")
+scenarios <- testScenarios("Outline layout - outlined calculations on rows")
 for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
@@ -458,6 +458,118 @@ for(i in 1:nrow(scenarios)) {
     html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\" colspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"4\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"3\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"ColumnHeader\">DMU</th>\n    <th class=\"ColumnHeader\">EMU</th>\n    <th class=\"ColumnHeader\">HST</th>\n    <th class=\"ColumnHeader\">Total</th>\n    <th class=\"ColumnHeader\">DMU</th>\n    <th class=\"ColumnHeader\">EMU</th>\n    <th class=\"ColumnHeader\">Total</th>\n    <th class=\"ColumnHeader\"></th>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Number of Trains</th>\n    <td class=\"OutlineCell\" style=\"color: blue; \">32987</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">15306</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">732</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">49025</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">6484</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">28201</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">34685</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">83710</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"4\"></th>\n    <th class=\"RowHeader\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry</th>\n    <td class=\"Cell\">22133</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">732</td>\n    <td class=\"Total\">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">63</td>\n    <td class=\"Total\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland</th>\n    <td class=\"Cell\">5638</td>\n    <td class=\"Cell\">8849</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">14487</td>\n    <td class=\"Cell\">5591</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Total\">33792</td>\n    <td class=\"Total\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains</th>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">8594</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" colspan=\"2\"></th>\n    <td class=\"OutlineCell\" colspan=\"8\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Maximum Speed (MPH)</th>\n    <td class=\"OutlineCell\" style=\"color: blue; \">125</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">125</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">125</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">125</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">100</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">100</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">100</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">125</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"4\"></th>\n    <th class=\"RowHeader\">Arriva Trains Wales</th>\n    <td class=\"Cell\">90</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">90</td>\n    <td class=\"Cell\">90</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">90</td>\n    <td class=\"Total\">90</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry</th>\n    <td class=\"Cell\">125</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">125</td>\n    <td class=\"Total\">125</td>\n    <td class=\"Cell\">100</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">100</td>\n    <td class=\"Total\">125</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland</th>\n    <td class=\"Cell\">100</td>\n    <td class=\"Cell\">110</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">110</td>\n    <td class=\"Cell\">100</td>\n    <td class=\"Cell\">100</td>\n    <td class=\"Total\">100</td>\n    <td class=\"Total\">110</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains</th>\n    <td class=\"Cell\">125</td>\n    <td class=\"Cell\">125</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">125</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\"></td>\n    <td class=\"Total\">125</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" colspan=\"2\"></th>\n    <td class=\"OutlineCell\" colspan=\"8\">&nbsp;</td>\n  </tr>\n</table>"
 
     expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 505565)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}
+
+
+
+scenarios <- testScenarios("Sort outlined groups - by group value")
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    pt$addRowDataGroups("TOC",
+                        outlineBefore=list(groupStyleDeclarations=list(color="blue")),
+                        outlineAfter=list(isEmpty=FALSE,
+                                          mergeSpace="dataGroupsOnly",
+                                          caption="Total ({value})",
+                                          groupStyleDeclarations=list("font-style"="italic")),
+                        outlineTotal=list(groupStyleDeclarations=list(color="blue"),
+                                          cellStyleDeclarations=list("color"="blue")))
+    pt$addRowDataGroups("PowerType", addTotal=FALSE)
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$sortRowDataGroups(levelNumber=1, orderBy="value", sortOrder="desc")
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" colspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Virgin Trains</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\"></th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">2137</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">EMU</th>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">6457</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (Virgin Trains)</th>\n    <td class=\"OutlineCell\">8594</td>\n    <td class=\"OutlineCell\"></td>\n    <td class=\"OutlineCell\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">London Midland</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\"></th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">5638</td>\n    <td class=\"Cell\">5591</td>\n    <td class=\"Total\">11229</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">EMU</th>\n    <td class=\"Cell\">8849</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Total\">37050</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (London Midland)</th>\n    <td class=\"OutlineCell\">14487</td>\n    <td class=\"OutlineCell\">33792</td>\n    <td class=\"OutlineCell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">CrossCountry</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\"></th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">22133</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Total\">22196</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">HST</th>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">732</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (CrossCountry)</th>\n    <td class=\"OutlineCell\">22865</td>\n    <td class=\"OutlineCell\">63</td>\n    <td class=\"OutlineCell\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Arriva Trains Wales</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\"></th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (Arriva Trains Wales)</th>\n    <td class=\"OutlineCell\">3079</td>\n    <td class=\"OutlineCell\">830</td>\n    <td class=\"OutlineCell\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Total</th>\n    <td class=\"OutlineCell\" style=\"color: blue; \">49025</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">34685</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">83710</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}
+
+
+
+scenarios <- testScenarios("Sort outlined groups - by calculation sorting on two levels")
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    pt$addRowDataGroups("TOC",
+                        outlineBefore=list(groupStyleDeclarations=list(color="blue")),
+                        outlineAfter=list(isEmpty=FALSE,
+                                          mergeSpace="dataGroupsOnly",
+                                          caption="Total ({value})",
+                                          groupStyleDeclarations=list("font-style"="italic")),
+                        outlineTotal=list(groupStyleDeclarations=list(color="blue"),
+                                          cellStyleDeclarations=list("color"="blue")))
+    pt$addRowDataGroups("PowerType", addTotal=FALSE)
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$sortRowDataGroups(levelNumber=1, orderBy="calculation", sortOrder="desc")
+    pt$sortRowDataGroups(levelNumber=2, orderBy="calculation", sortOrder="desc")
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" colspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">London Midland</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\"></th>\n    <th class=\"RowHeader\">EMU</th>\n    <td class=\"Cell\">8849</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Total\">37050</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">5638</td>\n    <td class=\"Cell\">5591</td>\n    <td class=\"Total\">11229</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (London Midland)</th>\n    <td class=\"OutlineCell\">14487</td>\n    <td class=\"OutlineCell\">33792</td>\n    <td class=\"OutlineCell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">CrossCountry</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\"></th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">22133</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Total\">22196</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">HST</th>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">732</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (CrossCountry)</th>\n    <td class=\"OutlineCell\">22865</td>\n    <td class=\"OutlineCell\">63</td>\n    <td class=\"OutlineCell\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Virgin Trains</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\"></th>\n    <th class=\"RowHeader\">EMU</th>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">6457</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">2137</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (Virgin Trains)</th>\n    <td class=\"OutlineCell\">8594</td>\n    <td class=\"OutlineCell\"></td>\n    <td class=\"OutlineCell\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Arriva Trains Wales</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\"></th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (Arriva Trains Wales)</th>\n    <td class=\"OutlineCell\">3079</td>\n    <td class=\"OutlineCell\">830</td>\n    <td class=\"OutlineCell\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Total</th>\n    <td class=\"OutlineCell\" style=\"color: blue; \">49025</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">34685</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">83710</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}
+
+
+
+scenarios <- testScenarios("Sort outlined groups - sorting only a subset of the row groups")
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    pt$addRowDataGroups("TOC",
+                        outlineBefore=list(groupStyleDeclarations=list(color="blue")),
+                        outlineAfter=list(isEmpty=FALSE,
+                                          mergeSpace="dataGroupsOnly",
+                                          caption="Total ({value})",
+                                          groupStyleDeclarations=list("font-style"="italic")),
+                        outlineTotal=list(groupStyleDeclarations=list(color="blue"),
+                                          cellStyleDeclarations=list("color"="blue")))
+    pt$addRowDataGroups("PowerType", addTotal=FALSE)
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$sortRowDataGroups(levelNumber=1, fromIndex=4, orderBy="value", sortOrder="desc")
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" colspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Arriva Trains Wales</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\"></th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (Arriva Trains Wales)</th>\n    <td class=\"OutlineCell\">3079</td>\n    <td class=\"OutlineCell\">830</td>\n    <td class=\"OutlineCell\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Virgin Trains</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\"></th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">2137</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">EMU</th>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">6457</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (Virgin Trains)</th>\n    <td class=\"OutlineCell\">8594</td>\n    <td class=\"OutlineCell\"></td>\n    <td class=\"OutlineCell\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">London Midland</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\"></th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">5638</td>\n    <td class=\"Cell\">5591</td>\n    <td class=\"Total\">11229</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">EMU</th>\n    <td class=\"Cell\">8849</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Total\">37050</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (London Midland)</th>\n    <td class=\"OutlineCell\">14487</td>\n    <td class=\"OutlineCell\">33792</td>\n    <td class=\"OutlineCell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">CrossCountry</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\"></th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">22133</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Total\">22196</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">HST</th>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">732</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"font-style: italic; \" colspan=\"2\">Total (CrossCountry)</th>\n    <td class=\"OutlineCell\">22865</td>\n    <td class=\"OutlineCell\">63</td>\n    <td class=\"OutlineCell\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Total</th>\n    <td class=\"OutlineCell\" style=\"color: blue; \">49025</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">34685</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">83710</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
     expect_identical(as.character(pt$getHtml()), html)
   })
 }

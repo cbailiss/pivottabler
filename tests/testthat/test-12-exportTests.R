@@ -124,6 +124,35 @@ for(i in 1:nrow(scenarios)) {
 }
 
 
+scenarios <- testScenarios("export tests:  as Data Matrix")
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(dplyr)
+    library(pivottabler)
+    data <- filter(bhmtrains, (Status=="A")|(Status=="C"))
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(data)
+    pt$addColumnDataGroups("PowerType", addTotal=FALSE)
+    pt$addColumnDataGroups("Status", addTotal=FALSE)
+    pt$addRowDataGroups("TOC")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # pt$asDataMatrix(separator="|")
+    # prepStr(paste(capture.output(print(pt$asDataMatrix(separator="|"))), sep=" ", collapse=" "))
+    text <- "                    DMU|A DMU|C EMU|A EMU|C HST|A HST|C Arriva Trains Wales  3833    74    NA    NA    NA    NA CrossCountry        21621   548    NA    NA   709    23 London Midland      11054   168 35930  1082    NA    NA Virgin Trains        2028   107  6331   119    NA    NA Total               38536   897 42261  1201   709    23"
+
+    expect_identical(paste(capture.output(print(pt$asDataMatrix(separator="|"))), sep=" ", collapse=" "), text)
+  })
+}
+
+
 scenarios <- testScenarios("export tests:  as Data Frame")
 for(i in 1:nrow(scenarios)) {
   evaluationMode <- scenarios$evaluationMode[i]
@@ -142,7 +171,6 @@ for(i in 1:nrow(scenarios)) {
     pt$addRowDataGroups("TOC")
     pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
     pt$evaluatePivot()
-
     # sum(pt$asDataFrame(), na.rm=TRUE)
     # prepStr(paste(as.character(pt$asDataFrame()), sep=" ", collapse=" "))
     text <- "c(3079, 22133, 5638, 2137, 32987) c(NA, NA, 8849, 6457, 15306) c(NA, 732, NA, NA, 732) c(3079, 22865, 14487, 8594, 49025) c(830, 63, 5591, NA, 6484) c(NA, NA, 28201, NA, 28201) c(830, 63, 33792, NA, 34685) c(3909, 22928, 48279, 8594, 83710)"
