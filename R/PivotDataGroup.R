@@ -114,7 +114,8 @@
 #'   fromIndex=NULL, toIndex=NULL)}}{Sort
 #'   data groups either by the data group data value, caption or based on
 #'   calculation result values.}
-#'   \item{\code{addCalculationGroups(calculationGroupName, atLevel)}}{Add a
+#'   \item{\code{addCalculationGroups(calculationGroupName, atLevel,
+#'   outlineBefore, outlineAfter)}}{Add a
 #'   calculation group to the data group hierarchy.}
 #'   \item{\code{normaliseDataGroup()}}{Normalise the data group hierarchy so
 #'   that all branches have the same number of levels - accomplished by adding
@@ -966,10 +967,12 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$sortDataGroups", "Sorted data groups.")
      return(invisible())
    },
-   addCalculationGroups = function(calculationGroupName=NULL, atLevel=NULL) {
+   addCalculationGroups = function(calculationGroupName=NULL, atLevel=NULL, outlineBefore=NULL, outlineAfter=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
-       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addCalculationGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addCalculationGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addCalculationGroups", outlineBefore, missing(outlineBefore), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
+        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addCalculationGroups", outlineAfter, missing(outlineAfter), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addCalculationGroups", "Adding calculation groups...")
      private$p_parentPivot$resetCells()
@@ -993,6 +996,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(length(calculations)==0)
        stop(paste0("PivotDataGroup$addCalculationGroups():  There are no visible calculations in the calculation group '", calculationGroupName, "'"), call. = FALSE)
      calculations <- calculations[order(names(calculations))]
+     # outline info
+     outlineBefore <- private$cleanOutlineArg(outline=outlineBefore)
+     outlineAfter <- private$cleanOutlineArg(outline=outlineAfter, defaultCaption="")
      # where are the new groups being added?
      if(is.null(atLevel)) {
        # get the current set of leaf groups
@@ -1002,38 +1008,76 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          parentGroups[[1]] <- self
        }
      }
-     else if(atLevel==0) {
+     else if(atLevel<=0) {
        # immediately below this data group
        parentGroups <- list()
        parentGroups[[1]] <- self
      }
      else {
        # at some number of levels below this group
+       levelsBelowThisLevel <- self$getLevelCount()
+       if (atLevel>levelsBelowThisLevel) atLevel <- levelsBelowThisLevel
        parentGroups <- self$getLevelGroups(level=atLevel-1)
        if((is.null(parentGroups))||(length(parentGroups)==0)) {
          parentGroups <- list()
          parentGroups[[1]] <- self
        }
      }
-     # if there is only one calculation (and this is not the top group), just set the calculation directly on the existing leaf nodes,
-     # otherwise add a new row and iterate the calculations
+     # render
      newGroups <- list()
-     for(i in 1:length(parentGroups)) {
-       grp <- parentGroups[[i]]
-       if((!is.null(grp$parentGroup))&&(length(calculations)==1)) {
-         grp$calculationGroupName <- calculationGroupName
-         grp$calculationName <- calculations[[1]]$calculationName
-       }
-       else {
-         for(j in 1:length(calculations)) {
-           calc <- calculations[[j]]
-           newGroup <- grp$addChildGroup(caption=calc$caption,
-                                         calculationGroupName=calculationGroupName, calculationName=calc$calculationName, isTotal=self$isTotal,
-                                         baseStyleName=calc$headingBaseStyleName, styleDeclarations=calc$headingStyleDeclarations)
-           index <- length(newGroups) + 1
-           newGroups[[index]] <- newGroup
-         }
-       }
+     if(outlineBefore$outline||outlineAfter$outline) {
+        # render outline groups and always generate calculation cells (even if there is only one calculation)
+        for(i in 1:length(parentGroups)) {
+           grp <- parentGroups[[i]]
+           for(j in 1:length(calculations)) {
+              calc <- calculations[[j]]
+              # outline before value
+              if(outlineBefore$outline){
+                 newGrp <- private$createOutlineGroup(parentGroup=grp, outline=outlineBefore, caption=calc$caption,
+                                                      calculationGroupName=calculationGroupName, calculationName=calc$calculationName,
+                                                      baseStyleName=calc$headingBaseStyleName, styleDeclarations=calc$headingStyleDeclarations,
+                                                      sortAnchor="next")
+                 index <- length(newGroups) + 1
+                 newGroups[[index]] <- newGrp
+              }
+              # render the calculation
+              newGroup <- grp$addChildGroup(caption=ifelse(outlineBefore$outline, "", calc$caption),
+                                            calculationGroupName=calculationGroupName, calculationName=calc$calculationName, isTotal=self$isTotal,
+                                            baseStyleName=calc$headingBaseStyleName, styleDeclarations=calc$headingStyleDeclarations)
+              index <- length(newGroups) + 1
+              newGroups[[index]] <- newGroup
+              # outline before value
+              if(outlineAfter$outline){
+                 newGrp <- private$createOutlineGroup(parentGroup=grp, outline=outlineAfter, caption=calc$caption,
+                                                      calculationGroupName=calculationGroupName, calculationName=calc$calculationName,
+                                                      baseStyleName=calc$headingBaseStyleName, styleDeclarations=calc$headingStyleDeclarations,
+                                                      sortAnchor="previous")
+                 index <- length(newGroups) + 1
+                 newGroups[[index]] <- newGrp
+              }
+           }
+        }
+     }
+     else {
+        # if there is only one calculation (and this is not the top group), just set the calculation directly on the existing leaf nodes,
+        # otherwise add a new row and iterate the calculations
+        for(i in 1:length(parentGroups)) {
+          grp <- parentGroups[[i]]
+          if((!is.null(grp$parentGroup))&&(length(calculations)==1)) {
+            grp$calculationGroupName <- calculationGroupName
+            grp$calculationName <- calculations[[1]]$calculationName
+          }
+          else {
+            for(j in 1:length(calculations)) {
+              calc <- calculations[[j]]
+              newGroup <- grp$addChildGroup(caption=calc$caption,
+                                            calculationGroupName=calculationGroupName, calculationName=calc$calculationName, isTotal=self$isTotal,
+                                            baseStyleName=calc$headingBaseStyleName, styleDeclarations=calc$headingStyleDeclarations)
+              index <- length(newGroups) + 1
+              newGroups[[index]] <- newGroup
+            }
+          }
+        }
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addCalculationGroups", "Added calculation groups.", list(count=length(newGroups)))
      return(invisible(newGroups))
@@ -1567,7 +1611,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       return(clean)
    },
    createOutlineGroup = function(parentGroup=NULL, outline=NULL, variableName=NULL, values=NULL, caption=NULL,
-                                 calculationGroupName=NULL, baseStyleName=NULL, styleDeclarations=NULL, isLevelTotal=FALSE, sortAnchor=NULL) {
+                                 calculationGroupName=NULL, calculationName=NULL,
+                                 baseStyleName=NULL, styleDeclarations=NULL, isLevelTotal=FALSE, sortAnchor=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", parentGroup, missing(parentGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", outline, missing(outline), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list")
@@ -1575,6 +1620,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", values, missing(values), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric", "character", "logical", "date", "Date", "POSIXct", "POSIXlt"))
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", isLevelTotal, missing(isLevelTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -1613,7 +1659,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       if(!is.null(outline$cellStyleDeclarations)) cellStyleDeclarations <- outline$cellStyleDeclarations
       # generate group
       newGrp <- parentGroup$addChildGroup(variableName=variableName, values=values, # so that group has a reference to the variable & values
-                                  caption=caption, calculationGroupName=calculationGroupName,
+                                  caption=caption, calculationGroupName=calculationGroupName, calculationName=calculationName,
                                   doNotExpand=TRUE, isEmpty=isEmpty, isOutline=isOutline, mergeEmptySpace=mergeSpace,
                                   isTotal=isTotal, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
                                   baseStyleName=groupStyleName, styleDeclarations=groupStyleDeclarations,

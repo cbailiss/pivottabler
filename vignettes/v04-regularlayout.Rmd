@@ -18,6 +18,7 @@ vignette: >
 * Outline Layout
 * Outline Layout Settings
 * Multiple Level Outline Layout Example
+* Outline Calculation Example
 * Irregular Layout
 * Further Reading
 
@@ -352,6 +353,46 @@ pt$addRowDataGroups("TOC",
 pt$addRowDataGroups("PowerType", addTotal=FALSE)
 pt$addRowDataGroups("Status")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+## Outline Calculation Example
+
+It is also possible to put the calculations on rows in the pivot table and to outline the calculation groups.  
+
+Shown below is a pivot table with calculations on rows in tabular layout:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$addRowCalculationGroups()
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$renderPivot()
+```
+
+The same pivot table is shown below in outline layout.  In this pivot table, the two calculations on rows are outlined:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$addColumnDataGroups("PowerType")
+pt$addRowCalculationGroups(outlineBefore=list(isEmpty=FALSE, mergeSpace="dataGroupsOnly", 
+                                              groupStyleDeclarations=list(color="blue"), 
+                                              cellStyleDeclarations=list(color="blue")))
+pt$addRowDataGroups("TOC", addTotal=FALSE)
 pt$renderPivot()
 ```
 

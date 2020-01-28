@@ -713,7 +713,7 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnCalculationGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
-      }
+        }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addColumnCalculationGroups", "Adding column calculation groups...",
                    list(calculationGroupName=calculationGroupName, atLevel=atLevel))
       if(private$p_calculationsSet) stop("PivotTable$addColumnCalculationGroups(): Calculations cannot be moved/added after either addColumnCalculationGroups() or addRowCalculationGroups() has been executed.", call. = FALSE)
@@ -725,18 +725,21 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addColumnCalculationGroups", "Added column calculation groups.")
       return(invisible(grps))
     },
-    addRowCalculationGroups = function(calculationGroupName="default", atLevel=NULL) { # atLevel=1 is the top level, (since 1 is the top level as visible to the user)
+    addRowCalculationGroups = function(calculationGroupName="default", atLevel=NULL, outlineBefore=NULL, outlineAfter=NULL) { # atLevel=1 is the top level, (since 1 is the top level as visible to the user)
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowCalculationGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowCalculationGroups", outlineBefore, missing(outlineBefore), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowCalculationGroups", outlineAfter, missing(outlineAfter), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addRowCalculationGroups", "Adding row calculation groups...",
-                   list(calculationGroupName=calculationGroupName, atLevel=atLevel))
+                   list(calculationGroupName=calculationGroupName, atLevel=atLevel, outlineBefore=outlineBefore, outlineAfter=outlineAfter))
       if(private$p_calculationsSet) stop("PivotTable$addRowCalculationGroups(): Calculations cannot be moved/added after either addColumnCalculationGroups() or addRowCalculationGroups() has been executed.", call. = FALSE)
       self$resetCells()
       levelsBelow <- NULL
       if((!is.null(atLevel))&&(atLevel>0)) levelsBelow <- atLevel - 1
-      grps <- private$p_rowGroup$addCalculationGroups(calculationGroupName=calculationGroupName, atLevel=levelsBelow)
+      grps <- private$p_rowGroup$addCalculationGroups(calculationGroupName=calculationGroupName, atLevel=levelsBelow,
+                                                      outlineBefore=outlineBefore, outlineAfter=outlineAfter)
       private$p_calculationsSet <- TRUE
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addRowCalculationGroups", "Added row calculation groups.")
       return(invisible(grps))
