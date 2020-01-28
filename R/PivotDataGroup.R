@@ -95,7 +95,7 @@
 #'   baseStyleName=NULL, styleDeclarations=NULL,
 #'   insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL,
 #'   mergeEmptySpace=NULL, cellBaseStyleName=NULL,
-#'   cellStyleDeclarations=NULL)}}{
+#'   cellStyleDeclarations=NULL, sortAnchor=NULL)}}{
 #'   Add a new data group as the child of the current data group.}
 #'   \item{\code{removeChildGroup(index=NULL, group=NULL)}}{
 #'   Remove a data group that is a child of the current data group.}
@@ -110,7 +110,8 @@
 #'   Generate new data groups based on the distinct
 #'   values in a data frame or using explicitly specified data values.}
 #'   \item{\code{sortDataGroups(levelNumber=1, orderBy="calculation",
-#'   sortOrder="desc", calculationGroupName="default", calculationName)}}{Sort
+#'   sortOrder="desc", calculationGroupName="default", calculationName,
+#'   fromIndex=NULL, toIndex=NULL)}}{Sort
 #'   data groups either by the data group data value, caption or based on
 #'   calculation result values.}
 #'   \item{\code{addCalculationGroups(calculationGroupName, atLevel)}}{Add a
@@ -131,6 +132,9 @@
 #'   includeChildGroups=FALSE, excludeEmptyGroups=TRUE)}}{Searches all data
 #'   groups underneath this data group to find groups that match the specified
 #'   criteria.}
+#'   \item{\code{clearSortGroups()}}{Used internally during sort operations.}
+#'   \item{\code{addSortGroupBefore()}}{Used internally during sort operations.}
+#'   \item{\code{addSortGroupAfter()}}{Used internally during sort operations.}
 #'   \item{\code{asList()}}{Get a list representation of the data group(s).}
 #'   \item{\code{asJSON()}}{Get a JSON representation of the data group(s).}
 #' }
@@ -810,17 +814,20 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addDataGroups", "Added groups.", list(count=length(newGroups)))
      return(invisible(newGroups))
    },
-   sortDataGroups = function(levelNumber=1, orderBy="calculation", sortOrder="desc", calculationGroupName="default", calculationName=NULL) {
+   sortDataGroups = function(levelNumber=1, orderBy="calculation", sortOrder="desc", calculationGroupName="default", calculationName=NULL, fromIndex=NULL, toIndex=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "sortDataGroups", levelNumber, missing(levelNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "sortDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value","caption","calculation"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "sortDataGroups", sortOrder, missing(sortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc","desc"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "sortDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "sortDataGroups", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "sortDataGroups", fromIndex, missing(fromIndex), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "DataGroup", "sortDataGroups", toIndex, missing(toIndex), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$sortDataGroups", "Sorting data groups...",
                                    list(levelNumber=levelNumber, orderBy=orderBy, sortOrder=sortOrder,
-                                        calculationGroupName=calculationGroupName, calculationName=calculationName))
+                                        calculationGroupName=calculationGroupName, calculationName=calculationName,
+                                        fromIndex=fromIndex, toIndex=toIndex))
      private$p_parentPivot$resetCells()
      if(is.null(private$p_groups)) return(invisible())
      if(length(private$p_groups)==0) return(invisible())
@@ -858,6 +865,12 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
         if((!is.null(grp$sortAnchor))&&(grp$sortAnchor=="fixed")) {
            fixedgrps[[length(fixedgrps)+1]] <- i
         }
+        else if((!is.null(fromIndex))&&(i<fromIndex)) {
+           fixedgrps[[length(fixedgrps)+1]] <- i
+        }
+        else if((!is.null(toIndex))&&(i>toIndex)) {
+           fixedgrps[[length(fixedgrps)+1]] <- i
+        }
         if(i>1) {
            for(k in (i-1):1) {
               if((!is.null(private$p_groups[[k]]$sortAnchor))&&(private$p_groups[[k]]$sortAnchor=="next")) grp$addSortGroupBefore(private$p_groups[[k]])
@@ -881,6 +894,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        for(i in 1:length(private$p_groups)) {
          grp <- private$p_groups[[i]]
          if((!is.null(grp$sortAnchor))&&(grp$sortAnchor %in% c("fixed", "previous", "next"))) next
+         if(i %in% fixedgrps) next # happens also when the data group is outside the specified range
          j <- j + 1
          groups[[j]] <- grp
          if(orderBy=="value") values[[j]] <- grp$sortValue # sorting by value
@@ -896,6 +910,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        for(i in 1:length(private$p_groups)) {
          grp <- private$p_groups[[i]]
          if((!is.null(grp$sortAnchor))&&(grp$sortAnchor %in% c("fixed", "previous", "next"))) next
+         if(i %in% fixedgrps) next # happens also when the data group is outside the specified range
          j <- j + 1
          groups[[j]] <- grp
          # get the filter criteria from the top-most parent group down to this one
