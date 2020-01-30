@@ -55,6 +55,8 @@
 #'   \item{\code{new(...)}}{Create a new pivot table cell, specifying the field
 #'   values documented above.}
 #'
+#'   \item{\code{setStyling(styleDeclarations=NULL))}}{Used to set style
+#'   declarations.}
 #'   \item{\code{getCopy())}}{Get a copy of this cell.}
 #'   \item{\code{asList())}}{Get a list representation of this cell}
 #'   \item{\code{asJSON()}}{Get a JSON representation of this cell}
@@ -96,6 +98,16 @@ PivotCell <- R6::R6Class("PivotCell",
      private$p_rowLeafGroup <- rowLeafGroup
      private$p_columnLeafGroup <- columnLeafGroup
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCell$new", "Created new PivotCell")
+   },
+   setStyling = function(styleDeclarations=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "setStyling", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCell$setStyling", "Setting style declarations...", list(styleDeclarations))
+      if(is.null(styleDeclarations)) private$p_style = NULL
+      else if(is.null(private$p_style)) private$p_style = private$p_parentPivot$createInlineStyle(declarations=styleDeclarations)
+      else private$p_style$setPropertyValues(styleDeclarations)
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCell$setStyling", "Set style declarations.")
    },
    getCopy = function() {
      copy <- list()

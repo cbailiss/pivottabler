@@ -224,7 +224,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-`outlineTotal=TRUE` is then often then typically specified for the parent row data group, so that the heading in the grand total row is rendered in a consistent way to the rest of the outline rows (i.e. as a merged cell, instead of separate cells).
+`outlineTotal=TRUE` is then typically specified for the parent row data group, so that the heading in the grand total row is rendered in a consistent way to the rest of the outline rows (i.e. as a merged cell, instead of separate cells).
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)

@@ -258,3 +258,155 @@ for(i in 1:nrow(scenarios)) {
     expect_identical(as.character(pt$getHtml()), html)
   })
 }
+
+
+scenarios <- testScenarios("irregular layout tests:  combine pivot 1")
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    # Rows: TOC breakdown
+    grp1 <- pt$addRowGroup(caption="By TOC")
+    grp1$addDataGroups("TOC", addTotal=FALSE)
+    # Rows: Power Type breakdown
+    grp2 <- pt$addRowGroup(caption="By Power Type")
+    grp2$addDataGroups("PowerType", addTotal=FALSE)
+    # Rows: Total
+    grp3 <- pt$addRowGroup(caption="Total")
+    # Row Group Headings
+    pt$setRowDataGroupHeader(levelNumber=1, header="Breakdown")
+    pt$setRowDataGroupHeader(levelNumber=2, header="Subset")
+    # Finish...
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$theme <- getStandardTableTheme(pt)
+    pt$evaluatePivot()
+    # pt$renderPivot(showRowGroupHeaders=TRUE)
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml(showRowGroupHeaders=TRUE)))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"LeftColumnHeader\">Breakdown</th>\n    <th class=\"LeftColumnHeader\">Subset</th>\n    <th class=\"CentreColumnHeader\">Express Passenger</th>\n    <th class=\"CentreColumnHeader\">Ordinary Passenger</th>\n    <th class=\"CentreColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\" rowspan=\"4\">By TOC</th>\n    <th class=\"LeftCell\">Arriva Trains Wales</th>\n    <td class=\"RightCell\">3079</td>\n    <td class=\"RightCell\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\">CrossCountry</th>\n    <td class=\"RightCell\">22865</td>\n    <td class=\"RightCell\">63</td>\n    <td class=\"Total\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\">London Midland</th>\n    <td class=\"RightCell\">14487</td>\n    <td class=\"RightCell\">33792</td>\n    <td class=\"Total\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\">Virgin Trains</th>\n    <td class=\"RightCell\">8594</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\" rowspan=\"3\">By Power Type</th>\n    <th class=\"LeftCell\">DMU</th>\n    <td class=\"RightCell\">32987</td>\n    <td class=\"RightCell\">6484</td>\n    <td class=\"Total\">39471</td>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\">EMU</th>\n    <td class=\"RightCell\">15306</td>\n    <td class=\"RightCell\">28201</td>\n    <td class=\"Total\">43507</td>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\">HST</th>\n    <td class=\"RightCell\">732</td>\n    <td class=\"RightCell\"></td>\n    <td class=\"Total\">732</td>\n  </tr>\n  <tr>\n    <th class=\"LeftCell\">Total</th>\n    <th class=\"LeftCell\"></th>\n    <td class=\"RightCell\">49025</td>\n    <td class=\"RightCell\">34685</td>\n    <td class=\"Total\">83710</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+    expect_identical(as.character(pt$getHtml(showRowGroupHeaders=TRUE)), html)
+  })
+}
+
+
+scenarios <- testScenarios("irregular layout tests:  combine pivot 2")
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    # Rows: TOC breakdown
+    grp1a <- pt$addRowGroup(caption="By TOC", isOutline=TRUE, isEmpty=TRUE, sortAnchor="next", styleDeclarations=list(color="blue"))
+    grp1b <- pt$addRowGroup()
+    grp1b$addDataGroups("TOC", addTotal=FALSE)
+    # Rows: Power Type breakdown
+    grp2a <- pt$addRowGroup(caption="By Power Type", isOutline=TRUE, isEmpty=TRUE, sortAnchor="next", styleDeclarations=list(color="blue"))
+    grp2b <- pt$addRowGroup()
+    grp2b$addDataGroups("PowerType", addTotal=FALSE)
+    # Rows: Total
+    grp3 <- pt$addRowGroup(caption="Total", isOutline=TRUE, styleDeclarations=list(color="blue"))
+    # Finish...
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" colspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">By TOC</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"4\"></th>\n    <th class=\"RowHeader\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry</th>\n    <td class=\"Cell\">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Total\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland</th>\n    <td class=\"Cell\">14487</td>\n    <td class=\"Cell\">33792</td>\n    <td class=\"Total\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains</th>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">By Power Type</th>\n    <td class=\"OutlineCell\" colspan=\"3\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"3\"></th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">32987</td>\n    <td class=\"Cell\">6484</td>\n    <td class=\"Total\">39471</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">EMU</th>\n    <td class=\"Cell\">15306</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Total\">43507</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">HST</th>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">732</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" colspan=\"2\">Total</th>\n    <td class=\"OutlineCell\">49025</td>\n    <td class=\"OutlineCell\">34685</td>\n    <td class=\"OutlineCell\">83710</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}
+
+
+scenarios <- testScenarios("irregular layout tests:  combine pivot 3")
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    gender <- c("F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M")
+    age <- c(19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22)
+    grade <- c("A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E")
+    counts <- c(6, 16, 56, 37, 213, 14, 21, 61, 45, 191, 30, 54, 74, 82, 246, 91, 46, 29, 71, 296, 3, 6, 21, 35, 162, 14, 11, 29, 22, 204, 15, 30, 49, 75, 253, 45, 22, 30, 30, 319)
+
+    df <- data.frame(gender, age, grade, counts)
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(df)
+    pt$addColumnDataGroups("grade")
+    pt$addRowGroup(caption="Age", isEmpty=TRUE, styleDeclarations=list(color="blue"))
+    pt$addRowDataGroups("age", atLevel=1)
+    pt$addRowGroup(caption="Gender", isEmpty=TRUE, styleDeclarations=list(color="blue"))
+    pt$addRowDataGroups("gender", atLevel=1)
+    pt$defineCalculation(calculationName="GradeCounts", summariseExpression="sum(counts)")
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\">&nbsp;</th>\n    <th class=\"ColumnHeader\">A</th>\n    <th class=\"ColumnHeader\">B</th>\n    <th class=\"ColumnHeader\">C</th>\n    <th class=\"ColumnHeader\">D</th>\n    <th class=\"ColumnHeader\">E</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"color: blue; \">Age</th>\n    <td class=\"Cell\" colspan=\"6\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">19</th>\n    <td class=\"Cell\">9</td>\n    <td class=\"Cell\">22</td>\n    <td class=\"Cell\">77</td>\n    <td class=\"Cell\">72</td>\n    <td class=\"Cell\">375</td>\n    <td class=\"Total\">555</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">20</th>\n    <td class=\"Cell\">28</td>\n    <td class=\"Cell\">32</td>\n    <td class=\"Cell\">90</td>\n    <td class=\"Cell\">67</td>\n    <td class=\"Cell\">395</td>\n    <td class=\"Total\">612</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">21</th>\n    <td class=\"Cell\">45</td>\n    <td class=\"Cell\">84</td>\n    <td class=\"Cell\">123</td>\n    <td class=\"Cell\">157</td>\n    <td class=\"Cell\">499</td>\n    <td class=\"Total\">908</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">22</th>\n    <td class=\"Cell\">136</td>\n    <td class=\"Cell\">68</td>\n    <td class=\"Cell\">59</td>\n    <td class=\"Cell\">101</td>\n    <td class=\"Cell\">615</td>\n    <td class=\"Total\">979</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">218</td>\n    <td class=\"Total\">206</td>\n    <td class=\"Total\">349</td>\n    <td class=\"Total\">397</td>\n    <td class=\"Total\">1884</td>\n    <td class=\"Total\">3054</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"color: blue; \">Gender</th>\n    <td class=\"Cell\" colspan=\"6\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">F</th>\n    <td class=\"Cell\">141</td>\n    <td class=\"Cell\">137</td>\n    <td class=\"Cell\">220</td>\n    <td class=\"Cell\">235</td>\n    <td class=\"Cell\">946</td>\n    <td class=\"Total\">1679</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">M</th>\n    <td class=\"Cell\">77</td>\n    <td class=\"Cell\">69</td>\n    <td class=\"Cell\">129</td>\n    <td class=\"Cell\">162</td>\n    <td class=\"Cell\">938</td>\n    <td class=\"Total\">1375</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">218</td>\n    <td class=\"Total\">206</td>\n    <td class=\"Total\">349</td>\n    <td class=\"Total\">397</td>\n    <td class=\"Total\">1884</td>\n    <td class=\"Total\">3054</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 24432)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}
+
+
+scenarios <- testScenarios("irregular layout tests:  combine pivot 4")
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    gender <- c("F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M")
+    age <- c(19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22)
+    grade <- c("A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E")
+    counts <- c(6, 16, 56, 37, 213, 14, 21, 61, 45, 191, 30, 54, 74, 82, 246, 91, 46, 29, 71, 296, 3, 6, 21, 35, 162, 14, 11, 29, 22, 204, 15, 30, 49, 75, 253, 45, 22, 30, 30, 319)
+
+    df <- data.frame(gender, age, grade, counts)
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(df)
+    pt$addColumnDataGroups("grade")
+    pt$addRowGroup(caption="Age", isEmpty=TRUE, isOutline=TRUE, styleDeclarations=list(color="blue"))
+    pt$addRowDataGroups("age", atLevel=1, addTotal=FALSE)
+    pt$addRowGroup(caption="Gender", isEmpty=TRUE, isOutline=TRUE, styleDeclarations=list(color="blue"))
+    pt$addRowDataGroups("gender", atLevel=1, addTotal=FALSE)
+    pt$defineCalculation(calculationName="GradeCounts", summariseExpression="sum(counts)")
+    pt$addRowGroup(caption="Total", isOutline=TRUE, isTotal=TRUE, isLevelTotal=TRUE,
+                   styleDeclarations=list(color="blue"), cellStyleDeclarations=list(color="blue"))
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\">&nbsp;</th>\n    <th class=\"ColumnHeader\">A</th>\n    <th class=\"ColumnHeader\">B</th>\n    <th class=\"ColumnHeader\">C</th>\n    <th class=\"ColumnHeader\">D</th>\n    <th class=\"ColumnHeader\">E</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \">Age</th>\n    <td class=\"OutlineCell\" colspan=\"6\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">19</th>\n    <td class=\"Cell\">9</td>\n    <td class=\"Cell\">22</td>\n    <td class=\"Cell\">77</td>\n    <td class=\"Cell\">72</td>\n    <td class=\"Cell\">375</td>\n    <td class=\"Total\">555</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">20</th>\n    <td class=\"Cell\">28</td>\n    <td class=\"Cell\">32</td>\n    <td class=\"Cell\">90</td>\n    <td class=\"Cell\">67</td>\n    <td class=\"Cell\">395</td>\n    <td class=\"Total\">612</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">21</th>\n    <td class=\"Cell\">45</td>\n    <td class=\"Cell\">84</td>\n    <td class=\"Cell\">123</td>\n    <td class=\"Cell\">157</td>\n    <td class=\"Cell\">499</td>\n    <td class=\"Total\">908</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">22</th>\n    <td class=\"Cell\">136</td>\n    <td class=\"Cell\">68</td>\n    <td class=\"Cell\">59</td>\n    <td class=\"Cell\">101</td>\n    <td class=\"Cell\">615</td>\n    <td class=\"Total\">979</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \">Gender</th>\n    <td class=\"OutlineCell\" colspan=\"6\">&nbsp;</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">F</th>\n    <td class=\"Cell\">141</td>\n    <td class=\"Cell\">137</td>\n    <td class=\"Cell\">220</td>\n    <td class=\"Cell\">235</td>\n    <td class=\"Cell\">946</td>\n    <td class=\"Total\">1679</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">M</th>\n    <td class=\"Cell\">77</td>\n    <td class=\"Cell\">69</td>\n    <td class=\"Cell\">129</td>\n    <td class=\"Cell\">162</td>\n    <td class=\"Cell\">938</td>\n    <td class=\"Total\">1375</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \">Total</th>\n    <td class=\"OutlineCell\" style=\"color: blue; \">218</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">206</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">349</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">397</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">1884</td>\n    <td class=\"OutlineCell\" style=\"color: blue; \">3054</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 18324)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}

@@ -9,8 +9,15 @@ This release ....
 Improvements
 ----------------
 
+* A new "outlined" layout is now supported (in "beta" in this release).  This generates additional rows for row data groups which appear as headings within the pivot table.  See the new "Regular Layout" vignette for details.
+* Several small improvements make building irregular layouts much easier, including: 
+   * adding empty rows and columns, e.g. using `pt$addRowGroup(caption="By Size", isEmpty=TRUE)` or `pt$addColumnGroup(...)`,
+   * adding individual data groups, e.g. using `pt$addRowGroup(variableName="Size", values="Small")` or `pt$addColumnGroup(...)`,
+   * adding total data groups, e.g. using `pt$addRowGroup(variableName="Size", isTotal=TRUE)` or `pt$addColumnGroup(...)`,
+   * several other options that are described in the "Irregular Layout" vignette.
 * Headings for the row data groups (i.e. headings for the first column / first few columns) in a pivot table can now be specified.  See the "Pivot tables as standard tables (row group headings)" section in the "Data Groups" vignette for details.  The new `showRowGroupHeaders` argument can be used with `pt$renderPivot()`, `pt$getHtml()`, `pt$saveHtml()`, `pt$writeToExcelWorksheet()` and `pt$asBasicTable()`.
 * New function `pt$asDataMatrix()` provides a cleaner way to convert a pivot table to a matrix, where the row/column headings in the pivot table become the row/column headings in the matrix.  See the "Outputs" vignette for details.
+* New function `setStyling()` provides an alternative method to set style declarations on data group headers and cells.  See the "Irregular Layout" vignette for an example.
 * Additional arguments can now be passed to custom functions used to format calculation values.  See the `fmtFuncArgs` parameter in the "Calculations" vignette for details.
 * Additional arguments can now be passed to custom functions used to format data group values.  See the `fmtFuncArgs` parameter in the "Data Groups" vignette for details.
 
@@ -18,6 +25,16 @@ Bug Fixes
 ----------------
 
 The `atLevel` argument of `pt$addColumnDataGroups()` and `pt$addRowDataGroups()` now behaves correctly / more intuatively.  Previously it would often add the data groups at the level below the level expected.
+
+Deprecated
+----------------
+
+The following can still be used but now emit a deprecation warning:
+
+* `pt$getTopColumnGroups()` has been deprecated and replaced with `pt$topColumnGroups`.
+* `pt$getLeafColumnGroups()` has been deprecated and replaced with `pt$leafColumnGroups`.
+* `pt$getTopRowGroups()` has been deprecated and replaced with `pt$topRowGroups`.
+* `pt$getLeafRowGroups()` has been deprecated and replaced with `pt$leafRowGroups`.
 
 
 pivottabler 1.2.3

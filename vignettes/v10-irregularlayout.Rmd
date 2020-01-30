@@ -17,8 +17,8 @@ vignette: >
 - Simple Example of an Irregular Layout
 - Extending the Simple Example
 - Another Example
-- Empty Groups
 - Multiple Calculation Groups
+- Combining Multiple Pivot Tables
 - Custom Layout Changes
 - Further Reading
 
@@ -63,16 +63,14 @@ For example, consider we are only interested in the number of express trains (i.
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$columnGroup$addChildGroup(variableName="TrainCategory", values="Express Passenger")
-pt$columnGroup$addChildGroup(variableName="PowerType", values="DMU")
+pt$addColumnGroup(variableName="TrainCategory", values="Express Passenger")
+pt$addColumnGroup(variableName="PowerType", values="DMU")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-In the example above, `pt$columnGroup` refers to the root column group that exists by default in the pivot table.  This is not rendered (i.e. not visible in the output pivot table).  The first level of visible column groups are the children of this root group.  
-
-The equivalent root group for the row groups is `pt$rowGroup`.  Although all of the examples in this vignette use the column groups, exactly the same principles apply to the row groups.
+The functions `pt$addColumnGroup()` and `pt$addRowGroup()` add a single data group at the top level of the pivot table, where the variable name and value are explicitly specified.
 
 No totals column is added to the above pivot table.  This wouldn't make sense for this pivot table anyway, since some express passenger trains are also DMU trains, so a simple total would double count some trains.
 
@@ -82,8 +80,8 @@ Showing the cell context, as described in the [Cell Context](v09-cellcontext.htm
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$columnGroup$addChildGroup(variableName="TrainCategory", values="Express Passenger")
-pt$columnGroup$addChildGroup(variableName="PowerType", values="DMU")
+pt$addColumnGroup(variableName="TrainCategory", values="Express Passenger")
+pt$addColumnGroup(variableName="PowerType", values="DMU")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot(includeHeaderValues=TRUE, includeRCFilters=TRUE)
@@ -99,22 +97,22 @@ If a regular level is desired, this can simply be added using the regular `addCo
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$columnGroup$addChildGroup(variableName="TrainCategory", values="Express Passenger")
-pt$columnGroup$addChildGroup(variableName="PowerType", values="DMU")
+pt$addColumnGroup(variableName="TrainCategory", values="Express Passenger")
+pt$addColumnGroup(variableName="PowerType", values="DMU")
 pt$addColumnDataGroups("Status")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-The `addChildGroup()` function returns the new data group that has been added.  The `addChildGroup()` function can be called on each of these groups to add further groups underneath:
+The `addColumnGroup()` and `addRowGroup()` functions return the new data group that has been added.  The `addChildGroup()` function can be called on each of these groups to add further groups underneath:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-cg1 <- pt$columnGroup$addChildGroup(variableName="TrainCategory", values="Express Passenger")
-cg2 <- pt$columnGroup$addChildGroup(variableName="PowerType", values="DMU")
+cg1 <- pt$addColumnGroup(variableName="TrainCategory", values="Express Passenger")
+cg2 <- pt$addColumnGroup(variableName="PowerType", values="DMU")
 cg1$addChildGroup(variableName="Status", values="A")
 cg1$addChildGroup(variableName="Status", values="R")
 cg2$addChildGroup(variableName="SchedSpeedMPH", values="100")
@@ -129,8 +127,8 @@ Instead of adding groups one at a time, the `addDataGroups()` function can be ca
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-cg1 <- pt$columnGroup$addChildGroup(variableName="TrainCategory", values="Express Passenger")
-cg2 <- pt$columnGroup$addChildGroup(variableName="PowerType", values="DMU")
+cg1 <- pt$addColumnGroup(variableName="TrainCategory", values="Express Passenger")
+cg2 <- pt$addColumnGroup(variableName="PowerType", values="DMU")
 cg1$addDataGroups("Status")
 cg2$addDataGroups("SchedSpeedMPH")
 pt$addRowDataGroups("TOC")
@@ -138,34 +136,16 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-## Another Example
+## Iterating Groups
 
-The `addColumnDataGroups()`, `addRowDataGroups()` and `addDataGroups()` functions^[Use the `addColumnDataGroups()` and `addRowDataGroups()` functions against the pivot table.  Use the `addDataGroups()` function against data groups.] all return zero, one or multiple data groups, in the form of an R list.  This list can be iterated or used with functions such as `lapply()` in the usual ways:
-
-```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-cgrps <- pt$addColumnDataGroups("PowerType")
-add2Groups <- function(grp) {
-  grp$addChildGroup(variableName="Status", values="A")
-  grp$addChildGroup(variableName="Status", values="R")
-}
-invisible(lapply(cgrps, add2Groups))
-pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-pt$renderPivot()
-```
-
-Each data group has a set of properties that can be used to determine whether/how to add the child groups.  For example, to skip adding the status groups to the totals:
+The `addColumnDataGroups()`, `addRowDataGroups()` and `addDataGroups()` functions^[Use the `addColumnDataGroups()` and `addRowDataGroups()` functions against the pivot table.  Use the `addDataGroups()` function against data groups.] all return zero, one or multiple data groups, in the form of an R list.  This list can be iterated or used with functions such as `lapply()` in the usual ways.  Each data group has a set of properties that can be used to examine the group.  For example, adding further child groups:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
-cgrps <- pt$addColumnDataGroups("PowerType")
+cgrps <- pt$addColumnDataGroups("PowerType", addTotal=FALSE)
 add2Groups <- function(grp) {
   if(!grp$isTotal) {
     grp$addChildGroup(variableName="Status", values="A")
@@ -178,15 +158,24 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-In the rather contrived example above, the totals do not add up to the sum of the individual cells.  This is often the case with irregular layouts.  There are a few different options for dealing with this, including:
+Another example - setting the text colour:
 
-- Filtering the data frame to include only the status values "A" and "R" before creating the pivot table.
-- Using a different calculation/calculation group for the total (not trivial, see below for a basic example with multiple calculation groups).
-- Considering whether an irregular layout is actually needed (it is not actually needed in the example above).
- 
-## Empty Groups
-
-Sometimes when constructing irregular layouts, it is desirable to insert an "empty" group, i.e. a group that applies no filtering.  This is typically needed when one set of column headings has more levels than another.  Adding an empty group can be accomplished by simply calling `addChildGroup()` - either with no arguments or just supplying a caption for display purposes with the `caption` argument.  An example of this can be found in the following section.
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+cgrps <- pt$addColumnDataGroups("PowerType")
+colorText <- function(grp) {
+  if(isTRUE(grp$values=="DMU")) grp$setStyling(list(color="blue"))
+  else if(isTRUE(grp$values=="EMU")) grp$setStyling(list(color="green"))
+  else if(isTRUE(grp$values=="HST")) grp$setStyling(list(color="red"))
+}
+invisible(lapply(cgrps, colorText))
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
 
 ## Multiple Calculation Groups
 
@@ -196,8 +185,8 @@ Sometimes it is desirable to use different calculations in different parts of th
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$columnGroup$addChildGroup(variableName="TrainCategory", values="Express Passenger")
-pt$columnGroup$addChildGroup(variableName="PowerType", values="DMU")
+pt$addColumnGroup(variableName="TrainCategory", values="Express Passenger")
+pt$addColumnGroup(variableName="PowerType", values="DMU")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
@@ -209,11 +198,13 @@ Suppose we require the number of express trains but the maximum scheduled speed 
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$columnGroup$addChildGroup(variableName="TrainCategory", values="Express Passenger")
-pt$columnGroup$addChildGroup(variableName="PowerType", values="DMU")
+pt$addColumnGroup(variableName="TrainCategory", values="Express Passenger")
+pt$addColumnGroup(variableName="PowerType", values="DMU")
 pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", caption="Count", summariseExpression="n()")
-pt$defineCalculation(calculationName="MaxSpeedMPH", caption="Maximum Speed", summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$defineCalculation(calculationName="TotalTrains", caption="Count", 
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaxSpeedMPH", caption="Maximum Speed", 
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
 pt$renderPivot()
 ```
  
@@ -225,8 +216,8 @@ Instead the solution is to define an additional^[Every pivot table has a default
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-cg1 <- pt$columnGroup$addChildGroup(variableName="TrainCategory", values="Express Passenger")
-cg2 <- pt$columnGroup$addChildGroup(variableName="PowerType", values="DMU")
+cg1 <- pt$addColumnGroup(variableName="TrainCategory", values="Express Passenger")
+cg2 <- pt$addColumnGroup(variableName="PowerType", values="DMU")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$defineCalculation(calculationGroupName="calcGrp2", calculationName="MaxSpeedMPH", 
@@ -240,12 +231,16 @@ Pivot tables like the above are quite likely to cause confusion.  Either the cap
 
 ### Changing the data group captions
 
+The example below explicitly specifies the captions of the column data groups.
+
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-cg1 <- pt$columnGroup$addChildGroup(variableName="TrainCategory", values="Express Passenger", caption="Express Passenger (Count)")
-cg2 <- pt$columnGroup$addChildGroup(variableName="PowerType", values="DMU", caption="DMU (Maximum Speed")
+cg1 <- pt$addColumnGroup(variableName="TrainCategory", values="Express Passenger", 
+                         caption="Express Passenger (Count)")
+cg2 <- pt$addColumnGroup(variableName="PowerType", values="DMU", 
+                         caption="DMU (Maximum Speed")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$defineCalculation(calculationGroupName="calcGrp2", calculationName="MaxSpeedMPH", 
@@ -255,14 +250,16 @@ cg2$addCalculationGroups("calcGrp2")
 pt$renderPivot()
 ```
 
-### Adding empty data groups
+### Adding purely descriptive data groups
+
+The example below adds two data groups that display a caption only - purely for display purposes.
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-cg1 <- pt$columnGroup$addChildGroup(variableName="TrainCategory", values="Express Passenger")
-cg2 <- pt$columnGroup$addChildGroup(variableName="PowerType", values="DMU")
+cg1 <- pt$addColumnGroup(variableName="TrainCategory", values="Express Passenger")
+cg2 <- pt$addColumnGroup(variableName="PowerType", values="DMU")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$defineCalculation(calculationGroupName="calcGrp2", calculationName="MaxSpeedMPH", 
@@ -273,6 +270,129 @@ cg3$addCalculationGroups("default")
 cg4$addCalculationGroups("calcGrp2")
 pt$renderPivot()
 ```
+
+## Combining Multiple Pivot Tables
+
+### Example 1
+
+The example below combines two pivot tables in one, calling `pt$addRowDataGroups()` twice specifying `atLevel=1` both times:
+
+```{r, message=FALSE, warning=FALSE}
+# some sample school student grade data
+gender <- c("F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", 
+            "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", 
+            "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M")
+age <- c(19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 22, 22, 22, 
+         22, 22, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 22, 
+         22, 22, 22, 22)
+grade <- c("A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", 
+           "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", 
+           "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E")
+counts <- c(6, 16, 56, 37, 213, 14, 21, 61, 45, 191, 30, 54, 74, 82, 246, 91, 46, 
+            29, 71, 296, 3, 6, 21, 35, 162, 14, 11, 29, 22, 204, 15, 30, 49, 75, 
+            253, 45, 22, 30, 30, 319)
+df <- data.frame(gender, age, grade, counts)
+
+# two pivot tables in one
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(df)
+pt$addColumnDataGroups("grade")
+pt$addRowGroup(caption="Age", isEmpty=TRUE, styleDeclarations=list(color="blue"))
+pt$addRowDataGroups("age", atLevel=1)
+pt$addRowGroup(caption="Gender", isEmpty=TRUE, styleDeclarations=list(color="blue"))
+pt$addRowDataGroups("gender", atLevel=1)
+pt$defineCalculation(calculationName="GradeCounts", summariseExpression="sum(counts)")
+pt$renderPivot()
+```
+
+The example above allows each set of row groups to render a total row.  To prevent this and instead render a single total row at the bottom of the pivot table, specify `addTotal=FALSE` when calling `pt$addRowDataGroups()`, then call `pt$addRowGroup()` a third time to add the total row at the bottom:
+
+```{r, message=FALSE, warning=FALSE}
+# some sample school student grade data
+gender <- c("F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", 
+            "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", 
+            "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M")
+age <- c(19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 22, 22, 22, 
+         22, 22, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 22, 
+         22, 22, 22, 22)
+grade <- c("A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", 
+           "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", 
+           "D", "E", "A", "B", "C", "D", "E", "A", "B", "C", "D", "E")
+counts <- c(6, 16, 56, 37, 213, 14, 21, 61, 45, 191, 30, 54, 74, 82, 246, 91, 46, 
+            29, 71, 296, 3, 6, 21, 35, 162, 14, 11, 29, 22, 204, 15, 30, 49, 75, 
+            253, 45, 22, 30, 30, 319)
+df <- data.frame(gender, age, grade, counts)
+
+# two pivot tables in one
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(df)
+pt$addColumnDataGroups("grade")
+pt$addRowGroup(caption="Age", isEmpty=TRUE, isOutline=TRUE, 
+               styleDeclarations=list(color="blue"))
+pt$addRowDataGroups("age", atLevel=1, addTotal=FALSE)
+pt$addRowGroup(caption="Gender", isEmpty=TRUE, isOutline=TRUE, 
+               styleDeclarations=list(color="blue"))
+pt$addRowDataGroups("gender", atLevel=1, addTotal=FALSE)
+pt$defineCalculation(calculationName="GradeCounts", summariseExpression="sum(counts)")
+pt$addRowGroup(caption="Total", isOutline=TRUE, isTotal=TRUE, isLevelTotal=TRUE,
+               styleDeclarations=list(color="blue"), cellStyleDeclarations=list(color="blue"))
+pt$renderPivot()
+```
+
+### Example 2
+
+Another example of a pivot table that effectively contains two pivot tables:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+# Rows: TOC breakdown
+grp1 <- pt$addRowGroup(caption="By TOC")
+grp1$addDataGroups("TOC", addTotal=FALSE)
+# Rows: Power Type breakdown
+grp2 <- pt$addRowGroup(caption="By Power Type")
+grp2$addDataGroups("PowerType", addTotal=FALSE)
+# Rows: Total
+grp3 <- pt$addRowGroup(caption="Total")
+# Row Group Headings
+pt$setRowDataGroupHeader(levelNumber=1, header="Breakdown")
+pt$setRowDataGroupHeader(levelNumber=2, header="Subset")
+# Finish...
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$theme <- getStandardTableTheme(pt)
+pt$renderPivot(showRowGroupHeaders=TRUE)
+```
+
+Rendering the same table as in outline layout:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+# Rows: TOC breakdown
+grp1a <- pt$addRowGroup(caption="By TOC", isOutline=TRUE, isEmpty=TRUE, 
+                        sortAnchor="next", styleDeclarations=list(color="blue"))
+grp1b <- pt$addRowGroup()
+grp1b$addDataGroups("TOC", addTotal=FALSE)
+# Rows: Power Type breakdown
+grp2a <- pt$addRowGroup(caption="By Power Type", isOutline=TRUE, isEmpty=TRUE, 
+                        sortAnchor="next", styleDeclarations=list(color="blue"))
+grp2b <- pt$addRowGroup()
+grp2b$addDataGroups("PowerType", addTotal=FALSE)
+# Rows: Total
+grp3 <- pt$addRowGroup(caption="Total", isOutline=TRUE, 
+                       styleDeclarations=list(color="blue"))
+# Finish...
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+In the example above, `sortAnchor` links that data group to the next/previous group, so that they stay together when the data groups in the pivot table are sorted.
 
 ## Custom Layout Changes
 

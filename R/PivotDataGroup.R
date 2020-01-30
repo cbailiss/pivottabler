@@ -126,14 +126,15 @@
 #'   this data group or its nearest ancestor.}
 #'   \item{\code{isFindMatch(matchMode="simple", variableNames=NULL,
 #'   variableValues=NULL, totals="include", calculationNames=NULL,
-#'   emptyGroups="exclude", outlineGroups="exclude")}}{Tests whether this data group matches the
-#'   specified criteria.}
+#'   emptyGroups="exclude", outlineGroups="exclude")}}{
+#'   Tests whether this data group matches the specified criteria.}
 #'   \item{\code{findDataGroups(matchMode="simple", variableNames=NULL,
 #'   variableValues=NULL, totals="include", calculationNames=NULL,
 #'   includeChildGroups=FALSE, emptyGroups="exclude",
 #'   outlineGroups="exclude")}}{Searches all data
 #'   groups underneath this data group to find groups that match the specified
 #'   criteria.}
+#'   \item{\code{setStyling(styleDeclarations=NULL)}}{Used to set style declarations.}
 #'   \item{\code{clearSortGroups()}}{Used internally during sort operations.}
 #'   \item{\code{addSortGroupBefore()}}{Used internally during sort operations.}
 #'   \item{\code{addSortGroupAfter()}}{Used internally during sort operations.}
@@ -385,7 +386,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                cellStyleDeclarations=cellStyleDeclarations, sortAnchor=sortAnchor)
      # outline groups must either be marked doNotExpand, isEmpty or isTotal (otherwise we will accidentally expand them, which would look odd)
      if(isOutline) {
-        if((!doNotExpand)&&(!isEmpty)&&(!total)) stop("PivotDataGroup$addChildGroup():  Outline groups must either be set as doNotExpand=TRUE, isEmpty=TRUE or isTotal=TRUE.", call. = FALSE)
+        if((!doNotExpand)&&(!isEmpty)&&(!total)) doNotExpand <- TRUE # Outline groups must either be set as doNotExpand=TRUE, isEmpty=TRUE or isTotal=TRUE.
      }
      # insert the group...
      if(is.null(insertAtIndex) && is.null(insertBeforeGroup) && is.null(insertAfterGroup)) {
@@ -1262,6 +1263,16 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$findDataGroups", "Found data groups.")
      return(invisible(matches))
    },
+   setStyling = function(styleDeclarations=NULL) {
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "setStyling", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$setStyling", "Setting style declarations...", list(styleDeclarations))
+     if(is.null(styleDeclarations)) private$p_style = NULL
+     else if(is.null(private$p_style)) private$p_style = private$p_parentPivot$createInlineStyle(declarations=styleDeclarations)
+     else private$p_style$setPropertyValues(styleDeclarations)
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$setStyling", "Set style declarations.")
+   },
    clearSortGroups = function() {
       private$p_sortGroupsBefore <- list()
       private$p_sortGroupsAfter <- list()
@@ -1308,6 +1319,16 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    childGroups = function(value) { return(invisible(private$p_groups)) },
    leafGroups = function(value) { return(invisible(self$getLeafGroups())) },
    filters = function(value) { return(invisible(private$p_filters)) },
+   variableName = function(value) {
+     if(is.null(private$p_filters)) return(invisible(NULL))
+     if(private$p_filters$count>1) stop("PivotDataGroup$variableName(): The data group has filters for more than one variable.  Please retrieve the filters via the filters property.", call. = FALSE)
+     return(invisible(private$p_filters$filters[[1]]$variableName))
+   },
+   values = function(value) {
+     if(is.null(private$p_filters)) return(invisible(NULL))
+     if(private$p_filters$count>1) stop("PivotDataGroup$variableName(): The data group has filters for more than one variable.  Please retrieve the filters via the filters property.", call. = FALSE)
+     return(invisible(private$p_filters$filters[[1]]$values))
+   },
    calculationGroupName = function(value) {
      if(missing(value)) { return(invisible(private$p_calculationGroupName)) }
      else {
