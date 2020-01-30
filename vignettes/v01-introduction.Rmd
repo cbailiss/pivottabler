@@ -481,7 +481,7 @@ pt$addColumnDataGroups("PowerType")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$evaluatePivot()
-pt$asMatrix()
+pt$asDataMatrix()
 ```
 
 See the [Outputs](v05-outputs.html) vignette for more details, including other conversion options such as converting a pivot table to a data frame.
