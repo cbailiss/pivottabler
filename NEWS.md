@@ -24,7 +24,7 @@ Improvements
 Bug Fixes
 ----------------
 
-The `atLevel` argument of `pt$addColumnDataGroups()` and `pt$addRowDataGroups()` now behaves correctly / more intuatively.  Previously it would often add the data groups at the level below the level expected.
+The `atLevel` argument of `pt$addColumnDataGroups()` and `pt$addRowDataGroups()` now behaves correctly / more intuitively.  Previously it would often add the data groups at the level below the level expected.
 
 Deprecated
 ----------------
