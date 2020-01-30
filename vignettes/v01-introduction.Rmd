@@ -269,6 +269,23 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
+This can then be rendered in outline layout, which renders row group data groups as headings: 
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC", 
+                    outlineBefore=list(isEmpty=FALSE, 
+                                       groupStyleDeclarations=list(color="blue")), 
+                    outlineTotal=list(groupStyleDeclarations=list(color="blue")))
+pt$addRowDataGroups("PowerType", addTotal=FALSE)
+pt$addRowDataGroups("SchedSpeedMPH", addTotal=FALSE)
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
 ## Quick-Pivot Functions
 
 To construct basic pivot tables quickly, three functions are provided that can construct pivot tables with one line of R:
