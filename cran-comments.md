@@ -15,7 +15,7 @@ The title of the package includes "in R" as a contrast clause to the other popul
 
 * local OS (windows) install, R 3.6.2
 * Ubuntu 16.04.6 LTS (on travis-ci), R 3.6.2.
-* win-builder, R-devel = R 4.0.0.
+* R-hub, R-devel
 
 ## R CMD check results
 
@@ -24,32 +24,33 @@ The title of the package includes "in R" as a contrast clause to the other popul
 0 errors | 0 warnings | 1 note
 
 NOTE:  
-  installed size is  6.3Mb
+  installed size is  6.8Mb
   sub-directories of 1Mb or more:
     data   2.0Mb
-    doc    3.1Mb
-    R      1.0Mb
+    doc    3.5Mb
+    R      1.1Mb
 
 ### Travis-CI R CMD check results
 
 0 errors | 0 warnings | 1 note
 
 NOTE:  
-  installed size is  6.3Mb
+  installed size is  6.9Mb
   sub-directories of 1Mb or more:
     data   2.0Mb
-    doc    3.1Mb
-    R      1.0Mb
+    doc    3.6Mb
+    R      1.1Mb
 
-### win-builder check results
+### R-hub check results
 
 0 errors | 0 warnings | 1 note
 
 NOTE:  
-  installed size is  6.2Mb
+  installed size is  6.8Mb
   sub-directories of 1Mb or more:
+    R      1.1Mb
     data   2.0Mb
-    doc    3.0Mb
+    doc    3.5Mb
 
 ### Comments on check results
 
