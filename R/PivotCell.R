@@ -84,6 +84,7 @@ PivotCell <- R6::R6Class("PivotCell",
      private$p_parentPivot <- parentPivot
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCell$new", "Creating new PivotCell",
                                    list(rowNumber=rowNumber, columnNumber=columnNumber))
+     private$p_instanceId <- parentPivot$getNextInstanceId()
      private$p_rowNumber <- rowNumber
      private$p_columnNumber <- columnNumber
      private$p_calculationName <- calculationName
@@ -159,6 +160,7 @@ PivotCell <- R6::R6Class("PivotCell",
    asJSON = function() { return(jsonlite::toJSON(asList())) }
   ),
   active = list(
+   instanceId = function(value) { return(invisible(private$p_instanceId)) },
    rowNumber = function(value) { return(invisible(private$p_rowNumber)) },
    columnNumber = function(value) { return(invisible(private$p_columnNumber)) },
    calculationName = function(value) { return(invisible(private$p_calculationName)) },
@@ -243,6 +245,7 @@ PivotCell <- R6::R6Class("PivotCell",
   ),
   private = list(
     p_parentPivot = NULL,             # an object ref (the single pivot instance)
+    p_instanceId = NULL,              # a unique identifier (unique across all row/column groups and cells) to allow "grp1 is grp2" type comparisons
     p_rowNumber = NULL,               # an integer
     p_columnNumber = NULL,            # an integer
     p_calculationName = NULL,         # a string
