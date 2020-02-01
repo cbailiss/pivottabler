@@ -4,7 +4,7 @@ pivottabler 1.3.0
 Overview
 --------
 
-This release ....
+This release introduces a new layout type - outline layout - that can make larger pivot tables with multiple levels of row groups more readable and more visually appealing.  There are also several other notable enhancements, such as small improvements that make irregular pivot tables easier to construct.
 
 Improvements
 ----------------
