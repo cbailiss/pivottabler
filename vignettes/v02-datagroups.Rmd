@@ -102,7 +102,8 @@ library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
-pt$addColumnDataGroups("PowerType", fromData=FALSE, explicitListOfValues=list("DMU", "EMU"), visualTotals=TRUE)
+pt$addColumnDataGroups("PowerType", fromData=FALSE, 
+                       explicitListOfValues=list("DMU", "EMU"), visualTotals=TRUE)
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
@@ -209,7 +210,8 @@ Some formatting behaviour depends on the data type of the value being formatted.
 An example of using a custom R function to accomplish the same formatting is:
 
 ```{r, message=FALSE, warning=FALSE}
-# derive the date of each train (from the arrival/dep times), then the month of each train from the date of each train
+# derive the date of each train (from the arrival/dep times), then derive
+# the month of each train from the date of each train
 library(dplyr)
 library(lubridate)
 library(pivottabler)
@@ -234,7 +236,8 @@ pt$renderPivot()
 An example of passing additional parameters to the custom formatting function using the `dataFmtFuncArgs` argument:
 
 ```{r, message=FALSE, warning=FALSE}
-# derive the date of each train (from the arrival/dep times), then the month of each train from the date of each train
+# derive the date of each train (from the arrival/dep times), then derive
+# the month of each train from the date of each train
 library(dplyr)
 library(lubridate)
 library(pivottabler)

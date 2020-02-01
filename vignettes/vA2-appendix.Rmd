@@ -338,7 +338,8 @@ pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 filterTOC <- PivotFilter$new(pt, variableName="TOC", values="London Midland")
 filterOverrides <- PivotFilterOverrides$new(pt, filter=filterTOC, action="intersect")
-pt$defineCalculation(calculationName="CountLM", filters=filterOverrides, summariseExpression="n()", caption="Test Count")
+pt$defineCalculation(calculationName="CountLM", filters=filterOverrides, 
+                     summariseExpression="n()", caption="Test Count")
 pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
 pt$renderPivot()
 ```
@@ -357,7 +358,8 @@ pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 filterTOC <- PivotFilter$new(pt, variableName="TOC", values="London Midland")
 filterOverrides <- PivotFilterOverrides$new(pt, filter=filterTOC, action="replace")
-pt$defineCalculation(calculationName="CountLM", filters=filterOverrides, summariseExpression="n()", caption="Test Count")
+pt$defineCalculation(calculationName="CountLM", filters=filterOverrides, 
+                     summariseExpression="n()", caption="Test Count")
 pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
 pt$renderPivot()
 ```
@@ -374,7 +376,8 @@ pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 filterTOC <- PivotFilter$new(pt, variableName="TOC", values="London Midland")
 filterOverrides <- PivotFilterOverrides$new(pt, filter=filterTOC, action="union")
-pt$defineCalculation(calculationName="CountLM", filters=filterOverrides, summariseExpression="n()", caption="Test Count")
+pt$defineCalculation(calculationName="CountLM", filters=filterOverrides, 
+                     summariseExpression="n()", caption="Test Count")
 pt$defineCalculation(calculationName="CountTrains", summariseExpression="n()", caption="Count")
 pt$renderPivot()
 ```

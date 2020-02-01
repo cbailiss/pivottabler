@@ -21,6 +21,7 @@ vignette: >
 * Constructing the Basic Pivot Table
 * Outputting the Pivot Table as Plain Text
 * Extending the Basic Pivot Table
+* Outline Layout
 * Quick-Pivot Functions
 * Examples Gallery
 * Further Reading
@@ -269,7 +270,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-This can then be rendered in outline layout, which renders row group data groups as headings: 
+This can then be rendered in outline layout: 
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -282,6 +283,28 @@ pt$addRowDataGroups("TOC",
                     outlineTotal=list(groupStyleDeclarations=list(color="blue")))
 pt$addRowDataGroups("PowerType", addTotal=FALSE)
 pt$addRowDataGroups("SchedSpeedMPH", addTotal=FALSE)
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+## Outline Layout
+
+Outline layout renders row group data groups as headings:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC",
+                    outlineBefore=list(groupStyleDeclarations=list(color="blue")),
+                    outlineAfter=list(isEmpty=FALSE,
+                                      mergeSpace="dataGroupsOnly",
+                                      caption="Total ({value})",
+                                      groupStyleDeclarations=list("font-style"="italic")),
+                    outlineTotal=list(groupStyleDeclarations=list(color="blue"),
+                                      cellStyleDeclarations=list("color"="blue")))
+pt$addRowDataGroups("PowerType", addTotal=FALSE)
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -471,6 +494,42 @@ pt$renderPivot()
 
 See the [Calculations](v03-calculations.html) vignette for more details.
 
+### Outline Layout
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC",
+                    outlineBefore=list(isEmpty=FALSE, 
+                                       groupStyleDeclarations=list(color="blue")),
+                    outlineTotal=list(groupStyleDeclarations=list(color="blue"),
+                                      cellStyleDeclarations=list("color"="blue")))
+pt$addRowDataGroups("PowerType", addTotal=FALSE)
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$addColumnDataGroups("PowerType")
+pt$addRowCalculationGroups(outlineBefore=list(isEmpty=FALSE, mergeSpace="dataGroupsOnly", 
+                                              groupStyleDeclarations=list(color="blue"), 
+                                              cellStyleDeclarations=list(color="blue")))
+pt$addRowDataGroups("TOC", addTotal=FALSE)
+pt$renderPivot()
+```
+
+See the [Regular Layout](v04-regularlayout.html) vignette for more details.
+
 ### Results as a Matrix
 
 ```{r, message=FALSE, warning=FALSE, eval=TRUE, comment="", echo=FALSE}
@@ -659,7 +718,7 @@ pt$renderPivot()
 
 See the [Finding and Formatting](v08-findingandformatting.html) vignette for more details.
 
-### Irregular Layout
+### Mixing Data Groups and/or Calculations
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE}
 library(pivottabler)
@@ -675,6 +734,33 @@ cg3 <- cg1$addChildGroup(caption="Count")
 cg4 <- cg2$addChildGroup(caption="Maximum Speed")
 cg3$addCalculationGroups("default")
 cg4$addCalculationGroups("calcGrp2")
+pt$renderPivot()
+```
+
+See the [Irregular Layout](v10-irregularlayout.html) vignette for more details.
+
+### Combining Pivot Tables
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+# Rows: TOC breakdown
+grp1a <- pt$addRowGroup(caption="By TOC", isOutline=TRUE, isEmpty=TRUE, 
+                        sortAnchor="next", styleDeclarations=list(color="blue"))
+grp1b <- pt$addRowGroup()
+grp1b$addDataGroups("TOC", addTotal=FALSE)
+# Rows: Power Type breakdown
+grp2a <- pt$addRowGroup(caption="By Power Type", isOutline=TRUE, isEmpty=TRUE, 
+                        sortAnchor="next", styleDeclarations=list(color="blue"))
+grp2b <- pt$addRowGroup()
+grp2b$addDataGroups("PowerType", addTotal=FALSE)
+# Rows: Total
+grp3 <- pt$addRowGroup(caption="Total", isOutline=TRUE, 
+                       styleDeclarations=list(color="blue"))
+# Finish...
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 

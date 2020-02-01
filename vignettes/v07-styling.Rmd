@@ -97,10 +97,11 @@ The `pivottabler` package also supports outputting to Excel files.  The Excel ou
 
 ## Included Themes
 
-The `pivottabler` package includes three basic themes:
+The `pivottabler` package includes four basic themes:
+
+### Default Theme
 
 ```{r, message=FALSE, warning=FALSE}
-# basic theme
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -111,8 +112,9 @@ pt$theme <- "default"  # this theme is already the default, so this line isn't r
 pt$renderPivot(styleNamePrefix="t0")
 ```
 
+### Compact Theme
+
 ```{r, message=FALSE, warning=FALSE}
-# compact theme
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -123,8 +125,9 @@ pt$theme <- "compact"
 pt$renderPivot(styleNamePrefix="t1")
 ```
 
+### Large Plain Theme
+
 ```{r, message=FALSE, warning=FALSE}
-# large plain theme
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
@@ -133,6 +136,19 @@ pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$theme <- "largeplain"
 pt$renderPivot(styleNamePrefix="t2")
+```
+
+### Standard Table Theme
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC", header="Train Company")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$theme <- "standardtable"
+pt$renderPivot(styleNamePrefix="t2", showRowGroupHeaders=TRUE)
 ```
 
 ## Simple Themes
@@ -147,6 +163,8 @@ simpleBlueTheme <- list(
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor = "rgb(255, 255, 255)",
   cellColor = "rgb(0, 0, 0)",
+  outlineCellBackgroundColor = "rgb(186, 202, 233)",
+  outlineCellColor = "rgb(0, 0, 0)",
   totalBackgroundColor = "rgb(186, 202, 233)",
   totalColor = "rgb(0, 0, 0)",
   borderColor = "rgb(48, 84, 150)"
@@ -171,6 +189,8 @@ simpleGrayTheme <- list(
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor = "rgb(255, 255, 255)",
   cellColor = "rgb(0, 0, 0)",
+  outlineCellBackgroundColor = "rgb(192, 192, 192)",
+  outlineCellColor = "rgb(0, 0, 0)",
   totalBackgroundColor = "rgb(192, 192, 192)",
   totalColor = "rgb(0, 0, 0)",
   borderColor = "rgb(64, 64, 64)"
@@ -195,6 +215,8 @@ simpleGreenTheme <- list(
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor="rgb(255, 255, 255)",
   cellColor="rgb(0, 0, 0)",
+  outlineCellBackgroundColor = "rgb(182, 216, 158)",
+  outlineCellColor = "rgb(0, 0, 0)",
   totalBackgroundColor = "rgb(182, 216, 158)",
   totalColor="rgb(0, 0, 0)",
   borderColor = "rgb(84, 130, 53)"
@@ -223,6 +245,8 @@ simpleBlueTheme <- list(
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor = "rgb(255, 255, 255)",
   cellColor = "rgb(0, 0, 0)",
+  outlineCellBackgroundColor = "rgb(186, 202, 233)",
+  outlineCellColor = "rgb(0, 0, 0)",
   totalBackgroundColor = "rgb(186, 202, 233)",
   totalColor = "rgb(0, 0, 0)",
   borderColor = "rgb(48, 84, 150)"
@@ -259,7 +283,10 @@ The appearance of sets of data groups can be specified when adding the data grou
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory", styleDeclarations=list("color"="red", "font-weight"="bold", "background-color"="yellow"))
+pt$addColumnDataGroups("TrainCategory", 
+                       styleDeclarations=list("color"="red", 
+                                              "font-weight"="bold", 
+                                              "background-color"="yellow"))
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot(styleNamePrefix="tdg")
@@ -315,6 +342,8 @@ orangeTheme <- list(
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor = "rgb(255, 255, 255)",
   cellColor = "rgb(0, 0, 0)",
+  outlineCellBackgroundColor = "rgb(248, 198, 165)",
+  outlineCellColor = "rgb(0, 0, 0)",
   totalBackgroundColor = "rgb(248, 198, 165)",
   totalColor = "rgb(0, 0, 0)",
   borderColor = "rgb(198, 89, 17)"
@@ -432,6 +461,9 @@ createCustomTheme <- function(parentPivot=NULL, themeName="myCustomTheme") {
   pivotStyles$rowHeaderStyle <- "RowHeader"
   pivotStyles$colHeaderStyle <- "ColumnHeader"
   pivotStyles$cellStyle <- "Cell"
+  pivotStyles$outlineRowHeaderStyle <- "RowHeader"
+  pivotStyles$outlineColHeaderStyle <- "ColumnHeader"
+  pivotStyles$outlineCellStyle <- "Cell"
   pivotStyles$totalStyle <- "Total"
   return(invisible(pivotStyles))
 }

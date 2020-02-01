@@ -127,6 +127,23 @@ pt$renderPivot()
 
 ![http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png](http://cbailiss.me.uk/pivottablerreadmeimgs/example2.png)
 
+Outline layout is an alternative way of rendering the row groups, e.g. for the same pivot table as above:
+
+```{r eval=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains) 
+pt$addColumnDataGroups("TrainCategory") 
+pt$addRowDataGroups("TOC", 
+                    outlineBefore=list(isEmpty=FALSE, groupStyleDeclarations=list(color="blue")), 
+                    outlineTotal=list(isEmpty=FALSE, groupStyleDeclarations=list(color="blue"))) 
+pt$addRowDataGroups("PowerType", addTotal=FALSE) 
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+![http://cbailiss.me.uk/pivottablerreadmeimgs/example7.png](http://cbailiss.me.uk/pivottablerreadmeimgs/example7.png)
+
 #### Multiple Calculations
 
 Multiple calculations are supported.  Calculations can be based on other calculations in the pivot table.  Calculations can be hidden - e.g. to hide calculations that only exist to provide values to other calculations.

@@ -36,9 +36,11 @@ Calculations define how (typically numerical) data is to be summarised/aggregate
 
 Within a `pivottabler` pivot table, calculations always belong to a Calculation Group.  Calculation groups allow calculations to be defined that refer to other calculations.
 
-Every pivot table always has a default calculation group (called `default`).  This is sufficient for most scenarios and calculations groups are not referred to again in this vignette.  All the calculations defined in this vignette sit in the `default` calculation group.  
+Every pivot table always has a default calculation group (called `default`).  This is sufficient for most scenarios.  All the calculations defined in this vignette sit in the `default` calculation group.  
 
 Creating additional calculation groups is only necessary for some advanced pivot table layouts - see the [Irregular Layout](v10-irregularlayout.html) vignette for an example.
+
+Calculations groups are not discussed further in this vignette.
 
 ## Calculation Types
 
@@ -57,7 +59,7 @@ The first two of the methods listed above are described in more detail in the fo
 
 ### Calculation Method 1:  Summarising Values
 
-The most common way to calculate the pivot table is to provide an expression that describes how to summarise the data, e.g. defining a calculation that counts the number of trains:
+The most common way to calculate the pivot table is to provide an expression that describes how to aggregate the data, e.g. defining a calculation that counts the number of trains:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -102,7 +104,9 @@ pt$defineCalculation(calculationName="SDArrivalDelay", caption="Delay Std. Dev."
 pt$renderPivot()
 ```
 
-The data.table package can also be used - see the [Performance](v11-performance.html) for details.  Note that the "count" summarise expression is specified as ".N" when using data.table, not as "n()".  Also, when using data.table, be aware of some strange behaviour that leads to incorrect values in the pivot table when aggregating over columns that are also used in either row/column headings.  Again, see the [Performance](v11-performance.html) for details.
+The data.table package can also be used - see the [Performance](v11-performance.html) vignette for details.  Note that the "count" summarise expression is specified as `.N` when using data.table, not as `n()`.  
+
+When using data.table, be aware of some strange behaviour that leads to incorrect values in the pivot table when aggregating over columns that are also used in either row/column headings.  Again, see the [Performance](v11-performance.html) vignette for details.
 
 ### Calculation Method 2:  Deriving values from other summarised values
 
@@ -243,6 +247,25 @@ pt$addRowDataGroups("TOC")
 pt$renderPivot()
 ```
 
+Again on rows, but this time using outline layout:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$addRowCalculationGroups(outlineBefore=TRUE)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$renderPivot()
+```
+
+See the [Regular Layout](v04-regularlayout.html) vignette for more details on outline layout.
+
 ## Filtering data as part of a calculation
 
 It is possible to specify additional/different filter criteria as part of a calculation definition.  This additional criteria can either be in the form of a `PivotFilters` object or a `PivotFiltersOverrides` object.
@@ -374,7 +397,7 @@ pt$renderPivot()
 
 ### Formatting examples with custom R function
 
-Using a custom R format function allows bespoke formatting logic to be used.  In following (contrived) example, "Mean Arr. Delay 2" includes a descriptive prefix that shows whether a number is less than, roughly equal to or greater than 3. 
+Using a custom R format function allows bespoke formatting logic to be used.  In the following (contrived) example, "Mean Arr. Delay 2" includes a descriptive prefix that shows whether a number is less than, roughly equal to or greater than 3. 
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)

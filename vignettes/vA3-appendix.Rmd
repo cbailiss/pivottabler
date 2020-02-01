@@ -48,13 +48,17 @@ A pivot table can be built from more than one data frame, though this is typical
 
 A pivot table has a set of column headings and a set of row headings, each of which is an instance of the `PivotDataGroup` class.  A data group can (and normally does) have child groups. 
 
-A single invisible data group `pt$rowGroup` acts as the top-level parent for the row groups, and another single invisible data group `pt$columnGroup` acts as the top-level parent for the column groups. 
+The data groups exist in a hierarchy.  A single invisible data group `pt$rowGroup` acts as the top-level parent for the row groups, and another single invisible data group `pt$columnGroup` acts as the top-level parent for the column groups. 
 
-Calling `pt$addColumnDataGroups(...)` or `pt$addRowDataGroups(...)` generates a new level of child data groups, each of which is a `PivotDataGroup`.  
+The first level of visible data groups headings can be accessed via `pt$topRowGroups` or `pt$topColumnGroups`.  The leaf level data groups can be accessed using `pt$leafRowGroups` or `pt$leafColumnGroups`.
 
-The children for a given `PivotDataGroup` can be accessed using the `childGroups` property, e.g. the first level of row headings can be accessed via `pt$rowGroup$childGroups`.  The child data groups of a data group in this level can then be accessed via `pt$rowGroup$childGroups[[1]]$childGroups`.
+The parent of a given `PivotDataGroup` can be accessed using the `parentGroup` property.
 
-The display value of a data group is accessible via the caption property, e.g. `pt$rowGroup$childGroups[[1]]$caption`.
+The children for a given `PivotDataGroup` can be accessed using the `childGroups` property, e.g. the child data groups of a data group in the top level level can then be accessed via `pt$topRowGroups[[1]]$childGroups`.
+
+Calling `pt$addColumnDataGroups(...)` or `pt$addRowDataGroups(...)` generates a new level of child data groups.  Each child data group is also an instance of the `PivotDataGroup`.  
+
+The display value of a data group is accessible via the caption property, e.g. `pt$topRowGroups[[1]]$caption`.
 
 See the [Data Groups](v02-datagroups.html) vignette for more details.
 
@@ -101,7 +105,7 @@ The [Finding and Formatting](v08-findingandformatting.html) vignette describes o
 
 Each data group typically acts as a filter for the data in that row/column of the pivot table.  E.g. a heading of "France" typically implies "Country=France".  This filter condition is represented by the `PivotFilter` class.  Every cell in a pivot table has a set of filters (one filter from each row/column heading) and these filters are represented by the `PivotFilters` class.  See the [Cell Context](v09-cellcontext.html) vignette for more details.
 
-The `PivotFilterOverrides` class provides a mechanism for individual calculation definitions to override the default filters associated with a cell.  See the [Calculations](v03-calculations.html) vignette for more details.
+The `PivotFilterOverrides` class provides a mechanism for individual calculation definitions to override the default filters associated with a cell.  See the [Calculations](v03-calculations.html) and [Appendix: Calculations](vA2-appendix.html) vignettes for more details.
 
 ## Calculator Classes
 
@@ -111,13 +115,11 @@ The `PivotBatch`, `PivotBatchCalculator` and `PivotBatchStatistics` classes prov
 
 ## Styling Classes
 
-The `PivotStyle` class represents a single style declaration in the form of a single name-value pair (similar to a CSS style declaration).  
+The `PivotStyle` class represents a list of style declarations in the form of name-value pairs (similar to a CSS style declaration) that would be applied to a single data group or cell in the pivot table (or sets of data groups / cells).  
 
-The `PivotStyles` class is a set of style declarations that would be applied to a cell (or a set of cells). 
+The `PivotStyles` class is a set of styles that are applied to different parts of a pivot table (headings, cells, totals, etc).  The `PivotStyles` class can be thought of as a theme applied to a pivot table.
 
 The `PivotOpenXlsxStyle` and `PivotOpenXlsxStyles` classes are similar, except these are specific to Excel export.
-
-The `PivotThemes` class represents a set of styles to apply to the different parts (headings, cells, totals, etc) of a pivot table.
 
 See the [Styling](v07-styling.html) vignette for more details.
 
@@ -131,8 +133,12 @@ See the [Outputs](v05-outputs.html) vignette for more details.
 
 * The `PivotTable` class represents a single pivot table, typically named `pt` in the package examples.
 * `pt$data` is an instance of the `PivotData` class that wraps the data frames used to build the pivot table.
-* `pt$rowGroup` and `pt$columnGroup` are the invisible top-level data groups - each is an instance of the `PivotDataGroup` class.
-* Child data groups can be accessed recursively, e.g. via `pt$rowGroup$childGroups`, `pt$rowGroup$childGroups[[1]]$childGroups`, etc.
+* The data groups that comprise the row/column headings exist in a hierarchy.
+* `pt$rowGroup` and `pt$columnGroup` are the invisible top-level data groups on each axis - each is an instance of the `PivotDataGroup` class.
+* `pt$topRowGroups` and `pt$topColumnGroups` provide the direct way to access the first visible level of row or column data groups in a pivot table.
+* `pt$leafRowGroups` and `pt$leafColumnGroups` provide the direct way to access the lowest level of row or column data groups in a pivot table.
+* The parent of a given `PivotDataGroup` can be accessed using the `parentGroup` property.
+* Child data groups can be accessed recursively, e.g. `pt$topRowGroups[[1]]$childGroups[[1]]$childGroups`, etc.
 * `pt$calculationGroups` contains the calculation groups present in a pivot table.  The calculation definitions within the default calculation group are accessed via `pt$calculationGroups$defaultGroup$calculations`.
 * Check pivot table size using `pt$rowCount` and `pt$columnCount`.
 * Individual cells in a pivot table are represented by the `PivotCell` class and can be accessed via `pt$cells$getCell(r, c)`.

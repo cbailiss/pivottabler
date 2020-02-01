@@ -160,7 +160,7 @@ pt$addColumnDataGroups("Status", addTotal=FALSE)
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
-pt$asDataMatrix(separator=" | ")
+pt$asDataMatrix(separator="|")
 ```
 
 ### As a `character` matrix
