@@ -30,6 +30,7 @@ evaluationMode <- "sequential"
 processingLibrary <- "dplyr"
 description <- "test: sequential dplyr"
 countFunction <- "n()"
+isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
 
 testScenarios <- function(description="test", releaseEvaluationMode="batch", releaseProcessingLibrary="dplyr", runAllForReleaseVersion=FALSE) {
   isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
@@ -177,6 +178,7 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
 
   scenarios <- testScenarios("data group formatting: custom format function (trains)")
   for(i in 1:nrow(scenarios)) {
+    if(!isDevelopmentVersion) break
     evaluationMode <- scenarios$evaluationMode[i]
     processingLibrary <- scenarios$processingLibrary[i]
     description <- scenarios$description[i]
@@ -218,6 +220,7 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
 
   scenarios <- testScenarios("data group formatting: custom format function with params (trains)")
   for(i in 1:nrow(scenarios)) {
+    if(!isDevelopmentVersion) break
     evaluationMode <- scenarios$evaluationMode[i]
     processingLibrary <- scenarios$processingLibrary[i]
     description <- scenarios$description[i]

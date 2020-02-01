@@ -30,6 +30,7 @@ evaluationMode <- "sequential"
 processingLibrary <- "dplyr"
 description <- "test: sequential dplyr"
 countFunction <- "n()"
+isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
 
 testScenarios <- function(description="test", releaseEvaluationMode="batch", releaseProcessingLibrary="dplyr", runAllForReleaseVersion=FALSE) {
   isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
@@ -242,6 +243,7 @@ context("ROW/COLUMN DATA TYPE FORMAT TESTS:  SPRINTF()")
 
 scenarios <- testScenarios("row/column data type tests (sprintf): integer")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -271,6 +273,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (sprintf): numeric")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -300,6 +303,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (sprintf): logical")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -329,6 +333,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (format): date")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -421,6 +426,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (format): logical")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -450,6 +456,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (format): date")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -479,6 +486,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (format): posixct")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -511,6 +519,7 @@ context("MEASURE DATA TYPE CALCULATION AND FORMAT TESTS:  NO FORMAT")
 
 scenarios <- testScenarios("measure data type tests (no format): integer")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -606,6 +615,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("measure data type tests (no format): logical")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -637,6 +647,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("measure data type tests (no format): date")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -770,6 +781,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("measure data type tests (sprintf): logical")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -840,6 +852,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("measure data type tests (format): logical")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

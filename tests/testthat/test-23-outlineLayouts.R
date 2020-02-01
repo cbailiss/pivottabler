@@ -30,6 +30,7 @@ evaluationMode <- "sequential"
 processingLibrary <- "dplyr"
 description <- "test: sequential dplyr"
 countFunction <- "n()"
+isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
 
 testScenarios <- function(description="test", releaseEvaluationMode="batch", releaseProcessingLibrary="dplyr", runAllForReleaseVersion=FALSE) {
   isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
@@ -126,6 +127,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Basic outline layout (doNotMerge)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -155,6 +157,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Basic outline layout (dataGroupsOnly)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -184,6 +187,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Basic outline layout (cellsOnly)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -213,6 +217,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Basic outline layout (dataGroupsAndCellsAs1)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -242,6 +247,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Basic outline layout (dataGroupsAndCellsAs2)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -271,6 +277,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Outline layout - with totals")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -300,6 +307,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Outline layout - simple 3 row group levels)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -366,6 +374,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Outline layout - simple 3 row group levels part tabular")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -541,6 +550,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Sort outlined groups - sorting only a subset of the row groups")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
