@@ -87,6 +87,15 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   that sits at the top of the parent-child hierarchy.}
   \item{\code{getLeafColumnGroups()}}{Get the PivotDataGroups at the bottom
   of the column heading parent-child hierarchy.}
+  \item{\code{addColumnGroup(variableName, filterType="ALL", values=NULL,
+  doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
+  isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
+  calculationGroupName=NULL, calculationName=NULL,
+  baseStyleName=NULL, styleDeclarations=NULL,
+  insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL,
+  mergeEmptySpace=NULL, cellBaseStyleName=NULL,
+  cellStyleDeclarations=NULL, sortAnchor=NULL, resetCells=TRUE)}}{
+  Add a new top-level column heading data group to the pivot table.}
   \item{\code{addColumnDataGroups(variableName, atLevel, fromData=TRUE,
   dataName, dataSortOrder="asc", dataFormat, dataFmtFuncArgs,
   onlyCombinationsThatExist=TRUE,
@@ -96,31 +105,44 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   styleDeclarations=NULL)}}{Generate new column heading data
   groups based on the distinct values in a data frame or using explicitly
   specified data values.}
-  \item{\code{normaliseColumnGroups() }}{Normalise the column heading data
-  group hierarchy so that all branches have the same number of levels -
-  accomplished by adding empty child data groups where needed.}
+  \item{\code{normaliseColumnGroups(resetCells=TRUE) }}{Normalise the
+  column heading data group hierarchy so that all branches have the same
+  number of levels - accomplished by adding empty child data groups where
+  needed.}
   \item{\code{sortColumnDataGroups(levelNumber=1, orderBy="calculation",
-  sortOrder="desc", calculationGroupName="default", calculationName)}}{Sort
+  sortOrder="desc", calculationGroupName="default", calculationName,
+  fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
   the column heading data groups either by the data group data value, caption
   or based on calculation result values.}
   \item{\code{getTopRowGroups()}}{Get the left-most row PivotDataGroup that
   sits at the top of the parent-child hierarchy.}
   \item{\code{getLeafRowGroups()}}{Get the PivotDataGroups at the bottom of
   the row heading parent-child hierarchy.}
+  \item{\code{addRowGroup(variableName, filterType="ALL", values=NULL,
+  doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
+  isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
+  calculationGroupName=NULL, calculationName=NULL,
+  baseStyleName=NULL, styleDeclarations=NULL,
+  insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL,
+  mergeEmptySpace=NULL, cellBaseStyleName=NULL,
+  cellStyleDeclarations=NULL, sortAnchor=NULL, resetCells=TRUE)}}{
+  Add a new top-level row heading data group to the pivot table.}
   \item{\code{addRowDataGroups(variableName, atLevel, fromData=TRUE,
   dataName, dataSortOrder="asc", dataFormat, dataFmtFuncArgs,
   onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
   totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
-  styleDeclarations=NULL, header=NULL)}}{Generate new row heading data
+  styleDeclarations=NULL, header=NULL, outlineBefore=NULL,
+  outlineAfter=NULL)}}{Generate new row heading data
   groups based on the distinct values in a data frame or using explicitly
   specified data values.}
-  \item{\code{normaliseRowGroups()}}{Normalise the row heading data group
-  hierarchy so that all branches have the same number of levels - accomplished
-  by adding empty child data groups where needed.}
+  \item{\code{normaliseRowGroups(resetCells=TRUE)}}{Normalise the row heading
+  data group hierarchy so that all branches have the same number of
+  levels - accomplished by adding empty child data groups where needed.}
   \item{\code{sortRowDataGroups(levelNumber=1, orderBy="calculation",
-  sortOrder="desc", calculationGroupName="default", calculationName)}}{Sort
+  sortOrder="desc", calculationGroupName="default", calculationName,
+  fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
   the row heading data groups either by the data group data value, caption or
   based on calculation result values.}
   \item{\code{addCalculationGroup(calculationGroupName)}}{Create a new
@@ -163,11 +185,13 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   evaluateCells() in sequence.}
   \item{\code{findRowDataGroups(matchMode="simple", variableNames=NULL,
   variableValues=NULL, totals="include", calculationNames=NULL,
-  includeDescendantGroups=FALSE, excludeEmptyGroups=TRUE)}}{Find row data
+  includeDescendantGroups=FALSE, emptyGroups="exclude",
+  outlineGroups="exclude")}}{Find row data
   groups matching the specified criteria.}
   \item{\code{findColumnDataGroups(matchMode="simple", variableNames=NULL,
   variableValues=NULL, totals="include", calculationNames=NULL,
-  includeDescendantGroups=FALSE, excludeEmptyGroups=TRUE)}}{Find column
+  includeDescendantGroups=FALSE, emptyGroups="exclude",
+  outlineGroups="exclude")}}{Find column
   data groups matching the specified criteria.}
   \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
   columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE)}}{
@@ -175,7 +199,7 @@ constructing the pivot table, where the elapsed time > 0.1 seconds.}
   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
   exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
-  excludeEmptyCells=TRUE)}}{Find cells in the
+  emptyCells="exclude", outlineCells="exclude")}}{Find cells in the
   body of the pivot table matching the specified criteria.}
   \item{\code{print(asCharacter=FALSE, showRowGroupHeaders=TRUE)}}{Either
   print the pivot table to the console or retrieve it as a character value.}

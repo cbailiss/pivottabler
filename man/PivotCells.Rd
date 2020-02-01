@@ -43,7 +43,8 @@ in the pivot table.}
   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
   exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
-  excludeEmptyCells=TRUE)}}{Find cells matching the specified criteria.}
+  emptyCells="exclude", outlineCells="exclude")}}{Find cells
+  matching the specified criteria.}
   \item{\code{getColumnWidths())}}{Retrieve the width of the longest value
   (in characters) in each column.}
   \item{\code{asMatrix(rawValue=TRUE))}}{Get a matrix containing all of the

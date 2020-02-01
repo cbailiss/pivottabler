@@ -79,6 +79,8 @@ for this cell.}
   \item{\code{new(...)}}{Create a new pivot table cell, specifying the field
   values documented above.}
 
+  \item{\code{setStyling(styleDeclarations=NULL))}}{Used to set style
+  declarations.}
   \item{\code{getCopy())}}{Get a copy of this cell.}
   \item{\code{asList())}}{Get a list representation of this cell}
   \item{\code{asJSON()}}{Get a JSON representation of this cell}

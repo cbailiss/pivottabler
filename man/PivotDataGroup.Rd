@@ -24,8 +24,13 @@ PivotDataGroup can have one or more child PivotDataGroups.
 \item{\code{rowOrColumn}}{"row" or "column" indicating which axis this data group
 exists on.}
 
+\item{\code{doNotExpand}}{Indicates whether addDataGroups() will expand this group.}
+
 \item{\code{isEmpty}}{Indicates whether this data group contains no data (e.g. if
 it is part of a header / outline row).}
+
+\item{\code{isOutline}}{Indicates whether this data group is an outline group used
+in outlined layouts (e.g. a header row for each data group).}
 
 \item{\code{caption}}{The friendly display name for this data group.}
 
@@ -64,6 +69,15 @@ applies to column data groups, not row data groups.}
 
 \item{\code{style}}{A PivotStyle object that can apply overrides to the base style
 for this data group.}
+
+\item{\code{mergeEmptySpace}}{Specifies if/how empty space groups/cells should be
+merged when the pivot table is rendered.}
+
+\item{\code{cellBaseStyleName}}{Specifies the name of the style applied to
+cells.  Overrides the default cell styles.}
+
+\item{\code{cellStyle}}{A PivotStyle object that can apply
+overrides to cells.  Overrides the default cell styles.}
 
 \item{\code{isMatch}}{Whether or not this data group matches the criteria of the
 last find.}
@@ -106,44 +120,57 @@ group (used as part of the rendering routines).}
   levels in the data group hierarchy.}
   \item{\code{getLevelGroups(level, levelGroups)}}{Get all of the data groups
   at a specific level in the data group hierarchy.}
-  \item{\code{addChildGroup(variableName, values, caption, isTotal=FALSE,
-  isLevelSubTotal=FALSE, isLevelTotal=FALSE, calculationGroupName=NULL,
-  calculationName=NULL, baseStyleName=NULL, styleDeclarations=NULL,
-  insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL)}}{
+  \item{\code{addChildGroup(variableName, filterType="ALL", values=NULL,
+  doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
+  isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
+  calculationGroupName=NULL, calculationName=NULL,
+  baseStyleName=NULL, styleDeclarations=NULL,
+  insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL,
+  mergeEmptySpace=NULL, cellBaseStyleName=NULL,
+  cellStyleDeclarations=NULL, sortAnchor=NULL, resetCells=TRUE)}}{
   Add a new data group as the child of the current data group.}
-  \item{\code{removeChildGroup(index=NULL, group=NULL)}}{
+  \item{\code{removeChildGroup(index=NULL, group=NULL, resetCells=TRUE)}}{
   Remove a data group that is a child of the current data group.}
-  \item{\code{removeGroup()}}{
+  \item{\code{removeGroup(resetCells=TRUE)}}{
   Remove the current data group.}
-  \item{\code{addDataGroups(variableName, atLevel, fromData=TRUE,  dataName,
+  \item{\code{addDataGroups(variableName, atLevel, fromData=TRUE, dataName,
   dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
   totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
-  styleDeclarations=NULL)}}{Generate new data groups based on the distinct
+  styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL,
+  resetCells=TRUE)}}{
+  Generate new data groups based on the distinct
   values in a data frame or using explicitly specified data values.}
   \item{\code{sortDataGroups(levelNumber=1, orderBy="calculation",
-  sortOrder="desc", calculationGroupName="default", calculationName)}}{Sort
+  sortOrder="desc", calculationGroupName="default", calculationName,
+  fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
   data groups either by the data group data value, caption or based on
   calculation result values.}
-  \item{\code{addCalculationGroups(calculationGroupName, atLevel)}}{Add a
+  \item{\code{addCalculationGroups(calculationGroupName, atLevel,
+  outlineBefore, outlineAfter, resetCells=TRUE)}}{Add a
   calculation group to the data group hierarchy.}
-  \item{\code{normaliseDataGroup()}}{Normalise the data group hierarchy so
-  that all branches have the same number of levels - accomplished by adding
-  empty child data groups where needed.}
+  \item{\code{normaliseDataGroup(resetCells=TRUE)}}{Normalise the
+  data group hierarchy so that all branches have the same number
+  of levels - accomplished by adding empty child data groups where needed.}
   \item{\code{getNetFilters()}}{Get a PivotFilters object that contains all
   of the filters applied in this data group and all of its ancestors.}
   \item{\code{getNetCalculationName()}}{Get the calculation name applied in
   this data group or its nearest ancestor.}
   \item{\code{isFindMatch(matchMode="simple", variableNames=NULL,
   variableValues=NULL, totals="include", calculationNames=NULL,
-  excludeEmptyGroups=TRUE)}}{Tests whether this data group matches the
-  specified criteria.}
+  emptyGroups="exclude", outlineGroups="exclude")}}{
+  Tests whether this data group matches the specified criteria.}
   \item{\code{findDataGroups(matchMode="simple", variableNames=NULL,
   variableValues=NULL, totals="include", calculationNames=NULL,
-  includeChildGroups=FALSE, excludeEmptyGroups=TRUE)}}{Searches all data
+  includeChildGroups=FALSE, emptyGroups="exclude",
+  outlineGroups="exclude")}}{Searches all data
   groups underneath this data group to find groups that match the specified
   criteria.}
+  \item{\code{setStyling(styleDeclarations=NULL)}}{Used to set style declarations.}
+  \item{\code{clearSortGroups()}}{Used internally during sort operations.}
+  \item{\code{addSortGroupBefore()}}{Used internally during sort operations.}
+  \item{\code{addSortGroupAfter()}}{Used internally during sort operations.}
   \item{\code{asList()}}{Get a list representation of the data group(s).}
   \item{\code{asJSON()}}{Get a JSON representation of the data group(s).}
 }
