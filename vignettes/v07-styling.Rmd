@@ -273,7 +273,7 @@ qhpvt(bhmtrains, "TOC", "TrainCategory", "n()",
       styleNamePrefix="qt2")
 ```
 
-The quick pivot functions specify the same styling/formatting for all headers and all calculation cells.  To specify different styling/formatting for specific data groups and/or specifc calculation cells, use the more verbose syntax for creating the pivot table as shown in the examples below. 
+The quick pivot functions specify the same styling/formatting for all headers and all calculation cells.  To specify different styling/formatting for specific data groups and/or specific calculation cells, use the more verbose syntax for creating the pivot table as shown in the examples below. 
 
 ## Styling Data Groups
 
