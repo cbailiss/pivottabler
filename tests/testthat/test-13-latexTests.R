@@ -104,6 +104,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  no data")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -128,6 +129,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  just rows")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -154,6 +156,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  just columns")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -180,6 +183,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  rows and columns")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -235,6 +239,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  styling headers")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -323,6 +328,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  just a total (on columns)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -377,6 +383,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  multiple levels on columns (but no rows)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -413,6 +420,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  multiple levels on columns (but no rows) with the calc on rows")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -450,6 +458,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  just a total (on rows)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -477,6 +486,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  two totals (on rows)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -505,6 +515,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  multiple levels on rows (but no columns)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
@@ -543,6 +554,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  multiple levels on rows (but no columns) with the calculation on columns")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -579,6 +591,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  rows/cols split 1")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

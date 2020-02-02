@@ -103,6 +103,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("data group formatting: custom format function (sales)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -261,6 +262,7 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
 
 scenarios <- testScenarios("data group setStyling()")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

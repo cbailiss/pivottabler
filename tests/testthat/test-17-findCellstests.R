@@ -30,6 +30,7 @@ evaluationMode <- "sequential"
 processingLibrary <- "dplyr"
 description <- "test: sequential dplyr"
 countFunction <- "n()"
+isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
 
 testScenarios <- function(description="test", releaseEvaluationMode="batch", releaseProcessingLibrary="dplyr", runAllForReleaseVersion=FALSE) {
   isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
@@ -68,6 +69,7 @@ context("FIND CELLS TESTS")
 
 scenarios <- testScenarios("find cells tests:  variableValues 1")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -140,6 +142,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("find cells tests:  totals")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -176,6 +179,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("find cells tests:  grand total")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

@@ -85,12 +85,13 @@ dtdata <- data.frame(SaleID=1:5, Colour=c("Red", "Red", "Green", "Green", "Green
                      Propensity=c(12,35,0,45,87,NA,Inf,-Inf,NaN,100),
                      stringsAsFactors=FALSE)
 
-context("ROW/COLUMN DATA TYPE FORMAT TESTS:  NO FORMAT")
+context("DATA GROUP DATA TYPE FORMAT TESTS:  NO FORMAT")
 
 # integer
 
 scenarios <- testScenarios("row/column data type tests (no format): integer")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -207,6 +208,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (no format): POSIXct")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -233,7 +235,7 @@ for(i in 1:nrow(scenarios)) {
 }
 
 
-context("ROW/COLUMN DATA TYPE FORMAT TESTS:  SPRINTF()")
+context("DATA GROUP DATA TYPE FORMAT TESTS:  SPRINTF()")
 
 # character - N/A
 # date - N/A
@@ -273,7 +275,6 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (sprintf): numeric")
 for(i in 1:nrow(scenarios)) {
-  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -333,7 +334,6 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (format): date")
 for(i in 1:nrow(scenarios)) {
-  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -388,7 +388,7 @@ for(i in 1:nrow(scenarios)) {
 # }
 
 
-context("ROW/COLUMN DATA TYPE FORMAT TESTS:  FORMAT()")
+context("DATA GROUP DATA TYPE FORMAT TESTS:  FORMAT()")
 
 # integer - N/A
 # character - N/A
@@ -456,7 +456,6 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (format): date")
 for(i in 1:nrow(scenarios)) {
-  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -584,6 +583,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("measure data type tests (no format): charcater")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -679,6 +679,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("measure data type tests (no format): posixct")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -717,6 +718,7 @@ context("MEASURE DATA TYPE FORMAT TESTS:  SPRINTF()")
 
 scenarios <- testScenarios("measure data type tests (sprintf): integer")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -819,6 +821,7 @@ context("MEASURE DATA TYPE FORMAT TESTS:  FORMAT()")
 
 scenarios <- testScenarios("measure data type tests (format): numeric")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -919,6 +922,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("measure data type tests (format): posixct")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

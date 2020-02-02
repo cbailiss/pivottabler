@@ -30,6 +30,7 @@ evaluationMode <- "sequential"
 processingLibrary <- "dplyr"
 description <- "test: sequential dplyr"
 countFunction <- "n()"
+isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
 
 testScenarios <- function(description="test", releaseEvaluationMode="batch", releaseProcessingLibrary="dplyr", runAllForReleaseVersion=FALSE) {
   isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
@@ -65,6 +66,7 @@ context("DATA GROUP TESTS")
 
 scenarios <- testScenarios("data groups tests:  dplyr ignoring parent groups")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -154,6 +156,7 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
 
   scenarios <- testScenarios("data groups tests:  formatting data groups")
   for(i in 1:nrow(scenarios)) {
+    if(!isDevelopmentVersion) break
     evaluationMode <- scenarios$evaluationMode[i]
     processingLibrary <- scenarios$processingLibrary[i]
     description <- scenarios$description[i]
@@ -252,6 +255,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("data groups tests:  sort by value into descending order")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -282,6 +286,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("data groups tests:  sort by level 2 value into descending order")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -312,6 +317,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("data groups tests:  row group headers (1 level)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -342,6 +348,7 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
 
   scenarios <- testScenarios("data groups tests:  row group headers (2 levels)")
   for(i in 1:nrow(scenarios)) {
+    if(!isDevelopmentVersion) break
     evaluationMode <- scenarios$evaluationMode[i]
     processingLibrary <- scenarios$processingLibrary[i]
     description <- scenarios$description[i]

@@ -30,6 +30,7 @@ evaluationMode <- "sequential"
 processingLibrary <- "dplyr"
 description <- "test: sequential dplyr"
 countFunction <- "n()"
+isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
 
 testScenarios <- function(description="test", releaseEvaluationMode="batch", releaseProcessingLibrary="dplyr", runAllForReleaseVersion=FALSE) {
   isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
@@ -65,6 +66,7 @@ context("EXPORT TESTS")
 
 scenarios <- testScenarios("export tests:  as Matrix (without row headings)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -100,6 +102,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("export tests:  as Matrix (with row headings)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -183,6 +186,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("export tests:  as Tidy Data Frame")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -213,6 +217,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("export tests:  NA, NaN, -Inf and Inf")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -319,6 +324,7 @@ if (requireNamespace("basictabler", quietly = TRUE) &&
 
   scenarios <- testScenarios("export tests:  same html for pivottable and basictable")
   for(i in 1:nrow(scenarios)) {
+    if(!isDevelopmentVersion) break
     evaluationMode <- scenarios$evaluationMode[i]
     processingLibrary <- scenarios$processingLibrary[i]
     description <- scenarios$description[i]
@@ -369,6 +375,7 @@ if (requireNamespace("lubridate", quietly = TRUE) &&
 
   scenarios <- testScenarios("export tests:  basictable with row group headings")
   for(i in 1:nrow(scenarios)) {
+    if(!isDevelopmentVersion) break
     evaluationMode <- scenarios$evaluationMode[i]
     processingLibrary <- scenarios$processingLibrary[i]
     description <- scenarios$description[i]

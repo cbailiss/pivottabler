@@ -95,6 +95,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("irregular layout tests:  two-level example A")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -196,6 +197,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("irregular layout tests:  empty groups")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -231,6 +233,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("irregular layout tests:  adding and removing individual groups")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

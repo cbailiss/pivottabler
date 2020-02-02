@@ -30,6 +30,7 @@ evaluationMode <- "sequential"
 processingLibrary <- "dplyr"
 description <- "test: sequential dplyr"
 countFunction <- "n()"
+isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
 
 testScenarios <- function(description="test", releaseEvaluationMode="batch", releaseProcessingLibrary="dplyr", runAllForReleaseVersion=FALSE) {
   isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
@@ -90,6 +91,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("basic layout tests:  empty pivot plus data")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -232,6 +234,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("basic layout tests:  rows plus two measures")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -320,6 +323,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("basic layout tests:  columns plus two totals")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -351,6 +355,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("basic layout tests:  rows and columns only")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -379,6 +384,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("basic layout tests:  rows, columns and calculation")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -442,6 +448,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("basic layout tests:  columns plus total on row")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -473,6 +480,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("basic layout tests:  columns plus two totals on rows")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -505,6 +513,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("basic layout tests:  rows, columns and calculation on rows")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -570,6 +579,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("basic layout tests:  more than 10 calculation columns")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

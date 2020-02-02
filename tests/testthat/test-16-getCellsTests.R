@@ -30,6 +30,7 @@ evaluationMode <- "sequential"
 processingLibrary <- "dplyr"
 description <- "test: sequential dplyr"
 countFunction <- "n()"
+isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
 
 testScenarios <- function(description="test", releaseEvaluationMode="batch", releaseProcessingLibrary="dplyr", runAllForReleaseVersion=FALSE) {
   isDevelopmentVersion <- (length(strsplit(packageDescription("pivottabler")$Version, "\\.")[[1]]) > 3)
@@ -65,6 +66,7 @@ context("GET CELLS TESTS")
 
 scenarios <- testScenarios("get cells tests:  whole rows (specifyCellsAsList=FALSE)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -101,6 +103,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("get cells tests:  whole rows (specifyCellsAsList=TRUE)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -137,6 +140,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("get cells tests:  whole columns (specifyCellsAsList=FALSE)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -173,6 +177,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("get cells tests:  whole columns (specifyCellsAsList=TRUE)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -209,6 +214,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("get cells tests:  rows, columns and cells (specifyCellsAsList=FALSE)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

@@ -219,6 +219,7 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
 
 scenarios <- testScenarios("calculation tests:  showing values only")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -257,6 +258,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("calculation tests:  showing values plus totals")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -456,6 +458,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("calculation tests:  filter overrides - ratios/multiples")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -490,6 +493,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("calculation tests:  filter overrides - subsets of data")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -586,6 +590,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("calculation tests:  filter overrides - custom function 2")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -649,6 +654,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("calculation tests:  filter overrides - custom function 3")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

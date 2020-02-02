@@ -140,6 +140,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Row group header basic layout test: One row group and calculation")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -171,6 +172,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Row group header basic layout test: Two row groups and calculation")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

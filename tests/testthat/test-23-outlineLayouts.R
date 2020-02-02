@@ -66,6 +66,7 @@ context("OUTLINE LAYOUT TESTS")
 
 scenarios <- testScenarios("Basic outline layout (outline before)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -338,6 +339,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Outline layout - formatted 3 row group levels")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -405,6 +407,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Outline layout - formatted 3 row group levels part tabular")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -439,6 +442,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Outline layout - outlined calculations on rows")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -475,6 +479,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("Sort outlined groups - by group value")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
