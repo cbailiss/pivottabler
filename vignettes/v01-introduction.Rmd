@@ -289,7 +289,7 @@ pt$renderPivot()
 
 ## Outline Layout
 
-Outline layout renders row group data groups as headings:
+Outline layout renders row data groups as headings:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)

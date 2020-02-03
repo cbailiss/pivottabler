@@ -4,7 +4,11 @@ pivottabler 1.3.0
 Overview
 --------
 
-This release introduces a new layout type - outline layout - that can make larger pivot tables with multiple levels of row groups more readable and more visually appealing.  There are also several other notable enhancements, such as small improvements that make irregular pivot tables easier to construct.
+This release introduces a new layout type - outline layout - that can make larger pivot tables with multiple levels of row groups more readable and more visually appealing.  
+
+Several small improvements mean that irregular pivot tables (e.g. two pivot tables in one) are now easier to construct.
+
+The package vignettes have grown too large be hosted on CRAN.  They have moved to:  http://www.pivottabler.org.uk/articles/ 
 
 Improvements
 ----------------
@@ -13,8 +17,8 @@ Improvements
 * Several small improvements make building irregular layouts much easier, including: 
    * adding empty rows and columns, e.g. using `pt$addRowGroup(caption="By Size", isEmpty=TRUE)` or `pt$addColumnGroup(...)`,
    * adding individual data groups, e.g. using `pt$addRowGroup(variableName="Size", values="Small")` or `pt$addColumnGroup(...)`,
-   * adding total data groups, e.g. using `pt$addRowGroup(variableName="Size", isTotal=TRUE)` or `pt$addColumnGroup(...)`,
-   * several other options that are described in the "Irregular Layout" vignette.
+   * adding total data groups, e.g. using `pt$addRowGroup(variableName="Size", isTotal=TRUE)` or `pt$addColumnGroup(...)`.
+   * Several other options that are described in the "Irregular Layout" vignette.
 * Headings for the row data groups (i.e. headings for the first column / first few columns) in a pivot table can now be specified.  See the "Pivot tables as standard tables (row group headings)" section in the "Data Groups" vignette for details.  The new `showRowGroupHeaders` argument can be used with `pt$renderPivot()`, `pt$getHtml()`, `pt$saveHtml()`, `pt$writeToExcelWorksheet()` and `pt$asBasicTable()`.
 * New function `pt$asDataMatrix()` provides a cleaner way to convert a pivot table to a matrix, where the row/column headings in the pivot table become the row/column headings in the matrix.  See the "Outputs" vignette for details.
 * New function `setStyling()` provides an alternative method to set style declarations on data group headers and cells.  See the "Irregular Layout" vignette for an example.
@@ -40,9 +44,6 @@ The following can still be used but now emit a deprecation warning:
 pivottabler 1.2.3
 =================
 
-Overview
---------
-
 This release includes one small bug fix only:
 Adding more than nine calculations causes the calculation columns to appear in the wrong order (issue #25).
 
@@ -50,18 +51,12 @@ Adding more than nine calculations causes the calculation columns to appear in t
 pivottabler 1.2.2
 =================
 
-Overview
---------
-
 This release includes one small bug fix only:
 Calling pt$setStyling(cells=...) on an empty list of cells now succeeds without an error (issue #23).
 
 
 pivottabler 1.2.1
 =================
-
-Overview
---------
 
 This release includes one small bug fix only:
 Calling pt$asDataFrame() on a pivot table containing blank/NA cells now succeeds without an error (issue #20).

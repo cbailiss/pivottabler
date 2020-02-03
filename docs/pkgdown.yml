@@ -1,0 +1,25 @@
+pandoc: 2.7.2
+pkgdown: 1.4.1
+pkgdown_sha: ~
+articles:
+  v00-vignettes: v00-vignettes.html
+  v01-introduction: v01-introduction.html
+  v02-datagroups: v02-datagroups.html
+  v03-calculations: v03-calculations.html
+  v04-regularlayout: v04-regularlayout.html
+  v05-outputs: v05-outputs.html
+  v06-latexoutput: v06-latexoutput.html
+  v07-styling: v07-styling.html
+  v08-findingandformatting: v08-findingandformatting.html
+  v09-cellcontext: v09-cellcontext.html
+  v10-irregularlayout: v10-irregularlayout.html
+  v11-performance: v11-performance.html
+  v12-excelexport: v12-excelexport.html
+  v13-shiny: v13-shiny.html
+  vA1-appendix: vA1-appendix.html
+  vA2-appendix: vA2-appendix.html
+  vA3-appendix: vA3-appendix.html
+urls:
+  reference: http://www.pivottabler.org.uk/reference
+  article: http://www.pivottabler.org.uk/articles
+

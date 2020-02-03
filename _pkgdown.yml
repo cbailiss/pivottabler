@@ -1,0 +1,24 @@
+destination: docs
+url: http://www.pivottabler.org.uk
+template:
+  params:
+    ganalytics: UA-64707587-2
+articles:
+- title: Index
+  contents:
+  - v01-introduction
+  - v02-datagroups
+  - v03-calculations
+  - v04-regularlayout
+  - v05-outputs
+  - v06-latexoutput
+  - v07-styling
+  - v08-findingandformatting
+  - v09-cellcontext
+  - v10-irregularlayout
+  - v11-performance
+  - v12-excelexport
+  - v13-shiny
+  - vA1-appendix
+  - vA2-appendix
+  - vA3-appendix

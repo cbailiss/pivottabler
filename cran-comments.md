@@ -5,11 +5,11 @@ This update has not made any significant changes to the structure of the package
 Development approach is aligned with practices described in:
 http://r-pkgs.had.co.nz/
 
-## Why does the package title contain "in R"?
+## Resubmission
 
-The package author recognises that normally it is superfluous to include "in R" in a package title.  However, in this case...
-
-The title of the package includes "in R" as a contrast clause to the other popular pivot table package (rpivotTable).  rpivotTable constructs the pivot table using JavaScript.  This package uses only R, meaning the pivot table can be used with a much wider range of R functions and output formats.
+* Removed "in R" from package title as requested.
+* Reduced vignette build time by removing vignettes from package - they are now hosted on a separate website, with a small vignette left inside the package as a pointer to the new external location.
+* Reduced automated test time by significantly reducing the number of tests that will be run on CRAN.
 
 ## Test environments
 

@@ -1,0 +1,14 @@
+---
+title: "pivottabler Vignettes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pivottabler Vignettes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Vignette Location
+
+Due to the vignettes becoming too large to host/build on CRAN, they have been moved out of the package.
+
+They can now be found at:  http://www.pivottabler.org.uk/articles
