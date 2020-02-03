@@ -15,6 +15,7 @@ http://r-pkgs.had.co.nz/
 
 * local OS (windows) install, R 3.6.2
 * Ubuntu 16.04.6 LTS (on travis-ci), R 3.6.2.
+* win-builder, R-devel
 * R-hub, three tests:
   * Windows Server 2008 R2 SP1, R-devel 32/64 bit
   * Ubuntu Linux 16.04 LTS, R-release, GCC
@@ -24,36 +25,19 @@ http://r-pkgs.had.co.nz/
 
 ### Local R CMD check results
 
-0 errors | 0 warnings | 1 note
-
-NOTE:  
-  installed size is  6.8Mb
-  sub-directories of 1Mb or more:
-    data   2.0Mb
-    doc    3.5Mb
-    R      1.1Mb
+0 errors | 0 warnings | 0 notes
 
 ### Travis-CI R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 notes
 
-NOTE:  
-  installed size is  6.9Mb
-  sub-directories of 1Mb or more:
-    data   2.0Mb
-    doc    3.6Mb
-    R      1.1Mb
+### win-builder check results
+
+0 errors | 0 warnings | 0 notes
 
 ### R-hub check results
 
-0 errors | 0 warnings | 1 note
-
-NOTE:  
-  installed size is  6.8Mb
-  sub-directories of 1Mb or more:
-    R      1.1Mb
-    data   2.0Mb
-    doc    3.5Mb
+0 errors | 0 warnings | 0 notes
 
 ### Comments on check results
 
