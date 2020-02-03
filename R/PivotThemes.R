@@ -73,6 +73,7 @@ getDefaultTheme <- function(parentPivot, themeName="default") {
   }
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
+      "display"="table",
       "border-collapse"="collapse"
     ))
   # header lists
@@ -141,6 +142,7 @@ getStandardTableTheme <- function(parentPivot, themeName="standardtable") {
   }
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
+    "display"="table",
     "border-collapse"="collapse"
   ))
   # column style lists
@@ -212,6 +214,7 @@ getLargePlainTheme <- function(parentPivot, themeName="largeplain") {
   }
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
+      "display"="table",
       "border-collapse"="collapse"
     ))
   # header lists
@@ -281,6 +284,7 @@ getCompactTheme <- function(parentPivot, themeName="compact") {
   }
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
+      "display"="table",
       "border-collapse"="collapse"
     ))
   # header lists
@@ -355,6 +359,7 @@ getSimpleColoredTheme <- function(parentPivot, themeName="coloredTheme", colors,
   }
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
+      "display"="table",
       "border-collapse"="collapse",
       "border"=paste0("2px solid ", colors$borderColor)
     ))
