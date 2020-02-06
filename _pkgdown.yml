@@ -3,6 +3,9 @@ url: http://www.pivottabler.org.uk
 template:
   params:
     ganalytics: UA-64707587-2
+    docsearch:
+      api_key: 16a61fa9a8811ff537cd1a528040a9e1
+      index_name: pivottabler
 articles:
 - title: Index
   contents:
