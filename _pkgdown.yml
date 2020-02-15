@@ -1,5 +1,7 @@
 destination: docs
 url: http://www.pivottabler.org.uk
+home:
+  title: Create Pivot Tables in R
 template:
   params:
     ganalytics: UA-64707587-2
