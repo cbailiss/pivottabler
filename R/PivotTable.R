@@ -1544,14 +1544,16 @@ PivotTable <- R6::R6Class("PivotTable",
       for(r in 1:length(rowHeaderLeafGroups)) {
         leafGroup <- rowHeaderLeafGroups[[r]]
         grps <- leafGroup$getAncestorGroups(includeCurrentGroup=TRUE)
-        for(c in (length(grps)-1):1) {
-          grp <- grps[[length(grps) - c]]
-          if((repeatHeaders==FALSE) && (grp$isRendered==TRUE)) {
-            m[r + columnHeaderLevelCount, c] <- ""
-            next
+        if((!is.null(grps))&&(length(grps)>1)) {
+          for(c in (length(grps)-1):1) {
+            grp <- grps[[length(grps) - c]]
+            if((repeatHeaders==FALSE) && (grp$isRendered==TRUE)) {
+              m[r + columnHeaderLevelCount, c] <- ""
+              next
+            }
+            m[r + columnHeaderLevelCount, c] <- grp$caption
+            grp$isRendered <- TRUE
           }
-          m[r + columnHeaderLevelCount, c] <- grp$caption
-          grp$isRendered <- TRUE
         }
       }
       # set the cell values
@@ -1593,7 +1595,7 @@ PivotTable <- R6::R6Class("PivotTable",
       colHeaderLeafGroups <- private$p_columnGroup$getLeafGroups()
       colNames <-  vector("list", length = columnCount)
       for(c in 1:columnCount) {
-        colName <- NULL
+        colName <- ""
         grps <- colHeaderLeafGroups[[c]]$getAncestorGroups(includeCurrentGroup=TRUE)
         for(cl in 1:columnHeaderLevelCount) {
           if(cl==1) {
@@ -1609,14 +1611,16 @@ PivotTable <- R6::R6Class("PivotTable",
       rowHeaderLeafGroups <- private$p_rowGroup$getLeafGroups()
       rowNames <-  vector("list", length = rowCount)
       for(r in 1:rowCount) {
-        rowName <- NULL
+        rowName <- ""
         grps <- rowHeaderLeafGroups[[r]]$getAncestorGroups(includeCurrentGroup=TRUE)
-        for(rl in 1:rowHeaderLevelCount) {
-          if(rl==1) {
-            rowName <- grps[[rowHeaderLevelCount-rl+1]]$caption
-          }
-          else {
-            rowName <- paste0(rowName, separator, grps[[rowHeaderLevelCount-rl+1]]$caption)
+        if((!is.null(grps))&&(length(grps)>1)) {
+          for(rl in 1:rowHeaderLevelCount) {
+            if(rl==1) {
+              rowName <- grps[[rowHeaderLevelCount-rl+1]]$caption
+            }
+            else {
+              rowName <- paste0(rowName, separator, grps[[rowHeaderLevelCount-rl+1]]$caption)
+            }
           }
         }
         rowNames[[r]] <- rowName
@@ -1664,10 +1668,12 @@ PivotTable <- R6::R6Class("PivotTable",
         leafGroup <- rowHeaderLeafGroups[[r]]
         grps <- leafGroup$getAncestorGroups(includeCurrentGroup=TRUE)
         headerValue <- ""
-        for(c in (length(grps)-1):1) {
-          grp <- grps[[c]]
-          if(nchar(headerValue) == 0) headerValue <- grp$caption
-          else headerValue <- paste0(headerValue, separator, grp$caption)
+        if((!is.null(grps))&&(length(grps)>1)) {
+          for(c in (length(grps)-1):1) {
+            grp <- grps[[c]]
+            if(nchar(headerValue) == 0) headerValue <- grp$caption
+            else headerValue <- paste0(headerValue, separator, grp$caption)
+          }
         }
         rowHeaders[[length(rowHeaders) + 1]] <- headerValue
       }
