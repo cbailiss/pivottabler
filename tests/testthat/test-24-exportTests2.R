@@ -67,6 +67,7 @@ context("EXPORT TESTS 2")
 
 scenarios <- testScenarios("export tests 2:  rows(0) and cols(0)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -98,6 +99,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("export tests 2:  rows(1) and cols(1)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -131,6 +133,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("export tests 2:  rows(1) and cols(0)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -163,6 +166,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("export tests 2:  rows(0) and cols(1)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -195,6 +199,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("export tests 2:  rows(2) and cols(2)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -230,6 +235,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("export tests 2:  rows(2) and cols(0)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -263,6 +269,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("export tests 2:  rows(0) and cols(2)")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

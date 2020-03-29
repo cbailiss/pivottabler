@@ -1,3 +1,12 @@
+pivottabler 1.3.1
+=================
+
+This release includes two small bug fixes only:
+
+* Pivot tables with nothing on the rows axis fail to convert to a data frame using pt$asDataFrame() (issue #30).
+* Pivot tables with nothing on rows and/or columns sometimes fail to convert to a matrix using pt$asMatrix() or pt$asDataMatrix().
+
+
 pivottabler 1.3.0
 ================
 
