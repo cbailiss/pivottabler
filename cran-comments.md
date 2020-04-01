@@ -5,12 +5,6 @@ This update has not made any significant changes to the structure of the package
 Development approach is aligned with practices described in:
 http://r-pkgs.had.co.nz/
 
-## Resubmission
-
-* Removed "in R" from package title as requested.
-* Reduced vignette build time by removing vignettes from package - they are now hosted on a separate website, with a small vignette left inside the package as a pointer to the new external location.
-* Reduced automated test time by significantly reducing the number of tests that will be run on CRAN.
-
 ## Test environments
 
 * local OS (windows) install, R 3.6.2
