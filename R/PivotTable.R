@@ -198,8 +198,10 @@
 #'   \item{\code{asDataMatrix = function(includeHeaders=TRUE, rawValue=TRUE,
 #'   separator=" ")}}{Gets the pivot table as a matrix, with the pivot table
 #'   row/column headings set as the row/column names in the matrix.}
-#'   \item{\code{asDataFrame(separator=" ")}}{Gets the pivot table as a data
-#'   frame, combining multiple levels of headings with the specified separator.}
+#'   \item{\code{asDataFrame(separator=" ", stringsAsFactors,
+#'   forceNumeric=FALSE, rowGroupsAsColumns=FALSE)}}{Gets the pivot table as a
+#'   data frame, combining multiple levels of headings with the specified
+#'   separator and/or exporting the row groups as columns in the data frame.}
 #'   \item{\code{asTidyDataFrame(includeGroupCaptions=TRUE,
 #'   includeGroupValues=TRUE, separator=" ", excludeEmptyCells=TRUE)}}{Gets the
 #'   pivot table as a tidy data frame, where each cell in the body of the pivot
@@ -706,6 +708,9 @@ PivotTable <- R6::R6Class("PivotTable",
                                                visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
                                                preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
                                                outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal)
+      if(is.null(header)) {
+        header <- variableName
+      }
       if (!is.null(header)) {
         if (length(grps)>0) {
           levelNumber <- grps[[1]]$getLevelNumber()
@@ -1295,7 +1300,7 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findCells", "Found cells.")
       return(invisible(cells))
     },
-    print = function(asCharacter=FALSE, showRowGroupHeaders=TRUE) {
+    print = function(asCharacter=FALSE, showRowGroupHeaders=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "print", asCharacter, missing(asCharacter), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "print", showRowGroupHeaders, missing(showRowGroupHeaders), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -1634,10 +1639,12 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asDataMatrix", "Got pivot table as a data matrix.")
       return(m)
     },
-    asDataFrame = function(separator=" ", stringsAsFactors=default.stringsAsFactors()) {
+    asDataFrame = function(separator=" ", stringsAsFactors=default.stringsAsFactors(), forceNumeric=FALSE, rowGroupsAsColumns=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataFrame", separator, missing(separator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataFrame", stringsAsFactors, missing(stringsAsFactors), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataFrame", forceNumeric, missing(forceNumeric), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataFrame", rowGroupsAsColumns, missing(rowGroupsAsColumns), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asDataFrame", "Getting pivot table as a data frame...", list(separator=separator, stringsAsFactors=stringsAsFactors))
       if(!private$p_evaluated) stop("PivotTable$asDataFrame():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
@@ -1650,6 +1657,20 @@ PivotTable <- R6::R6Class("PivotTable",
       rowHeaders <- list()
       columnHeaders <- list()
       # set the column headers
+      if(rowGroupsAsColumns) {
+        if(rowHeaderLevelCount > 0) {
+          for(c in 1:rowHeaderLevelCount) {
+            headerValue <- ""
+            if((!is.null(private$p_rowGrpHeaders))&&(length(private$p_rowGrpHeaders)>=c)) {
+              headerValue <- private$p_rowGrpHeaders[[c]]
+            }
+            else {
+              headerValue <- paste0("RowGroup", c)
+            }
+            columnHeaders[[length(columnHeaders) + 1]] <- headerValue
+          }
+        }
+      }
       colHeaderLeafGroups <- private$p_columnGroup$getLeafGroups()
       for(c in 1:length(colHeaderLeafGroups)) {
         leafGroup <- colHeaderLeafGroups[[c]]
@@ -1679,17 +1700,33 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       # get the value vectors to form the data frame
       dfColumns <- list()
+      if(rowGroupsAsColumns) {
+        if(rowHeaderLevelCount > 0) {
+          for(c in 1:rowHeaderLevelCount) {
+            rowNames <-  NA
+            for(r in 1:rowCount) {
+              grps <- rowHeaderLeafGroups[[r]]$getAncestorGroups(includeCurrentGroup=TRUE)
+              if((!is.null(grps))&&(length(grps)>1)) {
+                rowNames[r] <- grps[[rowHeaderLevelCount-c+1]]$caption
+              }
+            }
+            dfColumns[[length(dfColumns) + 1]] <- rowNames
+          }
+        }
+      }
       for(c in 1:columnCount) {
         columnValues <- NA
         for(r in 1:rowCount) {
           cell <- private$p_cells$getCell(r, c)
           v <- cell$rawValue
-          if(!(("integer" %in% class(v))||("numeric" %in% class(v)))) v <- NA
-          else if(is.null(v)) v <- NA
+          if(forceNumeric) {
+            if(!(("integer" %in% class(v))||("numeric" %in% class(v)))) v <- NA
+          }
+          if(is.null(v)) v <- NA
           else if(length(v) == 0) v <- NA
           columnValues[r] <- v
         }
-        dfColumns[[c]] <- columnValues
+        dfColumns[[length(dfColumns) + 1]] <- columnValues
       }
       df <- as.data.frame(dfColumns, stringsAsFactors=stringsAsFactors)
       colnames(df) <- make.unique(unlist(columnHeaders))

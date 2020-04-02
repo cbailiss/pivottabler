@@ -176,10 +176,13 @@ for(i in 1:nrow(scenarios)) {
     pt$evaluatePivot()
     # sum(pt$asDataFrame(), na.rm=TRUE)
     # prepStr(paste(as.character(pt$asDataFrame()), sep=" ", collapse=" "))
+    # prepStr(paste(as.character(pt$asDataFrame(stringsAsFactors=FALSE, rowGroupsAsColumns=TRUE)), sep=" ", collapse=" "))
     text <- "c(3079, 22133, 5638, 2137, 32987) c(NA, NA, 8849, 6457, 15306) c(NA, 732, NA, NA, 732) c(3079, 22865, 14487, 8594, 49025) c(830, 63, 5591, NA, 6484) c(NA, NA, 28201, NA, 28201) c(830, 63, 33792, NA, 34685) c(3909, 22928, 48279, 8594, 83710)"
+    text2 <- "c(\"Arriva Trains Wales\", \"CrossCountry\", \"London Midland\", \"Virgin Trains\", \"Total\") c(3079, 22133, 5638, 2137, 32987) c(NA, NA, 8849, 6457, 15306) c(NA, 732, NA, NA, 732) c(3079, 22865, 14487, 8594, 49025) c(830, 63, 5591, NA, 6484) c(NA, NA, 28201, NA, 28201) c(830, 63, 33792, NA, 34685) c(3909, 22928, 48279, 8594, 83710)"
 
     expect_equal(sum(pt$asDataFrame(), na.rm=TRUE), 502260)
     expect_identical(paste(as.character(pt$asDataFrame()), sep=" ", collapse=" "), text)
+    expect_identical(paste(as.character(pt$asDataFrame(stringsAsFactors=FALSE, rowGroupsAsColumns=TRUE)), sep=" ", collapse=" "), text2)
   })
 }
 
