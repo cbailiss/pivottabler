@@ -6,8 +6,8 @@ This release includes several small enhancements:
 * When exporting to a data frame, it is now possible to also export the row groups as columns (instead of only row names) using `pt$asDataFrame(rowGroupsAsColumns=TRUE)`.  Thanks to @ismailmuller for the suggestion (#29).
 * When exporting to a data frame, the handling of cell values that are not integer/numeric can be specified using the `forceNumeric` argument. `TRUE` will convert any values that are not integer/numeric to NA.
 * Row group headers, visible when specifying `pt$renderPivot(showRowGroupHeaders=TRUE)`, are now set automatically to the variable name when calling `pt$addRowDataGroups(...)`.  The name can be overridden using `pt$addRowDataGroups(..., header="...")`.
-* Additional arguments can now be passed to custom calculation functions using the calcFuncArgs argument.  See the "Calculations" vignette for details.  Thanks to @MarcoPortmann for the suggestion (#31 and #32).
-* It is now possible to pre-calculate totals/aggregate data cells when using the calculation method 4 ("Showing a value").  See the "Calculations" vignette for details.  This closes a long-standing gap with this calculation method. (#2).
+* Additional arguments can now be passed to custom calculation functions using the `calcFuncArgs` argument.  See the "Calculations" vignette for details.  Thanks to @MarcoPortmann for the suggestion (#31 and #32).
+* It is now possible to pre-calculate totals/aggregate data cells when using calculation method 4 ("Showing a value").  See the "Calculations" vignette for details.  This closes a long-standing gap with this calculation method. (#2).
 
 
 pivottabler 1.3.1
@@ -29,7 +29,7 @@ This release introduces a new layout type - outline layout - that can make large
 
 Several small improvements mean that irregular pivot tables (e.g. two pivot tables in one) are now easier to construct.
 
-The package vignettes have grown too large be hosted on CRAN.  They have moved to:  http://www.pivottabler.org.uk/articles/ 
+The package vignettes have grown too large be hosted on CRAN.  They have been moved to:  http://www.pivottabler.org.uk/articles/ 
 
 Improvements
 ----------------
