@@ -72,6 +72,9 @@
 #'   \item{\code{getNextInstanceId()}}{Return a unique object identifier.}
 #'   \item{\code{addData(df, dataName)}}{Add a data frame with the specified
 #'   name to the pivot table.}
+#'   \item{\code{addTotalData(df, dataName, variableNames)}}{Add a data frame
+#'   containing totals data with the specified name and variables to the pivot
+#'   table.}
 #'   \item{\code{getTopColumnGroups()}}{Get the very top column PivotDataGroup
 #'   that sits at the top of the parent-child hierarchy.}
 #'   \item{\code{getLeafColumnGroups()}}{Get the PivotDataGroups at the bottom
@@ -441,6 +444,19 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addData", "Added data to Pivot Table.")
       private$addTiming(paste0("addData(", dn, ")"), timeStart)
       return(invisible(private$p_data))
+    },
+    addTotalData = function(dataFrame=NULL, dataName=NULL, variableNames=NULL) {
+      timeStart <- proc.time()
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addTotalData", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addTotalData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addTotalData", variableNames, missing(variableNames), allowMissing=FALSE, allowNull=TRUE, allowedClasses="character")
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addTotalData", "Adding totals data to Pivot Table...")
+      private$p_data$addTotalData(dataFrame, dataName=dataName, variableNames=variableNames)
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addTotalData", "Added totals data to Pivot Table.")
+      private$addTiming("addTotalData()", timeStart)
+      return(invisible())
     },
     getTopColumnGroups = function() {
       .Deprecated(new="topColumnGroups")

@@ -573,10 +573,12 @@ A custom calculation function allows more complex calculation logic to be used. 
 
 * `pivotCalculator` is a helper object that offers various methods to assist in performing calculations,
 * `netFilters` contains the definitions of the filter criteria coming from the row and column headers in the pivot table,
+* `calcFuncArgs` is a list that specifies any additional arguments that need to be passed to the custom calculation function,
 * `format` provides the formatting definition - this is the same value specified in the `defineCalculation()` call,
+* `fmtFuncArgs` is a list that specifies any additional arguments that need to be passed to a custom format function (if used),
 * `baseValues` provides access to the results of other calculations in the calculation group,
-* `cell` provides access to more details about the individual cell that is being calculated
-    + The `cell` argument is provided to support future scenarios so is not explained here.
+* `cell` provides access to more details about the individual cell that is being calculated.
+    + The `cell` argument is provided to support more advanced scenarios and is not explained in detail here.
 
 For example, if we wish to examine the worst single day performance, we need to:
 
@@ -812,7 +814,15 @@ pt$defineCalculation(calculationName="TotalTrains", type="value", valueName="Num
 pt$renderPivot()
 ```
 
-In the current version of `pivottabler` there is no way to explicitly pre-calculate the totals.  Instead, two workarounds are possible.  Either the totals can be hidden or a summarise expression can be specified to calculate the totals.  Both of these examples are presented below.
+In the simple version shown above, no totals are displayed. This is because the data frame contains only line-level data, i.e. no aggregated data.
+
+Three workarounds are possible:
+
+- The total rows and/or columns can be hidden in the pivot table.
+- The totals can be pre-calculated and added to the pivot table.
+- A summarise expression can be specified to allow the pivot table to calculate the totals.  
+
+Each these examples are presented below.
 
 #### Hiding the totals
 
@@ -834,7 +844,49 @@ pt$defineCalculation(calculationName="TotalTrains", type="value", valueName="Num
 pt$renderPivot()
 ```
 
-#### Calculating the totals
+#### Pre-calculating the totals outside the pivot table
+
+The totals are calculated in separate data frames then added to the pivot table using `pt$addTotalData()`.  
+
+The variableNames must be specified to inform the pivot table about which total cells each totals data frame relates to.  If a given cell is a subtotal that relates to multiple variables, specify the variable names using `c(var1, var2, var3, ...)`.
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(pivottabler)
+
+# perform the aggregation in R code explicitly
+trains <- bhmtrains %>%
+  group_by(TrainCategory, TOC) %>%
+  summarise(NumberOfTrains=n()) %>%
+  ungroup()
+
+# calculate the totals/aggregate values
+trainsTrainCat <- bhmtrains %>%
+  group_by(TrainCategory) %>%
+  summarise(NumberOfTrains=n()) %>%
+  ungroup()
+
+trainsTOC <- bhmtrains %>%
+  group_by(TOC) %>%
+  summarise(NumberOfTrains=n()) %>%
+  ungroup()
+
+trainsTotal <- bhmtrains %>%
+  summarise(NumberOfTrains=n())
+
+# display this pre-calculated data
+pt <- PivotTable$new()
+pt$addData(trains)
+pt$addTotalData(trainsTrainCat, variableNames="TrainCategory")
+pt$addTotalData(trainsTOC, variableNames="TOC")
+pt$addTotalData(trainsTotal, variableNames=NULL)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", type="value", valueName="NumberOfTrains")
+pt$renderPivot()
+```
+
+#### Pivot table calculating the totals
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)

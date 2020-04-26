@@ -27,8 +27,12 @@
 #'   later.}
 #'   \item{\code{getData(dataName)}}{Get the data frame with the specified
 #'   name.}
-#'   \item{\code{isKnownData(dataName))}}{Check if a data frame exists with the
+#'   \item{\code{isKnownData(dataName)}}{Check if a data frame exists with the
 #'   specified name.}
+#'   \item{\code{addTotalData(dataFrame, dataName, variableNames)}}{Add
+#'   pre-calculated totals/aggregate data to the pivot table.}
+#'   \item{\code{getTotalData(dataName, variableNames)}}{Get pre-calculated
+#'   totals/aggregate data that was previously added to the pivot table.}
 #'   \item{\code{asList()}}{Get a list representation of the contained data
 #'   frames.}
 #'   \item{\code{asJSON()}}{Get a JSON representation of the contained data
@@ -44,6 +48,7 @@ PivotData <- R6::R6Class("PivotData",
      private$p_parentPivot <- parentPivot
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$new", "Creating new Pivot Data...")
      private$p_data <- list()
+     private$p_totalData <- list()
      private$p_defaultData <- NULL
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$new", "Created new Pivot Data.")
    },
@@ -52,7 +57,7 @@ PivotData <- R6::R6Class("PivotData",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
-     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addData", "Adding data...", list(dataName=dataName, df=private$getDfStr(df)))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addData", "Adding data...", list(dataName=dataName, df=private$getDfStr(dataFrame)))
      if(private$p_parentPivot$processingLibrary=="data.table") {
        if(data.table::is.data.table(dataFrame)) data <- dataFrame
        else data <- data.table::as.data.table(dataFrame)
@@ -78,7 +83,7 @@ PivotData <- R6::R6Class("PivotData",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "getData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$getData", "Getting data...", list(dataName=dataName))
-     if (!(dataName %in% names(private$p_data))) stop(paste0("PivotData$getData(): dataName '", dataName, "' not found."), call. = FALSE)
+     if(!(dataName %in% names(private$p_data))) stop(paste0("PivotData$getData(): dataName '", dataName, "' not found."), call. = FALSE)
      data <- private$p_data[[dataName]]
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addData", "Got data.")
      return(invisible(data))
@@ -91,6 +96,79 @@ PivotData <- R6::R6Class("PivotData",
      if (!(dataName %in% names(private$p_data))) return(invisible(FALSE))
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$isKnownData", "Checked dataName.")
      return(invisible(TRUE))
+   },
+   addTotalData = function(dataFrame=NULL, dataName=NULL, variableNames=NULL) {
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addTotalData", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addTotalData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addTotalData", variableNames, missing(variableNames), allowMissing=FALSE, allowNull=TRUE, allowedClasses="character")
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addTotalData", "Adding totals data...", list(dataName=dataName, df=private$getDfStr(dataFrame)))
+     if(private$p_parentPivot$processingLibrary=="data.table") {
+       if(data.table::is.data.table(dataFrame)) data <- dataFrame
+       else data <- data.table::as.data.table(dataFrame)
+     }
+     else {
+       if(is.data.frame(dataFrame)) data <- dataFrame
+       else stop("PivotData$addTotalData():  The specified data is not a data frame.", call. = FALSE)
+     }
+     dn <- dataName
+     if(is.null(dn)) dn <- private$p_defaultName
+     if(is.null(dn)) stop("PivotData$addTotalData(): Please specify the data frame name that these totals/aggregate data relate to.", call. = FALSE)
+     if(length(dn)==0) stop("PivotData$addTotalData(): Please specify the data frame name that these totals/aggregate data relate to.", call. = FALSE)
+     if(!(dn %in% names(private$p_totalData))) {
+       private$p_totalData[[dn]] <- list() # this list will contain N sets of totals data, each of which is a list(varNames=variableNames, df<-data)
+     }
+     newIndex <- length(private$p_totalData$dn)+1
+     private$p_totalData$dn[[newIndex]] <- list()
+     private$p_totalData$dn[[newIndex]]$varNames <- variableNames
+     private$p_totalData$dn[[newIndex]]$df <- data
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addTotalData", "Added totals data.")
+     return(invisible())
+   },
+   countTotalData = function(dataName=NULL) {
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "countTotalData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$countTotalData", "Counting total data...", list(dataName=dataName))
+     dn <- dataName
+     if(is.null(dn)) dn <- private$p_defaultName
+     if(is.null(dn)) stop("PivotData$countTotalData(): Please specify the data frame name.", call. = FALSE)
+     if(length(dn)==0) stop("PivotData$countTotalData(): Please specify the data frame name.", call. = FALSE)
+     if(!(dn %in% names(private$p_totalData))) return(invisible(0))
+     if(length(private$p_totalData$dn)==0) return(invisible(0))
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$countTotalData", "Counted total data.", list(data=data))
+     return(invisible(length(private$p_totalData$dn)))
+   },
+   getTotalData = function(dataName=NULL, variableNames=NULL) {
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "getTotalData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "getTotalData", variableNames, missing(variableNames), allowMissing=FALSE, allowNull=TRUE, allowedClasses="character")
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$getTotalData", "Getting total data...", list(dataName=dataName))
+     dn <- dataName
+     if(is.null(dn)) dn <- private$p_defaultName
+     if(is.null(dn)) stop("PivotData$getTotalData(): Please specify the data frame name.", call. = FALSE)
+     if(length(dn)==0) stop("PivotData$getTotalData(): Please specify the data frame name.", call. = FALSE)
+     if(!(dn %in% names(private$p_totalData))) return(invisible(NULL))
+     if(length(private$p_totalData$dn)==0) return(invisible(NULL))
+     data <- NULL
+     for(i in 1:length(private$p_totalData$dn)) {
+       vd <- private$p_totalData$dn[[i]]
+       if(is.null(vd)) next
+       varNames <- vd$varNames
+       if(length(varNames)!=length(variableNames)) next
+       if(is.null(varNames)&&is.null(variableNames)) {
+         data <- vd$df
+         break
+       }
+       if(length(intersect(varNames, variableNames))==length(varNames)) {
+         data <- vd$df
+         break
+       }
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$getTotalData", "Got total data.", list(data=data))
+     return(invisible(data))
    },
    asList = function() {
      lst <- list()
@@ -131,6 +209,7 @@ PivotData <- R6::R6Class("PivotData",
     p_parentPivot = NULL,
     p_defaultData = NULL,
     p_defaultName = NULL,
-    p_data = NULL
+    p_data = NULL,
+    p_totalData = NULL
   )
 )

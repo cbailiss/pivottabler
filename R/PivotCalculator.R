@@ -26,6 +26,10 @@
 #'
 #'   \item{\code{getDataFrame(dataName)}}{Gets a data frame with the specified
 #'   name from the data frames added to the pivot table.}
+#'   \item{\code{countTotalData(dataName)}}{Count the number of
+#'   totals/aggregate data frames that were previously added to the pivot table.}
+#'   \item{\code{getTotalDataFrame(dataName, variableNames)}}{Get pre-calculated
+#'   totals/aggregate data that was previously added to the pivot table.}
 #'   \item{\code{getCalculationGroup(calculationGroupName)}}{Gets a calculation
 #'   group with the specified name from the calculation groups added to the
 #'   pivot table.}
@@ -108,6 +112,25 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      df <- private$p_parentPivot$data$getData(dataName)
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getDataFrame", "Got data frame.")
      return(invisible(df))
+   },
+   countTotalData = function(dataName=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "countTotalData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$countTotalData", "Counting total data frames...")
+      df <- private$p_parentPivot$data$countTotalData(dataName=dataName)
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$countTotalData", "Counted total data frames.")
+      return(invisible(df))
+   },
+   getTotalDataFrame = function(dataName=NULL, variableNames=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "getTotalDataFrame", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "getTotalDataFrame", variableNames, missing(variableNames), allowMissing=FALSE, allowNull=TRUE, allowedClasses="character")
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getTotalDataFrame", "Getting total data frame...")
+      df <- private$p_parentPivot$data$getTotalData(dataName=dataName, variableNames=variableNames)
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getTotalDataFrame", "Got total data frame.")
+      return(invisible(df))
    },
    getCalculationGroup = function(calculationGroupName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
@@ -390,15 +413,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      for(i in 1:length(execOrder)) {
        calc <- calcs[[execOrder[i]]]
        if(calc$type=="value") {
-         if((!is.null(cell))&&(cell$isTotal==TRUE)) {
-           if(is.null(calc$summariseExpression)) { rf <- list() }
-           else {
-             rf <- self$getCombinedFilters(rowColFilters=rowColFilters, calcFilters=calc$filters, cell)
-           }
-         }
-         else {
-           rf <- self$getCombinedFilters(rowColFilters=rowColFilters, calcFilters=calc$filters, cell)
-         }
+         rf <- self$getCombinedFilters(rowColFilters=rowColFilters, calcFilters=calc$filters, cell)
          filters[[calc$calculationName]] <- rf
        }
        else if(calc$type=="summary") {
@@ -745,11 +760,26 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      for(i in 1:length(execOrder)) {
        calc <- calcs[[execOrder[i]]]
        filters <- workingData[[calc$calculationName]]$workingFilters
+       # CALCULATION TYPE: VALUE = pre-calculated value
        if(calc$type=="value") {
          df <- self$getDataFrame(calc$dataName)
+         # is this a total cell?
          if((!is.null(cell))&&(cell$isTotal==TRUE)) {
-           if(is.null(calc$summariseExpression)) { value <- private$getNullValue() }
-           else {
+           # is aggregate data in the pivot table?
+           if(self$countTotalData(calc$dataName)>0) {
+              variableNames <- filters$filteredVariables
+              totalsDf <- self$getTotalDataFrame(dataName=calc$dataName, variableNames=variableNames)
+              if(is.null(totalsDf)) {
+                 value <- private$getNullValue()
+              }
+              else {
+                 value <- self$evaluateSingleValue(dataFrame=totalsDf, workingFilters=filters,
+                                                   valueName=calc$valueName, format=calc$format, fmtFuncArgs=calc$fmtFuncArgs,
+                                                   noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
+              }
+           }
+           # otherwise use a summarise expression if present
+           else if(!is.null(calc$summariseExpression)) {
              batchName <- workingData[[calc$calculationName]]$batchName
              value <- self$evaluateSummariseExpression(dataName=calc$dataName, dataFrame=df, workingFilters=filters, batchName=batchName,
                                                         calculationName=calc$calculationName, calculationGroupName=calculationGroupName,
@@ -757,14 +787,18 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
                                                         format=calc$format, fmtFuncArgs=calc$fmtFuncArgs,
                                                         noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
            }
+           # otherwise null
+           else { value <- private$getNullValue() }
          }
          else {
+           # not a total, so can calculate from the line level data
            value <- self$evaluateSingleValue(dataFrame=df, workingFilters=filters,
                                              valueName=calc$valueName, format=calc$format, fmtFuncArgs=calc$fmtFuncArgs,
                                              noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
          }
          results[[calc$calculationName]] <- value
        }
+       # CALCULATION TYPE: SUMMARY = dplyr/data.table expression
        else if(calc$type=="summary") {
          df <- self$getDataFrame(calc$dataName)
          batchName <- workingData[[calc$calculationName]]$batchName
@@ -775,6 +809,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
                                                     noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
          results[[calc$calculationName]] <- value
        }
+       # CALCULATION TYPE: CALCULATION = simple derived calculation expression
        else if(calc$type=="calculation") {
          values <- list()
          if(i>1) {
@@ -787,6 +822,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
                                                      noDataValue=calc$noDataValue, noDataCaption=calc$noDataCaption)
          results[[calc$calculationName]] <- value
        }
+       # CALCULATION TYPE: FUNCTION = custom calculation function
        else if(calc$type=="function") {
          values <- list()
          if(i>1) {
@@ -798,6 +834,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
                                                  format=calc$format, fmtFuncArgs=calc$fmtFuncArgs, baseValues=values, cell=cell)
          results[[calc$calculationName]] <- value
        }
+       # CALCULATION TYPE: UNKNOWN/ERROR
        else stop(paste0("PivotCalculator$evaluateNamedCalculationWD():  Unknown calculation type encountered '", calc$type,
                         "' for calculaton name ", calc$calculationName, "' in calculation group '", calculationGroupName, "'"), call. = FALSE)
      }
