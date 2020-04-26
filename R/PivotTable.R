@@ -779,8 +779,8 @@ PivotTable <- R6::R6Class("PivotTable",
     },
     defineCalculation = function(calculationGroupName="default", calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
                          filters=NULL, format=NULL, fmtFuncArgs=NULL, dataName=NULL, type="summary",
-                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
-                         noDataValue=NULL, noDataCaption=NULL,
+                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, calcFuncArgs=NULL,
+                         basedOn=NULL, noDataValue=NULL, noDataCaption=NULL,
                          headingBaseStyleName=NULL, headingStyleDeclarations=NULL, cellBaseStyleName=NULL, cellStyleDeclarations=NULL,
                          resetCells=TRUE) {
       timeStart <- proc.time()
@@ -799,6 +799,7 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "defineCalculation", summariseExpression, missing(summariseExpression), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "defineCalculation", calculationExpression, missing(calculationExpression), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "defineCalculation", calculationFunction, missing(calculationFunction), allowMissing=TRUE, allowNull=TRUE, allowedClasses="function")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "defineCalculation", calcFuncArgs, missing(calcFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "defineCalculation", basedOn, missing(basedOn), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "defineCalculation", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "defineCalculation", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -819,8 +820,8 @@ PivotTable <- R6::R6Class("PivotTable",
                    list(calculationGroupName=calculationGroupName, calculationName=calculationName, caption=caption,
                         visible=visible, displayOrder=displayOrder, filters=fstr, format=format, fmtFuncArgs=fmtFuncArgs,
                         dataName=dataName, type=type, valueName=valueName, summariseExpression=summariseExpression,
-                        calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn,
-                        noDataValue=noDataValue, noDataCaption=noDataCaption,
+                        calculationExpression=calculationExpression, calculationFunction=calculationFunction, calcFuncArgs=calcFuncArgs,
+                        basedOn=basedOn, noDataValue=noDataValue, noDataCaption=noDataCaption,
                         headingBaseStyleName=headingBaseStyleName, headingStyleDeclarations=headingStyleDeclarations,
                         cellBaseStyleName=cellBaseStyleName, cellStyleDeclarations=cellStyleDeclarations, resetCells=resetCells))
       if(resetCells) self$resetCells()
@@ -834,8 +835,8 @@ PivotTable <- R6::R6Class("PivotTable",
       calculation <- calculationGroup$defineCalculation(calculationName=calculationName, caption=caption, visible=visible,
                          displayOrder=displayOrder, filters=filters, format=format, fmtFuncArgs=fmtFuncArgs, dataName=dataName,
                          type=type, valueName=valueName, summariseExpression=summariseExpression,
-                         calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn,
-                         noDataValue=noDataValue, noDataCaption=noDataCaption,
+                         calculationExpression=calculationExpression, calculationFunction=calculationFunction, calcFuncArgs=calcFuncArgs,
+                         basedOn=basedOn, noDataValue=noDataValue, noDataCaption=noDataCaption,
                          headingBaseStyleName=headingBaseStyleName, headingStyleDeclarations=headingStyleDeclarations,
                          cellBaseStyleName=cellBaseStyleName, cellStyleDeclarations=cellStyleDeclarations)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$defineCalculation", "Defined calculation.")

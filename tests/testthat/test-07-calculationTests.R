@@ -708,3 +708,81 @@ for(i in 1:nrow(scenarios)) {
     expect_identical(as.character(pt$getHtml()), html)
   })
 }
+
+
+scenarios <- testScenarios("calculation tests:  custom function with calcFuncArgs")
+for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    library(dplyr)
+    library(lubridate)
+
+    # derive some additional data
+    trains <- mutate(bhmtrains,
+                     GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                     GbttDate=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=day(GbttDateTime)),
+                     GbttMonth=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=1),
+                     ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+                     ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
+                     DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
+
+    # custom calculation function
+    getWorstSingleDayPerformance <- function(pivotCalculator, netFilters, calcFuncArgs,
+                                             format, fmtFuncArgs, baseValues, cell) {
+      # get the data frame
+      trains <- pivotCalculator$getDataFrame("trains")
+      # apply the TOC and month filters coming from the headers in the pivot table
+      filteredTrains <- pivotCalculator$getFilteredDataFrame(trains, netFilters)
+      # calculate the percentage of trains more than five minutes late by date
+      dateSummary <- filteredTrains %>%
+        group_by(GbttDate) %>%
+        summarise(DelayedPercent = sum(DelayedByMoreThan5Minutes, na.rm=TRUE) / n() * 100) %>%
+        arrange(desc(DelayedPercent))
+      # top value
+      tv <- dateSummary$DelayedPercent[1]
+      date <- dateSummary$GbttDate[1]
+      if(calcFuncArgs$output=="day") {  #     <<  CODE CHANGES HERE  <<
+        # build the return value
+        value <- list()
+        value$rawValue <- date
+        value$formattedValue <- format(date, format="%a %d")
+      }
+      else if(calcFuncArgs$output=="performance") {  #     <<  CODE CHANGES HERE  <<
+        # build the return value
+        value <- list()
+        value$rawValue <- tv
+        value$formattedValue <- pivotCalculator$formatValue(tv, format=format)
+      }
+      return(value)
+    }
+
+    # create the pivot table
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(trains, "trains")
+    pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+    pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+    pt$defineCalculation(calculationName="WorstSingleDay", caption="Day",
+                         format="%.1f %%", type="function",
+                         calculationFunction=getWorstSingleDayPerformance,
+                         calcFuncArgs=list(output="day"))
+    pt$defineCalculation(calculationName="WorstSingleDayPerf", caption="Perf",
+                         format="%.1f %%", type="function",
+                         calculationFunction=getWorstSingleDayPerformance,
+                         calcFuncArgs=list(output="performance"))
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # round(sum(pt$cells$asMatrix(), na.rm=TRUE), digits=1)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"2\">December 2016</th>\n    <th class=\"ColumnHeader\" colspan=\"2\">January 2017</th>\n    <th class=\"ColumnHeader\" colspan=\"2\">February 2017</th>\n    <th class=\"ColumnHeader\" colspan=\"2\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"ColumnHeader\">Day</th>\n    <th class=\"ColumnHeader\">Perf</th>\n    <th class=\"ColumnHeader\">Day</th>\n    <th class=\"ColumnHeader\">Perf</th>\n    <th class=\"ColumnHeader\">Day</th>\n    <th class=\"ColumnHeader\">Perf</th>\n    <th class=\"ColumnHeader\">Day</th>\n    <th class=\"ColumnHeader\">Perf</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales</th>\n    <td class=\"Cell\">Tue 27</td>\n    <td class=\"Cell\">42.9 %</td>\n    <td class=\"Cell\">Sun 29</td>\n    <td class=\"Cell\">18.8 %</td>\n    <td class=\"Cell\">Sun 12</td>\n    <td class=\"Cell\">18.8 %</td>\n    <td class=\"Total\">Tue 27</td>\n    <td class=\"Total\">42.9 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry</th>\n    <td class=\"Cell\">Thu 01</td>\n    <td class=\"Cell\">35.4 %</td>\n    <td class=\"Cell\">Fri 06</td>\n    <td class=\"Cell\">19.4 %</td>\n    <td class=\"Cell\">Thu 23</td>\n    <td class=\"Cell\">27.9 %</td>\n    <td class=\"Total\">Thu 01</td>\n    <td class=\"Total\">35.4 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland</th>\n    <td class=\"Cell\">Thu 01</td>\n    <td class=\"Cell\">26.9 %</td>\n    <td class=\"Cell\">Fri 06</td>\n    <td class=\"Cell\">17.2 %</td>\n    <td class=\"Cell\">Thu 23</td>\n    <td class=\"Cell\">12.1 %</td>\n    <td class=\"Total\">Thu 01</td>\n    <td class=\"Total\">26.9 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains</th>\n    <td class=\"Cell\">Thu 01</td>\n    <td class=\"Cell\">33.0 %</td>\n    <td class=\"Cell\">Thu 12</td>\n    <td class=\"Cell\">21.4 %</td>\n    <td class=\"Cell\">Sat 11</td>\n    <td class=\"Cell\">25.5 %</td>\n    <td class=\"Total\">Thu 01</td>\n    <td class=\"Total\">33.0 %</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">All TOCs</th>\n    <td class=\"Total\">Thu 01</td>\n    <td class=\"Total\">29.5 %</td>\n    <td class=\"Total\">Fri 06</td>\n    <td class=\"Total\">16.3 %</td>\n    <td class=\"Total\">Thu 23</td>\n    <td class=\"Total\">17.1 %</td>\n    <td class=\"Total\">Thu 01</td>\n    <td class=\"Total\">29.5 %</td>\n  </tr>\n</table>"
+
+    expect_equal(round(sum(pt$cells$asMatrix(), na.rm=TRUE), 0), 530)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}

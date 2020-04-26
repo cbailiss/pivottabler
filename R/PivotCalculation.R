@@ -39,6 +39,8 @@
 #'   aggregate values.
 #' @field calculationFunction For type="function", a reference to a custom R
 #'   function that will carry out the calculation.
+#' @field calcFuncArgs For type="function", a list that specifies additional
+#'   arguments to pass to calculationFunction.
 #' @field basedOn A character vector specifying the names of one or more
 #'   calculations that this calculation depends on.
 #' @field noDataValue An integer or numeric value specifying the value to use if
@@ -61,8 +63,8 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
   public = list(
    initialize = function(parentPivot, calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
                          filters=NULL, format=NULL, fmtFuncArgs=NULL, dataName=NULL, type="summary",
-                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
-                         noDataValue=NULL, noDataCaption=NULL,
+                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, calcFuncArgs=NULL,
+                         basedOn=NULL, noDataValue=NULL, noDataCaption=NULL,
                          headingBaseStyleName=NULL, headingStyleDeclarations=NULL, cellBaseStyleName=NULL, cellStyleDeclarations=NULL) {
      if(parentPivot$argumentCheckMode > 0) {
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -79,6 +81,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", summariseExpression, missing(summariseExpression), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", calculationExpression, missing(calculationExpression), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", calculationFunction, missing(calculationFunction), allowMissing=TRUE, allowNull=TRUE, allowedClasses="function")
+       checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", calcFuncArgs, missing(calcFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", basedOn, missing(basedOn), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculation", "initialize", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -96,8 +99,8 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
                                                                              format=format, fmtFuncArgs=fmtFuncArgs, dataName=dataName,
                                                                              valueName=valueName, summariseExpression=summariseExpression,
                                                                              calculationExpression=calculationExpression,
-                                                                             calculationFunctionIsNull=is.null(calculationFunction), basedOn=basedOn,
-                                                                             noDataValue=noDataValue, noDataCaption=noDataCaption,
+                                                                             calculationFunctionIsNull=is.null(calculationFunction), calcFuncArgs=calcFuncArgs,
+                                                                             basedOn=basedOn, noDataValue=noDataValue, noDataCaption=noDataCaption,
                                                                              headingBaseStyleName=headingBaseStyleName, headingStyleDeclarations=headingStyleDeclarations,
                                                                              cellBaseStyleName=cellBaseStyleName, cellStyleDeclarations=cellStyleDeclarations))
      if(grepl("`", calculationName)==TRUE)
@@ -145,6 +148,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
      private$p_summariseExpression <- summariseExpression
      private$p_calculationExpression <- calculationExpression
      private$p_calculationFunction <- calculationFunction
+     private$p_calcFuncArgs <- calcFuncArgs
      private$p_basedOn <- basedOn
      private$p_noDataValue <- noDataValue
      private$p_noDataCaption <- noDataCaption
@@ -169,6 +173,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
        summariseExpression = private$p_summariseExpression,
        calculationExpression = private$p_calculationExpression,
        calculationFunction = private$p_calculationFunction,
+       calcFuncArgs = private$p_calcFuncArgs,
        basedOn = private$p_basedOn,
        noDataValue = private$p_noDataValue,
        noDataCaption = private$p_noDataCaption,
@@ -205,6 +210,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
     summariseExpression = function(value) { return(invisible(private$p_summariseExpression)) },
     calculationExpression = function(value) { return(invisible(private$p_calculationExpression)) },
     calculationFunction = function(value) { return(invisible(private$p_calculationFunction)) },
+    calcFuncArgs = function(value) { return(invisible(private$p_calcFuncArgs)) },
     basedOn = function(value) { return(invisible(private$p_basedOn)) },
     noDataValue = function(value) { return(invisible(private$p_noDataValue)) },
     noDataCaption = function(value) { return(invisible(private$p_noDataCaption)) },
@@ -228,6 +234,7 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
     p_summariseExpression = NULL,
     p_calculationExpression = NULL,
     p_calculationFunction = NULL,
+    p_calcFuncArgs = NULL,
     p_basedOn = NULL,
     p_noDataValue = NULL,
     p_noDataCaption = NULL,

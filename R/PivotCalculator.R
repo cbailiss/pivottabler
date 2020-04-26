@@ -681,10 +681,11 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSCalculationExpression", "Evaluated summary expression.")
      return(invisible(value))
    },
-   evaluateCalculateFunction = function(workingFilters=NULL, calculationFunction=NULL, format=NULL, fmtFuncArgs=NULL, baseValues=NULL, cell=NULL) {
+   evaluateCalculateFunction = function(workingFilters=NULL, calculationFunction=NULL, calcFuncArgs=NULL, format=NULL, fmtFuncArgs=NULL, baseValues=NULL, cell=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", workingFilters, missing(workingFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", calculationFunction, missing(calculationFunction), allowMissing=FALSE, allowNull=FALSE, allowedClasses="function")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", calcFuncArgs, missing(calcFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", baseValues, missing(baseValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
@@ -701,9 +702,15 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(!("format" %in% argNames)) stop("Custom calculation function missing 'format' argument.", call. = FALSE)
      if(!("baseValues" %in% argNames)) stop("Custom calculation function missing 'baseValues' argument.", call. = FALSE)
      if(!("cell" %in% argNames)) stop("Custom calculation function missing 'cell' argument.", call. = FALSE)
-     # if users have older code that does not support the fmtFuncArgs argument, then call the custom function without that, otherwise invoke as normal
+     # if users have older code that does not support the fmtFuncArgs or calcFuncArgs arguments, then call the custom function without those, otherwise invoke as normal
+     # could perhaps use base::do.call as a generic way of constructing the call to the custom function
      if("fmtFuncArgs" %in% argNames) {
-        rv <- calculationFunction(pivotCalculator=self, netFilters=workingFilters, format=format, fmtFuncArgs=fmtFuncArgs, baseValues=baseValues, cell=cell)
+        if("calcFuncArgs" %in% argNames) {
+           rv <- calculationFunction(pivotCalculator=self, netFilters=workingFilters, calcFuncArgs=calcFuncArgs, format=format, fmtFuncArgs=fmtFuncArgs, baseValues=baseValues, cell=cell)
+        }
+        else {
+           rv <- calculationFunction(pivotCalculator=self, netFilters=workingFilters, format=format, fmtFuncArgs=fmtFuncArgs, baseValues=baseValues, cell=cell)
+        }
      }
      else {
         rv <- calculationFunction(pivotCalculator=self, netFilters=workingFilters, format=format, baseValues=baseValues, cell=cell)
@@ -787,7 +794,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
              values[[names(results)[[j]]]] <- results[[j]]$rawValue
            }
          }
-         value <- self$evaluateCalculateFunction(workingFilters=filters, calculationFunction=calc$calculationFunction,
+         value <- self$evaluateCalculateFunction(workingFilters=filters, calculationFunction=calc$calculationFunction, calcFuncArgs=calc$calcFuncArgs,
                                                  format=calc$format, fmtFuncArgs=calc$fmtFuncArgs, baseValues=values, cell=cell)
          results[[calc$calculationName]] <- value
        }

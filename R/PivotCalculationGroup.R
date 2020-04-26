@@ -83,8 +83,8 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
     },
     defineCalculation = function(calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
                          filters=NULL, format=NULL, fmtFuncArgs=NULL, dataName=NULL, type="summary", executionOrder=NULL,
-                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, basedOn=NULL,
-                         noDataValue=NULL, noDataCaption=NULL,
+                         valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, calcFuncArgs=NULL,
+                         basedOn=NULL, noDataValue=NULL, noDataCaption=NULL,
                          headingBaseStyleName=NULL, headingStyleDeclarations=NULL, cellBaseStyleName=NULL, cellStyleDeclarations=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -100,6 +100,7 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", summariseExpression, missing(summariseExpression), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", calculationExpression, missing(calculationExpression), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", calculationFunction, missing(calculationFunction), allowMissing=TRUE, allowNull=TRUE, allowedClasses="function")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", calcFuncArgs, missing(calcFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", basedOn, missing(basedOn), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculationGroup", "defineCalculation", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -117,8 +118,8 @@ PivotCalculationGroup <- R6::R6Class("PivotCalculationGroup",
       calculation <- PivotCalculation$new(private$p_parentPivot, calculationName=calculationName, caption=caption,
                                           visible=visible, displayOrder=displayOrder, filters=filters, format=format, fmtFuncArgs=fmtFuncArgs,
                                           dataName=dataName, type=type, valueName=valueName, summariseExpression=summariseExpression,
-                                          calculationExpression=calculationExpression, calculationFunction=calculationFunction, basedOn=basedOn,
-                                          noDataValue=noDataValue, noDataCaption=noDataCaption,
+                                          calculationExpression=calculationExpression, calculationFunction=calculationFunction, calcFuncArgs=calcFuncArgs,
+                                          basedOn=basedOn, noDataValue=noDataValue, noDataCaption=noDataCaption,
                                           headingBaseStyleName=headingBaseStyleName, headingStyleDeclarations=headingStyleDeclarations,
                                           cellBaseStyleName=cellBaseStyleName, cellStyleDeclarations=cellStyleDeclarations)
       private$p_calculations[[calculationName]] <- calculation

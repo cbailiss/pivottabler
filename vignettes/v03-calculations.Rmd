@@ -599,7 +599,8 @@ trains <- mutate(bhmtrains,
    DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
 
 # custom calculation function
-getWorstSingleDayPerformance <- function(pivotCalculator, netFilters, format, baseValues, cell) {
+getWorstSingleDayPerformance <- function(pivotCalculator, netFilters, calcFuncArgs, 
+                                         format, fmtFuncArgs, baseValues, cell) {
   # get the data frame
   trains <- pivotCalculator$getDataFrame("trains")
   # apply the TOC and month filters coming from the headers in the pivot table
@@ -640,14 +641,16 @@ library(lubridate)
 # derive some additional data
 trains <- mutate(bhmtrains,
    GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
-   GbttDate=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=day(GbttDateTime)),
+   GbttDate=make_date(year=year(GbttDateTime), month=month(GbttDateTime), 
+                      day=day(GbttDateTime)),
    GbttMonth=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=1),
    ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
    ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
    DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
 
 # custom calculation function
-getWorstSingleDayPerformance <- function(pivotCalculator, netFilters, format, baseValues, cell) {
+getWorstSingleDayPerformance <- function(pivotCalculator, netFilters, calcFuncArgs, 
+                                         format, fmtFuncArgs, baseValues, cell) {
   # get the data frame
   trains <- pivotCalculator$getDataFrame("trains")
   # apply the TOC and month filters coming from the headers in the pivot table
@@ -679,6 +682,96 @@ pt$renderPivot()
 ```
 
 Including two values in each cell somewhat reduces the readability however.
+
+It is possible to pass additional arguments as a list to a custom calculation function, as illustrated in the trivial example below.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+
+# custom calculation function
+calcFunction <- function(pivotCalculator, netFilters, calcFuncArgs, 
+                         format, fmtFuncArgs, baseValues, cell) {
+
+  # build the return value
+  value <- list()
+  value$rawValue <- calcFuncArgs$result
+  value$formattedValue <- pivotCalculator$formatValue(calcFuncArgs$result, format=format)
+  return(value)
+}
+
+# create the pivot table
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="calcA", caption="A", type="function", 
+                     calculationFunction=calcFunction, calcFuncArgs=list(result=1))
+pt$defineCalculation(calculationName="calcB", caption="B", type="function", 
+                     calculationFunction=calcFunction, calcFuncArgs=list(result=2))
+pt$renderPivot()
+```
+
+This is useful as it allows the logic in more complex custom calculation functions to be reused to create variations of the same function - without needing to define the entire function again.  For example, taking the example above that calculates the worst single day performance, it is possible to split the two values in a single cell into two cells.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+library(dplyr)
+library(lubridate)
+
+# derive some additional data
+trains <- mutate(bhmtrains,
+                 GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                 GbttDate=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=day(GbttDateTime)),
+                 GbttMonth=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=1),
+                 ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+                 ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
+                 DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
+
+# custom calculation function
+getWorstSingleDayPerformance <- function(pivotCalculator, netFilters, calcFuncArgs, 
+                                         format, fmtFuncArgs, baseValues, cell) {
+  # get the data frame
+  trains <- pivotCalculator$getDataFrame("trains")
+  # apply the TOC and month filters coming from the headers in the pivot table
+  filteredTrains <- pivotCalculator$getFilteredDataFrame(trains, netFilters)
+  # calculate the percentage of trains more than five minutes late by date
+  dateSummary <- filteredTrains %>%
+    group_by(GbttDate) %>%
+    summarise(DelayedPercent = sum(DelayedByMoreThan5Minutes, na.rm=TRUE) / n() * 100) %>%
+    arrange(desc(DelayedPercent))
+  # top value
+  tv <- dateSummary$DelayedPercent[1]
+  date <- dateSummary$GbttDate[1] 
+  if(calcFuncArgs$output=="day") {  #     <<  CODE CHANGES HERE  << 
+    # build the return value
+    value <- list()
+    value$rawValue <- date
+    value$formattedValue <- format(date, format="%a %d")
+  }
+  else if(calcFuncArgs$output=="performance") {  #     <<  CODE CHANGES HERE  << 
+    # build the return value
+    value <- list()
+    value$rawValue <- tv
+    value$formattedValue <- pivotCalculator$formatValue(tv, format=format)
+  }
+  return(value)
+}
+
+# create the pivot table
+pt <- PivotTable$new()
+pt$addData(trains, "trains")
+pt$addColumnDataGroups("GbttMonth", dataFormat=list(format="%B %Y"))
+pt$addRowDataGroups("TOC", totalCaption="All TOCs")
+pt$defineCalculation(calculationName="WorstSingleDay", caption="Day", 
+                     format="%.1f %%", type="function", 
+                     calculationFunction=getWorstSingleDayPerformance,
+                     calcFuncArgs=list(output="day"))
+pt$defineCalculation(calculationName="WorstSingleDayPerf", caption="Perf", 
+                     format="%.1f %%", type="function", 
+                     calculationFunction=getWorstSingleDayPerformance,
+                     calcFuncArgs=list(output="performance"))
+pt$renderPivot()
+```
 
 ### Calculation Method 4:  Showing a value (no calculation)
 
