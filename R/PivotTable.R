@@ -93,10 +93,10 @@
 #'   dataFormat, dataFmtFuncArgs, onlyCombinationsThatExist=TRUE,
 #'   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
 #'   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-#'   totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
-#'   styleDeclarations=NULL)}}{Generate new column heading data
-#'   groups based on the distinct values in a data frame or using explicitly
-#'   specified data values.}
+#'   totalCaption="Total", onlyAddGroupIf, preGroupData=TRUE,
+#'   baseStyleName=NULL, styleDeclarations=NULL)}}{Generate new column
+#'   heading data groups based on the distinct values in a data frame or
+#'   using explicitly specified data values.}
 #'   \item{\code{normaliseColumnGroups(resetCells=TRUE) }}{Normalise the
 #'   column heading data group hierarchy so that all branches have the same
 #'   number of levels - accomplished by adding empty child data groups where
@@ -124,11 +124,11 @@
 #'   dataFormat, dataFmtFuncArgs, onlyCombinationsThatExist=TRUE,
 #'   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
 #'   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-#'   totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
-#'   styleDeclarations=NULL, header=NULL, outlineBefore=NULL,
-#'   outlineAfter=NULL)}}{Generate new row heading data
-#'   groups based on the distinct values in a data frame or using explicitly
-#'   specified data values.}
+#'   totalCaption="Total", onlyAddGroupIf, preGroupData=TRUE,
+#'   baseStyleName=NULL, styleDeclarations=NULL,
+#'   header=NULL, outlineBefore=NULL, outlineAfter=NULL)}}{Generate
+#'   new row heading data groups based on the distinct values in a data frame
+#'   or using explicitly specified data values.}
 #'   \item{\code{normaliseRowGroups(resetCells=TRUE)}}{Normalise the row heading
 #'   data group hierarchy so that all branches have the same number of
 #'   levels - accomplished by adding empty child data groups where needed.}
@@ -528,7 +528,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                    dataName=NULL, dataSortOrder="asc", customSortOrder=NULL, dataFormat=NULL, dataFmtFuncArgs=NULL,
                                    onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                                    expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
-                                   preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL) {
+                                   onlyAddGroupIf=NULL, preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -547,6 +547,7 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", visualTotals, missing(visualTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", totalPosition, missing(totalPosition), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("before", "after"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", onlyAddGroupIf, missing(onlyAddGroupIf), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", preGroupData, missing(preGroupData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
@@ -558,7 +559,7 @@ PivotTable <- R6::R6Class("PivotTable",
                         onlyCombinationsThatExist=onlyCombinationsThatExist, explicitListOfValues=explicitListOfValues,
                         calculationGroupName=calculationGroupName, expandExistingTotals=expandExistingTotals,
                         addTotal=addTotal, visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
-                        preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations))
+                        onlyAddGroupIf=onlyAddGroupIf, preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations))
       if((!is.null(styleDeclarations))&&(length(styleDeclarations)!=length(names(styleDeclarations))))
         stop("PivotTable$addColumnDataGroups(): One or more style declarations are missing a name.", call. = FALSE)
       levelsBelow <- NULL
@@ -570,7 +571,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                                  calculationGroupName=calculationGroupName,
                                                  expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                                                  visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
-                                                 preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations)
+                                                 onlyAddGroupIf=onlyAddGroupIf, preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addColumnDataGroups", "Added column groups.")
       private$addTiming(paste0("addColumnDataGroups(", variableName, ")"), timeStart)
       return(invisible(grp))
@@ -680,7 +681,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                 dataName=NULL, dataSortOrder="asc", customSortOrder=NULL, dataFormat=NULL, dataFmtFuncArgs=NULL,
                                 onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                                 expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
-                                preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, header=NULL,
+                                onlyAddGroupIf=NULL, preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, header=NULL,
                                 outlineBefore=NULL, outlineAfter=NULL, outlineTotal=NULL) {
      timeStart <- proc.time()
      if(private$p_argumentCheckMode > 0) {
@@ -700,6 +701,7 @@ PivotTable <- R6::R6Class("PivotTable",
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", visualTotals, missing(visualTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", totalPosition, missing(totalPosition), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("before", "after"))
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+       checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", onlyAddGroupIf, missing(onlyAddGroupIf), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", preGroupData, missing(preGroupData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
@@ -715,7 +717,7 @@ PivotTable <- R6::R6Class("PivotTable",
                    onlyCombinationsThatExist=onlyCombinationsThatExist, explicitListOfValues=explicitListOfValues,
                    calculationGroupName=calculationGroupName, expandExistingTotals=expandExistingTotals,
                    addTotal=addTotal, visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
-                   preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations), header=header,
+                   onlyAddGroupIf=onlyAddGroupIf, preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations), header=header,
                    outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal)
      if((!is.null(styleDeclarations))&&(length(styleDeclarations)!=length(names(styleDeclarations))))
        stop("PivotTable$addRowDataGroups(): One or more style declarations are missing a name.", call. = FALSE)
@@ -728,7 +730,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                                calculationGroupName=calculationGroupName,
                                                expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                                                visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
-                                               preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
+                                               onlyAddGroupIf=onlyAddGroupIf, preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
                                                outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal)
       if(is.null(header)) {
         header <- variableName

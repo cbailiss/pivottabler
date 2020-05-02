@@ -106,8 +106,9 @@
 #'   onlyCombinationsThatExist=TRUE, explicitListOfValues,
 #'   calculationGroupName, expandExistingTotals=FALSE,
 #'   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-#'   totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
-#'   styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL,
+#'   totalCaption="Total", onlyAddGroupIf, preGroupData=TRUE,
+#'   baseStyleName=NULL, styleDeclarations=NULL,
+#'   outlineBefore=NULL, outlineAfter=NULL,
 #'   resetCells=TRUE)}}{
 #'   Generate new data groups based on the distinct
 #'   values in a data frame or using explicitly specified data values.}
@@ -465,7 +466,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                             dataName=NULL, dataSortOrder="asc", customSortOrder=NULL, dataFormat=NULL, dataFmtFuncArgs=NULL,
                             onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                             expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
-                            preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL, outlineTotal=FALSE) {
+                            onlyAddGroupIf=NULL, preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL,
+                            outlineBefore=NULL, outlineAfter=NULL, outlineTotal=FALSE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
@@ -483,6 +485,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", visualTotals, missing(visualTotals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", totalPosition, missing(totalPosition), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("before", "after"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", totalCaption, missing(totalCaption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", onlyAddGroupIf, missing(onlyAddGroupIf), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", preGroupData, missing(preGroupData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
@@ -496,7 +499,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                         dataFormat=dataFormat, onlyCombinationsThatExist=onlyCombinationsThatExist,
                                         explicitListOfValues=explicitListOfValues, calculationGroupName=calculationGroupName,
                                         expandExistingTotals=expandExistingTotals, addTotal=addTotal, visualTotals=visualTotals,
-                                        totalPosition=totalPosition, totalCaption=totalCaption, preGroupData=preGroupData,
+                                        totalPosition=totalPosition, totalCaption=totalCaption,
+                                        onlyAddGroupIf=onlyAddGroupIf, preGroupData=preGroupData,
                                         baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
                                         outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal))
      private$p_parentPivot$resetCells()
@@ -511,6 +515,12 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      outlineTotal <- private$cleanOutlineArg(outlineTotal, defaultCaption="Total", defaultIsEmpty=FALSE)
      # visual totals
      if(addTotal==TRUE){ private$p_visualTotals <- visualTotals }
+     # if onlyAddGroupIf is specified, then preGroupData cannot be used
+     if(!is.null(onlyAddGroupIf)) {
+       preGroupData <- FALSE
+       if(fromData==FALSE) stop("PivotDataGroup$addDataGroups():  onlyAddGroupIf cannot be used when fromData=FALSE.", call. = FALSE)
+       if(onlyCombinationsThatExist==FALSE) stop("PivotDataGroup$addDataGroups():  onlyAddGroupIf cannot be used when onlyCombinationsThatExist=FALSE.", call. = FALSE)
+     }
      # data values
      df <- NULL
      topLevelDisinctValues <- NULL
@@ -694,6 +704,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
              if((!rowColFilters$isALL)&&(rowColFilters$count > 0)) {
                data <- rowColFilters$getFilteredDataFrame(dataFrame=data)
              }
+             # if onlyAddGroupIf specified, then need to further filter the data frame by this
+             if(!is.null(onlyAddGroupIf)) {
+               eval(parse(text=paste0("data <- dplyr::filter(data, ", onlyAddGroupIf, ")")))
+             }
              # get the distinct values for the current variable
              eval(parse(text=paste0("data <- dplyr::select(data, ", safeVariableName, ")")))
              data <- dplyr::distinct(data)
@@ -729,6 +743,11 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                    filterCount <- filterCount + 1
                  }
                }
+             }
+             # if onlyAddGroupIf specified, then add this to the filter criteria
+             if(!is.null(onlyAddGroupIf)) {
+               if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
+               filterCmd <- paste0(filterCmd, "(", onlyAddGroupIf, ")")
              }
              # seem to need a dummy row count in order to get the distinct values
              rcName <- "rc"
