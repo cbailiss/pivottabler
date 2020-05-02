@@ -37,6 +37,10 @@
 #'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
 #'   emptyCells="exclude", outlineCells="exclude")}}{Find cells
 #'   matching the specified criteria.}
+#'   \item{\code{findGroupColumnNumbers(group))}}{Find the column numbers
+#'   associated with a specific group.}
+#'   \item{\code{findGroupRowNumbers(group))}}{Find the row numbers
+#'   associated with a specific group.}
 #'   \item{\code{getColumnWidths())}}{Retrieve the width of the longest value
 #'   (in characters) in each column.}
 #'   \item{\code{removeColumn(c))}}{Remove a single column from the pivot
@@ -313,6 +317,52 @@ PivotCells <- R6::R6Class("PivotCells",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findCells", "Found cells.")
      return(invisible(matches))
+   },
+   findGroupColumnNumbers = function(group=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findGroupColumnNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findGroupColumnNumbers", "Finding group column numbers...")
+      # get lowest level of groups
+      grps <- group$getLeafGroups()
+      # get instance ids
+      fx <- function(x) { return(x$instanceId) }
+      instanceIds <- sapply(grps, fx)
+      # find matching columns
+      matchingColumnNumbers <- vector("integer", 0)
+      if(length(private$p_columnGroups) > 0) {
+         for(c in 1:length(private$p_columnGroups)) {
+            instanceId <- private$p_columnGroups[[c]]$instanceId
+            if(instanceId %in% instanceIds) {
+               matchingColumnNumbers[[length(matchingColumnNumbers)+1]] <- c
+            }
+         }
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findGroupColumnNumbers", "Found group column numbers.")
+      return(invisible(matchingColumnNumbers))
+   },
+   findGroupRowNumbers = function(group=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findGroupRowNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findGroupRowNumbers", "Finding group row numbers...")
+      # get lowest level of groups
+      grps <- group$getLeafGroups()
+      # get instance ids
+      fx <- function(x) { return(x$instanceId) }
+      instanceIds <- sapply(grps, fx)
+      # find matching rows
+      matchingRowNumbers <- vector("integer", 0)
+      if(length(private$p_rowGroups) > 0) {
+         for(r in 1:length(private$p_rowGroups)) {
+            instanceId <- private$p_rowGroups[[r]]$instanceId
+            if(instanceId %in% instanceIds) {
+               matchingRowNumbers[[length(matchingRowNumbers)+1]] <- r
+            }
+         }
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findGroupRowNumbers", "Found group row numbers.")
+      return(invisible(matchingRowNumbers))
    },
    getColumnWidths = function() {
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getColumnWidths", "Getting column widths...")

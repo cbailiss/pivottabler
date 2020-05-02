@@ -197,6 +197,10 @@
 #'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
 #'   emptyCells="exclude", outlineCells="exclude")}}{Find cells in the
 #'   body of the pivot table matching the specified criteria.}
+#'   \item{\code{findGroupColumnNumbers(group))}}{Find the column numbers
+#'   associated with a specific group.}
+#'   \item{\code{findGroupRowNumbers(group))}}{Find the row numbers
+#'   associated with a specific group.}
 #'   \item{\code{removeColumn(c))}}{Remove a single column from the pivot
 #'   table.}
 #'   \item{\code{removeColumns(columnNumbers))}}{Remove multiple columns from
@@ -1404,6 +1408,28 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findCells", "Found cells.")
       return(invisible(cells))
     },
+    findGroupColumnNumbers = function(group=NULL) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findGroupColumnNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+      }
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$findGroupColumnNumbers", "Finding group column numbers...")
+      if(!private$p_evaluated) stop("PivotTable$findGroupColumnNumbers():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$findGroupColumnNumbers():  No cells exist to retrieve.", call. = FALSE)
+      matchingColumnNumbers <- private$p_cells$findGroupColumnNumbers(group=group)
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$findGroupColumnNumbers", "Found group column numbers.")
+      return(invisible(matchingColumnNumbers))
+    },
+    findGroupRowNumbers = function(group=NULL) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findGroupRowNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+      }
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$findGroupRowNumbers", "Finding group row numbers...")
+      if(!private$p_evaluated) stop("PivotTable$findGroupRowNumbers():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$findGroupRowNumbers():  No cells exist to retrieve.", call. = FALSE)
+      matchingColumnNumbers <- private$p_cells$findGroupRowNumbers(group=group)
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$findGroupRowNumbers", "Found group row numbers.")
+      return(invisible(matchingColumnNumbers))
+    },
     removeColumn = function(c=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeColumn", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -2436,12 +2462,20 @@ PivotTable <- R6::R6Class("PivotTable",
       grps <- private$p_columnGroup$getLeafGroups(leafGroups)
       return(invisible(grps))
     },
+    allColumnGroups = function(value) {
+      grps <- private$p_columnGroup$getDescendantGroups()
+      return(invisible(grps))
+    },
     topRowGroups = function(value) {
       return(private$p_rowGroup$childGroups)
     },
     leafRowGroups = function(value) {
       leafGroups = list()
       grps <- private$p_rowGroup$getLeafGroups(leafGroups)
+      return(invisible(grps))
+    },
+    allRowGroups = function(value) {
+      grps <- private$p_rowGroup$getDescendantGroups()
       return(invisible(grps))
     },
     rowGrpHeaders = function() { return(invisible(private$p_rowGrpHeaders ))},
