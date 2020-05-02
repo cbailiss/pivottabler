@@ -292,6 +292,21 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
+The data groups can be sorted into a custom sort order using `dataSortOrder` and `customSortOrder` arguments:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC", dataSortOrder="custom", 
+                    customSortOrder=c("London Midland", "Arriva Trains Wales", 
+                                     "Virgin Trains", "CrossCountry"))
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
 The data groups can also be sorted using the `sortColumnDataGroups` or `sortRowDataGroups` methods.  Using these methods, data groups can be sorted in three different ways:
 
 * By the data group value - using `orderBy="value"`,

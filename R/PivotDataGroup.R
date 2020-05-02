@@ -102,8 +102,9 @@
 #'   \item{\code{removeGroup(resetCells=TRUE)}}{
 #'   Remove the current data group.}
 #'   \item{\code{addDataGroups(variableName, atLevel, fromData=TRUE, dataName,
-#'   dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
-#'   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
+#'   dataSortOrder="asc", customSortOrder, dataFormat,
+#'   onlyCombinationsThatExist=TRUE, explicitListOfValues,
+#'   calculationGroupName, expandExistingTotals=FALSE,
 #'   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
 #'   totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
 #'   styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL,
@@ -460,7 +461,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    # single pivot table row/column to represent multiple values)
    # atLevel is the number of levels below the current level
    addDataGroups = function(variableName=NULL, atLevel=NULL, fromData=TRUE, # atLevel=0 is the current level, 1 = one level below, etc
-                            dataName=NULL, dataSortOrder="asc", dataFormat=NULL, dataFmtFuncArgs=NULL,
+                            dataName=NULL, dataSortOrder="asc", customSortOrder=NULL, dataFormat=NULL, dataFmtFuncArgs=NULL,
                             onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                             expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
                             preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL, outlineTotal=FALSE) {
@@ -469,7 +470,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", fromData, missing(fromData), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "none"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "custom", "none"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", customSortOrder, missing(customSortOrder), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", dataFormat, missing(dataFormat), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", dataFmtFuncArgs, missing(dataFmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", onlyCombinationsThatExist, missing(onlyCombinationsThatExist), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -489,8 +491,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addDataGroups", "Adding data groups...",
                                    list(variableName=variableName, atLevel=atLevel, fromData=fromData,
-                                        dataName=dataName, dataSortOrder=dataSortOrder, dataFormat=dataFormat,
-                                        onlyCombinationsThatExist=onlyCombinationsThatExist,
+                                        dataName=dataName, dataSortOrder=dataSortOrder, customSortOrder=customSortOrder,
+                                        dataFormat=dataFormat, onlyCombinationsThatExist=onlyCombinationsThatExist,
                                         explicitListOfValues=explicitListOfValues, calculationGroupName=calculationGroupName,
                                         expandExistingTotals=expandExistingTotals, addTotal=addTotal, visualTotals=visualTotals,
                                         totalPosition=totalPosition, totalCaption=totalCaption, preGroupData=preGroupData,
@@ -500,6 +502,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      # check variable name
      if(missing(variableName)||is.null(variableName)) stop("PivotDataGroup$addDataGroups(): variableName must be specified.", call. = FALSE)
      safeVariableName <- processIdentifier(variableName)
+     # check sort order
+     if((dataSortOrder=="custom")&&(is.null(customSortOrder))) stop("PivotDataGroup$addDataGroups(): if dataSortOrder=custom, then customSortOrder must be specified.", call. = FALSE)
      # check outline settings
      outlineBefore <- private$cleanOutlineArg(outlineBefore)
      outlineAfter <- private$cleanOutlineArg(outlineAfter, defaultCaption="")
@@ -553,6 +557,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", safeVariableName, ")")))
          else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", safeVariableName, "))")))
          topLevelDisinctValues <- dplyr::collect(data)[[variableName]]
+         if(dataSortOrder=="custom") topLevelDisinctValues <- topLevelDisinctValues[order(match(topLevelDisinctValues, customSortOrder))]
        }
        else if(private$p_parentPivot$processingLibrary=="data.table") {
          # check is a data table
@@ -565,6 +570,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          rcName <- "rc"
          if(variableName==rcName) rcName <- "rowCount"
          eval(parse(text=paste0("topLevelDisinctValues <- data[order(", ifelse(dataSortOrder=="desc", "-", ""), safeVariableName, "), .(", rcName, "=.N), by=.(", safeVariableName, ")][, ", safeVariableName, "]")))
+         if(dataSortOrder=="custom") topLevelDisinctValues <- topLevelDisinctValues[order(match(topLevelDisinctValues, customSortOrder))]
        }
        else stop(paste0("PivotDataGroup$addDataGroups(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
        if(is.factor(topLevelDisinctValues)) { topLevelDisinctValues <- as.character(topLevelDisinctValues) }
@@ -693,6 +699,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
              if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", safeVariableName, ")")))
              else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", safeVariableName, "))")))
              distinctValues <- dplyr::collect(data)[[variableName]]
+             if(dataSortOrder=="custom") distinctValues <- distinctValues[order(match(distinctValues, customSortOrder))]
            }
            else if(private$p_parentPivot$processingLibrary=="data.table") {
              # build a data.table query
@@ -726,6 +733,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
              rcName <- "rc"
              if(variableName==rcName) rcName <- "rowCount"
              eval(parse(text=paste0("distinctValues <- data[", filterCmd, ", .(", rcName, "=.N), by=.(", safeVariableName, ")][order(", ifelse(dataSortOrder=="desc", "-", ""), safeVariableName, ")][, ", safeVariableName, "]")))
+             if(dataSortOrder=="custom") distinctValues <- distinctValues[order(match(distinctValues, customSortOrder))]
            }
            else stop(paste0("PivotDataGroup$addDataGroups(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
            if("factor" %in% class(distinctValues)) { distinctValues <- as.character(distinctValues) }
