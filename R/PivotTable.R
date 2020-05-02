@@ -102,8 +102,8 @@
 #'   number of levels - accomplished by adding empty child data groups where
 #'   needed.}
 #'   \item{\code{sortColumnDataGroups(levelNumber=1, orderBy="calculation",
-#'   sortOrder="desc", calculationGroupName="default", calculationName,
-#'   fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
+#'   customOrder, sortOrder="desc", calculationGroupName="default",
+#'   calculationName, fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
 #'   the column heading data groups either by the data group data value, caption
 #'   or based on calculation result values.}
 #'   \item{\code{getTopRowGroups()}}{Get the left-most row PivotDataGroup that
@@ -133,8 +133,8 @@
 #'   data group hierarchy so that all branches have the same number of
 #'   levels - accomplished by adding empty child data groups where needed.}
 #'   \item{\code{sortRowDataGroups(levelNumber=1, orderBy="calculation",
-#'   sortOrder="desc", calculationGroupName="default", calculationName,
-#'   fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
+#'   customOrder, sortOrder="desc", calculationGroupName="default",
+#'   calculationName, fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
 #'   the row heading data groups either by the data group data value, caption or
 #'   based on calculation result values.}
 #'   \item{\code{addCalculationGroup(calculationGroupName)}}{Create a new
@@ -583,12 +583,14 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("normaliseColumnGroups", timeStart)
       return(invisible())
     },
-    sortColumnDataGroups = function(levelNumber=1, orderBy="calculation", sortOrder="desc", calculationGroupName="default", calculationName=NULL,
+    sortColumnDataGroups = function(levelNumber=1, orderBy="calculation", customOrder=NULL, sortOrder="desc",
+                                    calculationGroupName="default", calculationName=NULL,
                                     fromIndex=NULL, toIndex=NULL, resetCells=TRUE) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortColumnDataGroups", levelNumber, missing(levelNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
-        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortColumnDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value","caption","calculation"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortColumnDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value","caption","calculation","customByValue","customByCaption"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortColumnDataGroups", customOrder, missing(customOrder), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortColumnDataGroups", sortOrder, missing(sortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc","desc"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortColumnDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortColumnDataGroups", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -597,11 +599,11 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortColumnDataGroups", resetCells, missing(resetCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$sortColumnDataGroups", "Sorting column data groups...",
-                    list(levelNumber=levelNumber, orderBy=orderBy, sortOrder=sortOrder,
+                    list(levelNumber=levelNumber, orderBy=orderBy, customOrder=customOrder, sortOrder=sortOrder,
                          calculationGroupName=calculationGroupName, calculationName=calculationName,
                          fromIndex=fromIndex, toIndex=toIndex, resetCells=resetCells))
       if(levelNumber<1) stop("PivotTable$sortColumnDataGroups():  levelNumber must be 1 or above.", call. = FALSE)
-      private$p_columnGroup$sortDataGroups(levelNumber=levelNumber-1, orderBy=orderBy, sortOrder=sortOrder,
+      private$p_columnGroup$sortDataGroups(levelNumber=levelNumber-1, orderBy=orderBy, customOrder=customOrder, sortOrder=sortOrder,
                                            calculationGroupName=calculationGroupName, calculationName=calculationName,
                                            fromIndex=fromIndex, toIndex=toIndex, resetCells=resetCells)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$sortColumnDataGroups", "Sorted column data groups.")
@@ -750,12 +752,14 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("normaliseRowGroups", timeStart)
       return(invisible())
     },
-    sortRowDataGroups = function(levelNumber=1, orderBy="calculation", sortOrder="desc", calculationGroupName="default", calculationName=NULL,
+    sortRowDataGroups = function(levelNumber=1, orderBy="calculation", customOrder=NULL, sortOrder="desc",
+                                 calculationGroupName="default", calculationName=NULL,
                                  fromIndex=NULL, toIndex=NULL, resetCells=TRUE) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortRowDataGroups", levelNumber, missing(levelNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
-        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortRowDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value","caption","calculation"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortRowDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value","caption","calculation","customByValue","customByCaption"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortRowDataGroups", customOrder, missing(customOrder), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortRowDataGroups", sortOrder, missing(sortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc","desc"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortRowDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortRowDataGroups", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -764,11 +768,11 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "sortRowDataGroups", resetCells, missing(resetCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$sortRowDataGroups", "Sorting row data groups...",
-                    list(levelNumber=levelNumber, orderBy=orderBy, sortOrder=sortOrder,
+                    list(levelNumber=levelNumber, orderBy=orderBy, customOrder=customOrder, sortOrder=sortOrder,
                          calculationGroupName=calculationGroupName, calculationName=calculationName,
                          fromIndex=fromIndex, toIndex=toIndex, resetCells=resetCells))
       if(levelNumber<1) stop("PivotTable$sortRowDataGroups():  levelNumber must be 1 or above.", call. = FALSE)
-      private$p_rowGroup$sortDataGroups(levelNumber=levelNumber-1, orderBy=orderBy, sortOrder=sortOrder,
+      private$p_rowGroup$sortDataGroups(levelNumber=levelNumber-1, orderBy=orderBy, customOrder=customOrder, sortOrder=sortOrder,
                                            calculationGroupName=calculationGroupName, calculationName=calculationName,
                                         fromIndex=fromIndex, toIndex=toIndex, resetCells=resetCells)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$sortRowDataGroups", "Sorted row data groups.")

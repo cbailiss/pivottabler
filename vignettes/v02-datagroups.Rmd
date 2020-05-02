@@ -307,13 +307,17 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-The data groups can also be sorted using the `sortColumnDataGroups` or `sortRowDataGroups` methods.  Using these methods, data groups can be sorted in three different ways:
+The data groups can also be sorted using the `sortColumnDataGroups` or `sortRowDataGroups` methods.  Using these methods, data groups can be sorted in five different ways:
 
 * By the data group value - using `orderBy="value"`,
 * By the data group caption (e.g. if formatting has been applied) - using `orderBy="caption"`,
-* By the result of a calculation - the default, or set explicitly using `orderBy="calculation"`.
+* By the result of a calculation - the default, or set explicitly using `orderBy="calculation"`,
+* By the data group value with a custom sort order - using `orderBy="customByValue"` and specifying `customOrder`,
+* By the data group caption with a custom sort order - using `orderBy="customByCaption"` and specifying `customOrder`.
 
-Note that "data group value" above refers to the value in the row/group header.  In the example pivot table above and below, the headers are text values, e.g. "Express Passenger", "DMU", "London Midland", etc.  To sort by a number in the cells of the pivot table, which is typically the result of a calculation, use `orderBy="calculation"`.
+Note that "data group value" above refers to the value in the row/group header.  In the example pivot table above and below, the headers are text values, e.g. "Express Passenger", "DMU", "London Midland", etc (so the value and caption are the same).  The data group value and caption tend to be different when the data groups are dates or numbers.  
+
+To sort by a number in the cells of the pivot table, which is typically the result of a calculation, use `orderBy="calculation"`.
 
 For example, to sort the train operating companies into descending order by the total number of trains:
 
@@ -367,6 +371,21 @@ pt$renderPivot()
 ```
 
 This can be useful when building a pivot table interactively, to quickly reset the sort order without needing to rebuild the entire pivot table. 
+
+To sort data groups into a custom order using `sortColumnDataGroups` or `sortRowDataGroups`:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+pt$sortRowDataGroups(levelNumber=1, orderBy="customByValue", sortOrder="asc",
+                     customOrder=c("Arriva Trains Wales", "London Midland", 
+                                   "CrossCountry", "Virgin Trains"))
+pt$renderPivot()
+```
 
 ## Pivot tables as standard tables (row group headings)
 

@@ -112,10 +112,11 @@
 #'   Generate new data groups based on the distinct
 #'   values in a data frame or using explicitly specified data values.}
 #'   \item{\code{sortDataGroups(levelNumber=1, orderBy="calculation",
-#'   sortOrder="desc", calculationGroupName="default", calculationName,
+#'   customOrder, sortOrder="desc",
+#'   calculationGroupName="default", calculationName,
 #'   fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
-#'   data groups either by the data group data value, caption or based on
-#'   calculation result values.}
+#'   data groups either by the data group data value, caption, a custom
+#'   order or based on calculation result values.}
 #'   \item{\code{addCalculationGroups(calculationGroupName, atLevel,
 #'   outlineBefore, outlineAfter, resetCells=TRUE)}}{Add a
 #'   calculation group to the data group hierarchy.}
@@ -834,11 +835,13 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addDataGroups", "Added groups.", list(count=length(newGroups)))
      return(invisible(newGroups))
    },
-   sortDataGroups = function(levelNumber=1, orderBy="calculation", sortOrder="desc", calculationGroupName="default", calculationName=NULL,
+   sortDataGroups = function(levelNumber=1, orderBy="calculation", customOrder=NULL, sortOrder="desc",
+                             calculationGroupName="default", calculationName=NULL,
                              fromIndex=NULL, toIndex=NULL, resetCells=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "sortDataGroups", levelNumber, missing(levelNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
-       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "sortDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value","caption","calculation"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "sortDataGroups", orderBy, missing(orderBy), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value","caption","calculation","customByValue","customByCaption"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "sortDataGroups", customOrder, missing(customOrder), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "sortDataGroups", sortOrder, missing(sortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc","desc"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "sortDataGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "sortDataGroups", calculationName, missing(calculationName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -847,7 +850,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "sortDataGroups", resetCells, missing(resetCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$sortDataGroups", "Sorting data groups...",
-                                   list(levelNumber=levelNumber, orderBy=orderBy, sortOrder=sortOrder,
+                                   list(levelNumber=levelNumber, orderBy=orderBy, customOrder=customOrder, sortOrder=sortOrder,
                                         calculationGroupName=calculationGroupName, calculationName=calculationName,
                                         fromIndex=fromIndex, toIndex=toIndex, resetCells=resetCells))
      if(is.null(private$p_groups)) return(invisible())
@@ -921,6 +924,21 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          groups[[j]] <- grp
          if(orderBy=="value") values[[j]] <- grp$sortValue # sorting by value
          else if(orderBy=="caption") values[[j]] <- grp$caption # sorting by caption
+       }
+     }
+     else if(orderBy %in% c("customByValue", "customByCaption")) {
+       # sorting by a custom sort order
+       if(is.null(customOrder))
+         stop(paste0("PivotDataGroup$sortDataGroups():  customOrder must be specified when orderBy=customByValue|customByCaption"), call. = FALSE)
+       j <- 0
+       for(i in 1:length(private$p_groups)) {
+         grp <- private$p_groups[[i]]
+         if((!is.null(grp$sortAnchor))&&(grp$sortAnchor %in% c("fixed", "previous", "next"))) next
+         if(i %in% fixedgrps) next # happens also when the data group is outside the specified range
+         j <- j + 1
+         groups[[j]] <- grp
+         if(orderBy=="customByValue") values[[j]] <- match(grp$sortValue, customOrder) # sorting by value
+         else if(orderBy=="customByCaption") values[[j]] <- match(grp$caption, customOrder) # sorting by caption
        }
      }
      else {
