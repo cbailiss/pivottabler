@@ -445,13 +445,17 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       if(resetCells) private$p_parentPivot$resetCells()
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeChildGroup", "Removed child group.")
    },
-   removeGroup = function(resetCells=TRUE) {
+   removeGroup = function(removeAncestorsIfNoRemainingChildren=FALSE, resetCells=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "removeGroup", removeAncestorsIfNoRemainingChildren, missing(removeAncestorsIfNoRemainingChildren), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "removeGroup", resetCells, missing(resetCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeGroup", "Removing group...")
      if(is.null(private$p_parentGroup)) stop("PivotDataGroup$removeGroup():  Cannot remove the top group on rows/columns.", call. = FALSE)
      private$p_parentGroup$removeChildGroup(group=self, resetCells=resetCells)
+     if((removeAncestorsIfNoRemainingChildren==TRUE)&&(private$p_parentGroup$childGroupCount==0)) {
+       private$p_parentGroup$removeGroup(removeAncestorsIfNoRemainingChildren=removeAncestorsIfNoRemainingChildren, resetCells=resetCells)
+     }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeGroup", "Removed group.")
    },
    # permutations:
@@ -1374,6 +1378,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    instanceId = function(value) { return(invisible(private$p_instanceId)) },
    parentGroup = function(value) { return(invisible(private$p_parentGroup)) },
    childGroups = function(value) { return(invisible(private$p_groups)) },
+   childGroupCount = function(value) { return(invisible(length(private$p_groups))) },
    leafGroups = function(value) { return(invisible(self$getLeafGroups())) },
    filters = function(value) { return(invisible(private$p_filters)) },
    variableName = function(value) {

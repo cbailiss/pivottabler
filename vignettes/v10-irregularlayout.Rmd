@@ -396,6 +396,86 @@ In the example above, `sortAnchor` links that data group to the next/previous gr
 
 ## Custom Layout Changes
 
+### Working with empty rows and/or columns
+
+Sometimes, after a pivot table is evaluated, some rows and/or columns will contain no calculation results (i.e. NULL values).  For example:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$addRowDataGroups("PowerType", onlyCombinationsThatExist=FALSE)
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$renderPivot()
+```
+
+The rows/columns containing no calculation values can be found using the `pt$getEmptyRows()` or `pt$getEmptyColumns()` functions:
+
+```{r, message=TRUE, warning=FALSE}
+cat("Empty rows: ", paste(pt$getEmptyRows(), collapse=", "))
+```
+
+"Empty" is defined as the following cell values:
+
+- NULL is always interpreted as empty.
+- NA is interpreted as empty by default, though this can be overridden using the argument `NAasEmpty=FALSE`.
+- 0 is NOT interpreted as empty by default, though this can be overridden using the argument `zeroAsEmpty=TRUE`.
+
+The empty rows/columns can also be easily removed as described in the next section.
+
+### Removing rows and/or columns
+
+It is possible to remove specific rows and/or columns from a pivot table using any one of the following:
+
+- `pt$removeRow(2)` removes the second row from the pivot table.
+- `pt$removeRows(c(2, 4))` removes the second and fourth rows from the pivot table.
+- `pt$removeEmptyRows()` removes all rows from the pivot table where all cells (i.e. calculation values) have no value (i.e. are NULL).
+- `pt$removeColumn(2)` removes the second column from the pivot table.
+- `pt$removeColumns(c(2, 4))` removes the second and fourth columns from the pivot table.
+- `pt$removeEmptyColumns()` removes all columns from the pivot table where all cells (i.e. calculation values) have no value (i.e. are NULL).
+
+Note the row/column numbers above do not include the headings.
+
+`pt$removeEmptyRows()` and `pt$removeEmptyColumns()` also support the `NAasEmpty` and `zeroAsEmpty` arguments as described in the previous section.
+
+As an example of removing rows, consider the second and fourth rows highlighted in the pivot table below:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+cells <- pt$getCells(rowNumbers=c(2, 4))
+pt$setStyling(cells=cells, declarations=list("background-color"="#FFCC66"))
+pt$renderPivot()
+```
+ 
+To remove these rows:
+ 
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$removeRows(rowNumbers=c(2, 4))
+pt$renderPivot()
+``` 
+
+Note that removing rows and/or columns does NOT recalculate the other cells in the pivot table, e.g. the values of the totals are not updated.
+
+### Converting to a basictabler table
+
 The `asBasicTable()` function allows a pivot table to be converted to a basic table - from the `basictabler` package.  
 
 The `basictabler` package allows free-form tables to be constructed, in contrast to `pivottabler` which creates pivot tables with relatively fixed structures.  `pivottabler` contains calculation logic - to calculate the values of cells within the pivot table.  `basictabler` contains no calculation logic - cell values must be provided either from a data frame, row-by-row, column-by-column or cell-by-cell.

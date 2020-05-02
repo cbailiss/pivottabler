@@ -39,6 +39,13 @@
 #'   matching the specified criteria.}
 #'   \item{\code{getColumnWidths())}}{Retrieve the width of the longest value
 #'   (in characters) in each column.}
+#'   \item{\code{removeColumn(c))}}{Remove a single column from the pivot
+#'   table.}
+#'   \item{\code{removeColumns(columnNumbers))}}{Remove multiple columns from
+#'   the pivot table.}
+#'   \item{\code{removeRow(r))}}{Remove a single row from the pivot table.}
+#'   \item{\code{removeRows(rowNumbers))}}{Remove multiple rows from the pivot
+#'   table.}
 #'   \item{\code{asMatrix(rawValue=TRUE))}}{Get a matrix containing all of the
 #'   numerical values from the body of the pivot table (for rawValue=TRUE) or
 #'   all of the formatted (i.e. character) values (for rawValue=FALSE).}
@@ -323,6 +330,66 @@ PivotCells <- R6::R6Class("PivotCells",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getColumnWidths", "Got column widths.")
      return(invisible(widths))
+   },
+   removeColumn = function(c=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeColumn", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeColumn", "Removing column...")
+      # checks
+      if(c < 1)
+         stop(paste0("PivotCells$removeColumn(): c (", c, ") must be greater than or equal to 1."), call. = FALSE)
+      if(c > self$columnCount)
+         stop(paste0("PivotCells$removeColumn(): c (", c, ") must be less than or equal to columnCount (", self$columnCount, ")."), call. = FALSE)
+      # remove column
+      private$p_columnGroups[[c]]$removeGroup(removeAncestorsIfNoRemainingChildren=TRUE, resetCells=FALSE)
+      private$p_columnGroups[[c]] <- NULL
+      for(r in 1:self$rowCount) {
+         private$p_rows[[r]][[c]] <- NULL
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeColumn", "Removed column.")
+      return(invisible())
+   },
+   removeColumns = function(columnNumbers=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeColumn", columnNumbers, missing(columnNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeColumns", "Removing columns...")
+      # sort the column numbers into descending order (because otherwise removing a column at the top shifts the column numbers of those to the right)
+      descColumnNumbers <- columnNumbers[order(-columnNumbers)]
+      # iterate and remove
+      invisible(lapply(descColumnNumbers, self$removeColumn))
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeColumns", "Removed columns.")
+      return(invisible())
+   },
+   removeRow = function(r=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeRow", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeRow", "Removing row...")
+      # checks
+      if(r < 1)
+         stop(paste0("PivotCells$removeRow(): r (", r, ") must be greater than or equal to 1."), call. = FALSE)
+      if(r > self$rowCount)
+         stop(paste0("PivotCells$removeRow(): r (", r, ") must be less than or equal to rowCount (", self$rowCount, ")."), call. = FALSE)
+      # remove row
+      private$p_rowGroups[[r]]$removeGroup(removeAncestorsIfNoRemainingChildren=TRUE, resetCells=FALSE)
+      private$p_rowGroups[[r]] <- NULL
+      private$p_rows[[r]] <- NULL
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeRow", "Removed row.")
+      return(invisible())
+   },
+   removeRows = function(rowNumbers=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeRow", rowNumbers, missing(rowNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeRows", "Removing rows...")
+      # sort the row numbers into descending order (because otherwise removing a row at the top shifts the row numbers of those below)
+      descRowNumbers <- rowNumbers[order(-rowNumbers)]
+      # iterate and remove
+      invisible(lapply(descRowNumbers, self$removeRow))
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeRows", "Removed rows.")
+      return(invisible())
    },
    asMatrix = function(rawValue=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {

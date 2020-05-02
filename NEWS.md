@@ -3,7 +3,9 @@ pivottabler 1.3.2
 
 This release includes several small enhancements:
 
-* It is now possible to specify a custom sort order for data groups.  See the "Data Groups" vignette for details.
+* Custom sort orders can be specified for data groups.  See the "Data Groups" vignette for details.
+* Empty rows/columns can be found using the new functions `pt$getEmptyRows()` and `pt$getEmptyColumns()`.  See the "Custom Layout Changes" section of the "Irregular Layout" vignette for details. 
+* Specific rows and/or columns can be removed from pivot tables using new functions such as `pt$removeRow(3)`, `pt$removeRows(c(2, 4))` and `pt$removeEmptyRows()`.  See the "Custom Layout Changes" section of the "Irregular Layout" vignette for details. 
 * When exporting to a data frame, it is now possible to also export the row groups as columns (instead of only row names) using `pt$asDataFrame(rowGroupsAsColumns=TRUE)`.  Thanks to @ismailmuller for the suggestion (#29).
 * When exporting to a data frame, the handling of cell values that are not integer/numeric can be specified using the `forceNumeric` argument. `TRUE` will convert any values that are not integer/numeric to NA.
 * Row group headers, visible when specifying `pt$renderPivot(showRowGroupHeaders=TRUE)`, are now set automatically to the variable name when calling `pt$addRowDataGroups(...)`.  The name can be overridden using `pt$addRowDataGroups(..., header="...")`.

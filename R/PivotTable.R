@@ -185,6 +185,10 @@
 #'   includeDescendantGroups=FALSE, emptyGroups="exclude",
 #'   outlineGroups="exclude")}}{Find column
 #'   data groups matching the specified criteria.}
+#'   \item{\code{getEmptyRows()}}{Find rows where all cells (calculation
+#'   values) are NULL.}
+#'   \item{\code{getEmptyColumns()}}{Find columns where all cells (calculation
+#'   values) are NULL.}
 #'   \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
 #'   columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE)}}{
 #'   Retrieve cells by a combination of row and/or column numbers.}
@@ -193,6 +197,17 @@
 #'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
 #'   emptyCells="exclude", outlineCells="exclude")}}{Find cells in the
 #'   body of the pivot table matching the specified criteria.}
+#'   \item{\code{removeColumn(c))}}{Remove a single column from the pivot
+#'   table.}
+#'   \item{\code{removeColumns(columnNumbers))}}{Remove multiple columns from
+#'   the pivot table.}
+#'   \item{\code{removeEmptyColumns())}}{Remove columns from
+#'   the pivot table where all cells (calculation values) are NULL.}
+#'   \item{\code{removeRow(r))}}{Remove a single row from the pivot table.}
+#'   \item{\code{removeRows(rowNumbers))}}{Remove multiple rows from the pivot
+#'   table.}
+#'   \item{\code{removeEmptyRows())}}{Remove rows from
+#'   the pivot table where all cells (calculation values) are NULL.}
 #'   \item{\code{print(asCharacter=FALSE, showRowGroupHeaders=TRUE)}}{Either
 #'   print the pivot table to the console or retrieve it as a character value.}
 #'   \item{\code{asMatrix(includeHeaders=TRUE, repeatHeaders=FALSE,
@@ -1281,6 +1296,68 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findColumnDataGroups", "Found column data groups.")
       return(invisible(grps))
     },
+    getEmptyRows = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyRows", NAasEmpty, missing(NAasEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyRows", zeroAsEmpty, missing(zeroAsEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyRows", "Getting empty rows...")
+      if(!private$p_evaluated) stop("PivotTable$getEmptyRows():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$getEmptyRows():  No cells exist to examine", call. = FALSE)
+      emptyRowNumbers <- vector("integer", 0)
+      rowCount <- private$p_cells$rowCount
+      columnCount <- private$p_cells$columnCount
+      for(r in 1:rowCount) {
+        allCellsNull <- TRUE
+        for (c in 1:columnCount) {
+          cell <- private$p_cells$getCell(r, c)
+          isNULL <- FALSE
+          isNULL <- isNULL || is.null(cell$rawValue)
+          isNULL <- isNULL || ((NAasEmpty==TRUE)&&(is.na(cell$rawValue)))
+          isNULL <- isNULL || ((zeroAsEmpty==TRUE)&&(cell$rawValue==0))
+          if(isNULL==FALSE) {
+            allCellsNull <- FALSE
+            break
+          }
+        }
+        if(allCellsNull==TRUE) {
+          emptyRowNumbers[length(emptyRowNumbers)+1] <- r
+        }
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyRows", "Got empty rows.")
+      return(invisible(emptyRowNumbers))
+    },
+    getEmptyColumns = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyColumns", NAasEmpty, missing(NAasEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyColumns", zeroAsEmpty, missing(zeroAsEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyColumns", "Getting empty columns...")
+      if(!private$p_evaluated) stop("PivotTable$getEmptyColumns():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$getEmptyColumns():  No cells exist to examine", call. = FALSE)
+      emptyColumnNumbers <- vector("integer", 0)
+      rowCount <- private$p_cells$rowCount
+      columnCount <- private$p_cells$columnCount
+      for(c in 1:columnCount) {
+        allCellsNull <- TRUE
+        for (r in 1:rowCount) {
+          cell <- private$p_cells$getCell(r, c)
+          isNULL <- FALSE
+          isNULL <- isNULL || is.null(cell$rawValue)
+          isNULL <- isNULL || ((NAasEmpty==TRUE)&&(is.na(cell$rawValue)))
+          isNULL <- isNULL || ((zeroAsEmpty==TRUE)&&(cell$rawValue==0))
+          if(isNULL==FALSE) {
+            allCellsNull <- FALSE
+            break
+          }
+        }
+        if(allCellsNull==TRUE) {
+          emptyColumnNumbers[length(emptyColumnNumbers)+1] <- c
+        }
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyColumns", "Got empty columns.")
+      return(invisible(emptyColumnNumbers))
+    },
     getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", specifyCellsAsList, missing(specifyCellsAsList), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
@@ -1326,6 +1403,70 @@ PivotTable <- R6::R6Class("PivotTable",
                                          emptyCells=emptyCells, outlineCells=outlineCells)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findCells", "Found cells.")
       return(invisible(cells))
+    },
+    removeColumn = function(c=NULL) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeColumn", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeColumn", "Removing column...")
+      if(!private$p_evaluated) stop("PivotTable$removeColumn():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$removeColumn():  No cells exist to retrieve.", call. = FALSE)
+      private$p_cells$removeColumn(c)
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeColumn", "Removed column.")
+    },
+    removeColumns = function(columnNumbers=NULL) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeColumns", columnNumbers, missing(columnNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeColumns", "Removing columns...")
+      if(!private$p_evaluated) stop("PivotTable$removeColumns():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$removeColumns():  No cells exist to retrieve.", call. = FALSE)
+      private$p_cells$removeColumns(columnNumbers)
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeColumns", "Removed columns.")
+    },
+    removeEmptyColumns = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyColumns", NAasEmpty, missing(NAasEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyColumns", zeroAsEmpty, missing(zeroAsEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      }
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeEmptyColumns", "Removing empty columns...")
+      if(!private$p_evaluated) stop("PivotTable$removeEmptyColumns():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$removeEmptyColumns():  No cells exist to retrieve.", call. = FALSE)
+      columnNumbers <- self$getEmptyColumns(NAasEmpty=NAasEmpty, zeroAsEmpty=zeroAsEmpty)
+      if((!is.null(columnNumbers))&&(length(columnNumbers)>0)) private$p_cells$removeColumns(columnNumbers)
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeEmptyColumns", "Removed empty columns.")
+    },
+    removeRow = function(r=NULL) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeRow", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeRow", "Removing row...")
+      if(!private$p_evaluated) stop("PivotTable$removeRow():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$removeRow():  No cells exist to retrieve.", call. = FALSE)
+      private$p_cells$removeRow(r)
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeRow", "Removed row.")
+    },
+    removeRows = function(rowNumbers=NULL) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeRows", rowNumbers, missing(rowNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeRows", "Removing rows...")
+      if(!private$p_evaluated) stop("PivotTable$removeRows():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$removeRows():  No cells exist to retrieve.", call. = FALSE)
+      private$p_cells$removeRows(rowNumbers)
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeRows", "Removed rows.")
+    },
+    removeEmptyRows = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyRows", NAasEmpty, missing(NAasEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyRows", zeroAsEmpty, missing(zeroAsEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+      }
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeEmptyRows", "Removing empty rows...")
+      if(!private$p_evaluated) stop("PivotTable$removeEmptyRows():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$removeEmptyRows():  No cells exist to retrieve.", call. = FALSE)
+      rowNumbers <- self$getEmptyRows(NAasEmpty=NAasEmpty, zeroAsEmpty=zeroAsEmpty)
+      if((!is.null(rowNumbers))&&(length(rowNumbers)>0)) private$p_cells$removeRows(rowNumbers)
+      if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeEmptyRows", "Removed empty rows.")
     },
     print = function(asCharacter=FALSE, showRowGroupHeaders=FALSE) {
       if(private$p_argumentCheckMode > 0) {
