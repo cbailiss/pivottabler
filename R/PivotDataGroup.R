@@ -439,8 +439,6 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
         if(is.null(index)) stop("PivotDataGroup$removeChildGroup():  Specified group is not a child of this data group.", call. = FALSE)
       }
       private$p_groups[[index]] <- NULL # removes the item and shuffles the list
-      # remove the group from the sort lists
-      private$removeGroupFromPrivateSortLists(group)
       # done
       if(resetCells) private$p_parentPivot$resetCells()
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeChildGroup", "Removed child group.")
@@ -1846,38 +1844,6 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      else value <- base::as.character(value)
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$formatValue", "Formated value.")
      return(invisible(value))
-   },
-   removeGroupFromPrivateSortLists = function(group=NULL) {
-     if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "removeGroupFromPrivateSortLists", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
-     }
-     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeGroupFromPrivateSortLists", "Removing group from sort lists...")
-     # group to find
-     instanceId <- group$instanceId
-     # remove from p_sortGroupsBefore
-     index <- NULL
-     if (length(private$p_sortGroupsBefore) > 0) {
-       for (i in 1:length(private$p_sortGroupsBefore)) {
-         if(private$p_sortGroupsBefore[[i]]$instanceId==instanceId) {
-           index <- i
-           break
-         }
-       }
-     }
-     if (!is.null(index)) private$p_sortGroupsBefore[[index]] <- NULL
-     # remove from p_sortGroupsAfter
-     index <- NULL
-     if (length(private$p_sortGroupsAfter) > 0) {
-       for (i in 1:length(private$p_sortGroupsAfter)) {
-         if(private$p_sortGroupsAfter[[i]]$instanceId==instanceId) {
-           index <- i
-           break
-         }
-       }
-     }
-     if (!is.null(index)) private$p_sortGroupsAfter[[index]] <- NULL
-     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeGroupFromPrivateSortLists", "Removed group from sort lists.", list(index=childIndex))
-     return(invisible())
    }
   )
 )
