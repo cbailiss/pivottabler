@@ -701,7 +701,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                 onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                                 expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
                                 onlyAddGroupIf=NULL, preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, header=NULL,
-                                outlineBefore=NULL, outlineAfter=NULL, outlineTotal=NULL) {
+                                outlineBefore=NULL, outlineAfter=NULL, outlineTotal=NULL, onlyAddOutlineChildGroupIf=NULL) {
      timeStart <- proc.time()
      if(private$p_argumentCheckMode > 0) {
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -728,6 +728,7 @@ PivotTable <- R6::R6Class("PivotTable",
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", outlineBefore, missing(outlineBefore), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", outlineAfter, missing(outlineAfter), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", outlineTotal, missing(outlineTotal), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
+       checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", onlyAddOutlineChildGroupIf, missing(onlyAddOutlineChildGroupIf), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical","character"))
      }
      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addRowDataGroups", "Adding row groups...",
                    list(variableName=variableName, atLevel=atLevel, fromData=fromData,
@@ -736,8 +737,10 @@ PivotTable <- R6::R6Class("PivotTable",
                    onlyCombinationsThatExist=onlyCombinationsThatExist, explicitListOfValues=explicitListOfValues,
                    calculationGroupName=calculationGroupName, expandExistingTotals=expandExistingTotals,
                    addTotal=addTotal, visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
-                   onlyAddGroupIf=onlyAddGroupIf, preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations), header=header,
-                   outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal)
+                   onlyAddGroupIf=onlyAddGroupIf, preGroupData=preGroupData,
+                   baseStyleName=baseStyleName, styleDeclarations=styleDeclarations), header=header,
+                   outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal,
+                   onlyAddOutlineChildGroupIf=onlyAddOutlineChildGroupIf)
      if((!is.null(styleDeclarations))&&(length(styleDeclarations)!=length(names(styleDeclarations))))
        stop("PivotTable$addRowDataGroups(): One or more style declarations are missing a name.", call. = FALSE)
       levelsBelow <- NULL
@@ -750,7 +753,8 @@ PivotTable <- R6::R6Class("PivotTable",
                                                expandExistingTotals=expandExistingTotals, addTotal=addTotal,
                                                visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
                                                onlyAddGroupIf=onlyAddGroupIf, preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
-                                               outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal)
+                                               outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal,
+                                               onlyAddOutlineChildGroupIf=onlyAddOutlineChildGroupIf)
       if(is.null(header)) {
         header <- variableName
       }

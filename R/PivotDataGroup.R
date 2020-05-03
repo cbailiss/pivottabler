@@ -490,7 +490,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                             onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                             expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
                             onlyAddGroupIf=NULL, preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL,
-                            outlineBefore=NULL, outlineAfter=NULL, outlineTotal=FALSE) {
+                            outlineBefore=NULL, outlineAfter=NULL, outlineTotal=FALSE, onlyAddOutlineChildGroupIf=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", atLevel, missing(atLevel), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
@@ -515,6 +515,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", outlineBefore, missing(outlineBefore), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", outlineAfter, missing(outlineAfter), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", outlineTotal, missing(outlineTotal), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical", "list"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "addDataGroups", onlyAddOutlineChildGroupIf, missing(onlyAddOutlineChildGroupIf), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("logical","character"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$addDataGroups", "Adding data groups...",
                                    list(variableName=variableName, atLevel=atLevel, fromData=fromData,
@@ -525,7 +526,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                         totalPosition=totalPosition, totalCaption=totalCaption,
                                         onlyAddGroupIf=onlyAddGroupIf, preGroupData=preGroupData,
                                         baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
-                                        outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal))
+                                        outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal,
+                                        onlyAddOutlineChildGroupIf=onlyAddOutlineChildGroupIf))
      private$p_parentPivot$resetCells()
      # check variable name
      if(missing(variableName)||is.null(variableName)) stop("PivotDataGroup$addDataGroups(): variableName must be specified.", call. = FALSE)
@@ -543,6 +545,12 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        preGroupData <- FALSE
        if(fromData==FALSE) stop("PivotDataGroup$addDataGroups():  onlyAddGroupIf cannot be used when fromData=FALSE.", call. = FALSE)
        if(onlyCombinationsThatExist==FALSE) stop("PivotDataGroup$addDataGroups():  onlyAddGroupIf cannot be used when onlyCombinationsThatExist=FALSE.", call. = FALSE)
+     }
+     # if onlyAddOutlineChildGroupIf is specified and it is a character, then preGroupData cannot be used
+     if((!is.null(onlyAddOutlineChildGroupIf))&&(class(onlyAddOutlineChildGroupIf)=="character")) {
+       preGroupData <- FALSE
+       if(fromData==FALSE) stop("PivotDataGroup$addDataGroups():  onlyAddOutlineChildGroupIf cannot be used when fromData=FALSE.", call. = FALSE)
+       if(onlyCombinationsThatExist==FALSE) stop("PivotDataGroup$addDataGroups():  onlyAddOutlineChildGroupIf cannot be used when onlyCombinationsThatExist=FALSE.", call. = FALSE)
      }
      # data values
      df <- NULL
@@ -719,67 +727,11 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
              rowColFilters$setFilter(filter, action="intersect")
            }
          }
+         # calculate the distinct values that exist for this combination of parent groups
          if(!rowColFilters$isNONE) {
-           if(private$p_parentPivot$processingLibrary=="dplyr") {
-             # build a dplyr query
-             data <- df
-             # todo: checking the escaping of the variable names and values below
-             if((!rowColFilters$isALL)&&(rowColFilters$count > 0)) {
-               data <- rowColFilters$getFilteredDataFrame(dataFrame=data)
-             }
-             # if onlyAddGroupIf specified, then need to further filter the data frame by this
-             if(!is.null(onlyAddGroupIf)) {
-               eval(parse(text=paste0("data <- dplyr::filter(data, ", onlyAddGroupIf, ")")))
-             }
-             # get the distinct values for the current variable
-             eval(parse(text=paste0("data <- dplyr::select(data, ", safeVariableName, ")")))
-             data <- dplyr::distinct(data)
-             if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", safeVariableName, ")")))
-             else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", safeVariableName, "))")))
-             distinctValues <- dplyr::collect(data)[[variableName]]
-             if(dataSortOrder=="custom") distinctValues <- distinctValues[order(match(distinctValues, customSortOrder))]
-           }
-           else if(private$p_parentPivot$processingLibrary=="data.table") {
-             # build a data.table query
-             data <- df
-             # check is a data table
-             if(private$p_parentPivot$argumentCheckMode == 4) {
-               if(!data.table::is.data.table(data))
-                 stop(paste0("PivotDataGroup$addDataGroups(): A data.table was expected but the following was encountered: ",
-                             paste(class(data), sep="", collapse=", ")), call. = FALSE)
-             }
-             # filters
-             filterCmd <- NULL
-             filterCount <- 0
-             if(length(rowColFilters$filters) > 0)
-             {
-               for(j in 1:length(rowColFilters$filters)) {
-                 filter <- rowColFilters$filters[[j]]
-                 if(is.null(filter$variableName))
-                   stop("PivotCalculator$evaluateSummariseExpression(): filter$variableName must not be null", call. = FALSE)
-                 if(is.null(filter$values)) next
-                 if(length(filter$values)==0) next
-                 if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
-                 if(length(filter$values)>0) {
-                   # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
-                   filterCmd <- paste0(filterCmd, "(", filter$safeVariableName, " %in% rowColFilters$filters[[", j, "]]$values)")
-                   filterCount <- filterCount + 1
-                 }
-               }
-             }
-             # if onlyAddGroupIf specified, then add this to the filter criteria
-             if(!is.null(onlyAddGroupIf)) {
-               if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
-               filterCmd <- paste0(filterCmd, "(", onlyAddGroupIf, ")")
-             }
-             # seem to need a dummy row count in order to get the distinct values
-             rcName <- "rc"
-             if(variableName==rcName) rcName <- "rowCount"
-             eval(parse(text=paste0("distinctValues <- data[", filterCmd, ", .(", rcName, "=.N), by=.(", safeVariableName, ")][order(", ifelse(dataSortOrder=="desc", "-", ""), safeVariableName, ")][, ", safeVariableName, "]")))
-             if(dataSortOrder=="custom") distinctValues <- distinctValues[order(match(distinctValues, customSortOrder))]
-           }
-           else stop(paste0("PivotDataGroup$addDataGroups(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
-           if("factor" %in% class(distinctValues)) { distinctValues <- as.character(distinctValues) }
+           distinctValues <- private$getDistinctValuesForAddDataGrps(data=df, variableName=variableName, safeVariableName=safeVariableName,
+                                                                     rowColFilters=rowColFilters, additionalFilter=onlyAddGroupIf,
+                                                                     dataSortOrder=dataSortOrder, customSortOrder=customSortOrder)
            allValues <- union(allValues, distinctValues)
          }
        }
@@ -811,6 +763,22 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            # get values
            if(isValueList) values <- distinctValues[[j]]
            else values <- distinctValues[j]
+           # if this is an outline group, do we add the child group?
+           addChildGroup <- TRUE
+           if(outlineBefore$outline||outlineAfter$outline) {
+             if(class(onlyAddOutlineChildGroupIf)=="logical") {
+               addChildGroup <- onlyAddOutlineChildGroupIf
+             }
+             else {
+               # need to examine the data to see if we add the child group
+               childFilters <- rowColFilters$getCopy()
+               childFilters$setFilterValues(variableName=variableName, type="VALUES", values=values, action="intersect")
+               outlineChildValues <- private$getDistinctValuesForAddDataGrps(data=df, variableName=variableName, safeVariableName=safeVariableName,
+                                                                             rowColFilters=childFilters, additionalFilter=onlyAddOutlineChildGroupIf,
+                                                                             dataSortOrder="none")
+               addChildGroup <- ((!is.null(outlineChildValues))&&(length(outlineChildValues)>0))
+             }
+           }
            # get caption
            caption <- NULL
            if((!is.null(distinctCaptions))&&(nchar(distinctCaptions[j])>0)) caption <- distinctCaptions[j]
@@ -824,27 +792,30 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                                    variableName=variableName, values=values, caption=caption,
                                                    calculationGroupName=calculationGroupName,
                                                    baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
-                                                   sortAnchor="next", resetCells=FALSE)
+                                                   sortAnchor=ifelse(addChildGroup, "next", "none"), resetCells=FALSE)
               index <- length(newGroups) + 1
               newGroups[[index]] <- newOutlineBeforeGrp
            }
            # value
-           newGrp <- grp$addChildGroup(variableName=variableName, values=values, caption=grpCaption,
-                                       calculationGroupName=calculationGroupName, isTotal=grp$isTotal,
-                                       baseStyleName=baseStyleName, styleDeclarations=styleDeclarations, resetCells=FALSE)
-           index <- length(newGroups) + 1
-           newGroups[[index]] <- newGrp
-           if(!is.null(newOutlineBeforeGrp)) newOutlineBeforeGrp$outlineLinkedGroupId <- newGrp$instanceId
+           newGrp <- NULL
+           if(addChildGroup) {
+             newGrp <- grp$addChildGroup(variableName=variableName, values=values, caption=grpCaption,
+                                         calculationGroupName=calculationGroupName, isTotal=grp$isTotal,
+                                         baseStyleName=baseStyleName, styleDeclarations=styleDeclarations, resetCells=FALSE)
+             index <- length(newGroups) + 1
+             newGroups[[index]] <- newGrp
+             if(!is.null(newOutlineBeforeGrp)) newOutlineBeforeGrp$outlineLinkedGroupId <- newGrp$instanceId
+           }
            # outline after value
            if(outlineAfter$outline){
               newOutlineAfterGrp <- private$createOutlineGroup(parentGroup=grp, outline=outlineAfter,
                                                    variableName=variableName, values=values, caption=caption,
                                                    calculationGroupName=calculationGroupName,
                                                    baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
-                                                   sortAnchor="previous", outlineLinkedGroupId=newGrp$instanceId,
-                                                   resetCells=FALSE)
+                                                   sortAnchor=ifelse(addChildGroup, "previous", "none"), resetCells=FALSE)
               index <- length(newGroups) + 1
               newGroups[[index]] <- newOutlineAfterGrp
+              if(!is.null(newGrp)) newOutlineAfterGrp$outlineLinkedGroupId <- newGrp$instanceId
            }
          }
          # total after?
@@ -1765,7 +1736,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", isLevelTotal, missing(isLevelTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
-         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", sortAnchor, missing(sortAnchor), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("fixed", "next", "previous"))
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", sortAnchor, missing(sortAnchor), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("fixed", "next", "previous", "none"))
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", outlineLinkedGroupId, missing(outlineLinkedGroupId), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "createOutlineGroup", resetCells, missing(resetCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
@@ -1800,6 +1771,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       cellStyleDeclarations <- NULL
       if(!is.null(outline$cellStyleName)) cellStyleName <- outline$cellStyleName
       if(!is.null(outline$cellStyleDeclarations)) cellStyleDeclarations <- outline$cellStyleDeclarations
+      # cleanup sort anchor (allow calling functions to specify none to simplify their logic, but remove "none" here)
+      if(sortAnchor=="none") sortAnchor <- NULL
       # generate group
       newGrp <- parentGroup$addChildGroup(variableName=variableName, values=values, # so that group has a reference to the variable & values
                                   caption=caption, calculationGroupName=calculationGroupName, calculationName=calculationName,
@@ -1810,6 +1783,78 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                                   sortAnchor=sortAnchor, outlineLinkedGroupId=outlineLinkedGroupId, resetCells=resetCells)
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$createOutlineGroup", "Created outline group.")
       return(newGrp)
+   },
+   getDistinctValuesForAddDataGrps = function(data=NULL, variableName=NULL, safeVariableName=NULL, rowColFilters=NULL, additionalFilter=NULL, dataSortOrder=NULL, customSortOrder=NULL) {
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getDistinctValuesForAddDataGrps", data, missing(data), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("data.frame", "data.table"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getDistinctValuesForAddDataGrps", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getDistinctValuesForAddDataGrps", safeVariableName, missing(safeVariableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getDistinctValuesForAddDataGrps", rowColFilters, missing(rowColFilters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getDistinctValuesForAddDataGrps", additionalFilter, missing(additionalFilter), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getDistinctValuesForAddDataGrps", dataSortOrder, missing(dataSortOrder), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "none", "custom"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "getDistinctValuesForAddDataGrps", customSortOrder, missing(customSortOrder), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getDistinctValuesForAddDataGrps", "Getting distinct values for AddDataGroups...")
+     if(private$p_parentPivot$processingLibrary=="dplyr") {
+       # build a dplyr query
+       if((!rowColFilters$isALL)&&(rowColFilters$count > 0)) {
+         data <- rowColFilters$getFilteredDataFrame(dataFrame=data)
+       }
+       # if additionalFilter specified, then need to further filter the data frame by this
+       if(!is.null(additionalFilter)) {
+         eval(parse(text=paste0("data <- dplyr::filter(data, ", additionalFilter, ")")))
+       }
+       # get the distinct values for the current variable
+       eval(parse(text=paste0("data <- dplyr::select(data, ", safeVariableName, ")")))
+       data <- dplyr::distinct(data)
+       if(dataSortOrder=="asc") eval(parse(text=paste0("data <- dplyr::arrange(data, ", safeVariableName, ")")))
+       else if(dataSortOrder=="desc") eval(parse(text=paste0("data <- dplyr::arrange(data, desc(", safeVariableName, "))")))
+       distinctValues <- dplyr::collect(data)[[variableName]] # this cannot be replaced with safeVariableName (safeVariableName works in R constructed as a character variable that will be executed via exec(parse(...)), variableName needs to be used here because this executed via exec(parse(...)))
+       if("factor" %in% class(distinctValues)) { distinctValues <- as.character(distinctValues) }
+       if(dataSortOrder=="custom") distinctValues <- distinctValues[order(match(distinctValues, customSortOrder))]
+     }
+     else if(private$p_parentPivot$processingLibrary=="data.table") {
+       # build a data.table query
+       # check is a data table
+       if(private$p_parentPivot$argumentCheckMode == 4) {
+         if(!data.table::is.data.table(data))
+           stop(paste0("PivotDataGroup$getDistinctValuesForAddDataGrps(): A data.table was expected but the following was encountered: ",
+                       paste(class(data), sep="", collapse=", ")), call. = FALSE)
+       }
+       # filters
+       filterCmd <- NULL
+       filterCount <- 0
+       if(length(rowColFilters$filters) > 0)
+       {
+         for(j in 1:length(rowColFilters$filters)) {
+           filter <- rowColFilters$filters[[j]]
+           if(is.null(filter$variableName))
+             stop("PivotCalculator$getDistinctValuesForAddDataGrps(): filter$variableName must not be null", call. = FALSE)
+           if(is.null(filter$values)) next
+           if(length(filter$values)==0) next
+           if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
+           if(length(filter$values)>0) {
+             # %in% handles NA correctly for our use-case, i.e. NA %in% NA returns TRUE, not NA
+             filterCmd <- paste0(filterCmd, "(", filter$safeVariableName, " %in% rowColFilters$filters[[", j, "]]$values)")
+             filterCount <- filterCount + 1
+           }
+         }
+       }
+       # if additionalFilter specified, then add this to the filter criteria
+       if(!is.null(additionalFilter)) {
+         if(!is.null(filterCmd)) filterCmd <- paste0(filterCmd, " & ")
+         filterCmd <- paste0(filterCmd, "(", additionalFilter, ")")
+       }
+       # seem to need a dummy row count in order to get the distinct values
+       rcName <- "rc"
+       if(safeVariableName==rcName) rcName <- "rowCount"
+       eval(parse(text=paste0("distinctValues <- data[", filterCmd, ", .(", rcName, "=.N), by=.(", safeVariableName, ")][order(", ifelse(dataSortOrder=="desc", "-", ""), safeVariableName, ")][, ", safeVariableName, "]")))
+       if("factor" %in% class(distinctValues)) { distinctValues <- as.character(distinctValues) }
+       if(dataSortOrder=="custom") distinctValues <- distinctValues[order(match(distinctValues, customSortOrder))]
+     }
+     else stop(paste0("PivotDataGroup$getDistinctValuesForAddDataGrps(): Unknown processingLibrary encountered: ", private$p_parentPivot$processingLibrary), call. = FALSE)
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getDistinctValuesForAddDataGrps", "Got distinct values for AddDataGroups.")
+     return(invisible(distinctValues))
    },
    formatValue = function(value=NULL, format=NULL, dataFmtFuncArgs=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
