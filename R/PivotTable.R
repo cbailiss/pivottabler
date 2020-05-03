@@ -332,6 +332,7 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       else stop("PivotTable$initialize():  Unknown processingLibrary encountered.", call. = FALSE)
       private$p_evaluationMode <- evaluationMode
+      private$p_defaults <- list()
       private$p_lastInstanceId <- 0
       # Create the basic parts of the pivot table
       private$p_data <- PivotData$new(parentPivot=self)
@@ -445,6 +446,71 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$new", "Created new Pivot Table.")
       return(invisible())
+    },
+    setDefault = function(...) {
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$setDefault", "Setting defaults...")
+      # get the defaults
+      args <- list(...)
+      # process each of the defaults...
+      invaligArgs <- vector("character", 0)
+      for(argName in names(args)) {
+        validArg <- FALSE
+        # skip defaults with no name
+        if(is.null(argName)||(nchar(argName)==0)) {
+          stop("PivotTable$setDefault():  Default with no name encountered.  Arguments must be specified in the form name=value.", call. = FALSE)
+        }
+        # get value
+        argValue <- args[[argName]]
+        # logical defaults
+        if(argName %in% c("addTotal", "expandExistingTotals", "visualTotals")) {
+          checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", paste0("setDefault(", argName, ")"), argValue, FALSE, allowMissing=FALSE, allowNull=FALSE, allowedClasses="logical")
+          private$p_defaults[[argName]] <- isTRUE(argValue)
+          validArg <- TRUE
+        }
+        # character defaults
+        if(argName %in% c("totalPosition", "totalCaption")) {
+          allowedValues <- NULL
+          if(argName=="totalPosition") allowedValues <- c("before", "after")
+          checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", paste0("setDefault(", argName, ")"), argValue, FALSE, allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=allowedValues)
+          private$p_defaults[[argName]] <- argValue
+          validArg <- TRUE
+        }
+        # outline settings
+        if(argName %in% c("outlineBefore", "outlineAfter", "outlineTotal")) {
+          checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", paste0("setDefault(", argName, ")"), argValue, FALSE, allowMissing=FALSE, allowNull=FALSE, allowedClasses="list")
+          cleanOutline <- NULL
+          if(argName=="outlineBefore") cleanOutline <- cleanOutlineArg(self, argValue)
+          else if(argName=="outlineAfter") cleanOutline <- cleanOutlineArg(self, argValue, defaultCaption="")
+          else if(argName=="outlineTotal") cleanOutline <- cleanOutlineArg(self, argValue, defaultCaption="Total", defaultIsEmpty=FALSE)
+          if(!is.null(cleanOutline)) private$p_defaults[[argName]] <- cleanOutline
+          validArg <- TRUE
+        }
+        # was it a valid argument?
+        if(validArg==FALSE) {
+          invaligArgs[length(invaligArgs)+1] <- argName
+        }
+      }
+      # warn about any unknown arguments
+      if(length(invaligArgs)>0) {
+        warning(paste0("PivotTable$setDefault():  Unknown default(s) encountered: ", paste(invaligArgs,collapse=", ")), call. = FALSE)
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$setDefault", "Set defaults.")
+    },
+    # designed to be used as a simple wrappers inside existing code, e.g. getDefault1(addTotal, missing(addTotal))
+    getDefault1 = function(argValue=NULL, useDefault=NULL) {
+      argName <- as.character(substitute(argValue))
+      return(invisible(self$getDefault2(argName=argName, argValue=argValue, useDefault=useDefault)))
+    },
+    getDefault2 = function(argName=NULL, argValue=NULL, useDefault=NULL) {
+      if(!isTRUE(useDefault)) return(invisible(argValue))
+      defaultNames <- names(private$p_defaults)
+      if(argName %in% defaultNames) return(invisible(private$p_defaults[[argName]]))
+      else return(invisible(argValue))
+    },
+    getDefault3 = function(argName) {
+      defaultNames <- names(private$p_defaults)
+      if(argName %in% defaultNames) return(invisible(private$p_defaults[[argName]]))
+      else return(invisible(NULL))
     },
     getNextInstanceId = function() { # used for reliable object instance comparisons (since R6 cannot easily compare object instances)
       private$p_lastInstanceId <- private$p_lastInstanceId + 1
@@ -588,8 +654,11 @@ PivotTable <- R6::R6Class("PivotTable",
                                                  dataFormat=dataFormat, dataFmtFuncArgs=dataFmtFuncArgs,
                                                  onlyCombinationsThatExist=onlyCombinationsThatExist, explicitListOfValues=explicitListOfValues,
                                                  calculationGroupName=calculationGroupName,
-                                                 expandExistingTotals=expandExistingTotals, addTotal=addTotal,
-                                                 visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
+                                                 expandExistingTotals=self$getDefault1(expandExistingTotals, missing(expandExistingTotals)),
+                                                 addTotal=self$getDefault1(addTotal, missing(addTotal)),
+                                                 visualTotals=self$getDefault1(visualTotals, missing(visualTotals)),
+                                                 totalPosition=self$getDefault1(totalPosition, missing(totalPosition)),
+                                                 totalCaption=self$getDefault1(totalCaption, missing(totalCaption)),
                                                  onlyAddGroupIf=onlyAddGroupIf, preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addColumnDataGroups", "Added column groups.")
       private$addTiming(paste0("addColumnDataGroups(", variableName, ")"), timeStart)
@@ -745,15 +814,26 @@ PivotTable <- R6::R6Class("PivotTable",
        stop("PivotTable$addRowDataGroups(): One or more style declarations are missing a name.", call. = FALSE)
       levelsBelow <- NULL
       if((!is.null(atLevel))&&(atLevel>0)) levelsBelow <- atLevel - 1
+      # helper function:  if outline==TRUE, then use the default outline setting if we have one
+      getDefaultOutline <- function(outline, outlineDefault) {
+        if((isTRUE(outline))&&(!is.null(outlineDefault))) return(invisible(outlineDefault))
+        return(invisible(outline))
+      }
+      # add the groups
       grps <- private$p_rowGroup$addDataGroups(variableName=variableName, atLevel=levelsBelow, fromData=fromData,
                                                dataName=dataName, dataSortOrder=dataSortOrder, customSortOrder=customSortOrder,
                                                dataFormat=dataFormat, dataFmtFuncArgs=dataFmtFuncArgs,
                                                onlyCombinationsThatExist=onlyCombinationsThatExist, explicitListOfValues=explicitListOfValues,
                                                calculationGroupName=calculationGroupName,
-                                               expandExistingTotals=expandExistingTotals, addTotal=addTotal,
-                                               visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
+                                               expandExistingTotals=self$getDefault1(expandExistingTotals, missing(expandExistingTotals)),
+                                               addTotal=self$getDefault1(addTotal, missing(addTotal)),
+                                               visualTotals=self$getDefault1(visualTotals, missing(visualTotals)),
+                                               totalPosition=self$getDefault1(totalPosition, missing(totalPosition)),
+                                               totalCaption=self$getDefault1(totalCaption, missing(totalCaption)),
                                                onlyAddGroupIf=onlyAddGroupIf, preGroupData=preGroupData, baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
-                                               outlineBefore=outlineBefore, outlineAfter=outlineAfter, outlineTotal=outlineTotal,
+                                               outlineBefore=getDefaultOutline(outlineBefore, self$getDefault3("outlineBefore")),
+                                               outlineAfter=getDefaultOutline(outlineAfter, self$getDefault3("outlineAfter")),
+                                               outlineTotal=getDefaultOutline(outlineTotal, self$getDefault3("outlineTotal")),
                                                onlyAddOutlineChildGroupIf=onlyAddOutlineChildGroupIf)
       if(is.null(header)) {
         header <- variableName
@@ -921,8 +1001,15 @@ PivotTable <- R6::R6Class("PivotTable",
       self$resetCells()
       levelsBelow <- NULL
       if((!is.null(atLevel))&&(atLevel>0)) levelsBelow <- atLevel - 1
+      # helper function:  if outline==TRUE, then use the default outline setting if we have one
+      getDefaultOutline <- function(outline, outlineDefault) {
+        if((isTRUE(outline))&&(!is.null(outlineDefault))) return(invisible(outlineDefault))
+        return(invisible(outline))
+      }
+      # add groups
       grps <- private$p_rowGroup$addCalculationGroups(calculationGroupName=calculationGroupName, atLevel=levelsBelow,
-                                                      outlineBefore=outlineBefore, outlineAfter=outlineAfter)
+                                                      outlineBefore=getDefaultOutline(outlineBefore, self$getDefault3("outlineBefore")),
+                                                      outlineAfter=getDefaultOutline(outlineAfter, self$getDefault3("outlineAfter")))
       private$p_calculationsSet <- TRUE
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addRowCalculationGroups", "Added row calculation groups.")
       return(invisible(grps))
@@ -2597,6 +2684,7 @@ PivotTable <- R6::R6Class("PivotTable",
     p_argumentCheckMode = 4,
     p_traceEnabled = FALSE,
     p_processingLibrary = NULL,
+    p_defaults = NULL,
     p_lastInstanceId = NULL,
     p_data = NULL,
     p_styles = NULL,

@@ -5,6 +5,7 @@ This release includes a set of small enhancements:
 
 * Custom sort orders can be specified for data groups.  See the "Data Groups" vignette for details.
 * Empty rows/columns can be found using the new functions `pt$getEmptyRows()` and `pt$getEmptyColumns()`.  See the "Custom Layout Changes" section of the "Irregular Layout" vignette for details. 
+* Defaults can now be set using `pt$setDefault()` for the following parameters of `pt$addColumnDataGroups()` and `pt$addRowDataGroups()`: `addTotal`, `expandExistingTotals`, `visualTotals`, `totalPosition`, `totalCaption`, `outlineBefore`, `outlineAfter` and `outlineTotal`.  
 * Specific rows and/or columns can be removed from pivot tables using new functions such as `pt$removeRow(3)`, `pt$removeRows(c(2, 4))` and `pt$removeEmptyRows()`.  See the "Custom Layout Changes" section of the "Irregular Layout" vignette for details. 
 * `pt$addRowDataGroups()` gains two new arguments `onlyAddGroupIf` and `onlyAddOutlineChildGroupIf` which enable hierarchies with a variable number of levels to be used on rows in a pivot table in outline layout.  See the "Regular Layout" vignette for details.  Thanks to @MarcoPortmann for the usage scenario.
 * When exporting to a data frame, it is now possible to also export the row groups as columns (instead of only row names) using `pt$asDataFrame(rowGroupsAsColumns=TRUE)`.  Thanks to @ismailmuller for the suggestion (#29).
