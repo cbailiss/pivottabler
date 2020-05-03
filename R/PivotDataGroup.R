@@ -904,7 +904,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if(!is.null(grp$sortAnchor)) {
          if((grp$sortAnchor=="next")||(grp$sortAnchor=="previous"))
          {
-           if(grp$doesOutlineLinkedGroupStillExist==FALSE) grp$sortAnchor <- NULL
+           if(grp$outlineLinkedGroupExists==FALSE) grp$sortAnchor <- NULL
          }
        }
      }
@@ -1437,7 +1437,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        private$p_outlineLinkedGroupId <- value
      }
    },
-   doesOutlineLinkedGroupStillExist = function() {
+   outlineLinkedGroupExists = function() {
      if(is.null(private$p_outlineLinkedGroupId)) return(invisible(FALSE))
      index <- private$p_parentGroup$findChildIndex(private$p_outlineLinkedGroupId)
      if(is.null(index)) return(invisible(FALSE))
