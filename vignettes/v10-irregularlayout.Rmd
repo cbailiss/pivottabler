@@ -1,10 +1,10 @@
 ---
-title: "09. Irregular Layout"
+title: "10. Irregular Layout"
 author: "Chris Bailiss"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{09. Irregular Layout}
+  %\VignetteIndexEntry{10. Irregular Layout}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

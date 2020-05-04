@@ -549,7 +549,7 @@ See the [Outputs](v05-outputs.html) vignette for more details, including other c
 
 ![Latex Output](latex4.png)
 
-See the [](v06-latexoutput.html) vignette for more details.
+See the [Latex Output](v06-latexoutput.html) vignette for more details.
 
 ### Styling
 

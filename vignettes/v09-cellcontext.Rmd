@@ -1,10 +1,10 @@
 ---
-title: "08. Cell Context"
+title: "09. Cell Context"
 author: "Chris Bailiss"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{08. Cell Context}
+  %\VignetteIndexEntry{09. Cell Context}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
