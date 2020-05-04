@@ -177,13 +177,15 @@
 #'   evaluateCells() in sequence.}
 #'   \item{\code{findRowDataGroups(matchMode="simple", variableNames=NULL,
 #'   variableValues=NULL, totals="include", calculationNames=NULL,
-#'   includeDescendantGroups=FALSE, emptyGroups="exclude",
-#'   outlineGroups="exclude")}}{Find row data
+#'   atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
+#'   emptyGroups="exclude",
+#'   outlineGroups="exclude", outlineLinkedGroupExists=NULL,
+#'   includeDescendantGroups=FALSE)}}{Find row data
 #'   groups matching the specified criteria.}
 #'   \item{\code{findColumnDataGroups(matchMode="simple", variableNames=NULL,
 #'   variableValues=NULL, totals="include", calculationNames=NULL,
-#'   includeDescendantGroups=FALSE, emptyGroups="exclude",
-#'   outlineGroups="exclude")}}{Find column
+#'   atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
+#'   emptyGroups="exclude", includeDescendantGroups=FALSE)}}{Find column
 #'   data groups matching the specified criteria.}
 #'   \item{\code{getEmptyRows()}}{Find rows where all cells (calculation
 #'   values) are NULL.}
@@ -1354,39 +1356,57 @@ PivotTable <- R6::R6Class("PivotTable",
       return(invisible())
     },
     findRowDataGroups = function(matchMode="simple", variableNames=NULL, variableValues=NULL,
-                                 totals="include", calculationNames=NULL, includeDescendantGroups=FALSE, emptyGroups="exclude", outlineGroups="exclude") {
+                                 totals="include", calculationNames=NULL,
+                                 atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
+                                 emptyGroups="exclude",
+                                 outlineGroups="exclude", outlineLinkedGroupExists=NULL,
+                                 includeDescendantGroups=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", atLevels, missing(atLevels), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", minChildCount, missing(minChildCount), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", maxChildCount, missing(maxChildCount), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", emptyGroups, missing(emptyGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", outlineGroups, missing(outlineGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", outlineLinkedGroupExists, missing(outlineLinkedGroupExists), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findRowDataGroups", "Finding row data groups...")
       grps <- private$p_rowGroup$findDataGroups(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues, totals=totals,
-                                                calculationNames=calculationNames, includeDescendantGroups=includeDescendantGroups,
-                                                emptyGroups=emptyGroups, outlineGroups=outlineGroups)
+                                                calculationNames=calculationNames,
+                                                atLevels=atLevels, minChildCount=minChildCount, maxChildCount=maxChildCount,
+                                                emptyGroups=emptyGroups,
+                                                outlineGroups=outlineGroups, outlineLinkedGroupExists=outlineLinkedGroupExists,
+                                                includeDescendantGroups=includeDescendantGroups)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findRowDataGroups", "Found row data groups.")
       return(invisible(grps))
     },
     findColumnDataGroups = function(matchMode="simple", variableNames=NULL, variableValues=NULL,
-                                    totals="include", calculationNames=NULL, includeDescendantGroups=FALSE, emptyGroups="exclude") {
+                                    totals="include", calculationNames=NULL,
+                                    atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
+                                    emptyGroups="exclude", includeDescendantGroups=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", atLevels, missing(atLevels), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", minChildCount, missing(minChildCount), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", maxChildCount, missing(maxChildCount), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", emptyGroups, missing(emptyGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findColumnDataGroups", "Finding column data groups...")
       grps <- private$p_columnGroup$findDataGroups(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues, totals=totals,
-                                                   calculationNames=calculationNames, includeDescendantGroups=includeDescendantGroups,
-                                                   emptyGroups=emptyGroups, outlineGroups="exclude")
+                                                   calculationNames=calculationNames,
+                                                   atLevels=atLevels, minChildCount=minChildCount, maxChildCount=maxChildCount,
+                                                   emptyGroups=emptyGroups, outlineGroups="exclude",
+                                                   includeDescendantGroups=includeDescendantGroups)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findColumnDataGroups", "Found column data groups.")
       return(invisible(grps))
     },

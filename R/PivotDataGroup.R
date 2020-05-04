@@ -130,14 +130,18 @@
 #'   this data group or its nearest ancestor.}
 #'   \item{\code{isFindMatch(matchMode="simple", variableNames=NULL,
 #'   variableValues=NULL, totals="include", calculationNames=NULL,
-#'   emptyGroups="exclude", outlineGroups="exclude")}}{
+#'   atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
+#'   emptyGroups="exclude", outlineGroups="exclude",
+#'   outlineLinkedGroupExists=NULL)}}{
 #'   Tests whether this data group matches the specified criteria.}
 #'   \item{\code{findDataGroups(matchMode="simple", variableNames=NULL,
 #'   variableValues=NULL, totals="include", calculationNames=NULL,
-#'   includeChildGroups=FALSE, emptyGroups="exclude",
-#'   outlineGroups="exclude")}}{Searches all data
-#'   groups underneath this data group to find groups that match the specified
-#'   criteria.}
+#'   atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
+#'   emptyGroups="exclude",
+#'   outlineGroups="exclude", outlineLinkedGroupExists=NULL,
+#'   includeChildGroups=FALSE)}}{Searches all
+#'   data groups underneath this data group to find groups that match the
+#'   specified criteria.}
 #'   \item{\code{setStyling(styleDeclarations=NULL)}}{Used to set style declarations.}
 #'   \item{\code{clearSortGroups()}}{Used internally during sort operations.}
 #'   \item{\code{addSortGroupBefore()}}{Used internally during sort operations.}
@@ -1208,26 +1212,49 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getNetCalculationName", "Got net calculation.")
      return(invisible())
    },
-   isFindMatch = function(matchMode="simple", variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL, emptyGroups="exclude", outlineGroups="exclude") {
+   isFindMatch = function(matchMode="simple", variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
+                          atLevels=NULL, minChildCount=NULL, maxChildCount=NULL, emptyGroups="exclude",
+                          outlineGroups="exclude", outlineLinkedGroupExists=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", atLevels, missing(atLevels), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric","integer"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", minChildCount, missing(minChildCount), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric","integer"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", maxChildCount, missing(maxChildCount), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric","integer"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", emptyGroups, missing(emptyGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", outlineGroups, missing(outlineGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "isFindMatch", outlineLinkedGroupExists, missing(outlineLinkedGroupExists), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$isFindMatch", "Checking if matches criteria...")
      # a) check empty space
-     if((emptyGroups=="exclude")&&(self$isEmpty==TRUE)) return(invisible(FALSE))
-     if((emptyGroups=="only")&&(self$isEmpty==FALSE)) return(invisible(FALSE))
+     if(!isTRUE(self$isOutline)) {
+       if((emptyGroups=="exclude")&&(self$isEmpty==TRUE)) return(invisible(FALSE))
+       if((emptyGroups=="only")&&(self$isEmpty==FALSE)) return(invisible(FALSE))
+     }
      # b) check outline
      # if the parent group is also an outline group, then this group is one of the hidden data groups under an outline group, so is irrelevant
      if((isTRUE(self$isOutline))&&(!is.null(private$p_parentGroup))&&(isTRUE(private$p_parentGroup$isOutline))) return(invisible(FALSE))
      if((outlineGroups=="exclude")&&(isTRUE(self$isOutline))) return(invisible(FALSE))
      if((outlineGroups=="only")&&(!isTRUE(self$isOutline))) return(invisible(FALSE))
-     # c) check the filter match
+     if((!is.null(outlineLinkedGroupExists))&&(isTRUE(self$isOutline))) {
+       if(outlineLinkedGroupExists != self$outlineLinkedGroupExists) return(invisible(FALSE))
+     }
+     # c) check level
+     if(!is.null(atLevels)) {
+       levelNumber <- self$getLevelNumber()
+       if(!(levelNumber %in% atLevels)) return(invisible(FALSE))
+     }
+     # d) check child counts
+     if(!is.null(minChildCount)) {
+       if(self$childGroupCount < minChildCount) return(invisible(FALSE))
+     }
+     if(!is.null(maxChildCount)) {
+       if(self$childGroupCount > maxChildCount) return(invisible(FALSE))
+     }
+     # e) check the filter match
      if((!is.null(variableNames))||(!is.null(variableValues))) {
        if(matchMode=="simple") filters <- private$p_filters
        else filters <- self$getNetFilters()
@@ -1235,10 +1262,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        isMatch <- filters$isFilterMatch(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues)
        if(isMatch==FALSE) return(invisible(FALSE))
      }
-     # d) check totals criteria
+     # f) check totals criteria
      if((totals=="exclude")&&(self$isTotal==TRUE)) return(invisible(FALSE))
      if((totals=="only")&&(self$isTotal==FALSE)) return(invisible(FALSE))
-     # e) check calculation criteria
+     # g) check calculation criteria
      if(!is.null(calculationNames)) {
        if(matchMode=="simple") calcName <- private$p_calculationName
        else calcName <- self$getNetCalculationName()
@@ -1249,16 +1276,23 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      return(invisible(TRUE))
    },
    findDataGroups = function(matchMode="simple", variableNames=NULL, variableValues=NULL,
-                             totals="include", calculationNames=NULL, includeDescendantGroups=FALSE, emptyGroups="exclude", outlineGroups="exclude") {
+                             totals="include", calculationNames=NULL,
+                             atLevels=NULL, minChildCount=NULL, maxChildCount=NULL, emptyGroups="exclude",
+                             outlineGroups="exclude", outlineLinkedGroupExists=NULL,
+                             includeDescendantGroups=FALSE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", totals, missing(totals), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
-       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", atLevels, missing(atLevels), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric","integer"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", minChildCount, missing(minChildCount), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric","integer"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", maxChildCount, missing(maxChildCount), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("numeric","integer"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", emptyGroups, missing(emptyGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", outlineGroups, missing(outlineGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", outlineLinkedGroupExists, missing(outlineLinkedGroupExists), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$findDataGroups", "Finding data groups...")
      # clear the isMatch flag across all descendants
@@ -1278,7 +1312,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          grp <- grps[[i]]
          if(grp$isMatch==TRUE) next
          if(grp$isFindMatch(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues,
-                            totals=totals, calculationNames=calculationNames, emptyGroups=emptyGroups, outlineGroups=outlineGroups)) {
+                            totals=totals, calculationNames=calculationNames,
+                            atLevels=atLevels, minChildCount=minChildCount, maxChildCount=maxChildCount,
+                            emptyGroups=emptyGroups,
+                            outlineGroups=outlineGroups, outlineLinkedGroupExists=outlineLinkedGroupExists)) {
            grp$isMatch <- TRUE
            if(includeDescendantGroups==TRUE) {
              descgrps <- grp$getDescendantGroups(includeCurrentGroup=FALSE)
@@ -1299,7 +1336,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
          grp <- leafgrps[[i]]
          while(!is.null(grp)) {
            if(grp$isFindMatch(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues,
-                              totals=totals, calculationNames=calculationNames, emptyGroups=emptyGroups, outlineGroups=outlineGroups)) {
+                              totals=totals, calculationNames=calculationNames,
+                              atLevels=atLevels, minChildCount=minChildCount, maxChildCount=maxChildCount,
+                              emptyGroups=emptyGroups,
+                              outlineGroups=outlineGroups, outlineLinkedGroupExists=outlineLinkedGroupExists)) {
              matches[[length(matches)+1]] <- grp
              grp <- grp$parentGroup
            }

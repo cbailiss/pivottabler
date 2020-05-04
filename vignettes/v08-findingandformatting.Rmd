@@ -66,7 +66,8 @@ These functions also accept the following arguments:
     + `exclude` to match only non-total data groups.
     + `only` to match only total data groups.
 - `calculationNames` - a character vector specifying the name/names of the calculations to find.
-- `includeDescendantGroups` - a logical value specifying whether only the top-most matching data group for each row/column is returned, or whether the descendant groups are also included.
+- `atLevels` - an integer or numeric vector specifying the level numbers to restrict the search to.
+- `minChildCount` and `maxChildCount` - an integer or numeric number to restrict the search based on the number of child groups. 
 - `emptyGroups` - a character value specifying whether empty groups are to be matched - must be one of:
     + `include` to match empty and non-empty data groups.
     + `exclude` to match only non-empty data groups.
@@ -75,6 +76,8 @@ These functions also accept the following arguments:
     + `include` to match outline and normal data groups.
     + `exclude` to match only normal data groups.
     + `only` to match only outline data groups.
+- `outlineLinkedGroupExists` - a logical value specifying whether the group linked to the outline group either must exist (`TRUE`) or must not exist (`FALSE`).
+- `includeDescendantGroups` - a logical value specifying whether only the top-most matching data group for each row/column is returned, or whether the descendant groups are also included.
 
 Several examples follow below.  In each of the examples the data groups that have been found are highlighted in yellow by specifying a different style.
 
