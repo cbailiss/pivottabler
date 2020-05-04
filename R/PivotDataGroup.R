@@ -1223,6 +1223,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if((emptyGroups=="exclude")&&(self$isEmpty==TRUE)) return(invisible(FALSE))
      if((emptyGroups=="only")&&(self$isEmpty==FALSE)) return(invisible(FALSE))
      # b) check outline
+     # if the parent group is also an outline group, then this group is one of the hidden data groups under an outline group, so is irrelevant
+     if((isTRUE(self$isOutline))&&(!is.null(private$p_parentGroup))&&(isTRUE(private$p_parentGroup$isOutline))) return(invisible(FALSE))
      if((outlineGroups=="exclude")&&(isTRUE(self$isOutline))) return(invisible(FALSE))
      if((outlineGroups=="only")&&(!isTRUE(self$isOutline))) return(invisible(FALSE))
      # c) check the filter match
