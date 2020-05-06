@@ -1,13 +1,20 @@
 pivottabler 1.4.0
 =================
 
-This release includes a set of small enhancements:
+Overview
+--------
+
+This release includes a set of small enhancements across various parts of the package.
+
+Improvements
+----------------
 
 * Defaults can now be set using `pt$setDefault()` for the following parameters of `pt$addColumnDataGroups()` and `pt$addRowDataGroups()`: `addTotal`, `expandExistingTotals`, `visualTotals`, `totalPosition`, `totalCaption`, `outlineBefore`, `outlineAfter` and `outlineTotal`.  
 * The captions of data groups added to pivot tables using `pt$addColumnDataGroups()` and `pt$addRowDataGroups()`can now be specified using the new `caption` argument.  See the "Data Groups" vignette for details.
 * Custom sort orders can be specified for data groups.  See the "Data Groups" vignette for details.
 * Empty rows/columns can be found using the new functions `pt$getEmptyRows()` and `pt$getEmptyColumns()`.  See the "Custom Layout Changes" section of the "Irregular Layout" vignette for details. 
 * The `pt$findRowDataGroups()` and `pt$findColumnDataGroups()` functions gain additional parameters: `atLevels`, `minChildCount`, `maxChildCount` and `outlineLinkedGroupExists`.  See the "Finding and Formatting" vignette for details.
+* When deleting data groups using `group$removeGroup()`, it is no possible to remove the outline group header row (aka. outline before) and outline group footer row (aka. outline after) using the new argument `removedRelatedOutlineGroups=TRUE`.
 * Specific rows and/or columns can be removed from pivot tables using new functions such as `pt$removeRow(3)`, `pt$removeRows(c(2, 4))` and `pt$removeEmptyRows()`.  See the "Custom Layout Changes" section of the "Irregular Layout" vignette for details. 
 * `pt$addRowDataGroups()` gains two new arguments `onlyAddGroupIf` and `onlyAddOutlineChildGroupIf` which enable hierarchies with a variable number of levels to be used on rows in a pivot table in outline layout.  See the "Regular Layout" vignette for details.  Thanks to @MarcoPortmann for the usage scenario.
 * When exporting to a data frame, it is now possible to also export the row groups as columns (instead of only row names) using `pt$asDataFrame(rowGroupsAsColumns=TRUE)`.  Thanks to @ismailmuller for the suggestion (#29).
