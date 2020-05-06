@@ -187,10 +187,11 @@
 #'   atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
 #'   emptyGroups="exclude", includeDescendantGroups=FALSE)}}{Find column
 #'   data groups matching the specified criteria.}
-#'   \item{\code{getEmptyRows()}}{Find rows where all cells (calculation
+#'   \item{\code{getEmptyRows(NAasEmpty=TRUE, zeroAsEmpty=FALSE,
+#'   includeOutlineRows=FALSE)}}{Find rows where all cells (calculation
 #'   values) are NULL.}
-#'   \item{\code{getEmptyColumns()}}{Find columns where all cells (calculation
-#'   values) are NULL.}
+#'   \item{\code{getEmptyColumns(NAasEmpty=TRUE, zeroAsEmpty=FALSE)}}{
+#'   Find columns where all cells (calculation values) are NULL.}
 #'   \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
 #'   columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE)}}{
 #'   Retrieve cells by a combination of row and/or column numbers.}
@@ -207,12 +208,14 @@
 #'   table.}
 #'   \item{\code{removeColumns(columnNumbers))}}{Remove multiple columns from
 #'   the pivot table.}
-#'   \item{\code{removeEmptyColumns())}}{Remove columns from
-#'   the pivot table where all cells (calculation values) are NULL.}
+#'   \item{\code{removeEmptyColumns(NAasEmpty=TRUE, zeroAsEmpty=FALSE))}}{
+#'   Remove columns from the pivot table where all cells (calculation
+#'   values) are NULL.}
 #'   \item{\code{removeRow(r))}}{Remove a single row from the pivot table.}
 #'   \item{\code{removeRows(rowNumbers))}}{Remove multiple rows from the pivot
 #'   table.}
-#'   \item{\code{removeEmptyRows())}}{Remove rows from
+#'   \item{\code{removeEmptyRows(NAasEmpty=TRUE, zeroAsEmpty=FALSE,
+#'   includeOutlineRows=FALSE))}}{Remove rows from
 #'   the pivot table where all cells (calculation values) are NULL.}
 #'   \item{\code{print(asCharacter=FALSE, showRowGroupHeaders=TRUE)}}{Either
 #'   print the pivot table to the console or retrieve it as a character value.}
@@ -1420,10 +1423,11 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findColumnDataGroups", "Found column data groups.")
       return(invisible(grps))
     },
-    getEmptyRows = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE) {
+    getEmptyRows = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE, includeOutlineRows=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyRows", NAasEmpty, missing(NAasEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyRows", zeroAsEmpty, missing(zeroAsEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyRows", includeOutlineRows, missing(includeOutlineRows), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyRows", "Getting empty rows...")
       if(!private$p_evaluated) stop("PivotTable$getEmptyRows():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
@@ -1432,6 +1436,9 @@ PivotTable <- R6::R6Class("PivotTable",
       rowCount <- private$p_cells$rowCount
       columnCount <- private$p_cells$columnCount
       for(r in 1:rowCount) {
+        if(includeOutlineRows==FALSE) {
+          if(private$p_cells$rowGroups[[r]]$isOutline) next
+        }
         allCellsNull <- TRUE
         for (c in 1:columnCount) {
           cell <- private$p_cells$getCell(r, c)
@@ -1602,15 +1609,16 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_cells$removeRows(rowNumbers)
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeRows", "Removed rows.")
     },
-    removeEmptyRows = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE) {
+    removeEmptyRows = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE, includeOutlineRows=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyRows", NAasEmpty, missing(NAasEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyRows", zeroAsEmpty, missing(zeroAsEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyRows", includeOutlineRows, missing(includeOutlineRows), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeEmptyRows", "Removing empty rows...")
       if(!private$p_evaluated) stop("PivotTable$removeEmptyRows():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$removeEmptyRows():  No cells exist to retrieve.", call. = FALSE)
-      rowNumbers <- self$getEmptyRows(NAasEmpty=NAasEmpty, zeroAsEmpty=zeroAsEmpty)
+      rowNumbers <- self$getEmptyRows(NAasEmpty=NAasEmpty, zeroAsEmpty=zeroAsEmpty, includeOutlineRows=includeOutlineRows)
       if((!is.null(rowNumbers))&&(length(rowNumbers)>0)) private$p_cells$removeRows(rowNumbers)
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeEmptyRows", "Removed empty rows.")
     },
