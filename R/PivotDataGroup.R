@@ -89,6 +89,8 @@
 #'   levels in the data group hierarchy.}
 #'   \item{\code{getLevelGroups(level, levelGroups)}}{Get all of the data groups
 #'   at a specific level in the data group hierarchy.}
+#'   \item{\code{getRelatedOutlineGroups(group)}}{Get the set of two or three
+#'   data groups that were created as one outlined group.}
 #'   \item{\code{addChildGroup(variableName, filterType="ALL", values=NULL,
 #'   doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE,
 #'   captionTemplate="{value}", caption=NULL,
@@ -101,8 +103,9 @@
 #'   Add a new data group as the child of the current data group.}
 #'   \item{\code{removeChildGroup(index=NULL, group=NULL, resetCells=TRUE)}}{
 #'   Remove a data group that is a child of the current data group.}
-#'   \item{\code{removeGroup(resetCells=TRUE)}}{
-#'   Remove the current data group.}
+#'   \item{\code{removeGroup(removeAncestorsIfNoRemainingChildren=FALSE,
+#'   removedRelatedOutlineGroups=FALSE, resetCells=TRUE)}}{Remove
+#'   the current data group.}
 #'   \item{\code{addDataGroups(variableName, atLevel, fromData=TRUE, dataName,
 #'   dataSortOrder="asc", customSortOrder, caption="{value}", dataFormat,
 #'   onlyCombinationsThatExist=TRUE, explicitListOfValues,
@@ -333,9 +336,62 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getLevelGroups", "Got level groups", list(count=length(lgs)))
      return(invisible(lgs))
    },
+   # returns the set of 2 or 3 data groups that were created together as part of one outline group
+   getRelatedOutlineGroups = function(group=NULL) {
+     if(private$p_parentPivot$argumentCheckMode > 0) {
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "getRelatedOutlineGroups", group, missing(group), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotDataGroup")
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getRelatedOutlineGroups", "Getting related outline groups...")
+     # if no group specified, find the outline group for the current group
+     if(is.null(group)) group <- self
+     # if we are at the top (i.e. the hidden row or column group) then there are no siblings
+     if(is.null(group$parentGroup)) return(invisible(NULL))
+     # we need to find the instance id of the non-outline group
+     # i.e. there are two/three groups at the same level (outlineBefore, normal, outlineAfter)
+     # the outlineLinkedGroupId on the outlineBefore and outlineAfter groups refers to the normal group between them
+     outlineLinkedGroupId <- NULL
+     # determine scenario
+     if(group$isOutline)
+     {
+       # current group is an outline group
+       if(is.null(group$outlineLinkedGroupId)) {
+         # group is no longer linked to a non-outline group
+         return(invisible(NULL))
+       }
+       outlineLinkedGroupId <- group$outlineLinkedGroupId
+     }
+     else {
+       if(is.null(group$outlineLinkedGroupId)) {
+         # group is not an outline group, so need to find the outline groups that refer to this group
+         outlineLinkedGroupId <- group$instanceId
+       }
+       else {
+         # this should never happen - can't have a normal group that has a value for group$outlineLinkedGroupId
+         return(invisible(NULL))
+       }
+     }
+     # iterate through the siblings
+     grps <- list()
+     siblings <- group$parentGroup$childGroups
+     if((!is.null(siblings))&&(length(siblings)>0)) {
+       for(i in 1:length(siblings)) {
+         grp <- siblings[[i]]
+         if(grp$instanceId==outlineLinkedGroupId) {
+           grps[[length(grps)+1]] <- grp
+           next
+         }
+         if(is.null(grp$outlineLinkedGroupId)) next
+         if(grp$outlineLinkedGroupId==outlineLinkedGroupId) {
+           grps[[length(grps)+1]] <- grp
+         }
+       }
+     }
+     if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getRelatedOutlineGroups", "Got related outline groups.")
+     return(invisible(grps))
+   },
    getChildIndex = function(childGroup=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
-         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "childGroup", childGroup, missing(childGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "getChildIndex", childGroup, missing(childGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getChildIndex", "Getting child index...")
       childIndex <- NULL
@@ -478,16 +534,28 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       if(resetCells) private$p_parentPivot$resetCells()
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeChildGroup", "Removed child group.")
    },
-   removeGroup = function(removeAncestorsIfNoRemainingChildren=FALSE, resetCells=TRUE) {
+   removeGroup = function(removeAncestorsIfNoRemainingChildren=FALSE, removedRelatedOutlineGroups=FALSE, resetCells=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "removeGroup", removeAncestorsIfNoRemainingChildren, missing(removeAncestorsIfNoRemainingChildren), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "removeGroup", removedRelatedOutlineGroups, missing(removedRelatedOutlineGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "removeGroup", resetCells, missing(resetCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeGroup", "Removing group...")
      if(is.null(private$p_parentGroup)) stop("PivotDataGroup$removeGroup():  Cannot remove the top group on rows/columns.", call. = FALSE)
-     private$p_parentGroup$removeChildGroup(group=self, resetCells=resetCells)
+     if(removedRelatedOutlineGroups==TRUE) {
+       grps <- self$getRelatedOutlineGroups(group=self)
+       if((!is.null(grps))&&(length(grps)>0)) {
+         for(i in 1:length(grps)) {
+           private$p_parentGroup$removeChildGroup(group=grps[[i]], resetCells=resetCells)
+         }
+       }
+     }
+     else {
+       private$p_parentGroup$removeChildGroup(group=self, resetCells=resetCells)
+     }
      if((removeAncestorsIfNoRemainingChildren==TRUE)&&(private$p_parentGroup$childGroupCount==0)) {
-       private$p_parentGroup$removeGroup(removeAncestorsIfNoRemainingChildren=removeAncestorsIfNoRemainingChildren, resetCells=resetCells)
+       private$p_parentGroup$removeGroup(removeAncestorsIfNoRemainingChildren=removeAncestorsIfNoRemainingChildren,
+                                         removedRelatedOutlineGroups=removedRelatedOutlineGroups, resetCells=resetCells)
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$removeGroup", "Removed group.")
    },
