@@ -783,7 +783,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
              if(class(onlyAddOutlineChildGroupIf)=="logical") {
                addChildGroup <- onlyAddOutlineChildGroupIf
              }
-             else {
+             else if(!is.null(onlyAddOutlineChildGroupIf)) {
                # need to examine the data to see if we add the child group
                childFilters <- rowColFilters$getCopy()
                childFilters$setFilterValues(variableName=variableName, type="VALUES", values=values, action="intersect")
@@ -1519,8 +1519,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        }
        else captionValue <- private$p_caption
        # apply template
-       if((!is.null(captionValue))&&(length(captionValue)>0)&&(nchar(captionValue)[1]>0)) {
-         captionValue <- gsub("\\{value\\}", captionValue, private$p_captionTemplate)
+       if((!is.null(captionValue))&&(length(captionValue)>0)) {
+         if(length(captionValue)>1) captionValue <- paste(captionValue, collapse=" ")
+         if(nchar(captionValue)>0) captionValue <- gsub("\\{value\\}", captionValue, private$p_captionTemplate)
        }
        return(invisible(captionValue))
      }
@@ -1742,7 +1743,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       # preparation
       if(is.null(caption)) caption <- as.character(values)
       if((!is.null(caption))&&(length(caption)>0)) {
-         caption <- gsub("\\{value\\}", caption, outline$caption)
+        if(length(caption)>1) caption <- paste(caption, collapse=" ")
+        caption <- gsub("\\{value\\}", caption, outline$caption)
       }
       isEmpty <- outline$isEmpty
       isOutline <- FALSE
