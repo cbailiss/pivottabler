@@ -378,21 +378,23 @@ pt$addColumnDataGroups("TrainCategory")
 grp1a <- pt$addRowGroup(caption="By TOC", isOutline=TRUE, isEmpty=TRUE, 
                         sortAnchor="next", styleDeclarations=list(color="blue"))
 grp1b <- pt$addRowGroup()
+grp1a$outlineLinkedGroupId <- grp1b$instanceId
 grp1b$addDataGroups("TOC", addTotal=FALSE)
 # Rows: Power Type breakdown
 grp2a <- pt$addRowGroup(caption="By Power Type", isOutline=TRUE, isEmpty=TRUE, 
                         sortAnchor="next", styleDeclarations=list(color="blue"))
 grp2b <- pt$addRowGroup()
+grp2a$outlineLinkedGroupId <- grp2b$instanceId
 grp2b$addDataGroups("PowerType", addTotal=FALSE)
 # Rows: Total
-grp3 <- pt$addRowGroup(caption="Total", isOutline=TRUE, 
+grp3 <- pt$addRowGroup(caption="Total", isOutline=TRUE, sortAnchor="fixed",
                        styleDeclarations=list(color="blue"))
 # Finish...
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-In the example above, `sortAnchor` links that data group to the next/previous group, so that they stay together when the data groups in the pivot table are sorted.
+In the example above, `sortAnchor` links that data group to the next/previous group which is also linked via `outlineLinkedGroupId`.  These are set so that the outline group and those groups beneath it stay together when the data groups in the pivot table are sorted.  If there is no intention to sort the pivot table using `pt$sortRowDataGroups()` then these arguments/lines are not needed.
 
 ## Custom Layout Changes
 

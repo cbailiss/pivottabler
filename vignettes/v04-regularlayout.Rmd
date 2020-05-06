@@ -77,9 +77,11 @@ pt$renderPivot()
 
 ## Outline Layout
 
-Outline layout is an alternative way of rendering row data groups.  Parent row data groups are rendered as headers just above the child data groups (i.e. vertically above).  The last level of row data groups is not specified to use outline layout and remains using tabular layout. 
+Outline layout is an alternative way of rendering row data groups.  Parent row data groups are rendered as headers just above the child data groups (i.e. vertically above).  The last level of row data groups is not specified to use outline layout and remains using tabular layout.
 
 Outline layout is useful when the row data group captions are longer since the text can flow to the right.  Outlined row data groups act as separators in the pivot table, which can sometimes make the pivot table easier to read.
+
+Outline layout does not apply to the column data groups - since the text for column data groups already naturally flows to the right.
 
 Outline layout usually makes pivot tables narrower (i.e. reduced width) and longer (i.e. taller vertically).
 
@@ -96,7 +98,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-Comparing one row data group:
+Comparing one row data group (comprised of two levels, "TOC" and "Power Type"):
 
 ![Row Data Group in Tabular Layout](layout1.png)
 
@@ -106,11 +108,25 @@ Comparing one row data group:
 
 <br />
 
-Outline layout does not apply to the column data groups - since the text for column data groups already naturally flows to the right.
+Outline layout creates a new row for TOC "CrossCountry" and makes the caption of the normal "CrossCountry" group blank.
+
+![Row Data Group in Outline Layout](layout3.png)
+
+<br />
+
+Even though the caption is blank, this row is still applying the "TOC=CrossCountry" filtering, i.e. the numbers are the same in both the tabular layout and outline layout.
 
 The example pivot table above uses `outlineBefore=TRUE`, which adds a header row above each row data group.  By default, the caption of this data group is the data group value.
 
 It is also possible to specify `outlineAfter=TRUE`.  This adds a footer row below each rowdata group.  By default, the caption of this data group is blank.
+
+![Full set of rows in Outline Layout](layout4.png)
+
+<br />
+
+When additional variables are added to the row groups, the new rows for the outline groups are never broken down by the newly added variable, e.g. when "PowerType" was added to the example above, the two new rows were not broken down into "DMU", "HST", etc.
+
+An example of a pivot table showing the outline rows before and after:
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
