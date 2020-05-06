@@ -14,6 +14,7 @@ vignette: >
 * Introduction
 * Data Type Support
 * Formatting Options
+* Setting Defaults
 * Handling Illegal Variable Names
 * Output of NA, NaN, -Inf and Inf
 * Styling Reference
@@ -78,6 +79,54 @@ Some examples of specifying formatting:
 | Date       | `"%d %b %Y"` e.g. 04 Mar 2012             | `list("%d %b %Y")` e.g. 04 Mar 2012             |
 | POSIXct    | `"%d %b %Y %H:%M"` e.g. 04 Mar 2012 17:15 | `list("%d %b %Y %H:%M")` e.g. 04 Mar 2012 17:15 |
 | character  | N/A                                       | N/A                                             |
+
+## Setting Defaults
+
+Sometimes the same parameter value is specified multiple times when adding data groups, e.g. `addTotal=FALSE`.
+
+```{r, message=FALSE, warning=FALSE, comment="", echo=TRUE, eval=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory", addTotal=FALSE)
+pt$addRowDataGroups("TOC", addTotal=FALSE)
+pt$addRowDataGroups("PowerType", addTotal=FALSE)
+pt$addRowDataGroups("SchedSpeedMPH", addTotal=FALSE)
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+To make the script more succinct, it is possible to specify this as a default:
+
+```{r, message=FALSE, warning=FALSE, comment="", echo=TRUE, eval=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$setDefault(addTotal=FALSE)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$addRowDataGroups("PowerType")
+pt$addRowDataGroups("SchedSpeedMPH")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
+
+This produces the same output as above.
+
+Defaults can be set for the following functions and parameters:
+
+| `pt$addColumnDataGroups()` | `pt$addRowDataGroups()`    |
+|:---------------------------|:---------------------------|
+| `addTotal`                 | `addTotal`                 |
+| `expandExistingTotals`     | `expandExistingTotals`     |
+| `visualTotals`             | `visualTotals`             |
+| `totalPosition`            | `totalPosition`            |
+| `totalCaption`             | `totalCaption`             |
+|                            | `outlineBefore`            |
+|                            | `outlineAfter`             |
+|                            | `outlineTotal`             |
+
+Once set using `pt$setDefault()`, the defaults will be automatically used for all arguments listed above except `outlineBefore`, `outlineAfter` and `outlineTotal`.  For these three, they must be activated by specifying an argument value of `TRUE` when calling `pt$addRowDataGroups()`, e.g. `outlineBefore=TRUE`.
 
 ## Handling Illegal Variable Names
 

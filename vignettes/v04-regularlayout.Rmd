@@ -17,6 +17,8 @@ vignette: >
 * Tabular Layout
 * Outline Layout
 * Outline Layout Settings
+* Setting default outline settings
+* Combined Outline Layout Example
 * Multiple Level Outline Layout Example
 * Outline Calculation Example
 * Irregular Layout
@@ -307,6 +309,11 @@ pt$addRowDataGroups("PowerType")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
+
+
+## Setting default outline settings
+
+Default values for the `outlineBefore`, `outlineAfter` and `outlineTotal` parameters can be set using `pt$setDefault()`.  See [Appendix: Details](vA1-appendix.html) for details. 
 
 ## Combined Outline Layout Example
 
