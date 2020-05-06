@@ -477,3 +477,92 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
     })
   }
 }
+
+
+scenarios <- testScenarios("data groups tests:  caption templates 1 (no outlining)")
+for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory", caption="TC:  {value}")
+    pt$addColumnDataGroups("PowerType", caption="PT:  {value}")
+    pt$addRowDataGroups("TOC", caption="TOC:  {value}")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"4\">TC:  Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"3\">TC:  Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">TC:  Total</th>\n  </tr>\n  <tr>\n    <th class=\"ColumnHeader\">PT:  DMU</th>\n    <th class=\"ColumnHeader\">PT:  EMU</th>\n    <th class=\"ColumnHeader\">PT:  HST</th>\n    <th class=\"ColumnHeader\">PT:  Total</th>\n    <th class=\"ColumnHeader\">PT:  DMU</th>\n    <th class=\"ColumnHeader\">PT:  EMU</th>\n    <th class=\"ColumnHeader\">PT:  Total</th>\n    <th class=\"ColumnHeader\"></th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  CrossCountry</th>\n    <td class=\"Cell\">22133</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">732</td>\n    <td class=\"Total\">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">63</td>\n    <td class=\"Total\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  London Midland</th>\n    <td class=\"Cell\">5638</td>\n    <td class=\"Cell\">8849</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">14487</td>\n    <td class=\"Cell\">5591</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Total\">33792</td>\n    <td class=\"Total\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  Virgin Trains</th>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">8594</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  Total</th>\n    <td class=\"Total\">32987</td>\n    <td class=\"Total\">15306</td>\n    <td class=\"Total\">732</td>\n    <td class=\"Total\">49025</td>\n    <td class=\"Total\">6484</td>\n    <td class=\"Total\">28201</td>\n    <td class=\"Total\">34685</td>\n    <td class=\"Total\">83710</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}
+
+
+scenarios <- testScenarios("data groups tests:  caption templates 2 (partial outlining)")
+for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("PowerType", caption="PT:  {value}")
+    pt$addRowDataGroups("TrainCategory", caption="TC:  {value}", outlineBefore=list(isEmpty=FALSE, caption="TC: {value}"))
+    pt$addRowDataGroups("TOC", addTotal=FALSE, caption="TOC:  {value}")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" colspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\">PT:  DMU</th>\n    <th class=\"ColumnHeader\">PT:  EMU</th>\n    <th class=\"ColumnHeader\">PT:  HST</th>\n    <th class=\"ColumnHeader\">PT:  Total</th>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" colspan=\"2\">TC: Express Passenger</th>\n    <td class=\"OutlineCell\">32987</td>\n    <td class=\"OutlineCell\">15306</td>\n    <td class=\"OutlineCell\">732</td>\n    <td class=\"OutlineCell\">49025</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"4\"></th>\n    <th class=\"RowHeader\">TOC:  Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">3079</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  CrossCountry</th>\n    <td class=\"Cell\">22133</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">732</td>\n    <td class=\"Total\">22865</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  London Midland</th>\n    <td class=\"Cell\">5638</td>\n    <td class=\"Cell\">8849</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">14487</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  Virgin Trains</th>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" colspan=\"2\">TC: Ordinary Passenger</th>\n    <td class=\"OutlineCell\">6484</td>\n    <td class=\"OutlineCell\">28201</td>\n    <td class=\"OutlineCell\"></td>\n    <td class=\"OutlineCell\">34685</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"3\"></th>\n    <th class=\"RowHeader\">TOC:  Arriva Trains Wales</th>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">830</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  CrossCountry</th>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">63</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  London Midland</th>\n    <td class=\"Cell\">5591</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">33792</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TC:  Total</th>\n    <th class=\"RowHeader\"></th>\n    <td class=\"Total\">39471</td>\n    <td class=\"Total\">43507</td>\n    <td class=\"Total\">732</td>\n    <td class=\"Total\">83710</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}
+
+
+scenarios <- testScenarios("data groups tests:  caption templates 3 (full outlining)")
+for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("PowerType", caption="PT:  {value}")
+    pt$addRowDataGroups("TrainCategory",
+                        outlineBefore=list(isEmpty=FALSE, caption="TC: {value}"),
+                        outlineTotal=list(isEmpty=FALSE, caption="TC: {value}"))
+    pt$addRowDataGroups("TOC", addTotal=FALSE, caption="TOC:  {value}")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" colspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\">PT:  DMU</th>\n    <th class=\"ColumnHeader\">PT:  EMU</th>\n    <th class=\"ColumnHeader\">PT:  HST</th>\n    <th class=\"ColumnHeader\">PT:  Total</th>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" colspan=\"2\">TC: Express Passenger</th>\n    <td class=\"OutlineCell\">32987</td>\n    <td class=\"OutlineCell\">15306</td>\n    <td class=\"OutlineCell\">732</td>\n    <td class=\"OutlineCell\">49025</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"4\"></th>\n    <th class=\"RowHeader\">TOC:  Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">3079</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  CrossCountry</th>\n    <td class=\"Cell\">22133</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">732</td>\n    <td class=\"Total\">22865</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  London Midland</th>\n    <td class=\"Cell\">5638</td>\n    <td class=\"Cell\">8849</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">14487</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  Virgin Trains</th>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" colspan=\"2\">TC: Ordinary Passenger</th>\n    <td class=\"OutlineCell\">6484</td>\n    <td class=\"OutlineCell\">28201</td>\n    <td class=\"OutlineCell\"></td>\n    <td class=\"OutlineCell\">34685</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"3\"></th>\n    <th class=\"RowHeader\">TOC:  Arriva Trains Wales</th>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">830</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  CrossCountry</th>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">63</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">TOC:  London Midland</th>\n    <td class=\"Cell\">5591</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">33792</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" colspan=\"2\">TC: Total</th>\n    <td class=\"OutlineCell\">39471</td>\n    <td class=\"OutlineCell\">43507</td>\n    <td class=\"OutlineCell\">732</td>\n    <td class=\"OutlineCell\">83710</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}

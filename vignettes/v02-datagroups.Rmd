@@ -147,11 +147,26 @@ Adding data groups one-at-a-time for fine-grained control to create a pivot tabl
 
 ## Formatting data groups
 
-Each data group has two values:  
+Each data group has three values:  
+
+* A `captionTemplate` that is the template text used to build the caption.  The data type of the `captionTemplate` is character. 
+
+* A `caption` that is the value that is displayed in the pivot table.  The data type of the `caption` is character.
 
 * A `sortValue` that is used to order the group within the set of groups.  The `sortValue` is the same data type as the variable the data group is based on.  
 
-* A `caption` that is the value that is displayed in the pivot table.  The data type of the `caption` is typically character.
+The `captionTemplate` is specified via the `caption` argument of `addColumnDataGroups()` or `addRowDataGroups()`.  It allows a prefix or suffix to be added to the caption:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory", caption="TC:  {value}")
+pt$addColumnDataGroups("PowerType", caption="PT:  {value}")
+pt$addRowDataGroups("TOC", caption="TOC:  {value}")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot()
+```
 
 In all of the examples above, the data groups are text values (i.e. are based on data frame columns of data type character).  When data groups are numerical or date/time values, then typically some form of formatting is required.  Formatting generates a caption for each data group, i.e. a more readable version of the underlying data group value.
 
@@ -380,7 +395,7 @@ pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$sortRowDataGroups(levelNumber=1, orderBy="customByValue", sortOrder="asc",
                      customOrder=c("Arriva Trains Wales", "London Midland", 
                                    "CrossCountry", "Virgin Trains"))

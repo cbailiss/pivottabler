@@ -89,7 +89,7 @@
 #'   cellStyleDeclarations=NULL, sortAnchor=NULL, resetCells=TRUE)}}{
 #'   Add a new top-level column heading data group to the pivot table.}
 #'   \item{\code{addColumnDataGroups(variableName, atLevel, fromData=TRUE,
-#'   dataName, dataSortOrder="asc", customSortOrder,
+#'   dataName, dataSortOrder="asc", customSortOrder, caption="{value}",
 #'   dataFormat, dataFmtFuncArgs, onlyCombinationsThatExist=TRUE,
 #'   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
 #'   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
@@ -120,7 +120,7 @@
 #'   cellStyleDeclarations=NULL, sortAnchor=NULL, resetCells=TRUE)}}{
 #'   Add a new top-level row heading data group to the pivot table.}
 #'   \item{\code{addRowDataGroups(variableName, atLevel, fromData=TRUE,
-#'   dataName, dataSortOrder="asc", customSortOrder,
+#'   dataName, dataSortOrder="asc", customSortOrder, caption="{value}",
 #'   dataFormat, dataFmtFuncArgs, onlyCombinationsThatExist=TRUE,
 #'   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
 #'   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
@@ -561,7 +561,8 @@ PivotTable <- R6::R6Class("PivotTable",
       return(invisible(grps))
     },
     addColumnGroup = function(variableName=NULL, filterType="ALL", values=NULL,
-                             doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
+                             doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE,
+                             captionTemplate="{value}", caption=NULL,
                              isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
                              calculationGroupName=NULL, calculationName=NULL,
                              baseStyleName=NULL, styleDeclarations=NULL,
@@ -575,6 +576,7 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", doNotExpand, missing(doNotExpand), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", isEmpty, missing(isEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", isOutline, missing(isOutline), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", captionTemplate, missing(captionTemplate), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", isTotal, missing(isTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", isLevelSubTotal, missing(isLevelSubTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -593,7 +595,8 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", resetCells, missing(resetCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_argumentCheckMode==TRUE) private$p_traceEnabled("PivotTable$addColumnGroup", "Adding column group...",
-                                                                   list(caption=caption, doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, isTotal=isTotal,
+                                                                   list(captionTemplate=captionTemplate, caption=caption,
+                                                                        doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, isTotal=isTotal,
                                                                         variableName=variableName, values=values,
                                                                         calculationGroupName=calculationGroupName, calculationName=calculationName,
                                                                         baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
@@ -601,7 +604,8 @@ PivotTable <- R6::R6Class("PivotTable",
                                                                         cellStyleDeclarations=cellStyleDeclarations, sortAnchor=sortAnchor,
                                                                         resetCells=resetCells))
       grp <- private$p_columnGroup$addChildGroup(variableName=variableName, filterType=filterType, values=values,
-                                                 doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, caption=caption,
+                                                 doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline,
+                                                 captionTemplate=captionTemplate, caption=caption,
                                                  isTotal=isTotal, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
                                                  calculationGroupName=calculationGroupName, calculationName=calculationName,
                                                  baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
@@ -612,7 +616,7 @@ PivotTable <- R6::R6Class("PivotTable",
       return(invisible(grp))
     },
     addColumnDataGroups = function(variableName=NULL, atLevel=NULL, fromData=TRUE, # atLevel=1 is the top level, (since 1 is the top level as visible to the user)
-                                   dataName=NULL, dataSortOrder="asc", customSortOrder=NULL, dataFormat=NULL, dataFmtFuncArgs=NULL,
+                                   dataName=NULL, dataSortOrder="asc", customSortOrder=NULL, caption="{value}", dataFormat=NULL, dataFmtFuncArgs=NULL,
                                    onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                                    expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
                                    onlyAddGroupIf=NULL, preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL) {
@@ -624,6 +628,7 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "custom", "none"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", customSortOrder, missing(customSortOrder), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", caption, missing(caption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", dataFormat, missing(dataFormat), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", dataFmtFuncArgs, missing(dataFmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", onlyCombinationsThatExist, missing(onlyCombinationsThatExist), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -642,7 +647,7 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addColumnDataGroups", "Adding column groups...",
                    list(variableName=variableName, atLevel=atLevel, fromData=fromData,
                         dataName=dataName, dataSortOrder=dataSortOrder, customSortOrder=customSortOrder,
-                        dataFormat=dataFormat, dataFmtFuncArgs=dataFmtFuncArgs,
+                        caption=caption, dataFormat=dataFormat, dataFmtFuncArgs=dataFmtFuncArgs,
                         onlyCombinationsThatExist=onlyCombinationsThatExist, explicitListOfValues=explicitListOfValues,
                         calculationGroupName=calculationGroupName, expandExistingTotals=expandExistingTotals,
                         addTotal=addTotal, visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
@@ -653,7 +658,7 @@ PivotTable <- R6::R6Class("PivotTable",
       if((!is.null(atLevel))&&(atLevel>0)) levelsBelow <- atLevel - 1
       grp <- private$p_columnGroup$addDataGroups(variableName=variableName, atLevel=levelsBelow, fromData=fromData,
                                                  dataName=dataName, dataSortOrder=dataSortOrder, customSortOrder=customSortOrder,
-                                                 dataFormat=dataFormat, dataFmtFuncArgs=dataFmtFuncArgs,
+                                                 caption=caption, dataFormat=dataFormat, dataFmtFuncArgs=dataFmtFuncArgs,
                                                  onlyCombinationsThatExist=onlyCombinationsThatExist, explicitListOfValues=explicitListOfValues,
                                                  calculationGroupName=calculationGroupName,
                                                  expandExistingTotals=self$getDefault1(expandExistingTotals, missing(expandExistingTotals)),
@@ -717,7 +722,8 @@ PivotTable <- R6::R6Class("PivotTable",
       return(invisible(grps))
     },
     addRowGroup = function(variableName=NULL, filterType="ALL", values=NULL,
-                           doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
+                           doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE,
+                           captionTemplate="{value}", caption=NULL,
                            isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
                            calculationGroupName=NULL, calculationName=NULL,
                            baseStyleName=NULL, styleDeclarations=NULL,
@@ -731,6 +737,7 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", doNotExpand, missing(doNotExpand), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", isEmpty, missing(isEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", isOutline, missing(isOutline), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", captionTemplate, missing(captionTemplate), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", isTotal, missing(isTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", isLevelSubTotal, missing(isLevelSubTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -749,7 +756,8 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", resetCells, missing(resetCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_argumentCheckMode==TRUE) private$p_traceEnabled("PivotTable$addRowGroup", "Adding row group...",
-                                                                   list(caption=caption, doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, isTotal=isTotal,
+                                                                   list(captionTemplate=captionTemplate, caption=caption,
+                                                                        doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, isTotal=isTotal,
                                                                         variableName=variableName, values=values,
                                                                         calculationGroupName=calculationGroupName, calculationName=calculationName,
                                                                         baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
@@ -757,7 +765,8 @@ PivotTable <- R6::R6Class("PivotTable",
                                                                         cellStyleDeclarations=cellStyleDeclarations, sortAnchor=sortAnchor,
                                                                         resetCells=resetCells))
       grp <- private$p_rowGroup$addChildGroup(variableName=variableName, filterType=filterType, values=values,
-                                              doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, caption=caption,
+                                              doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline,
+                                              captionTemplate=captionTemplate, caption=caption,
                                               isTotal=isTotal, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
                                               calculationGroupName=calculationGroupName, calculationName=calculationName,
                                               baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
@@ -768,7 +777,7 @@ PivotTable <- R6::R6Class("PivotTable",
       return(invisible(grp))
     },
     addRowDataGroups = function(variableName=NULL, atLevel=NULL, fromData=TRUE, # atLevel=1 is the top level, (since 1 is the top level as visible to the user)
-                                dataName=NULL, dataSortOrder="asc", customSortOrder=NULL, dataFormat=NULL, dataFmtFuncArgs=NULL,
+                                dataName=NULL, dataSortOrder="asc", customSortOrder=NULL, caption="{value}", dataFormat=NULL, dataFmtFuncArgs=NULL,
                                 onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                                 expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
                                 onlyAddGroupIf=NULL, preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, header=NULL,
@@ -781,6 +790,7 @@ PivotTable <- R6::R6Class("PivotTable",
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", dataSortOrder, missing(dataSortOrder), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("asc", "desc", "custom", "none"))
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", customSortOrder, missing(customSortOrder), allowMissing=TRUE, allowNull=TRUE, mustBeAtomic=TRUE)
+       checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", caption, missing(caption), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", dataFormat, missing(dataFormat), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "function"))
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", dataFmtFuncArgs, missing(dataFmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowDataGroups", onlyCombinationsThatExist, missing(onlyCombinationsThatExist), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -804,7 +814,7 @@ PivotTable <- R6::R6Class("PivotTable",
      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addRowDataGroups", "Adding row groups...",
                    list(variableName=variableName, atLevel=atLevel, fromData=fromData,
                    dataName=dataName, dataSortOrder=dataSortOrder, customSortOrder=customSortOrder,
-                   dataFormat=dataFormat, dataFmtFuncArgs=dataFmtFuncArgs,
+                   caption=caption, dataFormat=dataFormat, dataFmtFuncArgs=dataFmtFuncArgs,
                    onlyCombinationsThatExist=onlyCombinationsThatExist, explicitListOfValues=explicitListOfValues,
                    calculationGroupName=calculationGroupName, expandExistingTotals=expandExistingTotals,
                    addTotal=addTotal, visualTotals=visualTotals, totalPosition=totalPosition, totalCaption=totalCaption,
@@ -824,7 +834,7 @@ PivotTable <- R6::R6Class("PivotTable",
       # add the groups
       grps <- private$p_rowGroup$addDataGroups(variableName=variableName, atLevel=levelsBelow, fromData=fromData,
                                                dataName=dataName, dataSortOrder=dataSortOrder, customSortOrder=customSortOrder,
-                                               dataFormat=dataFormat, dataFmtFuncArgs=dataFmtFuncArgs,
+                                               caption=caption, dataFormat=dataFormat, dataFmtFuncArgs=dataFmtFuncArgs,
                                                onlyCombinationsThatExist=onlyCombinationsThatExist, explicitListOfValues=explicitListOfValues,
                                                calculationGroupName=calculationGroupName,
                                                expandExistingTotals=self$getDefault1(expandExistingTotals, missing(expandExistingTotals)),
