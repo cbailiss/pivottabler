@@ -253,6 +253,20 @@ pt$evaluatePivot()
 pt$asDataFrame(separator="|")
 ```
 
+In addition, the row group headings can be exported as separate columns:
+
+```{r, message=FALSE, warning=FALSE, comment=""}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$addRowDataGroups("PowerType")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$asDataFrame(rowGroupsAsColumns=TRUE)
+```
+
 ### The `asTidyDataFrame()` function
 
 The example pivot table converts as follows:
