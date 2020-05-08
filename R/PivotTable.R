@@ -548,6 +548,18 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("addTotalData()", timeStart)
       return(invisible())
     },
+    getColumnGroupsByLevel = function(level=NULL) {
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getColumnGroupsByLevel", "Getting level column groups...")
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getColumnGroupsByLevel", level, missing(level), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(level<0) stop("PivotTable$getColumnGroupsByLevel():  level must be greater than or equal to zero.", call. = FALSE)
+      levelCount <- self$columnGroupLevelCount
+      if(level>levelCount) stop(paste0("PivotTable$getColumnGroupsByLevel():  level must be less than or equal to ", levelCount, "."), call. = FALSE)
+      grps <- private$p_columnGroup$getLevelGroups(level=level)
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getColumnGroupsByLevel", "Got level column groups", list(count = length(grps)))
+      return(invisible(grps))
+    },
     getTopColumnGroups = function() {
       .Deprecated(new="topColumnGroups")
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopColumnGroups", "Getting top level column groups...")
@@ -708,6 +720,18 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$sortColumnDataGroups", "Sorted column data groups.")
       private$addTiming("sortColumnDataGroups", timeStart)
       return(invisible())
+    },
+    getRowGroupsByLevel = function(level=NULL) {
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getRowGroupsByLevel", "Getting level row groups...")
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getRowGroupsByLevel", level, missing(level), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(level<0) stop("PivotTable$getRowGroupsByLevel():  level must be greater than or equal to zero.", call. = FALSE)
+      levelCount <- self$rowGroupLevelCount
+      if(level>levelCount) stop(paste0("PivotTable$getRowGroupsByLevel():  level must be less than or equal to ", levelCount, "."), call. = FALSE)
+      grps <- private$p_rowGroup$getLevelGroups(level=level)
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getRowGroupsByLevel", "Got level row groups", list(count = length(grps)))
+      return(invisible(grps))
     },
     getTopRowGroups = function() {
       .Deprecated(new="topRowGroups")
