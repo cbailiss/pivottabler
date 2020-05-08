@@ -2582,6 +2582,8 @@ PivotTable <- R6::R6Class("PivotTable",
     data = function(value) { return(private$p_data) },
     rowGroup = function(value) { return(invisible(private$p_rowGroup ))},
     columnGroup = function(value) { return(invisible(private$p_columnGroup ))},
+    rowGroupLevelCount = function(value) { return(invisible(private$p_rowGroup$getLevelCount())) },
+    columnGroupLevelCount = function(value) { return(invisible(private$p_columnGroup$getLevelCount())) },
     topColumnGroups = function(value) {
       return(private$p_columnGroup$childGroups)
     },
