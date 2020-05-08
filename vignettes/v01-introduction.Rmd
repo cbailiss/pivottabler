@@ -139,7 +139,7 @@ Each line above works as follows:
 3. Specify the data frame that contains the data for the pivot table.
 4. Add the distinct values from the TrainCategory column in the data frame as columns in the pivot table.
 5. Add the distinct values from the TOC column in the data frame as rows in the pivot table.
-6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function.  `pivottabler` also supports data.table - see the [Performance](v11-performance.html) vignette for more details.
+6. Specify the calculation.  The summarise expression must be an expression that can be used with the dplyr summarise() function.  This expression is used internally by the pivottabler package with the dplyr summarise function.  `pivottabler` also supports data.table - see the [Performance](v12-performance.html) vignette for more details.
 7. Generate the pivot table.
 
 ## Constructing the Basic Pivot Table
@@ -737,7 +737,7 @@ cg4$addCalculationGroups("calcGrp2")
 pt$renderPivot()
 ```
 
-See the [Irregular Layout](v10-irregularlayout.html) vignette for more details.
+See the [Irregular Layout](v11-irregularlayout.html) vignette for more details.
 
 ### Combining Pivot Tables
 
@@ -764,7 +764,7 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
-See the [Irregular Layout](v10-irregularlayout.html) vignette for more details.
+See the [Irregular Layout](v11-irregularlayout.html) vignette for more details.
 
 ## Further Reading
 
@@ -779,10 +779,11 @@ The full set of vignettes is:
 7. [Styling](v07-styling.html)
 8. [Finding and Formatting](v08-findingandformatting.html)
 9. [Cell Context](v09-cellcontext.html)
-10. [Irregular Layout](v10-irregularlayout.html)
-11. [Performance](v11-performance.html)
-12. [Excel Export](v12-excelexport.html)
-13. [Shiny](v13-shiny.html)
-14. [Appendix: Details](vA1-appendix.html)
-15. [Appendix: Calculations](vA2-appendix.html)
-16. [Appendix: Class Overview](vA3-appendix.html)
+10. [Navigating a Pivot Table](v10-navigatingapivottable.html)
+11. [Irregular Layout](v11-irregularlayout.html)
+12. [Performance](v12-performance.html)
+13. [Excel Export](v13-excelexport.html)
+14. [Shiny](v14-shiny.html)
+15. [Appendix: Details](vA1-appendix.html)
+16. [Appendix: Calculations](vA2-appendix.html)
+17. [Appendix: Class Overview](vA3-appendix.html)

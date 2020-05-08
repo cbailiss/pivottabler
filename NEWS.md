@@ -6,6 +6,8 @@ Overview
 
 This release includes one potential breaking change and many small enhancements across various parts of the package.
 
+Reminder:  Most package vignettes are now hosted at:  http://www.pivottabler.org.uk/articles/ 
+
 Breaking Changes
 ----------------
 
@@ -18,6 +20,7 @@ A future version of the package will likely include an option to prevent all non
 Improvements
 ----------------
 
+* The new "Navigating a Pivot Table" vignette provides more detailed information about low-level methods for navigating in code over the different parts of a pivot table.  Several new methods have also been added that are described in this vignette:  `pt$getLeafColumnGroup()`, `pt$getLeafRowGroup()`, `pt$getCell()`, `pt$getColumnGroupsByLevel()`, `pt$getRowGroupsByLevel()`, `pt$columnGroupLevelCount` and `pt$rowGroupLevelCount`.
 * Defaults can now be set using `pt$setDefault()` for the following parameters of `pt$addColumnDataGroups()` and `pt$addRowDataGroups()`: `addTotal`, `expandExistingTotals`, `visualTotals`, `totalPosition`, `totalCaption`, `outlineBefore`, `outlineAfter` and `outlineTotal`.  
 * The captions of data groups added to pivot tables using `pt$addColumnDataGroups()` and `pt$addRowDataGroups()`can now be specified using the new `caption` argument.  See the "Data Groups" vignette for details.
 * Custom sort orders can be specified for data groups.  See the "Data Groups" vignette for details.
