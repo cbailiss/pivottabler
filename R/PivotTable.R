@@ -1513,6 +1513,19 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyColumns", "Got empty columns.")
       return(invisible(emptyColumnNumbers))
     },
+    getCell = function(r=NULL, c=NULL) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCell", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCell", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getCell", "Getting cell...")
+      if(is.null(private$p_cells)) stop("PivotTable$getCells():  No cells exist to retrieve.", call. = FALSE)
+      if(length(r)>1) r <- r[1]
+      if(length(c)>1) c <- c[1]
+      cell <- private$p_cells$getCell(r=r, c=c)
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getCell", "Got cell.")
+      return(invisible(cell))
+    },
     getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", specifyCellsAsList, missing(specifyCellsAsList), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
