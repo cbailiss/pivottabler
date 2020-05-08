@@ -557,14 +557,14 @@ PivotTable <- R6::R6Class("PivotTable",
       levelCount <- self$columnGroupLevelCount
       if(level>levelCount) stop(paste0("PivotTable$getColumnGroupsByLevel():  level must be less than or equal to ", levelCount, "."), call. = FALSE)
       grps <- private$p_columnGroup$getLevelGroups(level=level)
-      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getColumnGroupsByLevel", "Got level column groups", list(count = length(grps)))
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getColumnGroupsByLevel", "Got level column groups.", list(count = length(grps)))
       return(invisible(grps))
     },
     getTopColumnGroups = function() {
       .Deprecated(new="topColumnGroups")
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopColumnGroups", "Getting top level column groups...")
       grps <- private$p_columnGroup$childGroups
-      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopColumnGroups", "Got top level column groups", list(count = length(grps)))
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopColumnGroups", "Got top level column groups.", list(count = length(grps)))
       return(invisible(grps))
     },
     getLeafColumnGroups = function() {
@@ -572,8 +572,25 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafColumnGroups", "Getting leaf level column groups...")
       leafGroups = list()
       grps <- private$p_columnGroup$getLeafGroups(leafGroups)
-      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafColumnGroups", "Got leaf level column groups", list(count = length(grps)))
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafColumnGroups", "Got leaf level column groups.", list(count = length(grps)))
       return(invisible(grps))
+    },
+    getLeafColumnGroup = function(c=NULL) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getLeafColumnGroup", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafColumnGroup", "Getting leaf level column group...")
+      if((private$p_evaluated)&&(!is.null(private$p_cells))) {
+        # retrieve directly from the cells instance
+        grp <- private$p_cells$getColumnGroup(c=c)
+      }
+      else {
+        # fall back to the slower method (requires navigating through the hierarchy)
+        grps <- self$leafColumnGroups
+        if(length(grps)>c) grp <- grps[[c]]
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafColumnGroup", "Got leaf level column group.")
+      return(invisible(grp))
     },
     addColumnGroup = function(variableName=NULL, filterType="ALL", values=NULL,
                              doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE,
@@ -747,6 +764,23 @@ PivotTable <- R6::R6Class("PivotTable",
       grps <- private$p_rowGroup$getLeafGroups(leafGroups)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopRowGroups", "Got leaf level row groups", list(count = length(grps)))
       return(invisible(grps))
+    },
+    getLeafRowGroup = function(r=NULL) {
+      if(private$p_argumentCheckMode > 0) {
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getLeafRowGroup", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafRowGroup", "Getting leaf level row group...")
+      if((private$p_evaluated)&&(!is.null(private$p_cells))) {
+        # retrieve directly from the cells instance
+        grp <- private$p_cells$getRowGroup(r=r)
+      }
+      else {
+        # fall back to the slower method (requires navigating through the hierarchy)
+        grps <- self$leafRowGroups
+        if(length(grps)>r) grp <- grps[[r]]
+      }
+      if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafRowGroup", "Got leaf level row group.")
+      return(invisible(grp))
     },
     addRowGroup = function(variableName=NULL, filterType="ALL", values=NULL,
                            doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE,

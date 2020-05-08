@@ -64,6 +64,33 @@ testScenarios <- function(description="test", releaseEvaluationMode="batch", rel
 context("GET CELLS TESTS")
 
 
+scenarios <- testScenarios("get cell test")
+for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    pt$addRowDataGroups("TOC")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    cell <- pt$getCell(2, 2)
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+    expect_equal(cell$rawValue, 63)
+  })
+}
+
+
 scenarios <- testScenarios("get cells tests:  whole rows (specifyCellsAsList=FALSE)")
 for(i in 1:nrow(scenarios)) {
   if(!isDevelopmentVersion) break

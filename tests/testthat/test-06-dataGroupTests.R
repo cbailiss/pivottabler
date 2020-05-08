@@ -670,3 +670,66 @@ for(i in 1:nrow(scenarios)) {
   })
 }
 
+
+scenarios <- testScenarios("data groups tests:  navigation methods")
+for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    pt$addRowDataGroups("TOC")
+    pt$addRowDataGroups("PowerType")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" colspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">Arriva Trains Wales</th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">3079</td>\n    <td class=\"Total\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"3\">CrossCountry</th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">22133</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Total\">22196</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">HST</th>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">732</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">22865</td>\n    <td class=\"Total\">63</td>\n    <td class=\"Total\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"3\">London Midland</th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">5638</td>\n    <td class=\"Cell\">5591</td>\n    <td class=\"Total\">11229</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">EMU</th>\n    <td class=\"Cell\">8849</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Total\">37050</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">14487</td>\n    <td class=\"Total\">33792</td>\n    <td class=\"Total\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"3\">Virgin Trains</th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">2137</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">EMU</th>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">6457</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">8594</td>\n    <td class=\"Total\"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <th class=\"RowHeader\">&nbsp;</th>\n    <td class=\"Total\">49025</td>\n    <td class=\"Total\">34685</td>\n    <td class=\"Total\">83710</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+    expect_identical(as.character(pt$getHtml()), html)
+
+    rglc <- pt$rowGroupLevelCount
+    cglc <- pt$columnGroupLevelCount
+    expect_equal(rglc, 2)
+    expect_equal(cglc, 1)
+
+    rgl1 <- pt$getRowGroupsByLevel(level=1)
+    fx <- function(x) { x$caption }
+    # rgl1 <- paste(sapply(rgl1, fx), collapse="|")
+    # prepStr(rgl1)
+    rgl1a <- "Arriva Trains Wales|CrossCountry|London Midland|Virgin Trains|Total"
+    expect_identical(paste(sapply(rgl1, fx), collapse="|"), rgl1a)
+
+    rgl2 <- pt$getRowGroupsByLevel(level=2)
+    fx <- function(x) { x$caption }
+    # rgl2 <- paste(sapply(rgl2, fx), collapse="|")
+    # prepStr(rgl2)
+    rgl2a <- "DMU|Total|DMU|HST|Total|DMU|EMU|Total|DMU|EMU|Total|"
+    expect_identical(paste(sapply(rgl2, fx), collapse="|"), rgl2a)
+
+    cgl1 <- pt$getColumnGroupsByLevel(level=1)
+    fx <- function(x) { x$caption }
+    # cgl1 <- paste(sapply(cgl1, fx), collapse="|")
+    # prepStr(cgl1)
+    cgl1a <- "Express Passenger|Ordinary Passenger|Total"
+    expect_identical(paste(sapply(cgl1, fx), collapse="|"), cgl1a)
+
+    rg <- pt$getLeafRowGroup(r=4)
+    rga <- "HST"
+    expect_identical(rg$caption, rga)
+
+    cg <- pt$getLeafColumnGroup(c=2)
+    cga <- "Ordinary Passenger"
+    expect_identical(cg$caption, cga)
+  })
+}
+

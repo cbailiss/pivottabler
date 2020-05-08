@@ -75,6 +75,28 @@ PivotCells <- R6::R6Class("PivotCells",
      private$p_rows <- NULL
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$resetCells", "Reset cells.")
    },
+   getColumnGroup = function(c=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getColumnGroup", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_columnGroups))
+      }
+      if(c < 1)
+         stop(paste0("PivotCells$getColumnGroup(): c (", c, ") must be greater than or equal to 1."), call. = FALSE)
+      if(c > self$columnCount)
+         stop(paste0("PivotCells$getColumnGroup(): c (", c, ") must be less than or equal to columnCount (", self$columnCount, ")."), call. = FALSE)
+      if(length(private$p_columnGroups) < c) return(invisible(NULL))
+      return(invisible(private$p_columnGroups[[c]]))
+   },
+   getRowGroup = function(r=NULL) {
+      if(private$p_parentPivot$argumentCheckMode > 0) {
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getRowGroup", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_rowGroups))
+      }
+      if(r < 1)
+         stop(paste0("PivotCells$getRowGroup(): r (", r, ") must be greater than or equal to 1."), call. = FALSE)
+      if(r > self$rowCount)
+         stop(paste0("PivotCells$getRowGroup(): r (", r, ") must be less than or equal to rowCount (", self$rowCount, ")."), call. = FALSE)
+      if(length(private$p_rowGroups) < r) return(invisible(NULL))
+      return(invisible(private$p_rowGroups[[r]]))
+   },
    setGroups = function(rowGroups=NULL, columnGroups=NULL) {
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$setGroups", "Creating new PivotCells...",
                                    list(rowCount=length(rowGroups), columnCount=length(columnGroups)))
