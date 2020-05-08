@@ -83,7 +83,7 @@ test_that("quick-pivot tests:  qpvt pivot 2", {
   library(pivottabler)
   pt <- qpvt(bhmtrains, c("=", "TOC"), c("TrainCategory", "PowerType"),
              c("Number of Trains"="n()", "Maximum Speed"="max(SchedSpeedMPH, na.rm=TRUE)"),
-             compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+             compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
   # pt$renderPivot()
   # sum(pt$cells$asMatrix(), na.rm=TRUE)
   # prepStr(as.character(pt$getHtml()))
@@ -183,7 +183,7 @@ if(isDevelopmentVersion) {
 
     library(pivottabler)
     pt <- qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()",
-               compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+               compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     # pt$renderPivot()
     # sum(pt$cells$asMatrix(), na.rm=TRUE)
     # prepStr(as.character(pt$getHtml()))
@@ -217,7 +217,7 @@ if(isDevelopmentVersion) {
 
     library(pivottabler)
     pt <- qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()", totals="TOC",
-               compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+               compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     # pt$renderPivot()
     # sum(pt$cells$asMatrix(), na.rm=TRUE)
     # prepStr(as.character(pt$getHtml()))
@@ -234,7 +234,7 @@ if(isDevelopmentVersion) {
 
     library(pivottabler)
     pt <- qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()", totals=c("TOC", "TrainCategory"),
-               compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+               compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     # pt$renderPivot()
     # sum(pt$cells$asMatrix(), na.rm=TRUE)
     # prepStr(as.character(pt$getHtml()))
@@ -251,7 +251,7 @@ if(isDevelopmentVersion) {
 
     library(pivottabler)
     pt <- qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()", totals=list("TOC"="All TOCs"),
-               compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+               compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     # pt$renderPivot()
     # sum(pt$cells$asMatrix(), na.rm=TRUE)
     # prepStr(as.character(pt$getHtml()))
@@ -269,7 +269,7 @@ if(isDevelopmentVersion) {
     library(pivottabler)
     pt <- qpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()",
                totals=list("TOC"="All TOCs", "TrainCategory"="All Categories"),
-               compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+               compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     # pt$renderPivot()
     # sum(pt$cells$asMatrix(), na.rm=TRUE)
     # prepStr(as.character(pt$getHtml()))

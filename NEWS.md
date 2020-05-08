@@ -4,7 +4,16 @@ pivottabler 1.4.0
 Overview
 --------
 
-This release includes a set of small enhancements across various parts of the package.
+This release includes one potential breaking change and many small enhancements across various parts of the package.
+
+Breaking Changes
+----------------
+
+**Row group and column group captions for blank values**
+
+When generating HTML, previous versions of the package would not output any caption for data groups with a blank null (e.g. NULL).  This could lead to rows collapsing to a few pixels in height (if all of the cells on the row also had no value).  Starting with v1.4.0, a non-breaking space character is emitted instead (HTML &nbsp;), in the same way that other parts of the pivot table sometimes also emit a non-breaking space character.   This should make minimal difference to the visual appearance of the table, however it may cause issues for users who require the previous behaviour.  The previous behaviour is still available by specifying `compatibility=list(noDataGroupNBSP=TRUE)` as an argument when creating the pivot table, either in `PivotTable$new()` or one of the quick pivot functions such as `qpvt()`.
+
+A future version of the package will likely include an option to prevent all non-breaking space characters from being emitted and will more correctly use CSS style rules instead to control minimum data group heights/widths. 
 
 Improvements
 ----------------

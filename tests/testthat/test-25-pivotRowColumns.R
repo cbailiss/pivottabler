@@ -171,7 +171,7 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("TOC")
@@ -232,7 +232,7 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("TOC")
@@ -293,7 +293,7 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TOC")
     pt$addColumnDataGroups("PowerType", onlyCombinationsThatExist=FALSE)
@@ -354,7 +354,7 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TOC")
     pt$addColumnDataGroups("PowerType", onlyCombinationsThatExist=FALSE)
@@ -396,7 +396,7 @@ for(i in 1:nrow(scenarios)) {
     )
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(df)
     pt$addRowDataGroups("Level1", onlyAddGroupIf="MaxGroupLevel>=1", addTotal=FALSE, outlineBefore=list(isEmpty=FALSE))
     pt$addRowDataGroups("Level2", onlyAddGroupIf="MaxGroupLevel>=2", addTotal=FALSE, outlineBefore=list(isEmpty=FALSE),

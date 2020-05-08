@@ -199,7 +199,7 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
         base::format(x, format="%B %Y")
       }
 
-      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
       pt$addData(trains)
       pt$addColumnDataGroups("GbttMonth", dataFormat=formatDate)
       pt$addColumnDataGroups("PowerType")
@@ -241,7 +241,7 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
         base::format(x, format=formatCode)
       }
 
-      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+      pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
       pt$addData(trains)
       pt$addColumnDataGroups("GbttMonth", dataFormat=formatDate, dataFmtFuncArgs=list(formatCode="%B %Y"))
       pt$addColumnDataGroups("PowerType")
@@ -271,7 +271,7 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     cgrps <- pt$addColumnDataGroups("PowerType")

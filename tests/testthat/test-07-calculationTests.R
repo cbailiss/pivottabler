@@ -393,13 +393,13 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
+    pt$addColumnDataGroups("PowerType")
     pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains", summariseExpression=countFunction)
     pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)", summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
     pt$addRowCalculationGroups()
-    pt$addColumnDataGroups("PowerType")
     pt$addRowDataGroups("TOC")
     pt$evaluatePivot()
     # pt$renderPivot()

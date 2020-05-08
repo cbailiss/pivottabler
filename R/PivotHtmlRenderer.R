@@ -114,7 +114,9 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      columnCount <- private$p_parentPivot$cells$columnCount
      # ... merges
      rowMerges <- private$p_parentPivot$getMerges(axis="row")
-      # compatibility to keep the explicit row/col span even if span is only 1
+     # compatibility to prevent outputing of nbsp if data group caption is blank (null or "")
+     dataGroupNBSP <- !isTRUE(private$p_parentPivot$compatibility$noDataGroupNBSP)
+     # compatibility to keep the explicit row/col span even if span is only 1
      o2n <- !isTRUE(private$p_parentPivot$compatibility$explicitHeaderSpansOfOne)
      # special case of no rows and no columns, return a blank empty table
      if((rowGroupLevelCount==0)&&(columnGroupLevelCount==0)) {
@@ -200,7 +202,11 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
              }
              trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl,  colspan=oneToNULL(length(grp$leafGroups), o2n), htmltools::tags$p(exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")), detail) # todo: check escaping
            }
-           else trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl, colspan=oneToNULL(length(grp$leafGroups), o2n), exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")) # todo: check escaping
+           else {
+             thValue <- exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue="")
+             if(dataGroupNBSP&&((is.null(thValue)||(length(thValue)==0)||(nchar(thValue)==0)))) thValue <- htmltools::HTML("&nbsp;")
+             trow[[length(trow)+1]] <- htmltools::tags$th(class=chs, style=colstyl, colspan=oneToNULL(length(grp$leafGroups), o2n), thValue) # todo: check escaping
+           }
          }
          trows[[length(trows)+1]] <- htmltools::tags$tr(trow)
        }
@@ -263,7 +269,11 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
              }
              trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl, rowspan=oneToNULL(length(ancg$leafGroups), o2n), colspan=rowMrgColumnSpan, htmltools::tags$p(exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")), detail) # todo: check escaping
            }
-           else trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl, rowspan=oneToNULL(length(ancg$leafGroups), o2n), colspan=rowMrgColumnSpan, exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")) # todo: check escaping
+           else {
+             thValue <- exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue="")
+             if(dataGroupNBSP&&((is.null(thValue)||(length(thValue)==0)||(nchar(thValue)==0)))) thValue <- htmltools::HTML("&nbsp;")
+             trow[[length(trow)+1]] <- htmltools::tags$th(class=rhs, style=rwstyl, rowspan=oneToNULL(length(ancg$leafGroups), o2n), colspan=rowMrgColumnSpan, thValue) # todo: check escaping
+           }
            ancg$isRendered <- TRUE
            if(lastDataGroupInRow) break
          }

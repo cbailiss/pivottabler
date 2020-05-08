@@ -79,7 +79,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addColumnDataGroups("PowerType")
@@ -115,7 +115,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addColumnDataGroups("PowerType")
@@ -152,7 +152,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addColumnDataGroups("PowerType")
@@ -189,7 +189,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addColumnDataGroups("PowerType")
@@ -225,7 +225,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addColumnDataGroups("PowerType")

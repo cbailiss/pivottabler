@@ -120,7 +120,7 @@ for(i in 1:nrow(scenarios)) {
     library(lubridate)
     library(pivottabler)
 
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(trains)
     pt$addRowDataGroups("TOC", header="Train Company", addTotal=FALSE)
     pt$addRowDataGroups("TrainCategory", header="Train Category", addTotal=FALSE)
@@ -184,7 +184,7 @@ for(i in 1:nrow(scenarios)) {
     library(lubridate)
     library(pivottabler)
 
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(trains)
     pt$addRowDataGroups("TOC", header="Train Company")
     pt$addRowDataGroups("TrainCategory", header="Train Category", addTotal=FALSE)

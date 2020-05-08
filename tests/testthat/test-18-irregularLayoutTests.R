@@ -138,7 +138,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     cg1 <- pt$columnGroup$addChildGroup(variableName="TrainCategory", values="Express Passenger")
     cg2 <- pt$columnGroup$addChildGroup(variableName="PowerType", values="DMU")
@@ -170,7 +170,7 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     cgrps <- pt$addColumnDataGroups("PowerType")
@@ -276,7 +276,7 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     # Rows: TOC breakdown
@@ -316,7 +316,7 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     # Rows: TOC breakdown

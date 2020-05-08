@@ -196,11 +196,11 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory", fromData=FALSE, explicitListOfValues=list("Ordinary Passenger", "Freight"))
-    pt$addRowDataGroups("TOC")
     pt$addColumnDataGroups("PowerType")
+    pt$addRowDataGroups("TOC")
     pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
     pt$evaluatePivot()
     # pt$renderPivot()
@@ -227,11 +227,11 @@ for(i in 1:nrow(scenarios)) {
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
-                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory", fromData=FALSE, explicitListOfValues=list("Ordinary Passenger", "Freight"), visualTotals=TRUE)
-    pt$addRowDataGroups("TOC")
     pt$addColumnDataGroups("PowerType")
+    pt$addRowDataGroups("TOC")
     pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
     pt$evaluatePivot()
     # pt$renderPivot()

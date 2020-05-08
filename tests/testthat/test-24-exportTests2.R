@@ -208,7 +208,7 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TOC")
     pt$addColumnDataGroups("TrainCategory")
@@ -244,7 +244,7 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addRowDataGroups("TOC")
     pt$addRowDataGroups("TrainCategory")
@@ -278,7 +278,7 @@ for(i in 1:nrow(scenarios)) {
   test_that(description, {
 
     library(pivottabler)
-    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TOC")
     pt$addColumnDataGroups("TrainCategory")
