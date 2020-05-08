@@ -23,6 +23,12 @@ Improvements
 * Additional arguments can now be passed to custom calculation functions using the `calcFuncArgs` argument.  See the "Calculations" vignette for details.  Thanks to @MarcoPortmann for the suggestion (#31 and #32).
 * It is now possible to pre-calculate totals/aggregate data cells when using calculation method 4 ("Showing a value").  See the "Calculations" vignette for details.  This closes a long-standing gap with this calculation method. (#2).
 
+Deprecated
+----------------
+
+The following can still be used but now emit a deprecation warning:
+
+* The `getLevelNumber()` method on data groups has been replaced with the `levelNumber` property.
 
 pivottabler 1.3.1
 =================

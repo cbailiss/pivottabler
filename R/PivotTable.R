@@ -855,7 +855,7 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if (!is.null(header)) {
         if (length(grps)>0) {
-          levelNumber <- grps[[1]]$getLevelNumber()
+          levelNumber <- grps[[1]]$levelNumber
           private$p_rowGrpHeaders[[levelNumber]] <- header
         }
       }
@@ -2123,7 +2123,7 @@ PivotTable <- R6::R6Class("PivotTable",
                 # row heading captions
                 rg <- cell$rowLeafGroup
                 while(!is.null(rg)) {
-                  levelNumber <- rg$getLevelNumber()
+                  levelNumber <- rg$levelNumber
                   if(levelNumber==0) break
                   df[[paste0("RowLevel", sprintf("%02d", levelNumber))]][cellNumber] <- rg$caption
                   rg <- rg$parentGroup
@@ -2131,7 +2131,7 @@ PivotTable <- R6::R6Class("PivotTable",
                 # column heading captions
                 cg <- cell$columnLeafGroup
                 while(!is.null(cg)) {
-                  levelNumber <- cg$getLevelNumber()
+                  levelNumber <- cg$levelNumber
                   if(levelNumber==0) break
                   df[[paste0("ColumnLevel", sprintf("%02d", levelNumber))]][cellNumber] <- cg$caption
                   cg <- cg$parentGroup

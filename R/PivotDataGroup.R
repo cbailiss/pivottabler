@@ -225,6 +225,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$new", "Created new data group.")
    },
    getLevelNumber = function() {
+      .Deprecated(new="levelNumber")
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getLevelNumber", "Getting level number...")
      levelNumber <- 0
      grp <- self
@@ -1323,7 +1324,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      }
      # c) check level
      if(!is.null(atLevels)) {
-       levelNumber <- self$getLevelNumber()
+       levelNumber <- self$levelNumber
        if(!(levelNumber %in% atLevels)) return(invisible(FALSE))
      }
      # d) check child counts
@@ -1505,15 +1506,26 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    childGroups = function(value) { return(invisible(private$p_groups)) },
    childGroupCount = function(value) { return(invisible(length(private$p_groups))) },
    leafGroups = function(value) { return(invisible(self$getLeafGroups())) },
+   levelNumber = function() {
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$levelNumber", "Getting level number...")
+      ln <- 0
+      grp <- self
+      while(!is.null(grp$parentGroup)) {
+         ln <- ln + 1
+         grp <- grp$parentGroup
+      }
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$levelNumber", "Got level number.")
+      return(invisible(ln))
+   },
    filters = function(value) { return(invisible(private$p_filters)) },
    variableName = function(value) {
      if(is.null(private$p_filters)) return(invisible(NULL))
-     if(private$p_filters$count>1) stop("PivotDataGroup$variableName(): The data group has filters for more than one variable.  Please retrieve the filters via the filters property.", call. = FALSE)
+     if(private$p_filters$count>1) stop("PivotDataGroup$variableName: The data group has filters for more than one variable.  Please retrieve the filters via the filters property.", call. = FALSE)
      return(invisible(private$p_filters$filters[[1]]$variableName))
    },
    values = function(value) {
      if(is.null(private$p_filters)) return(invisible(NULL))
-     if(private$p_filters$count>1) stop("PivotDataGroup$variableName(): The data group has filters for more than one variable.  Please retrieve the filters via the filters property.", call. = FALSE)
+     if(private$p_filters$count>1) stop("PivotDataGroup$variableName: The data group has filters for more than one variable.  Please retrieve the filters via the filters property.", call. = FALSE)
      return(invisible(private$p_filters$filters[[1]]$values))
    },
    calculationGroupName = function(value) {
