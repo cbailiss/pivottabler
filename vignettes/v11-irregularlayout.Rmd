@@ -26,6 +26,8 @@ vignette: >
 
 This is a more advanced topic.  It requires a good understanding of the material in the previous vignettes.  
 
+This vignette starts with a discussion of irregular layout, then defines some low-level methods for building a pivot table before moving onto several different examples of irregular pivot tables.
+
 ## What is Irregular Layout?
 
 Let's start by talking about regular layout.  The  following is an example pivot table that has appeared in previous vignettes:
@@ -53,11 +55,136 @@ Returning to the original question (What is irregular layout?), the definition f
 
 Irregular layouts inevitably require more effort to construct.  Irregular layouts also tend to be harder to understand, so they need careful consideration before being used.  Often using multiple separate regular pivot tables is a better idea. 
 
+## Methods for Building a Data Group Hierarchy
+
+### High-level methods vs. Low-level methods
+
+Constructing pivot tables that have an irregular layout typically requires more lines of R.  This is because the helper functions `pt$addColumnDataGroups()` and `pt$addRowDataGroups()` that have been used throughout all of the previous vignettes to easily build-up the structure of a pivot table can no longer solely be used, since they generate a regular layout only.  Instead the layout must be built in a more granular way.
+
+The table below describes the different methods that exist:
+
+| Comparison                    | High-Level Method    | Low-Level Method   | 
+|:------------------------------|:---------------------|:-------------------|
+| Number of data groups added per execution | Typically adds multiple groups per execution | Adds one group per execution |
+| Variations | Different methods for data groups and calculations | Single method can add a data group or a calculation group |
+| Add at levels | Can add groups at any level in the hierarchy. | Can only add child groups of the current group. |
+| Usability | Generally easier to use. | Generally harder to use. | 
+| Safety | More checks that parameter values make sense. | Fewer checks potentially leading to non-sensical or invalid pivot table states. |
+| Pivot Table methods | `pt$addRowDataGroups()`<br>`pt$addColumnDataGroups()`<br>`pt$addRowCalculationGroups()`<br>`pt$addColumnCalculationGroups()` | `pt$addRowGroup()`<br>`pt$addColumnGroup()` |
+| Data Group methods | `grp$addDataGroups()`<br>`grp$addCalculationGroups()` | `grp$addChildGroup()` |
+
+Notes:
+
+- It is possible to mix the high-level and low-level methods when building a pivot table, e.g. level 1 could be built using the low-level methods, then level 2 built using one of the high-level methods.  This can be seen in the examples below.
+- The pivot table versions of the low-level methods add the new group into level 1 of the hierarchy.
+- `pt$addRowCalculationGroups()` and `pt$addColumnCalculationGroups()` do not feature in many examples in the documentation and many users will rarely have used them explicitly, however other functions such as `pt$evaluatePivot()` and `pt$renderPivot()` internally call them.
+- The high-level methods internally make use of the low-level methods.  
+- The pivot table versions are generally thin wrappers of the data group versions, e.g. `pt$addRowDataGroups()` internally calls `pt$rowGroup$addDataGroups()`.
+
+### Low level method parameter details
+
+The low level methods have the following parameters:
+
+- `variableName` - a character value that specifies the name of the variable in the data frame that the new group relates to and will filter (if any).
+- `filterType` - must be one of "ALL", "VALUES", or "NONE" to specify the filter type:
+  + ALL means no filtering is applied.
+  + VALUEs is the typical value used to specify that `variableName` is filtered to only `values`.
+  + NONE means no data will match this data group.
+- `values` specifies the filter values applied to `variableName` in order for data to match this row/column in the pivot table.
+- `doNotExpand` - a logical value, default `FALSE` - specify `TRUE` to prevent the high-level methods from adding child groups.
+- `isEmpty`- a logical value, default `FALSE` - specify `TRUE` to prevent any data from matching this data group.
+- `isOutline` - specifies whether this data group is an outline group or not.
+  + Typically sets of two or three groups (header/before, value and footer/after) are added for each data value when generating outline groups.
+  + Normally, the `doNotExpand`, `sortAnchor` and `outlineLinkedGroupId` parameters are set for an outline group.
+  + See the [Regular Layout](v04-regularlayout.html) vignette for more information about outline groups.
+- `captionTemplate` - a character value that specifies the template for the data group caption.
+  + The default caption template of `{values}` simply displays the value without any prefix or suffix.
+  + See the [Data Groups](v02-datagroups.html) vignette for an example of setting the caption template.
+- `caption` - effectively a hard-coded caption that overrides the built-in logic for generating a caption.
+- `isTotal` - a logical value that specifies whether this data group is a total.
+- `isLevelSubTotal` - a logical value that specifies whether this data group is a sub-total within a level
+  + Typically there are multiple sub-totals within a level.
+- `isLevelTotal` - a logical value that specifies whether this data group is the total for a level.
+- `calculationGroupName` - for calculation groups, this character value specifies the calculation group that `calculationName` belongs to.
+- `calculationName` - for calculation groups, this character value specifies the name of the calculation.
+- `baseStyleName` - the style name for the data group.
+- `styleDeclarations` - a list of CSS style declarations to overlay on top of the base style.
+- `insertAtIndex` - the one-based location specifying where to insert the new data group.
+- `insertBeforeGroup` - a reference data group specifying where to insert the new data group. 
+- `insertAfterGroup` - a reference data group specifying where to insert the new data group.
+- `mergeEmptySpace` - a character value that specifies how empty space should be merged.
+  + This is typically only used with outline groups (so applies to row groups only, not column groups)
+  + `mergeEmptySpace` must be one of "doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1" or "dataGroupsAndCellsAs2".
+  + See the [Regular Layout](v04-regularlayout.html) vignette for more information.
+- `cellBaseStyleName` - the style name for cells related to this data group.
+- `cellStyleDeclarations` - a list of CSS style declarations to overlay on top of the base style for cells related to this data group.
+- `sortAnchor` - used to specify sort behaviour for outline groups, must be one of "fixed", "next" or "previous".
+- `outlineLinkedGroupId` - used to link an outline group to the value data group which has the child data groups. 
+- `resetCells` - a logical value, default value `TRUE` - which clears the current pivot table cells (if the pivot table has already been evaluated).
+  + Clearing the pivot table cells is normally desirable, since changes to the data groups means they no longer align with the previously calculated cells.
+
+## Methods for modifying a pivot table
+
+### Modifying data group properties
+
+The properties and methods of a data group can be examined in code, e.g.
+
+```{r, eval=FALSE, message=FALSE, warning=FALSE}
+pt$topRowGroups[[1]]
+```
+
+Some data group properties are read-only (i.e. the R6 active bindings do not support changing the private values), though they will not error if an attempt is made - rather the internal value simply won't be updated.
+
+It is nonethless possible to change many properties of the data groups, however, doing so should be done with caution as this may invalidate the state of the pivot table and such code could be broken by future changes to the package.
+
+If you find that modifying data group properties is necessary for your requirements, please log an issue in the package GitHub site/repository to inform the package author of the use-case.  
+
+### Moving data groups
+
+The data groups are tied into a hierarchy.  Moving data groups is not currently supported.
+
+### Removing data groups
+
+The following methods can be used to remove groups:
+
+- `grp$removeChildGroup()` - removes a child group of the current group, parameters:
+  + `index` - specifies the one-based index of the child to remove.
+  + `group` - specifies the child group to remove.
+  + `resetCells` - a logical value, default value `TRUE` - which clears the current pivot table cells (if the pivot table has already been evaluated).
+- `grp$removeGroup()` - removes the current group, parameters:
+  + `removeAncestorsIfNoRemainingChildren` - a logical value, default value `FALSE`, that specifies whether the parent group should also be removed if it has no remaining child groups.
+  + `removedRelatedOutlineGroups` - a logical value, default value `FALSE`, that specifies whether the related outline groups (siblings of the current group) should also be removed.
+  + `resetCells` - a logical value, default value `TRUE` - which clears the current pivot table cells (if the pivot table has already been evaluated).
+  
+### Modifying data group properties
+
+The properties and methods of a cell can also be examined in code, e.g.
+
+```{r, eval=FALSE, message=FALSE, warning=FALSE}
+pt$getCell(r=1, c=1)
+```
+
+Again, while some properties are read-only, it is possible to change many properties of the cells, however, doing so should be done with caution as this may invalidate the state of the pivot table and such code could be broken by future changes to the package.  
+
+If you find that modifying cell properties is necessary for your requirements, please log an issue in the package GitHub site/repository to inform the package author of the use-case.  
+  
+### Moving cells
+
+The cells are tied into a hierarchy.  Moving cells is not supported (and unlikely ever to be supported).
+
+### Removing cells
+
+The cells are tied into a hierarchy.  Removing individual cells is not currently supported.
+
+### Removing rows and columns
+
+It is possible to remove entire rows and columns.  This does not reset the cells - so recalculating the pivot table is not needed after removing rows or columns.
+
+Removing rows/columns is discussed in more detail below.
+
 ## Simple Example of an Irregular Layout
 
-Constructing pivot tables that have an irregular layout typically requires more lines of R.  This is because the helper functions `addColumnDataGroups()` and `addRowDataGroups()` that have been used throughout all of the previous vignettes to easily build-up the structure of a pivot table can no longer be used, since they generate a regular layout only.  Instead the layout must be built in a more granular way.  
-
-For example, consider we are only interested in the number of express trains (i.e. TrainCategory="Express Passenger") and the number of DMU trains (i.e. PowerType="DMU"), for each train operating company.  Since these requirements relate to two different variables, we need to construct an irregular layout.  To do this, these two data groups are added individually to the root column group: 
+Consider we are only interested in the number of express trains (i.e. TrainCategory="Express Passenger") and the number of DMU trains (i.e. PowerType="DMU"), for each train operating company.  Since these requirements relate to two different variables, we need to construct an irregular layout.  To do this, these two data groups are added individually to the root column group: 
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
