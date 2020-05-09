@@ -671,6 +671,62 @@ for(i in 1:nrow(scenarios)) {
 }
 
 
+scenarios <- testScenarios("data groups tests:  index and instanceIds")
+for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    pt$addRowDataGroups("TOC")
+    pt$addRowDataGroups("PowerType")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$evaluatePivot()
+    pt$renderPivot()
+    sum(pt$cells$asMatrix(), na.rm=TRUE)
+    prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" colspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">Arriva Trains Wales</th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">3079</td>\n    <td class=\"Total\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"3\">CrossCountry</th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">22133</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Total\">22196</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">HST</th>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">732</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">22865</td>\n    <td class=\"Total\">63</td>\n    <td class=\"Total\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"3\">London Midland</th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">5638</td>\n    <td class=\"Cell\">5591</td>\n    <td class=\"Total\">11229</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">EMU</th>\n    <td class=\"Cell\">8849</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Total\">37050</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">14487</td>\n    <td class=\"Total\">33792</td>\n    <td class=\"Total\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"3\">Virgin Trains</th>\n    <th class=\"RowHeader\">DMU</th>\n    <td class=\"Cell\">2137</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">2137</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">EMU</th>\n    <td class=\"Cell\">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">6457</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">8594</td>\n    <td class=\"Total\"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <th class=\"RowHeader\">&nbsp;</th>\n    <td class=\"Total\">49025</td>\n    <td class=\"Total\">34685</td>\n    <td class=\"Total\">83710</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 502260)
+    expect_identical(as.character(pt$getHtml()), html)
+
+    cgrps <- pt$topColumnGroups
+    rgrps <- pt$topRowGroups
+
+    expect_equal(length(cgrps), 3)
+    expect_equal(length(rgrps), 5)
+
+    grps <- c(cgrps, rgrps)
+    expect_equal(length(grps), 8)
+
+    cix <- pt$columnGroup$getChildIndex(cgrps)
+    expect_equal(cix, c(1, 2, 3))
+
+    rix <- pt$rowGroup$getChildIndex(rgrps)
+    expect_equal(rix, c(1, 2, 3, 4, 5))
+
+    fx <- function(x) { x$instanceId }
+    cid <- sapply(cgrps, fx)
+    rid <- sapply(rgrps, fx)
+    id <- c(cid, rid)
+    expect_identical(any(duplicated(id)), FALSE)
+
+    cix <- pt$columnGroup$findChildIndex(cid)
+    expect_equal(cix, c(1, 2, 3))
+
+    rix <- pt$rowGroup$findChildIndex(rid)
+    expect_equal(rix, c(1, 2, 3, 4, 5))
+  })
+}
+
+
 scenarios <- testScenarios("data groups tests:  navigation methods")
 for(i in 1:nrow(scenarios)) {
   if(!isDevelopmentVersion) break

@@ -392,38 +392,54 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    },
    getChildIndex = function(childGroup=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
-         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "getChildIndex", childGroup, missing(childGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "getChildIndex", childGroup, missing(childGroup), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("list", "PivotDataGroup"), allowedListElementClasses="PivotDataGroup")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getChildIndex", "Getting child index...")
-      childIndex <- NULL
-      if (length(private$p_groups) > 0) {
-         instanceId <- childGroup$instanceId
-         for (i in 1:length(private$p_groups)) {
-            if(private$p_groups[[i]]$instanceId==instanceId) {
-               childIndex <- i
-               break
+      grps <- childGroup
+      if("PivotDataGroup" %in% class(grps)) grps <- list(childGroup)
+      indexes <- vector("integer", length(grps))
+      if(length(grps)>0) {
+         for(i in 1:length(grps)) {
+            childIndex <- NULL
+            if (length(private$p_groups) > 0) {
+               instanceId <- grps[[i]]$instanceId
+               for (j in 1:length(private$p_groups)) {
+                  if(private$p_groups[[j]]$instanceId==instanceId) {
+                     childIndex <- j
+                     break
+                  }
+               }
             }
+            if(is.null(childIndex)) indexes[i] <- NA
+            else indexes[i] <- childIndex
          }
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$getChildIndex", "Got child index.", list(index=childIndex))
-      return(invisible(childIndex))
+      return(invisible(indexes))
    },
    findChildIndex = function(childGroupInstanceId=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findChildIndex", childGroupInstanceId, missing(childGroupInstanceId), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$findChildIndex", "Finding child group index by instance Id...")
-     childIndex <- NULL
-     if (length(private$p_groups) > 0) {
-       for (i in 1:length(private$p_groups)) {
-         if(private$p_groups[[i]]$instanceId==childGroupInstanceId) {
-           childIndex <- i
-           break
-         }
+     indexes <- vector("integer", length(childGroupInstanceId))
+     if(length(childGroupInstanceId)>0) {
+       for(i in 1:length(childGroupInstanceId)) {
+          childIndex <- NULL
+          if (length(private$p_groups) > 0) {
+             for (j in 1:length(private$p_groups)) {
+               if(private$p_groups[[j]]$instanceId==childGroupInstanceId[i]) {
+                 childIndex <- j
+                 break
+               }
+             }
+          }
+          if(is.null(childIndex)) indexes[i] <- NA
+          else indexes[i] <- childIndex
        }
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$findChildIndex", "Found child group index by instance Id.")
-     return(invisible(childIndex))
+     return(invisible(indexes))
    },
    addChildGroup = function(variableName=NULL, filterType="ALL", values=NULL,
                             doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE,
