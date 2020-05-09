@@ -392,6 +392,8 @@ Various examples of using the `pivottabler` package are shown below. Please see 
 
 ![](intro-23.png)
 
+![](intro-32.png)
+
 ### Results as a Matrix
 
 ![](intro-24.png)

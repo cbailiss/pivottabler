@@ -161,6 +161,12 @@ pt$renderPivot()
 
 ![<http://cbailiss.me.uk/pivottablerreadmeimgs/example7.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example7.png)
 
+Outline layout can also be used to build a pivot table with a variable depth hierarchy on the rows, e.g. a simple balance sheet:
+
+![<http://cbailiss.me.uk/pivottablerreadmeimgs/example8.png>](http://cbailiss.me.uk/pivottablerreadmeimgs/example8.png)
+
+The R for generating the above pivot table can be found in the Regular Layout vignette at <http://www.pivottabler.org.uk/articles>.
+
 #### Multiple Calculations
 
 Multiple calculations are supported. Calculations can be based on other calculations in the pivot table. Calculations can be hidden - e.g. to hide calculations that only exist to provide values to other calculations.

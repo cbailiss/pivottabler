@@ -12,8 +12,9 @@ vignette: >
 ## In This Vignette
 
 - High Level Methods vs. Low Level Methods
-- Example Pivot Table
 - Navigating Data Groups
+- Navigating Cells
+- Navigating between data groups and rows / columns / cells
 
 ## High Level Methods vs. Low Level Methods
 
@@ -281,7 +282,7 @@ In the above pivot table there is only one level of row data groups so `pt$topRo
 
 Outline groups (see the [Regular Layout](v04-regularlayout.html) vignette) are usually created in sets of two or three groups.  For example, consider the following pivot table, where three rows are created for each train operating company (TOC):
 
-```{r, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 library(dplyr)
 library(pivottabler)
 createPivot3 <- function() {
@@ -318,6 +319,30 @@ grp <- pt$topRowGroups[[1]]
 grps <- grp$getRelatedOutlineGroups()
 pt$setStyling(groups=grps, declarations=list("background-color"="cyan"))
 pt$renderPivot()
+```
+
+### Data Group Unique Identifier
+
+Each data group has an identifier called an instance id which can be accessed via the `instanceId` property.  This integer is guaranteed to be unique.  It is primarily designed to be used when comparing two variables, each holding a data group, to see if both variables refer to the same data group instance or different instances.  For the three data groups highlighted in blue in the above pivot table:
+
+```{r, message=FALSE, warning=FALSE}
+fx <- function(x) { x$instanceId }
+instanceIds <- sapply(grps, fx)
+instanceIds
+```
+
+### Converting between instance ids and indexes
+
+It is possible to convert between instance ids and the index of the elements in the list of children using either `grp$getChildIndex()` (specifying a single group or a list of groups) or `grp$findChildIndex()` (specifying instance ids).  Both methods require that the groups referred to in the argument are children of the group the method is called on (i.e. children of `grp`), otherwise `NA` will be returned.
+
+```{r, message=FALSE, warning=FALSE}
+index <- pt$rowGroup$getChildIndex(grps)
+index
+fx <- function(x) { x$instanceId }
+instanceIds <- sapply(grps, fx)
+instanceIds
+index <- pt$rowGroup$findChildIndex(instanceIds)
+index
 ```
 
 ### Finding multiple data groups
@@ -363,6 +388,14 @@ cell$formattedValue
 ```
 
 Note that `pt$getCell()` can only be used to retrieve an individual cell.
+
+### Cell Unique Identifier
+
+Each cell also has an instance id which can be accessed via the `instanceId` property.  Again, this integer is guaranteed to be unique and is primarily designed to be used when comparing two variables to see if both variables refer to the same cell instance.
+
+```{r, message=FALSE, warning=FALSE}
+cell$instanceId
+```
 
 ### Retrieving multiple cells 
 

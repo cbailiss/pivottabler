@@ -419,6 +419,109 @@ pt$addRowDataGroups("TOC", addTotal=FALSE)
 pt$renderPivot()
 ```
 
+## Variable Depth Hierarchy Example
+
+For advanced scenarios, it is possible to control whether a data group or outline child group is created using the following two parameters in `pt$addRowCalculationGroups()` and `pt$addColumnCalculationGroups()`:
+
+- `onlyAddGroupIf` - a character value that is used as additional filter criteria before creating each data group - only if some rows exist that match this filter will the data group be created.
+- `onlyAddOutlineChildGroupIf` - a character value that is used as additional filter criteria before creating each outline child data group - only if some rows exist that match this filter will the data group be created.
+
+The example below demonstrates the use of `onlyAddOutlineChildGroupIf` to create a balance sheet style table with a variable number of levels in the row data groups:
+
+```{r, message=FALSE, warning=FALSE}
+df <- data.frame(
+  Level1 = rep("Net entrepreneurial income", times=12),
+  Level2 = c(rep("Net operating surplus", 9), rep("Interests and rents", 3)),
+  Level3 = c(rep("Factor income", 8),"Compensation of employees","Paid rent",
+             "Paid interest","Received interest"),
+  Level4 = c(rep("Net value added", 6), rep("Taxes and subsidies", 2), rep(NA, 4)),
+  Level5 = c(rep("Gross value added", 5),"Depreciation","Other taxes on production",
+             "Other subsidies (non-product specific)", rep(NA, 4)),
+  Level6 = c(rep("Production of the agricultural industry", 4),
+             "Intermediate services", rep(NA, 7)),
+  Level7 = c("Crop production","Livestock production",
+             "Production of agricultural services","Other production", rep(NA, 8)),
+  MaxGroupLevel = c(7,7,7,7,6,5,5,5,3,3,3,3),
+  Budget2019 = c(4150.39,4739.2,625.6,325.8,-6427,-2049.3,
+                 -145.4,2847.3,-1149,-221.2,-307.6,12.8),
+  Actual2019 = c(3978.8,4341.1,603.7,343,-6063.9,-2079.6,
+                 -136.8,2578.6,-1092.9,-203.3,-327.6,14.1),
+  Budget2020 = c(4210.9,4857.7,676.6,405.8,-6299,-2086.7,
+                 -145.4,2920.6,-1245,-236.5,-244.7,10.1),
+  Actual2020 = c(4373.7,5307.6,693.9,408.2,-7065.3,-1985,
+                 -154.2,3063,-1229.3,-268.2,-250.3,11.1)
+)
+
+library(pivottabler)
+pt <- PivotTable$new() 
+pt$setDefault(addTotal=FALSE, outlineBefore=list(isEmpty=FALSE))
+pt$addData(df)
+pt$addRowDataGroups("Level1", outlineBefore=TRUE, 
+        onlyAddOutlineChildGroupIf="MaxGroupLevel>1")
+pt$addRowDataGroups("Level2", outlineBefore=TRUE, 
+        onlyAddOutlineChildGroupIf="MaxGroupLevel>2", 
+        dataSortOrder="custom", 
+        customSortOrder=c("Net operating surplus", "Interests and rents"))
+pt$addRowDataGroups("Level3", outlineBefore=TRUE, 
+        onlyAddOutlineChildGroupIf="MaxGroupLevel>3", 
+        dataSortOrder="custom", 
+        customSortOrder=c("Factor income", "Compensation of employees",
+                          "Paid rent", "Paid interest", "Received interest"))
+pt$addRowDataGroups("Level4", outlineBefore=TRUE, 
+        onlyAddOutlineChildGroupIf="MaxGroupLevel>4")
+pt$addRowDataGroups("Level5", outlineBefore=TRUE, 
+        onlyAddOutlineChildGroupIf="MaxGroupLevel>5",
+        dataSortOrder="custom", 
+        customSortOrder=c("Gross value added", "Depreciation",
+                          "Other taxes on production", 
+                          "Other subsidies (non-product specific)"))
+pt$addRowDataGroups("Level6", outlineBefore=TRUE, 
+        onlyAddOutlineChildGroupIf="MaxGroupLevel>6",
+        dataSortOrder="custom", 
+        customSortOrder=c("Production of the agricultural industry", 
+                          "Intermediate Services"))
+pt$addRowDataGroups("Level7", dataSortOrder="custom", 
+                    customSortOrder=c("Crop production", "Livestock production",
+                    "Production of agricultural services", "Other production"))
+pt$defineCalculation(calculationName="Budget", 
+                     summariseExpression="sum(Budget2020)")
+pt$defineCalculation(calculationName="Actual", 
+                     summariseExpression="sum(Actual2020)")
+pt$defineCalculation(calculationName="Variance", 
+                     summariseExpression="sum(Actual2020)-sum(Budget2020)", 
+                     format="%.1f")
+pt$evaluatePivot()
+
+# get the row groups relating to outline groups 
+# (above leaf level) and leaf level groups
+grps <- pt$findRowDataGroups(outlineGroups="only", 
+                             outlineLinkedGroupExists=FALSE)
+grps <- c(grps, pt$findRowDataGroups(atLevel=7))
+# set the styling of these groups so the text isn't bold
+pt$setStyling(groups=grps, declarations =list("font-weight"="normal"))
+
+# find the cells corresponding to these groups
+rowNumbers <- sapply(grps, pt$findGroupRowNumbers)
+cells <- pt$getCells(rowNumbers=rowNumbers)
+# set the styling of these cells to be normal cells 
+# instead of the darker outline styling
+pt$setStyling(cells=cells, baseStyleName="Cell")
+
+# apply the red style for negative variance
+cells <- pt$findCells(calculationNames="Variance", 
+                      minValue=-1000, maxValue=0, 
+                      includeNull=FALSE, includeNA=FALSE)
+pt$setStyling(cells=cells, declarations=list("color"="#9C0006"))
+# apply the green style for positive variance
+cells <- pt$findCells(calculationNames="Variance", 
+                      minValue=0, maxValue=10000, 
+                      includeNull=FALSE, includeNA=FALSE)
+pt$setStyling(cells=cells, declarations=list("color"="#006100"))
+
+# draw the pivot table
+pt$renderPivot()
+```
+
 ## Irregular Layout
 
 All of the pivot tables on this page have used regular layout, i.e. where each level of row or column data groups relates to only one variable.  It is possible to construct custom pivot tables using irregular layout.  See [Irregular Layout](v11-irregularlayout.html) for details.

@@ -14,6 +14,9 @@ vignette: >
 - Introductory Note
 - What is Irregular Layout?
 - Caution
+- Constructing an Irregular Layout
+- Methods for Building a Data Group Hierarchy
+- Methods for Modifying a Pivot Table
 - Simple Example of an Irregular Layout
 - Extending the Simple Example
 - Another Example
@@ -54,6 +57,17 @@ Returning to the original question (What is irregular layout?), the definition f
 ## Caution
 
 Irregular layouts inevitably require more effort to construct.  Irregular layouts also tend to be harder to understand, so they need careful consideration before being used.  Often using multiple separate regular pivot tables is a better idea. 
+
+## Constructing an Irregular Layout
+
+The process for building an irregular layout is:
+
+1. Building the data group hierarchies (row headings and column headings)
+2. Evaluate the pivot table - to generate and calculate the cells in the body of the pivot table
+3. Modify the resulting pivot table - if needed
+4. Render the pivot table
+
+Most of the extra effort in building an irregular/custom pivot table is in step 1 and potentially step 3.  Step 2 is identical for both regular and irregular pivot tables and involves nothing more than calling `pt$evaluatePivot()` or similar.  Step 4 is also identical for both regular and irregular pivot tables.
 
 ## Methods for Building a Data Group Hierarchy
 
@@ -123,7 +137,7 @@ The low level methods have the following parameters:
 - `resetCells` - a logical value, default value `TRUE` - which clears the current pivot table cells (if the pivot table has already been evaluated).
   + Clearing the pivot table cells is normally desirable, since changes to the data groups means they no longer align with the previously calculated cells.
 
-## Methods for modifying a pivot table
+## Methods for Modifying a Pivot Table
 
 ### Modifying data group properties
 
@@ -170,11 +184,11 @@ If you find that modifying cell properties is necessary for your requirements, p
   
 ### Moving cells
 
-The cells are tied into a hierarchy.  Moving cells is not supported (and unlikely ever to be supported).
+The cells are tied into a grid structure.  Moving cells is not supported (and unlikely ever to be supported).
 
 ### Removing cells
 
-The cells are tied into a hierarchy.  Removing individual cells is not currently supported.
+Removing individual cells is not currently supported.
 
 ### Removing rows and columns
 
@@ -367,7 +381,7 @@ pt$addData(bhmtrains)
 cg1 <- pt$addColumnGroup(variableName="TrainCategory", values="Express Passenger", 
                          caption="Express Passenger (Count)")
 cg2 <- pt$addColumnGroup(variableName="PowerType", values="DMU", 
-                         caption="DMU (Maximum Speed")
+                         caption="DMU (Maximum Speed)")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$defineCalculation(calculationGroupName="calcGrp2", calculationName="MaxSpeedMPH", 

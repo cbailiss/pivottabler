@@ -8,6 +8,7 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^readme
 ^vignettes/v01-introduction\.Rmd$
 ^vignettes/v02-datagroups\.Rmd$
 ^vignettes/v03-calculations\.Rmd$

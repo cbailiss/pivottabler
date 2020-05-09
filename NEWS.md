@@ -13,9 +13,9 @@ Breaking Changes
 
 **Row group and column group captions for blank values**
 
-When generating HTML, previous versions of the package would not output any caption for data groups with a blank null (e.g. NULL).  This could lead to rows collapsing to a few pixels in height (if all of the cells on the row also had no value).  Starting with v1.4.0, a non-breaking space character is emitted instead (HTML &nbsp;), in the same way that other parts of the pivot table sometimes also emit a non-breaking space character.   This should make minimal difference to the visual appearance of the table, however it may cause issues for users who require the previous behaviour.  The previous behaviour is still available by specifying `compatibility=list(noDataGroupNBSP=TRUE)` as an argument when creating the pivot table, either in `PivotTable$new()` or one of the quick pivot functions such as `qpvt()`.
+When generating HTML, previous versions of the package would not output any caption for data groups with a blank null (e.g. NULL).  This could lead to rows collapsing to a few pixels in height (if all of the cells on the row also had no value).  Starting with v1.4.0, a non-breaking space character is emitted instead (HTML &amp;nbsp;), in the same way that other parts of the pivot table sometimes also emit a non-breaking space character.   This should make minimal difference to the visual appearance of the table, however it may cause issues for users who require the previous behaviour.  The previous behaviour is still available by specifying `compatibility=list(noDataGroupNBSP=TRUE)` as an argument when creating the pivot table, either in `PivotTable$new()` or one of the quick pivot functions such as `qpvt()`.
 
-A future version of the package will likely include an option to prevent all non-breaking space characters from being emitted and will more correctly use CSS style rules instead to control minimum data group heights/widths. 
+A future version of the package will likely include an option to prevent all non-breaking space characters from being emitted and more correctly use CSS style rules instead to control minimum data group heights/widths. 
 
 Improvements
 ----------------
@@ -28,7 +28,7 @@ Improvements
 * Empty rows/columns can be found using the new functions `pt$getEmptyRows()` and `pt$getEmptyColumns()`.  See the "Custom Layout Changes" section of the "Irregular Layout" vignette for details. 
 * The `pt$findRowDataGroups()` and `pt$findColumnDataGroups()` functions gain additional parameters: `atLevels`, `minChildCount`, `maxChildCount` and `outlineLinkedGroupExists`.  See the "Finding and Formatting" vignette for details.
 * When deleting data groups using `group$removeGroup()`, it is now possible to also remove the related groups such as the outline group header row (aka. outline before) and outline group footer row (aka. outline after) using the new argument `removedRelatedOutlineGroups=TRUE`.
-* Specific rows and/or columns can be removed from pivot tables using new functions such as `pt$removeRow(3)`, `pt$removeRows(c(2, 4))` and `pt$removeEmptyRows()`.  See the "Custom Layout Changes" section of the "Irregular Layout" vignette for details. 
+* Specific rows and/or columns can be removed from pivot tables using new functions such as `pt$removeRow(3)` and `pt$removeRows(c(2, 4))`.  See the "Custom Layout Changes" section of the "Irregular Layout" vignette for details. 
 * `pt$addRowDataGroups()` gains two new arguments `onlyAddGroupIf` and `onlyAddOutlineChildGroupIf` which enable hierarchies with a variable number of levels to be used on rows in a pivot table in outline layout.  See the "Regular Layout" vignette for details.  Thanks to @MarcoPortmann for the usage scenario.
 * When exporting to a data frame, it is now possible to also export the row groups as columns (instead of only row names) using `pt$asDataFrame(rowGroupsAsColumns=TRUE)`.  Thanks to @ismailmuller for the suggestion (#29).
 * When exporting to a data frame, the handling of cell values that are not integer/numeric can be specified using the `forceNumeric` argument. `TRUE` will convert any values that are not integer/numeric to NA.
@@ -39,7 +39,7 @@ Improvements
 Deprecated
 ----------------
 
-The following can still be used but now emit a deprecation warning:
+The following can still be used but now emits a deprecation warning:
 
 * The `getLevelNumber()` method on data groups has been replaced with the `levelNumber` property.
 
@@ -75,7 +75,7 @@ Improvements
    * Several other options that are described in the "Irregular Layout" vignette.
 * Headings for the row data groups (i.e. headings for the first column / first few columns) in a pivot table can now be specified.  See the "Pivot tables as standard tables (row group headings)" section in the "Data Groups" vignette for details.  The new `showRowGroupHeaders` argument can be used with `pt$renderPivot()`, `pt$getHtml()`, `pt$saveHtml()`, `pt$writeToExcelWorksheet()` and `pt$asBasicTable()`.
 * New function `pt$asDataMatrix()` provides a cleaner way to convert a pivot table to a matrix, where the row/column headings in the pivot table become the row/column headings in the matrix.  See the "Outputs" vignette for details.
-* New function `setStyling()` provides an alternative method to set style declarations on data group headers and cells.  See the "Irregular Layout" vignette for an example.
+* New function `setStyling()` provides an alternative method to set style declarations on data group headers and cells.  See the "Finding and Formatting" or "Irregular Layout" vignettes for examples.
 * Additional arguments can now be passed to custom functions used to format calculation values.  See the `fmtFuncArgs` parameter in the "Calculations" vignette for details.
 * Additional arguments can now be passed to custom functions used to format data group values.  See the `fmtFuncArgs` parameter in the "Data Groups" vignette for details.
 
