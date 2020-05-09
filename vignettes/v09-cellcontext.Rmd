@@ -38,7 +38,7 @@ pt$renderPivot()
 
 ## What is "Cell Context"?
 
-Each cell in a pivot table will sit under one or more row and column headings.  These headings determine the filters that are applied to the data to calculate the value of that cell.  This is the cell context.
+Each cell in a pivot table will sit under one or more row and column headings (data groups).  These headings determine the filters that are applied to the data to calculate the value of that cell.  This is the cell context.
 
 For example, in the pivot table below, the cell highlighted in green (value 33792) is subject to the following filters:
 
@@ -95,7 +95,7 @@ For example, in the "Method 2" example in the [Data Groups](v02-datagroups.html)
 
 The cell filters are explicitly applied in code as part of the custom function definition.  The author of the custom function has full control over if and when the cell filters are applied.
 
-For example, in the "Method 3" example in the [Data Groups](v02-datagroups.html) vignette, the cell filters are explicitly applied by the line `filteredTrains <- pivotCalculator$getFilteredDataFrame(trains, netFilters)`.  Here, the `netFilters` parameter is a `PivotFilters` object that contains the filters for the current cell.  Remember, the custom function is invoked once for each cell in the pivot table.
+For example, in the "Method 3" example in the [Data Groups](v02-datagroups.html) vignette, the cell filters are explicitly applied by the line `filteredTrains <- pivotCalculator$getFilteredDataFrame(trains, netFilters)`.  Here, the `netFilters` parameter is a `PivotFilters` object that contains the filters for the current cell.  Remember, the custom function is invoked once for each cell in the pivot table that relates to that calculation.
 
 ### Method 4:  Showing a value (no calculation)
 

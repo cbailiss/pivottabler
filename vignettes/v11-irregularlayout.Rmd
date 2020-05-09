@@ -15,8 +15,8 @@ vignette: >
 - What is Irregular Layout?
 - Caution
 - Constructing an Irregular Layout
-- Methods for Building a Data Group Hierarchy
-- Methods for Modifying a Pivot Table
+- Building a Data Group Hierarchy
+- Modifying a Pivot Table
 - Simple Example of an Irregular Layout
 - Extending the Simple Example
 - Another Example
@@ -69,7 +69,47 @@ The process for building an irregular layout is:
 
 Most of the extra effort in building an irregular/custom pivot table is in step 1 and potentially step 3.  Step 2 is identical for both regular and irregular pivot tables and involves nothing more than calling `pt$evaluatePivot()` or similar.  Step 4 is also identical for both regular and irregular pivot tables.
 
-## Methods for Building a Data Group Hierarchy
+## Building a Data Group Hierarchy
+
+### Reminder:  What are data groups?
+
+Each row and column heading in a pivot table is a data group.  If the hierarchy on the rows or columns has multiple levels, then each heading in each level is a data group.  Put another way, each heading cell in the table is a data group.  This is explored more in the [Navigating a Pivot Table](v10-navigatingapivottable.html) vignette.
+
+Each data group is an instance of the R6 `PivotDataGroup` class.  See the [Appendix: Class Overview](vA3-appendix.html) vignette for more details.
+
+A data group can relate to a single value from a single variable (column) in a data frame.  This is the most common case, e.g. in the pivot table below, there are five data groups on the rows axis and three data groups on the columns axis.  The totals data groups relate to more than one value on each axis.  
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$renderPivot()
+```
+
+A data group can also relate to multiple values from a single variable.  In irregular pivot tables, a data group even relate to multiple values from multiple variables.
+
+There is more discussion of data group variables and values in the [Cell Context](v09-cellcontext.html) vignette.
+
+A data group can also represent just a calculation.  This is most common when a pivot table contains more than one visible calculation.  In pivot tables with more than one calculation, a calculation data group is created for each calculation under each of the existing data groups on an axis, e.g.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="NumberOfTrains", caption="Number of Trains",
+                     summariseExpression="n()")
+pt$defineCalculation(calculationName="MaximumSpeedMPH", caption="Maximum Speed (MPH)",
+                     summariseExpression="max(SchedSpeedMPH, na.rm=TRUE)")
+pt$renderPivot()
+```
+
+
 
 ### High-level methods vs. Low-level methods
 
@@ -137,7 +177,7 @@ The low level methods have the following parameters:
 - `resetCells` - a logical value, default value `TRUE` - which clears the current pivot table cells (if the pivot table has already been evaluated).
   + Clearing the pivot table cells is normally desirable, since changes to the data groups means they no longer align with the previously calculated cells.
 
-## Methods for Modifying a Pivot Table
+## Modifying a Pivot Table
 
 ### Modifying data group properties
 
