@@ -3,61 +3,233 @@
 \docType{class}
 \name{PivotFilter}
 \alias{PivotFilter}
-\title{A class that defines a filter condition.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that
-  define a single pivot table filter.
+\title{R6 class that defines a filter condition.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotFilter class represents a single filter condition.  The condition
-relates to one column and is of the form [ColumnName] IN c(Value1, Value2,
-Value3, ...).  Often in a pivot table, each filter specifies only one data
+The `PivotFilter` class represents a single filter condition.
+}
+\details{
+The filter condition represented by a `PivotFilter` instance relates to
+one data frame variable/column and is of the form
+[ColumnName] IN c(Value1, Value2, Value3, ...).
+Often in a pivot table, each filter specifies only one data
 value, as typically each distinct data value exists in a separate row or
 column.
+The `PivotFilter` class contains methods to perform set based operations
+on filter values when combining filters.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-
-\item{\code{variableName}}{The name of the column in the data frame that this filter
-will apply to.}
-
-\item{\code{safeVariableName}}{The name of the column, surrounded by back-ticks, if
-the name is not legal.}
-
-\item{\code{values}}{A single data value or a vector of data values that could/can
-be found in the data frame column.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot filter, specifying the field
-  values documented above.}
-
-  \item{\code{intersect(filter)}}{Update this PivotFilter by intersecting
-  the allowed values in this filter with the allowed values in the specified
-  filter.}
-  \item{\code{union(filter)}}{Update this PivotFilter by unioning
-  the allowed values in this filter with the allowed values in the specified
-  filter.}
-  \item{\code{replace(filter)}}{Update this PivotFilter by replacing the
-  allowed values in this filter with the allowed values from the specified
-  filter.}
-  \item{\code{getCopy()}}{Get a copy of this PivotFilter.}
-  \item{\code{asList()}}{Get a list representation of this PivotFilter.}
-  \item{\code{asJSON()}}{Get a list representation of this PivotFilter.}
-  \item{\code{asString(includeVariableName=TRUE, seperator=" ")}}{Get a text
-  representation of this PivotFilter.}
-}
-}
-
 \examples{
 pt <- PivotTable$new()
 # ...
 PivotFilter$new(pt, variableName="Country", values="England")
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{variableName}}{The name of the column in the data frame that this filter
+applies to.}
+
+\item{\code{safeVariableName}}{The name of the column in the data frame that this filter
+applies to,  surrounded by back-ticks if the name is not legal.}
+
+\item{\code{type}}{Either "ALL", "VALUES" or "NONE".  "VALUES" is the most
+common type and means the data is filtered to a subset of values.  "ALL" means
+there is no filtering, i.e. all values match.  "NONE" means there can be no
+matching values/data.}
+
+\item{\code{values}}{The subset of values that this filter matches.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotFilter$new()}}
+\item \href{#method-intersect}{\code{PivotFilter$intersect()}}
+\item \href{#method-union}{\code{PivotFilter$union()}}
+\item \href{#method-replace}{\code{PivotFilter$replace()}}
+\item \href{#method-getCopy}{\code{PivotFilter$getCopy()}}
+\item \href{#method-asList}{\code{PivotFilter$asList()}}
+\item \href{#method-asJSON}{\code{PivotFilter$asJSON()}}
+\item \href{#method-asString}{\code{PivotFilter$asString()}}
+\item \href{#method-clone}{\code{PivotFilter$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotFilter` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilter$new(parentPivot, variableName = NULL, type = "ALL", values = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotFilter`
+instance belongs to.}
+
+\item{\code{variableName}}{The name of the column in the data frame that this filter
+applies to.}
+
+\item{\code{type}}{Must be either "ALL", "VALUES" or "NONE".  "VALUES" is the most
+common type and means the data is filtered to a subset of values.  "ALL" means
+there is no filtering, i.e. all values match.  "NONE" means there can be no
+matching values/data.}
+
+\item{\code{values}}{A single data value or a vector of multiple data values that
+this filter will match on.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotFilter` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-intersect"></a>}}
+\if{latex}{\out{\hypertarget{method-intersect}{}}}
+\subsection{Method \code{intersect()}}{
+Updates this filter by intersecting the values in this filter with the
+values from another `PivotFilter` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilter$intersect(filter)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filter}}{A `PivotFilter` object.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-union"></a>}}
+\if{latex}{\out{\hypertarget{method-union}{}}}
+\subsection{Method \code{union()}}{
+Updates this filter by unioning the values in this filter with the
+values from another `PivotFilter` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilter$union(filter)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filter}}{A `PivotFilter` object.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-replace"></a>}}
+\if{latex}{\out{\hypertarget{method-replace}{}}}
+\subsection{Method \code{replace()}}{
+Updates this filter by replacing the values in this filter with the
+values from another `PivotFilter` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilter$replace(filter)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filter}}{A `PivotFilter` object.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCopy"></a>}}
+\if{latex}{\out{\hypertarget{method-getCopy}{}}}
+\subsection{Method \code{getCopy()}}{
+Create a copy of this `PivotFilter` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilter$getCopy()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A copy of this `PivotFilter` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilter$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilter$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-asString}{}}}
+\subsection{Method \code{asString()}}{
+Return a representation of this object as a character value.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilter$asString(includeVariableName = TRUE, seperator = " ")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{includeVariableName}}{`TRUE` (default) to include the variable name in
+the string.}
+
+\item{\code{seperator}}{A character value used when concatenating
+multiple filter values.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character summary of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilter$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

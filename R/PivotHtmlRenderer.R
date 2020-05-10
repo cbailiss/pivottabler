@@ -1,39 +1,26 @@
-#' A class that renders a pivot table in HTML.
+
+#' R6 class that renders a pivot table in HTML.
 #'
-#' The PivotHtmlRenderer class creates a HTML representation of a pivot table.
+#' @description
+#' The `PivotHtmlRenderer` class creates a HTML representation of a pivot table.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
 #' @import htmltools
-#' @return Object of \code{\link{R6Class}} with properties and methods that
-#'   render to HTML.
+#' @import jsonlite
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
-#' @field parentPivot Owning pivot table.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new pivot table renderer, specifying the
-#'   field value documented above.}
-#'
-#'   \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist
-#'   on the PivotDataGroup class.}
-#'   \item{\code{getTableHtml(styleNamePrefix=NULL, includeHeaderValues=FALSE,
-#'   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
-#'   includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
-#'   includeCalculationNames=FALSE, includeRawValue=FALSE,
-#'   includeTotalInfo=FALSE, exportOptions=NULL,
-#'   showRowGroupHeaders=FALSE)}}{Get a HTML
-#'   representation of the pivot table,
-#'   optionally including additional detail for debugging purposes.}
-#' }
 
 PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
   public = list(
+
+   #' @description
+   #' Create a new `PivotHtmlRenderer` object.
+   #' @param parentPivot The pivot table that this `PivotHtmlRenderer`
+   #' instance belongs to.
+   #' @return A new `PivotHtmlRenderer` object.
    initialize = function(parentPivot) {
      if(parentPivot$argumentCheckMode > 0) {
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotHtmlRenderer", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -42,6 +29,11 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$new", "Creating new Html Renderer...")
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$new", "Created new Html Renderer.")
    },
+
+   #' @description
+   #' An internal method used when rendering a pivot table to HTML.
+   #' Clear the IsRendered flags that exist on the `PivotDataGroup` class.
+   #' @return No return value.
    clearIsRenderedFlags = function() {
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$clearIsRenderedFlags", "Clearing isRendered flags...")
      clearFlags <- function(dg) {
@@ -58,6 +50,34 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotHtmlRenderer$clearIsRenderedFlags", "Cleared isRendered flags...")
      return(invisible())
    },
+
+   #' @description
+   #' Generate a HTML representation of the pivot table, optionally including
+   #' additional detail for debugging purposes.
+   #' @param styleNamePrefix A character variable specifying a prefix for all named
+   #' CSS styles, to avoid style name collisions where multiple pivot tables exist.
+   #' @param includeHeaderValues Default `FALSE`, specify `TRUE` to render
+   #' this debug information.
+   #' @param includeRCFilters Default `FALSE`, specify `TRUE` to render
+   #' this debug information.
+   #' @param includeCalculationFilters Default `FALSE`, specify `TRUE` to render
+   #' this debug information.
+   #' @param includeWorkingData Default `FALSE`, specify `TRUE` to render
+   #' this debug information.
+   #' @param includeEvaluationFilters Default `FALSE`, specify `TRUE` to render
+   #' this debug information.
+   #' @param includeCalculationNames Default `FALSE`, specify `TRUE` to render
+   #' this debug information.
+   #' @param includeRawValue Default `FALSE`, specify `TRUE` to render
+   #' this debug information.
+   #' @param includeTotalInfo Default `FALSE`, specify `TRUE` to render
+   #' this debug information.
+   #' @param exportOptions A list of additional export options - see the
+   #' "A1. Appendix" for details.
+   #' @param showRowGroupHeaders Default `FALSE`, specify `TRUE` to render the row
+   #' group headings.  See the "Data Groups" vignette for details.
+   #' @return A list containing HTML tags from the `htmltools` package.
+   #' Convert this to a character variable using `as.character()`.
    getTableHtml = function(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE,
                            includeCalculationFilters=FALSE, includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
                            includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE,

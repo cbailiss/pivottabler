@@ -1,100 +1,44 @@
-#' A class that computes the value of a cell.
+
+#' R6 class that computes the value of a cell or cells.
 #'
-#' The PivotCalculator class has various functions and methods that assist with
-#' calculating the value of a cell in a pivot table.
-#'
+#' @description
+#' The `PivotCalculator` class has various functions and methods that assist with
+#' calculating the value of a cell or cells in a pivot table.
+#' @details
+#' This class contains all of the logic necessary for evaluating calculations.
+#' For batch mode calculations, it makes use of the `PivotBatchCalculator` class
+#' to carry out the calculation batches, then retrieves the results from the
+#' relevant batch for each calculation.
+#' For sequential mode calculations, this class carries out the calculations.
+#' Where a pivot table contains some cells that can be evaluated in batch mode
+#' and some that cannot, this class contains the appropriate logic to use the
+#' relevant calculation mode in each case, preferring to use batch mode where
+#' possible, unless this has been disabled in the pivot table settings.
+#' There are many utility methods in this class that are thin wrappers around
+#' methods in other classes.  This simplifies calling these other methods as well
+#' as providing a more unified way to change in the future how these common
+#' operations are performed.
+#' Custom calculation functions are passed an instance of the `PivotCalculator`
+#' class, thereby also providing the authors of custom calculation functions an
+#' easy way for custom calculation functions to carry out common operations.
 #' @docType class
 #' @importFrom R6 R6Class
 #' @importFrom data.table data.table is.data.table
 #' @import dplyr
 #' @import jsonlite
-#' @return Object of \code{\link{R6Class}} with properties and methods that help
-#'   calculate the value of a pivot table cell.
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
-#' @field parentPivot Owning pivot table.
-#' @field batchInfo Get a summary of the batch calculations.
-#'
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new pivot table calculator, specifying the
-#'   field value documented above.}
-#'
-#'   \item{\code{getDataFrame(dataName)}}{Gets a data frame with the specified
-#'   name from the data frames added to the pivot table.}
-#'   \item{\code{countTotalData(dataName)}}{Count the number of
-#'   totals/aggregate data frames that were previously added to the pivot table.}
-#'   \item{\code{getTotalDataFrame(dataName, variableNames)}}{Get pre-calculated
-#'   totals/aggregate data that was previously added to the pivot table.}
-#'   \item{\code{getCalculationGroup(calculationGroupName)}}{Gets a calculation
-#'   group with the specified name from the calculation groups added to the
-#'   pivot table.}
-#'   \item{\code{getCalculation(calculationGroupName, calculationName)}}{Gets a
-#'   calculation with the specified name and group from the calculation groups
-#'   added to the pivot table.}
-#'   \item{\code{generateBatchesForCellEvaluation()}}{Examines the cells in the
-#'   pivot table to generate one or more batch calculations.}
-#'   \item{\code{evaluateBatches()}}{Evaluate batch calculations using the batch
-#'   calculator.}
-#'   \item{\code{newFilter(variableName, values)}}{Creates a new PivotFilter
-#'   object associated with the specified data frame column name and column
-#'   values.}
-#'   \item{\code{newFilters(variableName, values)}}{Creates a new PivotFilters
-#'   object associated with the specified data frame column name and column
-#'   values.}
-#'   \item{\code{setFilters(filters1, filters2, action="replace")}}{Combines two
-#'   PivotFilters objects (e.g. to intersect the filters coming from the row and
-#'   column headings for a particular cell).}
-#'   \item{\code{setFilterValues(filters, variableName, values,
-#'   action="replace")}}{Updates a PivotFilters object based on a PivotFilter
-#'   object (e.g. to union the filter criteria arising from multiple row
-#'   headers).}
-#'   \item{\code{getFilteredDataFrame(dataFrame, filters)}}{Applies a
-#'   PivotFilters object to a data frame, returning a new data frame.}
-#'   \item{\code{getDistinctValues(dataFrame, variableName)}}{Gets the distinct
-#'   values from the specified column of a data frame.}
-#'   \item{\code{formatValue(value, format, fmtFuncArgs)}}{Formats a value using
-#'   either an sprintf string, a list of arguments for the base::format()
-#'   function or using a custom R function (where fmtFuncArgs is a list of
-#'   additional arguments to pass to the custom format function).}
-#'   \item{\code{getCombinedFilters = function(rowColFilters=NULL,
-#'   calcFilters=NULL, cell=NULL)}}{Get the working filters for a calculation.}
-#'   \item{\code{getFiltersForNamedCalculation = function(calculationName=NULL,
-#'   calculationGroupName=NULL, rowColFilters=NULL, cell=NULL)}}{Get the working
-#'   filters for a named calculation.}
-#'   \item{\code{setWorkingData = function(cell=NULL)}}{Set the working
-#'   filters for a cell.}
-#'   \item{\code{evaluateSingleValue(dataFrame, workingFilters, valueName,
-#'   format, fmtFuncArgs, noDataValue, noDataCaption)}}{Get a single value from
-#'   a data frame.}
-#'   \item{\code{evaluateSummariseExpression(dataName=NULL, dataFrame=NULL,
-#'   workingFilters=NULL, calculationName=NULL, calculationGroupName=NULL,
-#'   summaryName=NULL, summariseExpression=NULL, format=NULL, noDataValue=NULL,
-#'   noDataCaption=NULL)}}{Calculate a summary value, either using a batch or
-#'   sequential calculation.}
-#'   \item{\code{evaluateCalculationExpression(values, calculationExpression,
-#'   format, fmtFuncArgs, noDataValue, noDataCaption)}}{Evaluates an R
-#'   expression in order to combine the results of other calculations.}
-#'   \item{\code{evaluateCalculateFunction(workingFilters, calculationFunction,
-#'   format, fmtFuncArgs, baseValues, cell)}}{Invokes a user-provided custom R
-#'   function to aggregate data and perform calculations.}
-#'   \item{\code{evaluateNamedCalculationWD(calculationName,
-#'   calculationGroupName, workingData, cell)}}{Invokes the relevant
-#'   calculation function based upon the calculation type.}
-#'   \item{\code{evaluateNamedCalculation(calculationName,
-#'   calculationGroupName, rowColFilters)}}{Determines the working filters and
-#'   invokes the relevant calculation function based upon the calculation
-#'   type.}
-#'   \item{\code{evaluateCell(cell)}}{Top-level calculation function responsible
-#'   for calculating the value of a pivot table cell.}
-#' }
 
 PivotCalculator <- R6::R6Class("PivotCalculator",
   public = list(
+
+     #' @description
+     #' Create a new `PivotCalculator` object.
+     #' @param parentPivot The pivot table that this `PivotCalculator`
+     #' instance belongs to.
+     #' @return A new `PivotCalculator` object.
    initialize = function(parentPivot=NULL) {
      if(parentPivot$argumentCheckMode > 0) {
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -104,6 +48,12 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$new", "Creating new Pivot Calculator...")
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$new", "Created new Pivot Calculator.")
    },
+
+   #' @description
+   #' Retrieve a data frame that was added to the pivot table.
+   #' @param dataName The name of the data frame (as specified in
+   #' `pt$addData()`) to retrieve.
+   #' @return The data frame with the specified name.
    getDataFrame = function(dataName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "getDataFrame", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -113,6 +63,13 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getDataFrame", "Got data frame.")
      return(invisible(df))
    },
+
+   #' @description
+   #' Count the number of "totals" data frames that have been
+   #' added to the pivot table.
+   #' @param dataName The name of the data frame (as specified in
+   #' `pt$addData()`) that the "totals" data frames are associated with.
+   #' @return The number of "totals" data frames associated with the specified name.
    countTotalData = function(dataName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "countTotalData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -122,6 +79,15 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$countTotalData", "Counted total data frames.")
       return(invisible(df))
    },
+
+   #' @description
+   #' Retrieve a "totals" data frame that was added to the
+   #' pivot table.
+   #' @param dataName The name of the data frame (as specified in
+   #' `pt$addData()`) that the "totals" data frame is associated with.
+   #' @param variableNames The names of the variables that the totals are grouped
+   #' by in the "totals" data frame (i.e. the dimensionality).
+   #' @return The "totals" data frame.
    getTotalDataFrame = function(dataName=NULL, variableNames=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "getTotalDataFrame", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -132,6 +98,11 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getTotalDataFrame", "Got total data frame.")
       return(invisible(df))
    },
+
+   #' @description
+   #' Retrieve a calculation group in the pivot table.
+   #' @param calculationGroupName The name of the calculation group to retrieve.
+   #' @return The calculation group with the specified name.
    getCalculationGroup = function(calculationGroupName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "getCalculationGroup", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -141,6 +112,12 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getCalculationGroup", "Got calculation group.")
      return(invisible(cg))
    },
+
+   #' @description
+   #' Retrieve a calculation in the pivot table.
+   #' @param calculationGroupName The name of the calculation group to retrieve.
+   #' @param calculationName The name of the calculation to retrieve.
+   #' @return The calculation with the specified name in the specified group.
    getCalculation = function(calculationGroupName=NULL, calculationName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "getCalculation", calculationGroupName, missing(calculationGroupName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -152,6 +129,12 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getCalculation", "Got calculation.")
      return(invisible(cg))
    },
+
+   #' @description
+   #' Examine the data groups and cells in a pivot table to
+   #' generate the structure of the batches in preparation for evaluating the
+   #' pivot table.
+   #' @return The batches that exist in the pivot table.
    generateBatchesForCellEvaluation = function() {
      if(private$p_parentPivot$evaluationMode=="sequential") {
        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$generateBatchesForCellEvaluation", "Pivot table is using sequential evaluation mode, so not creating batches.")
@@ -162,6 +145,10 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$generateBatchesForCellEvaluation", "Generated batches for cell evaluation.")
      return(invisible(res))
    },
+
+   #' @description
+   #' Execute the batch calculations as part of evaluating the pivot table.
+   #' @return The number of batches that were evaluated.
    evaluateBatches = function() {
      if(private$p_parentPivot$evaluationMode=="sequential") {
        if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateBatches", "Pivot table is using sequential evaluation mode, so not evaluating batches.")
@@ -172,6 +159,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateBatches", "Evaluated batches.")
      return(invisible(res))
    },
+
+   #' @description
+   #' Create a new `PivotFilter` object associated with the
+   #' specified data frame column name and column values.  The new filter is
+   #' conceptually of the form `variableName %in% values`.
+   #' @param variableName The data frame column name the filter is associated with.
+   #' @param values The filter values for the filter.
+   #' @return The new `PivotFilter` object.
    newFilter = function(variableName=NULL, values=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "newFilter", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -182,6 +177,18 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$newFilter", "Created filter.")
      return(invisible(filter))
    },
+
+   #' @description
+   #' Create a new `PivotFilters` object associated with the
+   #' specified data frame column name and column values.  The new filter is
+   #' conceptually of the form `variableName %in% values`.
+   #' @details
+   #' A `PivotFilters` object is a collection of `PivotFilter` objects, therefore
+   #' the return value of this method is suitable for use where other filters will
+   #' subsequently be needed/applied.
+   #' @param variableName The data frame column name the filter is associated with.
+   #' @param values The filter values for the filter.
+   #' @return The new `PivotFilter` object.
    newFilters = function(variableName=NULL, values=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "newFilters", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -192,6 +199,15 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$newFilters", "Created filters.")
      return(invisible(filters))
    },
+
+   #' @description
+   #' Combines two `PivotFilters` objects, e.g. to intersect the filters coming
+   #' from the row and column headings for a particular cell.
+   #' @param filters1 A `PivotFilters` object.
+   #' @param filters2 A `PivotFilters` object.
+   #' @param action A character value specifying how to combine the two filters.
+   #' Must be one of "intersect", "replace", "union".
+   #' @return A new `PivotFilters` object.
    setFilters = function(filters1=NULL, filters2=NULL, action="replace") { # filters2 overrides filters1
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilters", filters1, missing(filters1), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
@@ -204,6 +220,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setFilters", "Set filters.")
      return(invisible(copy))
    },
+
+   #' @description
+   #' Combines a `PivotFilters` object with a `PivotFilter` object.
+   #' @param filters A `PivotFilters` object.
+   #' @param filter A `PivotFilters` object.
+   #' @param action A character value specifying how to combine the two filters.
+   #' Must be one of "intersect", "replace", "union".
+   #' @return A new `PivotFilters` object.
    setFilter = function(filters=NULL, filter=NULL, action="replace") {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilter", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
@@ -216,6 +240,18 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setFilter", "Set filter.")
      return(invisible(copy))
    },
+
+   #' @description
+   #' Combines a `PivotFilters` object with additional filter criteria.
+   #' @param filters A `PivotFilters` object.
+   #' @param variableName The name of the variable (i.e. column) in the
+   #' data frame that the criteria relates to.
+   #' @param values The values that the specified variable will be
+   #' filtered to.
+   #' @param action A character value specifying how to combine the
+   #' existing filters and new filter criteria.
+   #' Must be one of "intersect", "replace", "union".
+   #' @return A new `PivotFilters` object.
    setFilterValues = function(filters=NULL, variableName=NULL, values=NULL, action="replace") {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setFilterValues", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
@@ -229,6 +265,14 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setFilterValues", "Set filter values.")
      return(invisible(copy))
    },
+
+   #' @description
+   #' Apply a set of filters to a data frame and return the filtered results.
+   #' @param dataName The name of the data frame (as specified in
+   #' `pt$addData()`) to be filtered.
+   #' @param dataFrame The data frame to filter.
+   #' @param filters A `PivotFilters` object containing the filter criteria.
+   #' @return A filtered data frame.
    getFilteredDataFrame = function(dataFrame=NULL, filters=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "getFilteredDataFrame", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
@@ -239,6 +283,12 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getFilteredDataFrame", "Got filtered data frame.")
      return(invisible(data))
    },
+
+   #' @description
+   #' Get the distinct values from a specified column in a data frame.
+   #' @param dataFrame The data frame.
+   #' @param variableName The name of the variable to get the distinct values for.
+   #' @return A vector containing the distinct values.
    getDistinctValues = function(dataFrame=NULL, variableName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "getDistinctValues", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
@@ -272,6 +322,18 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getDistinctValues", "Got filtered data frame.")
      return(invisible(distinctValues))
    },
+
+   #' @description
+   #' Format a value using a variety of different methods.
+   #' @param value The value to format.
+   #' @param format Either a character format string to be used with `sprintf()`,
+   #' a list of arguments to be used with `base::format()` or a custom R function
+   #' which will be invoked once per value to be formatted.
+   #' @param fmtFuncArgs If `format` is a custom R function, then `fmtFuncArgs`
+   #' specifies any additional arguments (in the form of a list) that will be
+   #' passed to the custom function.
+   #' @return The formatted value if `format` is specified, otherwise the `value`
+   #' converted to a character value.
    formatValue = function(value=NULL, format=NULL, fmtFuncArgs=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "formatValue", value, missing(value), allowMissing=FALSE, allowNull=TRUE, allowedClasses=c("integer", "numeric", "character", "logical", "date", "Date", "POSIXct"))
@@ -359,6 +421,19 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$formatValue", "Formated value.")
      return(invisible(value))
    },
+
+   #' @description
+   #' Get the working filters for a calculation by combining
+   #' row-column filters and calculation filters.
+   #' @param rowColFilters A `PivotFilters` object containing the combined
+   #'  filters from the row data groups and column data groups.
+   #' @param calcFilters Either `PivotFilters` object or a `PivotFilterOverrides`
+   #'  object containing filers defined as part of the calculation.
+   #' @param cell A `PivotCell` object that is the cell for which the working
+   #' data filters are being calculated.
+   #' @return A list of filters, element names:  calculationFilters and
+   #' workingFilters.  The working filters are the row-column filters
+   #' combined with the calculation filters.
    getCombinedFilters = function(rowColFilters=NULL, calcFilters=NULL, cell=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "getCombinedFilters", rowColFilters, missing(rowColFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
@@ -392,6 +467,20 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getCombinedFilters", "Got filters for calculation....")
      return(invisible(rf))
    },
+
+   #' @description
+   #' Get the working filters for a named calculation by calling
+   #' `getCombinedFilters()` as needed, depending on the calculation type.
+   #' @param calculationName The name of the calculation.
+   #' @param calculationGroupName The name of the calculation group.
+   #' @param rowColFilters A `PivotFilters` object containing the combined
+   #'  filters from the row data groups and column data groups.
+   #' @param cell A `PivotCell` object that is the cell for which the working
+   #' data filters are being calculated.
+   #' @return A list of filters, where the element names are calculation names.
+   #' Reminder:  Evaluating a named calculation, if `calc$type="calculation"`,
+   #' can involve computing multiple named calculations, which is why this
+   #' return value is a list.
    getFiltersForNamedCalculation = function(calculationName=NULL, calculationGroupName=NULL, rowColFilters=NULL, cell=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "getFiltersForNamedCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -435,6 +524,19 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getFiltersForNamedCalculation", "Got filters for named calculation.")
      return(invisible(filters))
    },
+
+   #' @description
+   #' Set the working data filters for a cell in the pivot table.
+   #' @details
+   #' The working data for a cell is a list of `PivotFilters` objects - one per
+   #' named calculation.  Most cells only relate to one calculation, but
+   #' calculations of type `calc$type="calculation"` can relate to multiple
+   #' calculations, hence the working data is a list where the element name
+   #' is the calculation name.
+   #' This method calls `getFiltersForNamedCalculation()` internally to generate
+   #' the filters for the working data.
+   #' @param cell The cell to generate the working data for.
+   #' @return No return value.
    setWorkingData = function(cell=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "setWorkingData", cell, missing(cell), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotCell")
@@ -469,6 +571,21 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$setWorkingData", "Set working data for cell.")
    },
+
+   #' @description
+   #' Get a single value from a data frame, as part of evaluating a calculation
+   #' where the calculation is of type `calc$type="value"`.
+   #' @param dataFrame The data frame to retrieve the value from.
+   #' @param workingFilters The relevant working data for the calculation.
+   #' @param valueName The name of the variable to retrieve from the data frame.
+   #' @param format The formatting to apply to the value.
+   #' See `formatValue()` for details.
+   #' @param fmtFuncArgs Additional arguments for a custom format function.
+   #' See `formatValue()` for details.
+   #' @param noDataValue A replacement raw value to use if the value is NULL.
+   #' @param noDataCaption A replcement formatted value to use if the value is NULL.
+   #' @return A list containing two elements: rawValue (typically numeric) and
+   #' formattedValue (typically a character value).
    evaluateSingleValue = function(dataFrame=NULL, workingFilters=NULL, valueName=NULL, format=NULL, fmtFuncArgs=NULL, noDataValue=NULL, noDataCaption=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
@@ -476,7 +593,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", valueName, missing(valueName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric", "character", "logical", "date", "Date", "POSIXct"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSingleValue", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSingleValue", "Evaluating single value...")
@@ -516,6 +633,36 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSingleValue", "Evaluated single value.")
      return(invisible(value))
    },
+
+   #' @description
+   #' Get a summary value from a data frame, as part of evaluating a calculation
+   #' where the calculation is of type `calc$type="summary"`.
+   #' @details
+   #' Where batch evaluation is used, the value is retrieved from the
+   #' pre-calculated batch, otherwise dplyr/data.table is used to
+   #' calculate the value (i.e. reverting to sequential evaluation mode which
+   #' performs calculations cell-by-cell, one cell at a time).
+   #' @param dataName The name of the data frame (as specified in
+   #' `pt$addData()`) containing the data.
+   #' @param dataFrame The data frame to retrieve the value from.
+   #' @param workingFilters The relevant working data for the calculation.
+   #' @param batchName The name of the batch that contains the results of the
+   #' calculation (if batch evaluation is in use and possible for this cell and
+   #' calculation).
+   #' @param calculationName The name of the calculation.
+   #' @param calculationGroupName The name of the calculation group.
+   #' @param summaryName The name of the summary (typically also the calculation
+   #' name).
+   #' @param summariseExpression The dplyr or data.table expression to aggregate
+   #' and summarise the data.
+   #' @param format The formatting to apply to the value.
+   #' See `formatValue()` for details.
+   #' @param fmtFuncArgs Additional arguments for a custom format function.
+   #' See `formatValue()` for details.
+   #' @param noDataValue A replacement raw value to use if the value is NULL.
+   #' @param noDataCaption A replcement formatted value to use if the value is NULL.
+   #' @return A list containing two elements: rawValue (typically numeric) and
+   #' formattedValue (typically a character value).
    evaluateSummariseExpression = function(dataName=NULL, dataFrame=NULL, workingFilters=NULL, batchName=NULL,
                                           calculationName=NULL, calculationGroupName=NULL,
                                           summaryName=NULL, summariseExpression=NULL,
@@ -531,7 +678,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", summariseExpression, missing(summariseExpression), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric", "character", "logical", "date", "Date", "POSIXct"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateSummariseExpression", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSummariseExpression", "Evaluating summary expression...")
@@ -661,13 +808,34 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSummariseExpression", "Evaluated summary expression.")
      return(invisible(value))
    },
+
+   #' @description
+   #' Evaluates an R expression in order to combine the results of
+   #' other calculations, as part of evaluating a calculation
+   #' where the calculation is of type `calc$type="calculation"`.
+   #' @details
+   #' A calculation, where `calc$type="calculation"`, combines the
+   #' results of other calculations using a simple R expression.
+   #' @param values The results of other calculations, passed in the form
+   #' of a list where the element names are the names of those other
+   #' calculations.
+   #' @param calculationExpression A character expression to be evaluated,
+   #' e.g. "values$TotalIncome/values$SaleCount".
+   #' @param format The formatting to apply to the value.
+   #' See `formatValue()` for details.
+   #' @param fmtFuncArgs Additional arguments for a custom format function.
+   #' See `formatValue()` for details.
+   #' @param noDataValue A replacement raw value to use if the value is NULL.
+   #' @param noDataCaption A replcement formatted value to use if the value is NULL.
+   #' @return A list containing two elements: rawValue (typically numeric) and
+   #' formattedValue (typically a character value).
    evaluateCalculationExpression = function(values=NULL, calculationExpression=NULL, format=NULL, fmtFuncArgs=NULL, noDataValue=NULL, noDataCaption=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", values, missing(values), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", values, missing(values), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric", "character", "logical", "date", "Date", "POSIXct"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", calculationExpression, missing(calculationExpression), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", noDataValue, missing(noDataValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric", "character", "logical", "date", "Date", "POSIXct"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculationExpression", noDataCaption, missing(noDataCaption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSCalculationExpression", "Evaluating summary expression...")
@@ -696,6 +864,28 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateSCalculationExpression", "Evaluated summary expression.")
      return(invisible(value))
    },
+
+   #' @description
+   #' Invokes a user-provided custom R function to aggregate data and
+   #' perform calculations, as part of evaluating a calculation
+   #' where the calculation is of type `calc$type="functon"`.
+   #' @details
+   #' A calculation, where `calc$type="function"`, invokes a user provided
+   #' R function on a cell-by-cell basis.
+   #' @param workingFilters The relevant working data for the calculation.
+   #' @param calculationFunction The custom R function to invoke.
+   #' @param calcFuncArgs Specifies any additional arguments (in the form
+   #' of a list) that will be passed to the custom calculation function.
+   #' @param format The formatting to apply to the value.
+   #' See `formatValue()` for details.
+   #' @param fmtFuncArgs Additional arguments for a custom format function.
+   #' See `formatValue()` for details.
+   #' @param baseValues The results of other calculations, passed in the form
+   #' of a list where the element names are the names of those other
+   #' calculations.
+   #' @param cell A `PivotCell` object representing the cell being calculated.
+   #' @return A list containing two elements: rawValue (typically numeric) and
+   #' formattedValue (typically a character value).
    evaluateCalculateFunction = function(workingFilters=NULL, calculationFunction=NULL, calcFuncArgs=NULL, format=NULL, fmtFuncArgs=NULL, baseValues=NULL, cell=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", workingFilters, missing(workingFilters), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotFilters")
@@ -703,7 +893,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", calcFuncArgs, missing(calcFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", format, missing(format), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character","list","function"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", fmtFuncArgs, missing(fmtFuncArgs), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", baseValues, missing(baseValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", baseValues, missing(baseValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric", "character", "logical", "date", "Date", "POSIXct"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCalculateFunction", cell, missing(cell), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotCell")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateCalculateFunction", "Evaluating calculation function...")
@@ -737,7 +927,24 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateCalculateFunction", "Evaluated calculation function.")
      return(invisible(value))
    },
-   # The WD here indicates this variation of evaluateNamedCalculation works with the workingData (the version of evaluateNamedCalculation below starts at a higher level)
+
+   #' @description
+   #' Invokes the relevant calculation function based upon the calculation
+   #' type.
+   #' @details
+   #' This function examines the `calc$type` property then invokes either
+   #' `evaluateSingleValue()`, `evaluateSummariseExpression()`,
+   #' `evaluateCalculationExpression()` or `evaluateCalculateFunction()`.
+   #' Sometimes, more than one of the these functions is invoked, since
+   #' calculation type "calculation" and "function" can/do make use of
+   #' values from other calculations, which must be evaluated first.
+   #' @param calculationName The name of the calculation to execute.
+   #' @param calculationGroupName The calculation group that the
+   #' calculation belongs to.
+   #' @param workingData The relevant working data for the calculation.
+   #' @param cell A `PivotCell` object representing the cell being calculated.
+   #' @return A list containing two elements: rawValue (typically numeric) and
+   #' formattedValue (typically a character value).
    evaluateNamedCalculationWD = function(calculationName=NULL, calculationGroupName=NULL, workingData=NULL, cell=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateNamedCalculationWD", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -842,8 +1049,25 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateNamedCalculationWD", "Evaluated named calculation.")
      return(invisible(results))
    },
-   # This variation of evaluateNamedCalculation gets the working filters from a simple row/column context, computes the workingData then calls evaluateNamedCalculationWD.
-   # This variation is named without any suffix, since this is the version end-users may invoke, e.g. from within a custom calculation function.
+
+   #' @description
+   #' Invokes the relevant calculation function based upon the calculation
+   #' type.
+   #' @details
+   #' This function is a higher-level wrapper around
+   #' `evaluateNamedCalculationWD()`.  This version incorporates
+   #' logic to convert the filters from the row and column data groups
+   #' into the working data filters, then calls
+   #' `evaluateNamedCalculationWD()`.  This version has no suffix in the
+   #' name, since this is the version users are more likely to invoke,
+   #' e.g. from within a custom calculation function.
+   #' @param calculationName The name of the calculation to execute.
+   #' @param calculationGroupName The calculation group that the
+   #' calculation belongs to.
+   #' @param rowColFilters The filters arising from the row and column
+   #' groups.
+   #' @return A list containing two elements: rawValue (typically numeric) and
+   #' formattedValue (typically a character value).
    evaluateNamedCalculation = function(calculationName=NULL, calculationGroupName=NULL, rowColFilters=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateNamedCalculation", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -873,6 +1097,12 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$evaluateNamedCalculation", "Evaluated named calculation.")
      return(invisible(results))
    },
+
+   #' @description
+   #' Evalue calculations to compute the value of a cell in a pivot table.
+   #' @param cell A `PivotCell` object representing the cell to calculate.
+   #' @return A list containing two elements: rawValue (typically numeric) and
+   #' formattedValue (typically a character value).
    evaluateCell = function(cell=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCalculator", "evaluateCell", cell, missing(cell), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotCell")
@@ -896,6 +1126,8 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
    }
   ),
   active = list(
+
+    #' @field batchInfo A summary of the batches used in evaluating the pivot table.
     batchInfo = function(value) {
       cstr <- paste0("BATCH INFO:\n\n", private$p_batchCalculator$batchSummary, "\n\nCALC SUMMARY:\n\n", private$p_batchCalculator$calculationSummary)
     }

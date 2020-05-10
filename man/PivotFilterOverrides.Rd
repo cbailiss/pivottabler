@@ -3,79 +3,22 @@
 \docType{class}
 \name{PivotFilterOverrides}
 \alias{PivotFilterOverrides}
-\title{A class that defines a set of filter overrides}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that
-  define a set of filters and associated override actions
+\title{R6 class that defines a set of filter overrides.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotFilterOverrides class contains multiple  \code{\link{PivotFilter}}
+The `PivotFilterOverrides` class contains multiple  \code{\link{PivotFilter}}
 objects that can be used later to override a set of filters, e.g. in a
 pivot table calculation.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-
-\item{\code{removeAllFilters}}{TRUE to remove all existing filters before applying
-any other and/replace/or filters.}
-
-\item{\code{keepOnlyFiltersFor}}{Specify the names of existing variables to retain
-the filters for.  All other filters will be removed.}
-
-\item{\code{removeFiltersFor}}{Specify the names of variables to remove filters for.}
-
-\item{\code{overrideFunction}}{A custom function to amend the filters in each cell.}
-
-\item{\code{countIntersect}}{The number of PivotFilters that will be combined with other
-pivot filters by intersecting their lists of allowed values.}
-
-\item{\code{countReplace}}{The number of PivotFilters that will be combined with other
-pivot filters by entirely replacing existing PivotFilter objects.}
-
-\item{\code{countUnion}}{The number of PivotFilters that will be combined with other
-pivot filters by unioning their lists of allowed values.}
-
-\item{\code{countTotal}}{The total number of PivotFilters that will be combined with
-other pivot filters.}
-
-\item{\code{intersectFilters}}{The PivotFilters that will be combined with other
-pivot filters by intersecting their lists of allowed values.}
-
-\item{\code{replaceFilters}}{The PivotFilters that will be combined with other
-pivot filters by entirely replacing existing PivotFilter objects.}
-
-\item{\code{unionFilters}}{The PivotFilters that will be combined with other
-pivot filters by unioning their lists of allowed values.}
-
-\item{\code{allFilters}}{The complete set of PivotFilters that will be combined with
-other pivot filters.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot filter overrides object, specifying
-  the field values documented above.}
-
-  \item{\code{add(filter=NULL, variableName=NULL, type="ALL", values=NULL,
-  action="intersect")}}{Add a pivot filter override, either from an existing
-  PivotFilter object or by specifying a variableName and values.}
-  \item{\code{apply(filters)}}{Apply the filter overrides to a PivotFilters
-  object.}
-  \item{\code{asList()}}{Get a list representation of this PivotFilterOverrides
-  object.}
-  \item{\code{asJSON()}}{Get a JSON representation of this PivotFilterOverrides
-  object.}
-  \item{\code{asString(includeVariableName=TRUE, seperator=", ")}}{Get a text
-  representation of this PivotFilterOverrides object.}
+\details{
+Each cell in a pivot table has context (i.e. filters) coming from the row
+and column groups that are applicable to the cell.
+The `PivotFilterOverrides` class contains several different ways of changing
+this filter criteria as part of a calculation.  In most use cases, only
+one of the available approaches will be used.
 }
-}
-
 \examples{
 pt <- PivotTable$new()
 # ...
@@ -86,4 +29,246 @@ filterOverrides <- PivotFilterOverrides$new(pt, keepOnlyFiltersFor="Volume")
 filter <- PivotFilter$new(pt, variableName="Country", values="England")
 # Add the filter to the set of overrides
 filterOverrides$add(filter=filter, action="replace")
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{removeAllFilters}}{TRUE to remove all existing filters before applying
+any other and/replace/or filters.}
+
+\item{\code{keepOnlyFiltersFor}}{Specify the names of existing variables to retain
+the filters for.  All other filters will be removed.}
+
+\item{\code{removeFiltersFor}}{Specify the names of variables to remove filters for.}
+
+\item{\code{overrideFunction}}{A custom R function to amend the filters in each cell.}
+
+\item{\code{countAnd}}{The number of `PivotFilters` that will be combined with other
+pivot filters by intersecting their lists of allowed values.}
+
+\item{\code{countReplace}}{The number of `PivotFilters` that will be combined with other
+pivot filters by entirely replacing existing PivotFilter objects.}
+
+\item{\code{countOr}}{The number of `PivotFilters` that will be combined with other
+pivot filters by unioning their lists of allowed values.}
+
+\item{\code{countTotal}}{The total number of `PivotFilters` that will be combined with
+other pivot filters.}
+
+\item{\code{andFilters}}{The `PivotFilters` that will be combined with other
+pivot filters by intersecting their lists of allowed values.}
+
+\item{\code{replaceFilters}}{The `PivotFilters` that will be combined with other
+pivot filters by entirely replacing existing PivotFilter objects.}
+
+\item{\code{orFilters}}{The `PivotFilters` that will be combined with other
+pivot filters by unioning their lists of allowed values.}
+
+\item{\code{allFilters}}{The complete set of `PivotFilters` that will be combined with
+other pivot filters.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotFilterOverrides$new()}}
+\item \href{#method-add}{\code{PivotFilterOverrides$add()}}
+\item \href{#method-apply}{\code{PivotFilterOverrides$apply()}}
+\item \href{#method-asList}{\code{PivotFilterOverrides$asList()}}
+\item \href{#method-asJSON}{\code{PivotFilterOverrides$asJSON()}}
+\item \href{#method-asString}{\code{PivotFilterOverrides$asString()}}
+\item \href{#method-clone}{\code{PivotFilterOverrides$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotFilterOverrides` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilterOverrides$new(
+  parentPivot = NULL,
+  removeAllFilters = FALSE,
+  keepOnlyFiltersFor = NULL,
+  removeFiltersFor = NULL,
+  overrideFunction = NULL,
+  filter = NULL,
+  variableName = NULL,
+  type = "ALL",
+  values = NULL,
+  action = "replace"
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotFilterOverrides`
+instance belongs to.}
+
+\item{\code{removeAllFilters}}{Specifies whether to clear all existing filters,
+before applying the filter overrides.  Default value `FALSE`}
+
+\item{\code{keepOnlyFiltersFor}}{A character vector specifying the variable names
+to retain the filter criteria for. Filter criteria for all other variables
+will be cleared.}
+
+\item{\code{removeFiltersFor}}{A character vector specifying the variable names
+for which the filter criteria will be cleared.  Filter criteria for all
+other variables will be retained.}
+
+\item{\code{overrideFunction}}{A custom R function which will be invoked for each
+cell to modify the filters before the calculation is carried out.}
+
+\item{\code{filter}}{A PivotFilter object containing filter criteria which will
+be combined with the current set of filters using the specified combine method.}
+
+\item{\code{variableName}}{The variable name for a new filter to apply to.  Specified
+in conjunction with the `type` and `values` parameters.}
+
+\item{\code{type}}{The type of a new filter to apply, must be either "ALL", "VALUES"
+or "NONE".}
+
+\item{\code{values}}{A single data value or a vector of multiple data values that
+a new filter will match on.}
+
+\item{\code{action}}{Specifies how the new filter defined in `filter` (or
+`variableName`, `type` and `values`) should be combined with the existing filter
+criteria for the cell.  Must be one of "intersect", "replace" or "union".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotFilterOverrides` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add"></a>}}
+\if{latex}{\out{\hypertarget{method-add}{}}}
+\subsection{Method \code{add()}}{
+Add additional filter criteria into this `PivotFilterOverrides` object.
+Either `filter` is specified, or `variableName`, `type` and `values` are specified.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilterOverrides$add(
+  filter = NULL,
+  variableName = NULL,
+  type = "ALL",
+  values = NULL,
+  action = "replace"
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filter}}{A `PivotFilter` to take criteria from.}
+
+\item{\code{variableName}}{The variable name the additional criteria applies to.}
+
+\item{\code{type}}{The type of the additional filter criteria, must be either
+"ALL", "VALUES" or "NONE".}
+
+\item{\code{values}}{A single data value or a vector of multiple data values that
+compromise the additional filter criteria.}
+
+\item{\code{action}}{Specifies how the additional filter should be combined with
+the existing filter criteria for the cell.  Must be one of "intersect",
+"replace" or "union".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-apply"></a>}}
+\if{latex}{\out{\hypertarget{method-apply}{}}}
+\subsection{Method \code{apply()}}{
+Apply the filter overrides to an existing `PivotFilters` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilterOverrides$apply(filters = NULL, cell = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filters}}{A `PivotFilters` object to apply the filter overrides to.}
+
+\item{\code{cell}}{A `PivotCell` object representing the cell that the `filters` relate to.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilterOverrides$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilterOverrides$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-asString}{}}}
+\subsection{Method \code{asString()}}{
+Return a representation of this object as a character value.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilterOverrides$asString(includeVariableName = TRUE, seperator = ", ")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{includeVariableName}}{`TRUE` (default) to include the variable name in
+the string.}
+
+\item{\code{seperator}}{A character value used when concatenating
+multiple filter overrides.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character summary of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilterOverrides$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

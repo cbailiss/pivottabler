@@ -6,7 +6,8 @@ Overview
 
 This release includes one potential breaking change and many small enhancements across various parts of the package.
 
-Reminder:  Most package vignettes are now hosted at:  http://www.pivottabler.org.uk/articles/ 
+Reminder:  The package only contains one introductory vignette.
+The full set of package vignettes can be found at:  http://www.pivottabler.org.uk/articles/ 
 
 Breaking Changes
 ----------------
@@ -17,11 +18,16 @@ When generating HTML, previous versions of the package would not output any capt
 
 A future version of the package will likely include an option to prevent all non-breaking space characters from being emitted and more correctly use CSS style rules instead to control minimum data group heights/widths. 
 
+Documentation Changes
+---------------------
+
+* The code documentation for `pivottabler` has been re-written to use the new R6 documentation capabilities in `roxygen2`.  As a result the documentation is now more detailed than in previous versions, e.g. arguments in object method calls are now properly documented.  Nonetheless, the easiest way to learn the package is using the vignettes.  
+* The new "Navigating a Pivot Table" vignette provides more detailed information about low-level methods for navigating in code over the different parts of a pivot table.  Several new methods have also been added that are described in this vignette:  `pt$getLeafColumnGroup()`, `pt$getLeafRowGroup()`, `pt$getCell()`, `pt$getColumnGroupsByLevel()`, `pt$getRowGroupsByLevel()`, `pt$columnGroupLevelCount` and `pt$rowGroupLevelCount`.
+* The "Irregular Layout" vignette has been expanded to provide additional information to help with building custom pivot tables.
+
 Improvements
 ----------------
 
-* The new "Navigating a Pivot Table" vignette provides more detailed information about low-level methods for navigating in code over the different parts of a pivot table.  Several new methods have also been added that are described in this vignette:  `pt$getLeafColumnGroup()`, `pt$getLeafRowGroup()`, `pt$getCell()`, `pt$getColumnGroupsByLevel()`, `pt$getRowGroupsByLevel()`, `pt$columnGroupLevelCount` and `pt$rowGroupLevelCount`.
-* The "Irregular Layout" vignette has been expanded to provide additional information to help with building custom pivot tables.
 * Defaults can now be set using `pt$setDefault()` for the following parameters of `pt$addColumnDataGroups()` and `pt$addRowDataGroups()`: `addTotal`, `expandExistingTotals`, `visualTotals`, `totalPosition`, `totalCaption`, `outlineBefore`, `outlineAfter` and `outlineTotal`.  
 * The captions of data groups added to pivot tables using `pt$addColumnDataGroups()` and `pt$addRowDataGroups()`can now be specified using the new `caption` argument.  See the "Data Groups" vignette for details.
 * Custom sort orders can be specified for data groups.  See the "Data Groups" vignette for details.

@@ -3,45 +3,211 @@
 \docType{class}
 \name{PivotCalculationGroups}
 \alias{PivotCalculationGroups}
-\title{A class that contains multiple calculation groups.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}}.
+\title{R6 class that contains multiple calculation groups.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotCalculationGroups class stores all of the calculation groups for a
-pivot table.
+The `PivotCalculationGroups` class stores all of the
+calculation groups for a pivot table.  Every pivot table
+has at least one pivot calculation group and this is
+sufficient for all regular pivot tables.  Additional
+calculation groups are typically only created for
+irregular/custom pivot tables.
+See the "Irregular Layout" vignette for an example.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new container for pivot table calculation
-  groups, specifying the field values documented above.}
-
-  \item{\code{isExistingCalculationGroup(calculationGroupName)}}{Check if a
-  calculation group exists with the specified name.}
-  \item{\code{getCalculationGroup(calculationGroupName)}}{Get the calculation
-  group with the specified name.}
-  \item{\code{addCalculationGroup(calculationGroupName)}}{Create a new
-  calculation group with the specified name.}
-  \item{\code{asList()}}{Get a list representation of these calculation
-  groups.}
-  \item{\code{asJSON()}}{Get a JSON representation of these calculation
-  groups.}
-  \item{\code{asString()}}{Get a text representation of these calculation
-  groups.}
-}
-}
-
 \examples{
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{count}}{The number of calculation groups in the pivot table.}
+
+\item{\code{groups}}{A list containing the calculation groups in the pivot table.}
+
+\item{\code{defaultGroup}}{The default calculation group in the pivot table.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotCalculationGroups$new()}}
+\item \href{#method-isExistingCalculationGroup}{\code{PivotCalculationGroups$isExistingCalculationGroup()}}
+\item \href{#method-item}{\code{PivotCalculationGroups$item()}}
+\item \href{#method-getCalculationGroup}{\code{PivotCalculationGroups$getCalculationGroup()}}
+\item \href{#method-addCalculationGroup}{\code{PivotCalculationGroups$addCalculationGroup()}}
+\item \href{#method-asList}{\code{PivotCalculationGroups$asList()}}
+\item \href{#method-asJSON}{\code{PivotCalculationGroups$asJSON()}}
+\item \href{#method-asString}{\code{PivotCalculationGroups$asString()}}
+\item \href{#method-clone}{\code{PivotCalculationGroups$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotCalculationGroups` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculationGroups$new(parentPivot)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotCalculationGroups`
+instance belongs to.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotCalculationGroups` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-isExistingCalculationGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-isExistingCalculationGroup}{}}}
+\subsection{Method \code{isExistingCalculationGroup()}}{
+Check if a calculation group exists with the specified name.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculationGroups$isExistingCalculationGroup(calculationGroupName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationGroupName}}{The name of the calculation group.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+`TRUE` if the calculation group already exists, `FALSE` otherwise.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-item"></a>}}
+\if{latex}{\out{\hypertarget{method-item}{}}}
+\subsection{Method \code{item()}}{
+Retrieve a calculation group by index.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculationGroups$item(index)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{index}}{An integer specifying the calculation group to retrieve.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The calculation group that exists at the specified index.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCalculationGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-getCalculationGroup}{}}}
+\subsection{Method \code{getCalculationGroup()}}{
+Retrieve a calculation group by name.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculationGroups$getCalculationGroup(calculationGroupName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationGroupName}}{The name of the calculation group to retrieve.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The calculation group with the specified name.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addCalculationGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-addCalculationGroup}{}}}
+\subsection{Method \code{addCalculationGroup()}}{
+Create a new calculation group.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculationGroups$addCalculationGroup(calculationGroupName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationGroupName}}{The name of the calculation group to create}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The new calculation group.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculationGroups$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculationGroups$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-asString}{}}}
+\subsection{Method \code{asString()}}{
+Return a representation of this object as a character value.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculationGroups$asString(seperator = ", ")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{seperator}}{A character value used when concatenating
+the text representations of different calculation groups.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character summary of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculationGroups$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

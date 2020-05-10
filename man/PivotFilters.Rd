@@ -3,74 +3,21 @@
 \docType{class}
 \name{PivotFilters}
 \alias{PivotFilters}
-\title{A class that defines a set of filter conditions}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that
-  define a set of filter conditions.
+\title{R6 class that defines a set of filter conditions.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotFilters class allows multiple filter conditions relating to
-different data frame columns to be combined, i.e. a PivotFilters object can
-contain multiple \code{\link{PivotFilter}} objects.
+The `PivotFilters` class allows multiple filter conditions relating to
+different data frame columns to be combined, i.e. a `PivotFilters` object
+typically contains multiple \code{\link{PivotFilter}} objects.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-
-\item{\code{count}}{The number of PivotFilter objects in this PivotFilters object.}
-
-\item{\code{filters}}{The PivotFilter objects in this PivotFilters object.}
-
-\item{\code{isALL}}{If TRUE, this PivotFilters object matches all data.}
-
-\item{\code{isNONE}}{If TRUE, this PivotFilters object matches no data.}
-
-\item{\code{filteredVariables}}{A list of the variables that are filtered by this
-PivotFilters object.}
-
-\item{\code{filteredValues}}{A list of the criteria values for each of the variables
-filtered by this PivotFilters object.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot filters object, specifying the field
-  values documented above.}
-
-  \item{\code{clearFilters()}}{Remove all filters.}
-  \item{\code{getFilter(variableName=NULL)}}{Find a filter with the specified
-  variable name.}
-  \item{\code{isFilterMatch(variableNames=NULL, variableValues=NULL)}}{Test
-  whether these filters match the specified criteria.}
-  \item{\code{setFilters(filters=NULL, action="replace")}}{Update the value of this
-  PivotFilters object with the filters from the specified PivotFilters
-  object, either unioning, intersecting or replacing the filter criteria.}
-  \item{\code{setFilter(filter=NULL, action="replace")}}{Update the value of this
-  PivotFilters object with the specified PivotFilter object, either unioning,
-  intersecting or replacing the filter criteria.}
-  \item{\code{setFilterValues(variableName=NULL, type=NULL, values=NULL,
-  action="replace")}}{Update the value of this PivotFilters object with the
-  specified criteria, either unioning, intersecting or replacing the filter
-  criteria.}
-  \item{\code{addFilter()}}{Directly add a PivotFilter object to this
-  PivotFilters object.}
-  \item{\code{getFilteredDataFrame(dataFrame=NULL)}}{Filters the specified
-  data frame and returns the results as another data frame.}
-  \item{\code{getCopy()}}{Get a copy of this set of filters.}
-  \item{\code{asList()}}{Get a list representation of this PivotFilters
-  object.}
-  \item{\code{asJSON()}}{Get a JSON representation of this PivotFilters
-  object.}
-  \item{\code{asString(includeVariableName=TRUE, seperator=", ")}}{Get a text
-  representation of this PivotFilters object.}
+\details{
+As well as acting as a container for multiple filter conditions, the
+`PivotFilters` class also contains logic for combining filter.
+The `action` parameter in many of the methods controls how two filters
+are combined.
 }
-}
-
 \examples{
 pt <- PivotTable$new()
 # ...
@@ -85,4 +32,410 @@ filters$setFilter(filter)
 filters$setFilterValues(variableName="Product", values="Cadbury Dairy Milk
 Chocolate 100g")
 # filters now contains criteria for Year, Country and Product
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{count}}{The number of `PivotFilter` objects in this `PivotFilters` object.}
+
+\item{\code{filters}}{A list of `PivotFilter` objects in this `PivotFilters` object.}
+
+\item{\code{isALL}}{If TRUE, this `PivotFilters` object matches all data.}
+
+\item{\code{isNONE}}{If TRUE, this `PivotFilters` object matches no data.}
+
+\item{\code{filteredVariables}}{The names of the variables that are filtered by this
+`PivotFilters` object.}
+
+\item{\code{filteredValues}}{A list of the criteria values for each of the variables
+filtered by this `PivotFilters` object, where the list element names are the
+variable names.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotFilters$new()}}
+\item \href{#method-clearFilters}{\code{PivotFilters$clearFilters()}}
+\item \href{#method-keepOnlyFiltersFor}{\code{PivotFilters$keepOnlyFiltersFor()}}
+\item \href{#method-removeFiltersFor}{\code{PivotFilters$removeFiltersFor()}}
+\item \href{#method-getFilter}{\code{PivotFilters$getFilter()}}
+\item \href{#method-isFilterMatch}{\code{PivotFilters$isFilterMatch()}}
+\item \href{#method-setFilters}{\code{PivotFilters$setFilters()}}
+\item \href{#method-setFilter}{\code{PivotFilters$setFilter()}}
+\item \href{#method-setFilterValues}{\code{PivotFilters$setFilterValues()}}
+\item \href{#method-addFilter}{\code{PivotFilters$addFilter()}}
+\item \href{#method-getFilteredDataFrame}{\code{PivotFilters$getFilteredDataFrame()}}
+\item \href{#method-getCopy}{\code{PivotFilters$getCopy()}}
+\item \href{#method-asList}{\code{PivotFilters$asList()}}
+\item \href{#method-asJSON}{\code{PivotFilters$asJSON()}}
+\item \href{#method-asString}{\code{PivotFilters$asString()}}
+\item \href{#method-clone}{\code{PivotFilters$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotFilters` object, optionally adding a filter.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$new(
+  parentPivot = NULL,
+  variableName = NULL,
+  type = "ALL",
+  values = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotFilters`
+instance belongs to.}
+
+\item{\code{variableName}}{The name of the column in the data frame that this filter
+applies to.  Specify `NULL` to skip adding a filter.}
+
+\item{\code{type}}{Must be either "ALL", "VALUES" or "NONE".  "VALUES" is the most
+common type and means the data is filtered to a subset of values.  "ALL" means
+there is no filtering, i.e. all values match.  "NONE" means there can be no
+matching values/data.}
+
+\item{\code{values}}{A single data value or a vector of multiple data values that
+the filter will match on.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotFilters` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clearFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-clearFilters}{}}}
+\subsection{Method \code{clearFilters()}}{
+Remove all filters from this `PivotFilters` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$clearFilters()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-keepOnlyFiltersFor"></a>}}
+\if{latex}{\out{\hypertarget{method-keepOnlyFiltersFor}{}}}
+\subsection{Method \code{keepOnlyFiltersFor()}}{
+Remove the filters for all variables except those specified.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$keepOnlyFiltersFor(variableNames = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableNames}}{A character vector specifying the variable names
+to retain the filter criteria for. Filter criteria for all other variables
+will be cleared.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeFiltersFor"></a>}}
+\if{latex}{\out{\hypertarget{method-removeFiltersFor}{}}}
+\subsection{Method \code{removeFiltersFor()}}{
+Remove the filters for the specified variables.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$removeFiltersFor(variableNames = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableNames}}{A character vector specifying the variable names
+for which the filter criteria will be cleared.  Filter criteria for all
+other variables will be retained.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getFilter"></a>}}
+\if{latex}{\out{\hypertarget{method-getFilter}{}}}
+\subsection{Method \code{getFilter()}}{
+Find a filter with the specified variable name.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$getFilter(variableName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableName}}{The variable name to find a filter for.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A `PivotFilter` object that filters on the specified variable.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-isFilterMatch"></a>}}
+\if{latex}{\out{\hypertarget{method-isFilterMatch}{}}}
+\subsection{Method \code{isFilterMatch()}}{
+Tests whether this `PivotFilters` object matches specified criteria.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$isFilterMatch(
+  matchMode = "simple",
+  variableNames = NULL,
+  variableValues = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{matchMode}}{Either "simple" (default) or "combinations".
+"simple" is used when matching only one variable-value, multiple
+variable-value combinations are effectively logical "OR", i.e.
+any one single `PivotFilter` match means the `PivotFilters` object
+is a match.
+"combinations" is used when matching for combinations of variable
+values, multiple variable-value combinations are effectively
+logical "AND", i.e. there must be a matching `PivotFilter` for
+every variable name / variable values criteria specified.
+See the "Finding and Formatting" vignette for graphical examples.}
+
+\item{\code{variableNames}}{The variable name(s) to find a filter for.  This
+can be a vector containing more than one variable name.}
+
+\item{\code{variableValues}}{A list specifying the variable names and values
+to find, e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+`TRUE` if this filters object matches the specified criteria,
+`FALSE` otherwise.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-setFilters}{}}}
+\subsection{Method \code{setFilters()}}{
+Update the value of this `PivotFilters` object with the filters from the
+specified `PivotFilters` object, either intersecting, replacing or unioning
+the filter criteria.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$setFilters(filters = NULL, action = "replace")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filters}}{A `PivotFilters` object.}
+
+\item{\code{action}}{Specifies how the criteria defined in `filters` should be
+combined with the existing filter criteria.
+Must be one of "intersect", "replace" or "union".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setFilter"></a>}}
+\if{latex}{\out{\hypertarget{method-setFilter}{}}}
+\subsection{Method \code{setFilter()}}{
+Update the value of this `PivotFilters` object with the filters from the
+specified `PivotFilter` object, either intersecting, replacing or unioning
+the filter criteria.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$setFilter(filter = NULL, action = "replace")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filter}}{A `PivotFilter` object.}
+
+\item{\code{action}}{Specifies how the criteria defined in `filter` should be
+combined with the existing filter criteria.
+Must be one of "intersect", "replace" or "union".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setFilterValues"></a>}}
+\if{latex}{\out{\hypertarget{method-setFilterValues}{}}}
+\subsection{Method \code{setFilterValues()}}{
+Update the value of this `PivotFilters` object with additional filter criteria,
+either intersecting, replacing or unioning the filter criteria.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$setFilterValues(
+  variableName = NULL,
+  type = "ALL",
+  values = NULL,
+  action = "replace"
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableName}}{The name of the column in the data frame that this criteria
+applies to.}
+
+\item{\code{type}}{Must be either "ALL", "VALUES" or "NONE".}
+
+\item{\code{values}}{A single data value or a vector of multiple data values that
+comprise the additional filter criteria.}
+
+\item{\code{action}}{Specifies how the criteria defined in `filter` should be
+combined with the existing filter criteria.
+Must be one of "intersect", "replace" or "union".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addFilter"></a>}}
+\if{latex}{\out{\hypertarget{method-addFilter}{}}}
+\subsection{Method \code{addFilter()}}{
+Add a new `PivotFilter` object to the filter list in this `PivotFilters`
+object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$addFilter(filter = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filter}}{A `PivotFilter` object.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getFilteredDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-getFilteredDataFrame}{}}}
+\subsection{Method \code{getFilteredDataFrame()}}{
+Filters the specified data frame using the filters defined in this
+`PivotFilters` object and returns the results as another data frame.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$getFilteredDataFrame(dataFrame = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataFrame}}{A data frame to filter.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A data frame filtered according to the criteria in this `PivotFilters` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCopy"></a>}}
+\if{latex}{\out{\hypertarget{method-getCopy}{}}}
+\subsection{Method \code{getCopy()}}{
+Create a copy of this `PivotFilters` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$getCopy()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A copy of this `PivotFilters` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-asString}{}}}
+\subsection{Method \code{asString()}}{
+Return a representation of this object as a character value.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$asString(includeVariableName = TRUE, seperator = ", ")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{includeVariableName}}{`TRUE` (default) to include the variable name in
+the string.}
+
+\item{\code{seperator}}{A character value used when concatenating
+multiple filters.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character summary of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotFilters$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

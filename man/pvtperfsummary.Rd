@@ -4,7 +4,8 @@
 \name{pvtperfsummary}
 \alias{pvtperfsummary}
 \title{Performance Comparison Summary}
-\format{A data frame with 36 rows and  18 variables:
+\format{
+A data frame with 36 rows and  18 variables:
 \describe{
   \item{id}{A unique identifier for this test case.}
   \item{evaluationMode}{The pivot table evaluation mode used for this test case.}
@@ -24,7 +25,8 @@
   \item{elapsedTimeMax}{The maximum elapsed time for this test case.}
   \item{testName}{A short name for this test case.}
   \item{testIndex}{An index for this test case.}
-}}
+}
+}
 \usage{
 pvtperfsummary
 }

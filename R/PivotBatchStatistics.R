@@ -1,33 +1,25 @@
-#' A class that provides summary statistics for batch calculations.
+
+#' R6 class that provides summary statistics for batch calculations.
 #'
-#' The PivotBatchStatistics class contains a set of summary statistics that
+#' @description
+#' The `PivotBatchStatistics` class contains a set of summary statistics that
 #' track how many calculations are batch compatible/incompatible.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @return Object of \code{\link{R6Class}} with properties and methods that help
-#'   to (do xyz).
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
-#' @field parentPivot Owning pivot table.
-#' @field asString A text description of the batch statistics.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new Pivot Batch Statistics.}
-#'
-#'   \item{\code{reset()}}{Clear the batch statistics.}
-#'   \item{\code{incrementNoData()}}{Increment the noData count for a batch.}
-#'   \item{\code{incrementCompatible()}}{Increment the compatible count for a batch.}
-#'   \item{\code{incrementIncompatible()}}{Increment the incompatible count for a batch.}
-#' }
 
 PivotBatchStatistics <- R6::R6Class("PivotBatchStatistics",
   public = list(
+
+    #' @description
+    #' Create a new `PivotBatchStatistics` object.
+    #' @param parentPivot The pivot table that this `PivotBatchStatistics`
+    #' instance belongs to.
+    #' @return A new `PivotBatchStatistics` object.
     initialize = function(parentPivot=NULL) {
       if(parentPivot$argumentCheckMode > 0) {
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -37,8 +29,12 @@ PivotBatchStatistics <- R6::R6Class("PivotBatchStatistics",
       self$reset()
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchStatistics$new", "Created new batch statistics.")
     },
+
+    #' @description
+    #' Clear the batch statistics.
+    #' @return No return value.
     reset = function() {
-      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchStatistics$new", "Resetting batch statistics...")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchStatistics$reset", "Resetting batch statistics...")
       private$p_statistics <- list()
       calcGrps <- private$p_parentPivot$calculationGroups
       if(!is.null(calcGrps)) {
@@ -60,8 +56,14 @@ PivotBatchStatistics <- R6::R6Class("PivotBatchStatistics",
           }
         }
       }
-      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchStatistics$new", "Reset batch statistics.")
+      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchStatistics$reset", "Reset batch statistics.")
     },
+
+    #' @description
+    #' Increment the noData count for a batch.
+    #' @param calculationName The name of the calculation to increment the count for.
+    #' @param calculationGroupName The name of the calculation group for the calculation.
+    #' @return No return value.
     incrementNoData = function(calculationName=NULL, calculationGroupName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "incrementNoData", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -70,6 +72,12 @@ PivotBatchStatistics <- R6::R6Class("PivotBatchStatistics",
       private$p_statistics[[calculationGroupName]][[calculationName]]["noData"] <- private$p_statistics[[calculationGroupName]][[calculationName]]["noData"]+1
       private$p_statistics[[calculationGroupName]][[calculationName]]["total"] <- private$p_statistics[[calculationGroupName]][[calculationName]]["total"]+1
     },
+
+    #' @description
+    #' Increment the compatible count for a batch.
+    #' @param calculationName The name of the calculation to increment the count for.
+    #' @param calculationGroupName The name of the calculation group for the calculation.
+    #' @return No return value.
     incrementCompatible = function(calculationName=NULL, calculationGroupName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "incrementCompatible", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -78,6 +86,12 @@ PivotBatchStatistics <- R6::R6Class("PivotBatchStatistics",
       private$p_statistics[[calculationGroupName]][[calculationName]]["compatible"] <- private$p_statistics[[calculationGroupName]][[calculationName]]["compatible"]+1
       private$p_statistics[[calculationGroupName]][[calculationName]]["total"] <- private$p_statistics[[calculationGroupName]][[calculationName]]["total"]+1
     },
+
+    #' @description
+    #' Increment the incompatible count for a batch.
+    #' @param calculationName The name of the calculation to increment the count for.
+    #' @param calculationGroupName The name of the calculation group for the calculation.
+    #' @return No return value.
     incrementIncompatible = function(calculationName=NULL, calculationGroupName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchStatistics", "incrementIncompatible", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -88,6 +102,8 @@ PivotBatchStatistics <- R6::R6Class("PivotBatchStatistics",
     }
   ),
   active = list(
+
+    #' @field asString A text description of the batch statistics.
     asString = function(value) {
       str <- ""
       if(is.null(private$p_statistics)) return(NULL)

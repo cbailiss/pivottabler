@@ -3,20 +3,25 @@
 \docType{class}
 \name{PivotCell}
 \alias{PivotCell}
-\title{A class that represents a cell in a pivot table}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that
-  define a single pivot table cell
+\title{R6 class that represents a cell in a pivot table.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotCell class represents a cell in the body of a pivot table (i.e. not
+The `PivotCell` class represents a cell in the body of a pivot table (i.e. not
 a row/column heading, rather a cell typically containing a numerical value).
 }
-\section{Fields}{
-
+\examples{
+# This class should only be created by the pivot table.
+# It is not intended to be created outside of the pivot table.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{parentPivot}}{Owning pivot table.}
+\item{\code{instanceId}}{An integer value that uniquely identifies this cell.
+NB:  This number is guaranteed to be unique within the pivot table,
+but the method of generation of the values may change in future, so
+you are advised not to base any logic on specific values.}
 
 \item{\code{rowNumber}}{The row number of the cell.  1 = the first (i.e. top) data
 row.}
@@ -24,70 +29,202 @@ row.}
 \item{\code{columnNumber}}{The column number of the cell.  1 = the first (i.e.
 leftmost) data column.}
 
+\item{\code{calculationName}}{The name of the calculation that is displayed in the
+cell.}
+
+\item{\code{calculationGroupName}}{The name of the calculation group that owns the
+calculation.}
+
+\item{\code{isEmpty}}{`TRUE` if this cell contains no data (e.g. if it is
+part of a header / outline row), `FALSE` otherwise.}
+
+\item{\code{rowFilters}}{A `PivotFilters` object containing the filters applied to
+this cell from the row data groups (i.e. row headings).}
+
+\item{\code{columnFilters}}{A `PivotFilters` object containing the filters applied to
+this cell from the column data groups (i.e. column headings).}
+
+\item{\code{rowColFilters}}{A `PivotFilters` object containing the combined filters
+applied to this cell from both the row and column data groups.}
+
+\item{\code{calculationFilters}}{The set of filters that apply to this cell to support
+calculation logic.  Either a `PivotFilters` object or a `PivotFilterOverrides`
+object.  See the "Appendix: Calculations" vignette for details.}
+
+\item{\code{workingData}}{A list of filter objects that results when the
+`rowColFilters` and `calculationFilters` are combined prior to calculating
+the cell value.  This is a list since some cells involve multiple
+calculations - where `calc$type` is "calculation" or "function", the
+calculation can be based on the values of other calculations.}
+
+\item{\code{evaluationFilters}}{The same as `workingData` generally, except
+when custom calculation functions modify the filters whilst executing.}
+
 \item{\code{rowLeafGroup}}{The row data group linked to this row.}
 
 \item{\code{columnLeafGroup}}{The column data group linked to this column.}
+
+\item{\code{isTotal}}{`TRUE` is this cell is a total, `FALSE` otherwise-}
+
+\item{\code{rawValue}}{The raw cell value - i.e. unformatted, typically a numeric value.}
+
+\item{\code{formattedValue}}{The formatted value - typically a character value.}
+
+\item{\code{baseStyleName}}{The name of the style that defines the visual
+appearance of the cell.}
+
+\item{\code{style}}{A `PivotStyle` object that assists in managing the CSS
+style declarations that override the base style.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotCell$new()}}
+\item \href{#method-setStyling}{\code{PivotCell$setStyling()}}
+\item \href{#method-getCopy}{\code{PivotCell$getCopy()}}
+\item \href{#method-asList}{\code{PivotCell$asList()}}
+\item \href{#method-asJSON}{\code{PivotCell$asJSON()}}
+\item \href{#method-clone}{\code{PivotCell$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotCell` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCell$new(
+  parentPivot,
+  rowNumber = NULL,
+  columnNumber = NULL,
+  calculationName = NULL,
+  calculationGroupName = NULL,
+  isEmpty = FALSE,
+  rowFilters = NULL,
+  columnFilters = NULL,
+  rowColFilters = NULL,
+  rowLeafGroup = NULL,
+  columnLeafGroup = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotCell`
+instance belongs to.}
+
+\item{\code{rowNumber}}{The row number of the cell.  1 = the first (i.e. top) data
+row.}
+
+\item{\code{columnNumber}}{The column number of the cell.  1 = the first (i.e.
+leftmost) data column.}
 
 \item{\code{calculationName}}{The name of the calculation that is displayed in the
 cell.}
 
 \item{\code{calculationGroupName}}{The name of the calculation group that owns the
-above calculation.}
+calculation.}
 
-\item{\code{isEmpty}}{Indicates whether this cell contains no data (e.g. if it is
-part of a header / outline row).}
+\item{\code{isEmpty}}{`TRUE` if this cell contains no data (e.g. if it is
+part of a header / outline row), `FALSE` otherwise.}
 
-\item{\code{rowFilters}}{The data filters applied to this cell from the row
-headings.}
+\item{\code{rowFilters}}{A `PivotFilters` object containing the filters applied to
+this cell from the row data groups (i.e. row headings).}
 
-\item{\code{columnFilters}}{The data filters applied to this cell from the column
-headings.}
+\item{\code{columnFilters}}{A `PivotFilters` object containing the filters applied to
+this cell from the column data groups (i.e. column headings).}
 
-\item{\code{rowColFilters}}{The data filters applied to this cell from both the row
-and column headings.}
+\item{\code{rowColFilters}}{A `PivotFilters` object containing the combined filters
+applied to this cell from both the row and column data groups.}
 
-\item{\code{calculationFilters}}{The data filters applied to this cell from the
-calculation definition.}
+\item{\code{rowLeafGroup}}{The row data group linked to this row.}
 
-\item{\code{workingData}}{The data filters and batchNames used applied when running
-calculations (including the filters needed for base calculations when
-calculation type="calculation").}
+\item{\code{columnLeafGroup}}{The column data group linked to this column.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotCell` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setStyling"></a>}}
+\if{latex}{\out{\hypertarget{method-setStyling}{}}}
+\subsection{Method \code{setStyling()}}{
+An internal method used to set style declarations on the cell.
+Using `pt$setStyling(cells=x)` is preferred for users.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCell$setStyling(styleDeclarations = NULL)}\if{html}{\out{</div>}}
+}
 
-\item{\code{evaluationFilters}}{The final and actual data filters used in the
-calculation of the cell value (e.g. custom calculation functions can
-override the working filters).}
-
-\item{\code{isTotal}}{Whether this cell is a total cell.}
-
-\item{\code{rawValue}}{The numerical calculation result.}
-
-\item{\code{formattedValue}}{The formatted calculation result (i.e. character data type).}
-
-\item{\code{baseStyleName}}{The name of the style applied to this cell (a character
-value).  The style must exist in the PivotStyles object associated with the
-PivotTable.}
-
-\item{\code{style}}{A PivotStyle object that can apply overrides to the base style
-for this cell.}
-}}
-
-\section{Methods}{
-
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot table cell, specifying the field
-  values documented above.}
-
-  \item{\code{setStyling(styleDeclarations=NULL))}}{Used to set style
-  declarations.}
-  \item{\code{getCopy())}}{Get a copy of this cell.}
-  \item{\code{asList())}}{Get a list representation of this cell}
-  \item{\code{asJSON()}}{Get a JSON representation of this cell}
+\item{\code{styleDeclarations}}{A list containing CSS style declarations.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
 }
 }
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCopy"></a>}}
+\if{latex}{\out{\hypertarget{method-getCopy}{}}}
+\subsection{Method \code{getCopy()}}{
+Non-functional legacy method soon to be removed.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCell$getCopy()}\if{html}{\out{</div>}}
+}
 
-\examples{
-# This class should only be created by the pivot table.
-# It is not intended to be created outside of the pivot table.
+\subsection{Returns}{
+Returns an empty list.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCell$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCell$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCell$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

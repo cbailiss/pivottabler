@@ -3,39 +3,160 @@
 \docType{class}
 \name{PivotBatchStatistics}
 \alias{PivotBatchStatistics}
-\title{A class that provides summary statistics for batch calculations.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that help
-  to (do xyz).
+\title{R6 class that provides summary statistics for batch calculations.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotBatchStatistics class contains a set of summary statistics that
+The `PivotBatchStatistics` class contains a set of summary statistics that
 track how many calculations are batch compatible/incompatible.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-
-\item{\code{asString}}{A text description of the batch statistics.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new Pivot Batch Statistics.}
-
-  \item{\code{reset()}}{Clear the batch statistics.}
-  \item{\code{incrementNoData()}}{Increment the noData count for a batch.}
-  \item{\code{incrementCompatible()}}{Increment the compatible count for a batch.}
-  \item{\code{incrementIncompatible()}}{Increment the incompatible count for a batch.}
-}
-}
-
 \examples{
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{asString}}{A text description of the batch statistics.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotBatchStatistics$new()}}
+\item \href{#method-reset}{\code{PivotBatchStatistics$reset()}}
+\item \href{#method-incrementNoData}{\code{PivotBatchStatistics$incrementNoData()}}
+\item \href{#method-incrementCompatible}{\code{PivotBatchStatistics$incrementCompatible()}}
+\item \href{#method-incrementIncompatible}{\code{PivotBatchStatistics$incrementIncompatible()}}
+\item \href{#method-clone}{\code{PivotBatchStatistics$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotBatchStatistics` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatchStatistics$new(parentPivot = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotBatchStatistics`
+instance belongs to.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotBatchStatistics` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-reset"></a>}}
+\if{latex}{\out{\hypertarget{method-reset}{}}}
+\subsection{Method \code{reset()}}{
+Clear the batch statistics.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatchStatistics$reset()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-incrementNoData"></a>}}
+\if{latex}{\out{\hypertarget{method-incrementNoData}{}}}
+\subsection{Method \code{incrementNoData()}}{
+Increment the noData count for a batch.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatchStatistics$incrementNoData(
+  calculationName = NULL,
+  calculationGroupName = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationName}}{The name of the calculation to increment the count for.}
+
+\item{\code{calculationGroupName}}{The name of the calculation group for the calculation.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-incrementCompatible"></a>}}
+\if{latex}{\out{\hypertarget{method-incrementCompatible}{}}}
+\subsection{Method \code{incrementCompatible()}}{
+Increment the compatible count for a batch.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatchStatistics$incrementCompatible(
+  calculationName = NULL,
+  calculationGroupName = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationName}}{The name of the calculation to increment the count for.}
+
+\item{\code{calculationGroupName}}{The name of the calculation group for the calculation.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-incrementIncompatible"></a>}}
+\if{latex}{\out{\hypertarget{method-incrementIncompatible}{}}}
+\subsection{Method \code{incrementIncompatible()}}{
+Increment the incompatible count for a batch.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatchStatistics$incrementIncompatible(
+  calculationName = NULL,
+  calculationGroupName = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationName}}{The name of the calculation to increment the count for.}
+
+\item{\code{calculationGroupName}}{The name of the calculation group for the calculation.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatchStatistics$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

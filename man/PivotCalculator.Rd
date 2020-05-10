@@ -3,99 +3,897 @@
 \docType{class}
 \name{PivotCalculator}
 \alias{PivotCalculator}
-\title{A class that computes the value of a cell.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that help
-  calculate the value of a pivot table cell.
+\title{R6 class that computes the value of a cell or cells.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotCalculator class has various functions and methods that assist with
-calculating the value of a cell in a pivot table.
+The `PivotCalculator` class has various functions and methods that assist with
+calculating the value of a cell or cells in a pivot table.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-
-\item{\code{batchInfo}}{Get a summary of the batch calculations.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot table calculator, specifying the
-  field value documented above.}
-
-  \item{\code{getDataFrame(dataName)}}{Gets a data frame with the specified
-  name from the data frames added to the pivot table.}
-  \item{\code{getCalculationGroup(calculationGroupName)}}{Gets a calculation
-  group with the specified name from the calculation groups added to the
-  pivot table.}
-  \item{\code{getCalculation(calculationGroupName, calculationName)}}{Gets a
-  calculation with the specified name and group from the calculation groups
-  added to the pivot table.}
-  \item{\code{generateBatchesForCellEvaluation()}}{Examines the cells in the
-  pivot table to generate one or more batch calculations.}
-  \item{\code{evaluateBatches()}}{Evaluate batch calculations using the batch
-  calculator.}
-  \item{\code{newFilter(variableName, values)}}{Creates a new PivotFilter
-  object associated with the specified data frame column name and column
-  values.}
-  \item{\code{newFilters(variableName, values)}}{Creates a new PivotFilters
-  object associated with the specified data frame column name and column
-  values.}
-  \item{\code{setFilters(filters1, filters2, action="replace")}}{Combines two
-  PivotFilters objects (e.g. to intersect the filters coming from the row and
-  column headings for a particular cell).}
-  \item{\code{setFilterValues(filters, variableName, values,
-  action="replace")}}{Updates a PivotFilters object based on a PivotFilter
-  object (e.g. to union the filter criteria arising from multiple row
-  headers).}
-  \item{\code{getFilteredDataFrame(dataFrame, filters)}}{Applies a
-  PivotFilters object to a data frame, returning a new data frame.}
-  \item{\code{getDistinctValues(dataFrame, variableName)}}{Gets the distinct
-  values from the specified column of a data frame.}
-  \item{\code{formatValue(value, format, fmtFuncArgs)}}{Formats a value using
-  either an sprintf string, a list of arguments for the base::format()
-  function or using a custom R function (where fmtFuncArgs is a list of
-  additional arguments to pass to the custom format function).}
-  \item{\code{getCombinedFilters = function(rowColFilters=NULL,
-  calcFilters=NULL, cell=NULL)}}{Get the working filters for a calculation.}
-  \item{\code{getFiltersForNamedCalculation = function(calculationName=NULL,
-  calculationGroupName=NULL, rowColFilters=NULL, cell=NULL)}}{Get the working
-  filters for a named calculation.}
-  \item{\code{setWorkingData = function(cell=NULL)}}{Set the working
-  filters for a cell.}
-  \item{\code{evaluateSingleValue(dataFrame, workingFilters, valueName,
-  format, fmtFuncArgs, noDataValue, noDataCaption)}}{Get a single value from
-  a data frame.}
-  \item{\code{evaluateSummariseExpression(dataName=NULL, dataFrame=NULL,
-  workingFilters=NULL, calculationName=NULL, calculationGroupName=NULL,
-  summaryName=NULL, summariseExpression=NULL, format=NULL, noDataValue=NULL,
-  noDataCaption=NULL)}}{Calculate a summary value, either using a batch or
-  sequential calculation.}
-  \item{\code{evaluateCalculationExpression(values, calculationExpression,
-  format, fmtFuncArgs, noDataValue, noDataCaption)}}{Evaluates an R
-  expression in order to combine the results of other calculations.}
-  \item{\code{evaluateCalculateFunction(workingFilters, calculationFunction,
-  format, fmtFuncArgs, baseValues, cell)}}{Invokes a user-provided custom R
-  function to aggregate data and perform calculations.}
-  \item{\code{evaluateNamedCalculationWD(calculationName,
-  calculationGroupName, workingData, cell)}}{Invokes the relevant
-  calculation function based upon the calculation type.}
-  \item{\code{evaluateNamedCalculation(calculationName,
-  calculationGroupName, rowColFilters)}}{Determines the working filters and
-  invokes the relevant calculation function based upon the calculation
-  type.}
-  \item{\code{evaluateCell(cell)}}{Top-level calculation function responsible
-  for calculating the value of a pivot table cell.}
+\details{
+This class contains all of the logic necessary for evaluating calculations.
+For batch mode calculations, it makes use of the `PivotBatchCalculator` class
+to carry out the calculation batches, then retrieves the results from the
+relevant batch for each calculation.
+For sequential mode calculations, this class carries out the calculations.
+Where a pivot table contains some cells that can be evaluated in batch mode
+and some that cannot, this class contains the appropriate logic to use the
+relevant calculation mode in each case, preferring to use batch mode where
+possible, unless this has been disabled in the pivot table settings.
+There are many utility methods in this class that are thin wrappers around
+methods in other classes.  This simplifies calling these other methods as well
+as providing a more unified way to change in the future how these common
+operations are performed.
+Custom calculation functions are passed an instance of the `PivotCalculator`
+class, thereby also providing the authors of custom calculation functions an
+easy way for custom calculation functions to carry out common operations.
 }
-}
-
 \examples{
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{batchInfo}}{A summary of the batches used in evaluating the pivot table.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotCalculator$new()}}
+\item \href{#method-getDataFrame}{\code{PivotCalculator$getDataFrame()}}
+\item \href{#method-countTotalData}{\code{PivotCalculator$countTotalData()}}
+\item \href{#method-getTotalDataFrame}{\code{PivotCalculator$getTotalDataFrame()}}
+\item \href{#method-getCalculationGroup}{\code{PivotCalculator$getCalculationGroup()}}
+\item \href{#method-getCalculation}{\code{PivotCalculator$getCalculation()}}
+\item \href{#method-generateBatchesForCellEvaluation}{\code{PivotCalculator$generateBatchesForCellEvaluation()}}
+\item \href{#method-evaluateBatches}{\code{PivotCalculator$evaluateBatches()}}
+\item \href{#method-newFilter}{\code{PivotCalculator$newFilter()}}
+\item \href{#method-newFilters}{\code{PivotCalculator$newFilters()}}
+\item \href{#method-setFilters}{\code{PivotCalculator$setFilters()}}
+\item \href{#method-setFilter}{\code{PivotCalculator$setFilter()}}
+\item \href{#method-setFilterValues}{\code{PivotCalculator$setFilterValues()}}
+\item \href{#method-getFilteredDataFrame}{\code{PivotCalculator$getFilteredDataFrame()}}
+\item \href{#method-getDistinctValues}{\code{PivotCalculator$getDistinctValues()}}
+\item \href{#method-formatValue}{\code{PivotCalculator$formatValue()}}
+\item \href{#method-getCombinedFilters}{\code{PivotCalculator$getCombinedFilters()}}
+\item \href{#method-getFiltersForNamedCalculation}{\code{PivotCalculator$getFiltersForNamedCalculation()}}
+\item \href{#method-setWorkingData}{\code{PivotCalculator$setWorkingData()}}
+\item \href{#method-evaluateSingleValue}{\code{PivotCalculator$evaluateSingleValue()}}
+\item \href{#method-evaluateSummariseExpression}{\code{PivotCalculator$evaluateSummariseExpression()}}
+\item \href{#method-evaluateCalculationExpression}{\code{PivotCalculator$evaluateCalculationExpression()}}
+\item \href{#method-evaluateCalculateFunction}{\code{PivotCalculator$evaluateCalculateFunction()}}
+\item \href{#method-evaluateNamedCalculationWD}{\code{PivotCalculator$evaluateNamedCalculationWD()}}
+\item \href{#method-evaluateNamedCalculation}{\code{PivotCalculator$evaluateNamedCalculation()}}
+\item \href{#method-evaluateCell}{\code{PivotCalculator$evaluateCell()}}
+\item \href{#method-clone}{\code{PivotCalculator$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotCalculator` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$new(parentPivot = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotCalculator`
+instance belongs to.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotCalculator` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-getDataFrame}{}}}
+\subsection{Method \code{getDataFrame()}}{
+Retrieve a data frame that was added to the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$getDataFrame(dataName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataName}}{The name of the data frame (as specified in
+`pt$addData()`) to retrieve.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The data frame with the specified name.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-countTotalData"></a>}}
+\if{latex}{\out{\hypertarget{method-countTotalData}{}}}
+\subsection{Method \code{countTotalData()}}{
+Count the number of "totals" data frames that have been
+added to the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$countTotalData(dataName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataName}}{The name of the data frame (as specified in
+`pt$addData()`) that the "totals" data frames are associated with.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The number of "totals" data frames associated with the specified name.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getTotalDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-getTotalDataFrame}{}}}
+\subsection{Method \code{getTotalDataFrame()}}{
+Retrieve a "totals" data frame that was added to the
+pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$getTotalDataFrame(dataName = NULL, variableNames = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataName}}{The name of the data frame (as specified in
+`pt$addData()`) that the "totals" data frame is associated with.}
+
+\item{\code{variableNames}}{The names of the variables that the totals are grouped
+by in the "totals" data frame (i.e. the dimensionality).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The "totals" data frame.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCalculationGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-getCalculationGroup}{}}}
+\subsection{Method \code{getCalculationGroup()}}{
+Retrieve a calculation group in the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$getCalculationGroup(calculationGroupName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationGroupName}}{The name of the calculation group to retrieve.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The calculation group with the specified name.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCalculation"></a>}}
+\if{latex}{\out{\hypertarget{method-getCalculation}{}}}
+\subsection{Method \code{getCalculation()}}{
+Retrieve a calculation in the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$getCalculation(
+  calculationGroupName = NULL,
+  calculationName = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationGroupName}}{The name of the calculation group to retrieve.}
+
+\item{\code{calculationName}}{The name of the calculation to retrieve.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The calculation with the specified name in the specified group.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-generateBatchesForCellEvaluation"></a>}}
+\if{latex}{\out{\hypertarget{method-generateBatchesForCellEvaluation}{}}}
+\subsection{Method \code{generateBatchesForCellEvaluation()}}{
+Examine the data groups and cells in a pivot table to
+generate the structure of the batches in preparation for evaluating the
+pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$generateBatchesForCellEvaluation()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+The batches that exist in the pivot table.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-evaluateBatches"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluateBatches}{}}}
+\subsection{Method \code{evaluateBatches()}}{
+Execute the batch calculations as part of evaluating the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$evaluateBatches()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+The number of batches that were evaluated.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-newFilter"></a>}}
+\if{latex}{\out{\hypertarget{method-newFilter}{}}}
+\subsection{Method \code{newFilter()}}{
+Create a new `PivotFilter` object associated with the
+specified data frame column name and column values.  The new filter is
+conceptually of the form `variableName %in% values`.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$newFilter(variableName = NULL, values = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableName}}{The data frame column name the filter is associated with.}
+
+\item{\code{values}}{The filter values for the filter.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The new `PivotFilter` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-newFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-newFilters}{}}}
+\subsection{Method \code{newFilters()}}{
+Create a new `PivotFilters` object associated with the
+specified data frame column name and column values.  The new filter is
+conceptually of the form `variableName %in% values`.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$newFilters(variableName = NULL, values = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableName}}{The data frame column name the filter is associated with.}
+
+\item{\code{values}}{The filter values for the filter.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+A `PivotFilters` object is a collection of `PivotFilter` objects, therefore
+the return value of this method is suitable for use where other filters will
+subsequently be needed/applied.
+}
+
+\subsection{Returns}{
+The new `PivotFilter` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-setFilters}{}}}
+\subsection{Method \code{setFilters()}}{
+Combines two `PivotFilters` objects, e.g. to intersect the filters coming
+from the row and column headings for a particular cell.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$setFilters(
+  filters1 = NULL,
+  filters2 = NULL,
+  action = "replace"
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filters1}}{A `PivotFilters` object.}
+
+\item{\code{filters2}}{A `PivotFilters` object.}
+
+\item{\code{action}}{A character value specifying how to combine the two filters.
+Must be one of "intersect", "replace", "union".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotFilters` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setFilter"></a>}}
+\if{latex}{\out{\hypertarget{method-setFilter}{}}}
+\subsection{Method \code{setFilter()}}{
+Combines a `PivotFilters` object with a `PivotFilter` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$setFilter(filters = NULL, filter = NULL, action = "replace")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filters}}{A `PivotFilters` object.}
+
+\item{\code{filter}}{A `PivotFilters` object.}
+
+\item{\code{action}}{A character value specifying how to combine the two filters.
+Must be one of "intersect", "replace", "union".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotFilters` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setFilterValues"></a>}}
+\if{latex}{\out{\hypertarget{method-setFilterValues}{}}}
+\subsection{Method \code{setFilterValues()}}{
+Combines a `PivotFilters` object with additional filter criteria.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$setFilterValues(
+  filters = NULL,
+  variableName = NULL,
+  values = NULL,
+  action = "replace"
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filters}}{A `PivotFilters` object.}
+
+\item{\code{variableName}}{The name of the variable (i.e. column) in the
+data frame that the criteria relates to.}
+
+\item{\code{values}}{The values that the specified variable will be
+filtered to.}
+
+\item{\code{action}}{A character value specifying how to combine the
+existing filters and new filter criteria.
+Must be one of "intersect", "replace", "union".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotFilters` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getFilteredDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-getFilteredDataFrame}{}}}
+\subsection{Method \code{getFilteredDataFrame()}}{
+Apply a set of filters to a data frame and return the filtered results.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$getFilteredDataFrame(dataFrame = NULL, filters = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataFrame}}{The data frame to filter.}
+
+\item{\code{filters}}{A `PivotFilters` object containing the filter criteria.}
+
+\item{\code{dataName}}{The name of the data frame (as specified in
+`pt$addData()`) to be filtered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A filtered data frame.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getDistinctValues"></a>}}
+\if{latex}{\out{\hypertarget{method-getDistinctValues}{}}}
+\subsection{Method \code{getDistinctValues()}}{
+Get the distinct values from a specified column in a data frame.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$getDistinctValues(dataFrame = NULL, variableName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataFrame}}{The data frame.}
+
+\item{\code{variableName}}{The name of the variable to get the distinct values for.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A vector containing the distinct values.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-formatValue"></a>}}
+\if{latex}{\out{\hypertarget{method-formatValue}{}}}
+\subsection{Method \code{formatValue()}}{
+Format a value using a variety of different methods.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$formatValue(value = NULL, format = NULL, fmtFuncArgs = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{value}}{The value to format.}
+
+\item{\code{format}}{Either a character format string to be used with `sprintf()`,
+a list of arguments to be used with `base::format()` or a custom R function
+which will be invoked once per value to be formatted.}
+
+\item{\code{fmtFuncArgs}}{If `format` is a custom R function, then `fmtFuncArgs`
+specifies any additional arguments (in the form of a list) that will be
+passed to the custom function.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The formatted value if `format` is specified, otherwise the `value`
+converted to a character value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCombinedFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-getCombinedFilters}{}}}
+\subsection{Method \code{getCombinedFilters()}}{
+Get the working filters for a calculation by combining
+row-column filters and calculation filters.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$getCombinedFilters(
+  rowColFilters = NULL,
+  calcFilters = NULL,
+  cell = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{rowColFilters}}{A `PivotFilters` object containing the combined
+filters from the row data groups and column data groups.}
+
+\item{\code{calcFilters}}{Either `PivotFilters` object or a `PivotFilterOverrides`
+object containing filers defined as part of the calculation.}
+
+\item{\code{cell}}{A `PivotCell` object that is the cell for which the working
+data filters are being calculated.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of filters, element names:  calculationFilters and
+workingFilters.  The working filters are the row-column filters
+combined with the calculation filters.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getFiltersForNamedCalculation"></a>}}
+\if{latex}{\out{\hypertarget{method-getFiltersForNamedCalculation}{}}}
+\subsection{Method \code{getFiltersForNamedCalculation()}}{
+Get the working filters for a named calculation by calling
+`getCombinedFilters()` as needed, depending on the calculation type.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$getFiltersForNamedCalculation(
+  calculationName = NULL,
+  calculationGroupName = NULL,
+  rowColFilters = NULL,
+  cell = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationName}}{The name of the calculation.}
+
+\item{\code{calculationGroupName}}{The name of the calculation group.}
+
+\item{\code{rowColFilters}}{A `PivotFilters` object containing the combined
+filters from the row data groups and column data groups.}
+
+\item{\code{cell}}{A `PivotCell` object that is the cell for which the working
+data filters are being calculated.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of filters, where the element names are calculation names.
+Reminder:  Evaluating a named calculation, if `calc$type="calculation"`,
+can involve computing multiple named calculations, which is why this
+return value is a list.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setWorkingData"></a>}}
+\if{latex}{\out{\hypertarget{method-setWorkingData}{}}}
+\subsection{Method \code{setWorkingData()}}{
+Set the working data filters for a cell in the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$setWorkingData(cell = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{cell}}{The cell to generate the working data for.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+The working data for a cell is a list of `PivotFilters` objects - one per
+named calculation.  Most cells only relate to one calculation, but
+calculations of type `calc$type="calculation"` can relate to multiple
+calculations, hence the working data is a list where the element name
+is the calculation name.
+This method calls `getFiltersForNamedCalculation()` internally to generate
+the filters for the working data.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-evaluateSingleValue"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluateSingleValue}{}}}
+\subsection{Method \code{evaluateSingleValue()}}{
+Get a single value from a data frame, as part of evaluating a calculation
+where the calculation is of type `calc$type="value"`.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$evaluateSingleValue(
+  dataFrame = NULL,
+  workingFilters = NULL,
+  valueName = NULL,
+  format = NULL,
+  fmtFuncArgs = NULL,
+  noDataValue = NULL,
+  noDataCaption = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataFrame}}{The data frame to retrieve the value from.}
+
+\item{\code{workingFilters}}{The relevant working data for the calculation.}
+
+\item{\code{valueName}}{The name of the variable to retrieve from the data frame.}
+
+\item{\code{format}}{The formatting to apply to the value.
+See `formatValue()` for details.}
+
+\item{\code{fmtFuncArgs}}{Additional arguments for a custom format function.
+See `formatValue()` for details.}
+
+\item{\code{noDataValue}}{A replacement raw value to use if the value is NULL.}
+
+\item{\code{noDataCaption}}{A replcement formatted value to use if the value is NULL.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list containing two elements: rawValue (typically numeric) and
+formattedValue (typically a character value).
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-evaluateSummariseExpression"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluateSummariseExpression}{}}}
+\subsection{Method \code{evaluateSummariseExpression()}}{
+Get a summary value from a data frame, as part of evaluating a calculation
+where the calculation is of type `calc$type="summary"`.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$evaluateSummariseExpression(
+  dataName = NULL,
+  dataFrame = NULL,
+  workingFilters = NULL,
+  batchName = NULL,
+  calculationName = NULL,
+  calculationGroupName = NULL,
+  summaryName = NULL,
+  summariseExpression = NULL,
+  format = NULL,
+  fmtFuncArgs = NULL,
+  noDataValue = NULL,
+  noDataCaption = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataName}}{The name of the data frame (as specified in
+`pt$addData()`) containing the data.}
+
+\item{\code{dataFrame}}{The data frame to retrieve the value from.}
+
+\item{\code{workingFilters}}{The relevant working data for the calculation.}
+
+\item{\code{batchName}}{The name of the batch that contains the results of the
+calculation (if batch evaluation is in use and possible for this cell and
+calculation).}
+
+\item{\code{calculationName}}{The name of the calculation.}
+
+\item{\code{calculationGroupName}}{The name of the calculation group.}
+
+\item{\code{summaryName}}{The name of the summary (typically also the calculation
+name).}
+
+\item{\code{summariseExpression}}{The dplyr or data.table expression to aggregate
+and summarise the data.}
+
+\item{\code{format}}{The formatting to apply to the value.
+See `formatValue()` for details.}
+
+\item{\code{fmtFuncArgs}}{Additional arguments for a custom format function.
+See `formatValue()` for details.}
+
+\item{\code{noDataValue}}{A replacement raw value to use if the value is NULL.}
+
+\item{\code{noDataCaption}}{A replcement formatted value to use if the value is NULL.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+Where batch evaluation is used, the value is retrieved from the
+pre-calculated batch, otherwise dplyr/data.table is used to
+calculate the value (i.e. reverting to sequential evaluation mode which
+performs calculations cell-by-cell, one cell at a time).
+}
+
+\subsection{Returns}{
+A list containing two elements: rawValue (typically numeric) and
+formattedValue (typically a character value).
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-evaluateCalculationExpression"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluateCalculationExpression}{}}}
+\subsection{Method \code{evaluateCalculationExpression()}}{
+Evaluates an R expression in order to combine the results of
+other calculations, as part of evaluating a calculation
+where the calculation is of type `calc$type="calculation"`.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$evaluateCalculationExpression(
+  values = NULL,
+  calculationExpression = NULL,
+  format = NULL,
+  fmtFuncArgs = NULL,
+  noDataValue = NULL,
+  noDataCaption = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{values}}{The results of other calculations, passed in the form
+of a list where the element names are the names of those other
+calculations.}
+
+\item{\code{calculationExpression}}{A character expression to be evaluated,
+e.g. "values$TotalIncome/values$SaleCount".}
+
+\item{\code{format}}{The formatting to apply to the value.
+See `formatValue()` for details.}
+
+\item{\code{fmtFuncArgs}}{Additional arguments for a custom format function.
+See `formatValue()` for details.}
+
+\item{\code{noDataValue}}{A replacement raw value to use if the value is NULL.}
+
+\item{\code{noDataCaption}}{A replcement formatted value to use if the value is NULL.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+A calculation, where `calc$type="calculation"`, combines the
+results of other calculations using a simple R expression.
+}
+
+\subsection{Returns}{
+A list containing two elements: rawValue (typically numeric) and
+formattedValue (typically a character value).
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-evaluateCalculateFunction"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluateCalculateFunction}{}}}
+\subsection{Method \code{evaluateCalculateFunction()}}{
+Invokes a user-provided custom R function to aggregate data and
+perform calculations, as part of evaluating a calculation
+where the calculation is of type `calc$type="functon"`.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$evaluateCalculateFunction(
+  workingFilters = NULL,
+  calculationFunction = NULL,
+  calcFuncArgs = NULL,
+  format = NULL,
+  fmtFuncArgs = NULL,
+  baseValues = NULL,
+  cell = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{workingFilters}}{The relevant working data for the calculation.}
+
+\item{\code{calculationFunction}}{The custom R function to invoke.}
+
+\item{\code{calcFuncArgs}}{Specifies any additional arguments (in the form
+of a list) that will be passed to the custom calculation function.}
+
+\item{\code{format}}{The formatting to apply to the value.
+See `formatValue()` for details.}
+
+\item{\code{fmtFuncArgs}}{Additional arguments for a custom format function.
+See `formatValue()` for details.}
+
+\item{\code{baseValues}}{The results of other calculations, passed in the form
+of a list where the element names are the names of those other
+calculations.}
+
+\item{\code{cell}}{A `PivotCell` object representing the cell being calculated.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+A calculation, where `calc$type="function"`, invokes a user provided
+R function on a cell-by-cell basis.
+}
+
+\subsection{Returns}{
+A list containing two elements: rawValue (typically numeric) and
+formattedValue (typically a character value).
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-evaluateNamedCalculationWD"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluateNamedCalculationWD}{}}}
+\subsection{Method \code{evaluateNamedCalculationWD()}}{
+Invokes the relevant calculation function based upon the calculation
+type.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$evaluateNamedCalculationWD(
+  calculationName = NULL,
+  calculationGroupName = NULL,
+  workingData = NULL,
+  cell = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationName}}{The name of the calculation to execute.}
+
+\item{\code{calculationGroupName}}{The calculation group that the
+calculation belongs to.}
+
+\item{\code{workingData}}{The relevant working data for the calculation.}
+
+\item{\code{cell}}{A `PivotCell` object representing the cell being calculated.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This function examines the `calc$type` property then invokes either
+`evaluateSingleValue()`, `evaluateSummariseExpression()`,
+`evaluateCalculationExpression()` or `evaluateCalculateFunction()`.
+Sometimes, more than one of the these functions is invoked, since
+calculation type "calculation" and "function" can/do make use of
+values from other calculations, which must be evaluated first.
+}
+
+\subsection{Returns}{
+A list containing two elements: rawValue (typically numeric) and
+formattedValue (typically a character value).
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-evaluateNamedCalculation"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluateNamedCalculation}{}}}
+\subsection{Method \code{evaluateNamedCalculation()}}{
+Invokes the relevant calculation function based upon the calculation
+type.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$evaluateNamedCalculation(
+  calculationName = NULL,
+  calculationGroupName = NULL,
+  rowColFilters = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationName}}{The name of the calculation to execute.}
+
+\item{\code{calculationGroupName}}{The calculation group that the
+calculation belongs to.}
+
+\item{\code{rowColFilters}}{The filters arising from the row and column
+groups.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This function is a higher-level wrapper around
+`evaluateNamedCalculationWD()`.  This version incorporates
+logic to convert the filters from the row and column data groups
+into the working data filters, then calls
+`evaluateNamedCalculationWD()`.  This version has no suffix in the
+name, since this is the version users are more likely to invoke,
+e.g. from within a custom calculation function.
+}
+
+\subsection{Returns}{
+A list containing two elements: rawValue (typically numeric) and
+formattedValue (typically a character value).
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-evaluateCell"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluateCell}{}}}
+\subsection{Method \code{evaluateCell()}}{
+Evalue calculations to compute the value of a cell in a pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$evaluateCell(cell = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{cell}}{A `PivotCell` object representing the cell to calculate.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list containing two elements: rawValue (typically numeric) and
+formattedValue (typically a character value).
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

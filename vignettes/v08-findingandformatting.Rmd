@@ -55,7 +55,7 @@ These functions can operate in two different ways, specified by the `matchMode` 
 
 These functions also accept the following arguments:
 
-- `variableNames` - a character vector specifying the name/names of the variables to find - useful for finding all of the data groups for a specific variable.
+- `variableNames` - a character vector specifying the name/names of the variables to find^[This is useful generally only in pivot tables with irregular layouts, since in regular pivot tables every cell is related to every variable].
 - `variableValues` - a list specifying the variable names and values to find.
     + Specify one or more variables values to match that/those value(s) for the specified variable.
     + Specify "**" as the variable value to match totals for the specified variable.
@@ -514,7 +514,7 @@ pt$renderPivot()
 
 The `findCells()` function is used to search for cells within the body of the pivot table matching one or more criteria.  The function returns a list of cell objects.  This function has the following parameters:
 
-- `variableNames` - a character vector specifying the name/names of the variables to find - useful for finding all of the data groups for a specific variable. 
+- `variableNames` - a character vector specifying the variable name/names to find^[This is useful generally only in pivot tables with irregular layouts, since in regular pivot tables every cell is related to every variable]. 
 - `variableValues` - a list specifying the variable names and values to find.   
     + Specify "**" as the variable value to match totals for the specified variable.
     + Specify "!*" as the variable value to match non-totals for the specified variable.
@@ -526,7 +526,7 @@ The `findCells()` function is used to search for cells within the body of the pi
 - `calculationNames` - a character vector specifying the name/names of the calculations to find.
 - `minValue` - a numerical value specifying a minimum value threshold when matching cells.
 - `maxValue` - a numerical value specifying a maximum value threshold when matching cells.
-- `exactValues` - vector specifying a set of allowed values when matching cells.
+- `exactValues` - a vector or list specifying a set of allowed values when matching cells.
 - `includeNA` - specify TRUE to include NA in the matched cells, FALSE to exclude NA values.
 - `includeNull` - specify TRUE to include cells with no value, FALSE to exclude cells with no value.
 - `emptyCells` - a word that specifies how empty cells are matched - must be one of:

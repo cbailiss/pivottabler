@@ -1,39 +1,27 @@
-#' A class that renders a pivot table into an Excel worksheet.
+
+#' R6 class that renders a pivot table into an Excel worksheet.
 #'
-#' The PivotOpenXlsxRenderer class creates a representation of a pivot table in an Excel file using the openxlsx package.
+#' @description
+#' The `PivotOpenXlsxRenderer` class creates a representation of a
+#' pivot table in an Excel file using the `openxlsx` package.
+#' See the "Excel Export" vignette for details and examples.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @import htmltools
-#' @return Object of \code{\link{R6Class}} with properties and methods that
-#'   render to Excel via the openxlsx package
+#' @import jsonlite
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
-#' @field parentPivot Owning pivot table.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new pivot table renderer, specifying the
-#'   field value documented above.}
-#'
-#'   \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist
-#'   on the PivotDataGroup class.}
-#'   \item{\code{writeToCell(wb=NULL, wsName=NULL, rowNumber=NULL,
-#'   columnNumber=NULL, value=NULL, applyStyles=TRUE, baseStyleName=NULL,
-#'   style=NULL, mapFromCss=TRUE)}}{Writes a value to a cell and applies styling
-#'   as needed.}
-#'   \item{\code{writeToWorksheet(wb=NULL, wsName=NULL, topRowNumber=NULL,
-#'   leftMostColumnNumber=NULL, outputValuesAs="value", applyStyles=TRUE,
-#'   mapStylesFromCSS=TRUE, exportOptions=NULL)}}{Output the pivot table into
-#'   the specified workbook and worksheet at the specified row-column location.}
-#' }
 
 PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
   public = list(
+
+    #' @description
+    #' Create a new `PivotOpenXlsxRenderer` object.
+    #' @param parentPivot The pivot table that this `PivotOpenXlsxRenderer`
+    #' instance belongs to.
+    #' @return A new `PivotOpenXlsxRenderer` object.
     initialize = function(parentPivot) {
       if(parentPivot$argumentCheckMode > 0) {
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -43,6 +31,10 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       private$p_styles <- PivotOpenXlsxStyles$new(parentPivot=private$p_parentPivot)
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$new", "Created new OpenXlsx Renderer.")
     },
+
+    #' An internal method used when rendering a pivot table to HTML.
+    #' Clear the IsRendered flags that exist on the `PivotDataGroup` class.
+    #' @return No return value.
     clearIsRenderedFlags = function() {
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$clearIsRenderedFlags", "Clearing isRendered flags...")
       clearFlags <- function(dg) {
@@ -59,6 +51,30 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$clearIsRenderedFlags", "Cleared isRendered flags...")
       return(invisible())
     },
+
+    #' @description
+    #' Writes a value to a cell and applies styling as needed.
+    #' @param wb A `Workbook` object representing the Excel file being written
+    #' to.
+    #' @param wsName A character value specifying the name of the worksheet to
+    #' write to.
+    #' @param rowNumber An integer value specifying the row number of the cell
+    #' to write to.
+    #' @param columnNumber An integer value specifying the column number of the
+    #' cell to write to.
+    #' @param value The value to write into the cell.
+    #' @param applyStyles Default `TRUE` to write styling information to the cell.
+    #' @param baseStyleName A character value specifying a named style definted
+    #' in the pivot table.
+    #' @param style A `PivotStyle` object containing CSS style declarations to
+    #' override the base style.
+    #' @param mapFromCss Default `TRUE` to automatically convert CSS style
+    #' declarations to their Excel equivalents.
+    #' @param mergeRows An integer vector specifying the row extent of a merged
+    #' cell.
+    #' @param mergeColumns An integer vector specifying the column extent of a
+    #' merged cell.
+    #' @return No return value.
     writeToCell = function(wb=NULL, wsName=NULL, rowNumber=NULL, columnNumber=NULL, value=NULL, applyStyles=TRUE, baseStyleName=NULL, style=NULL, mapFromCss=TRUE, mergeRows=NULL, mergeColumns=NULL) { #, debugMsg=NULL) {
        if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="Workbook")
@@ -120,7 +136,34 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$writeToWorksheet", "Written to cell.")
     },
-    writeToWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, outputHeadingsAs="formattedValueAsText", outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE, exportOptions=NULL, showRowGroupHeaders=FALSE) {
+
+    #' @description
+    #' Write the pivot table into the specified workbook and worksheet at
+    #' the specified row-column location.
+    #' @param wb A `Workbook` object representing the Excel file being written
+    #' to.
+    #' @param wsName A character value specifying the name of the worksheet to
+    #' write to.
+    #' @param topRowNumber An integer value specifying the row number in the
+    #' Excel worksheet  to write the pivot table.
+    #' @param leftMostColumnNumber An integer value specifying the column number
+    #' in the Excel worksheet to write the pivot table.
+    #' @param outputHeadingsAs Must be one of "rawValue",
+    #' "formattedValueAsText" (default) or "formattedValueAsNumber" to specify
+    #' how data groups are written into the Excel sheet.
+    #' @param outputValuesAs Must be one of "rawValue" (default),
+    #' "formattedValueAsText" or "formattedValueAsNumber" to specify
+    #' how cell values are written into the Excel sheet.
+    #' @param applyStyles Default `TRUE` to write styling information to the cell.
+    #' @param mapStylesFromCSS Default `TRUE` to automatically convert CSS style
+    #' declarations to their Excel equivalents.
+    #' @param exportOptions A list of additional export options - see the
+    #' "A1. Appendix" for details.
+    #' @param showRowGroupHeaders Default `FALSE`, specify `TRUE` to write row
+    #' group headers.
+    #' @return No return value.
+    writeToWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, outputHeadingsAs="formattedValueAsText",
+                                outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE, exportOptions=NULL, showRowGroupHeaders=FALSE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="Workbook")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")

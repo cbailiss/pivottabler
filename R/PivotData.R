@@ -1,46 +1,29 @@
-#' A class that contains named data frames.
+
+#' R6 class that contains named data frames and associated totals.
 #'
+#' @description
 #' The PivotData class stores all of the data frames associated with a pivot
 #' table.
+#' Each data frame can have a set of associated "totals" data frames,
+#' which are used to enable the "value" calculation type.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
 #' @importFrom data.table data.table is.data.table
 #' @import jsonlite
-#' @return Object of \code{\link{R6Class}} with properties and methods that help
-#'   quickly storing and retrieving data frames.
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
-#' @field parentPivot Owning pivot table.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new pivot data container, specifying the
-#'   field value documented above.}
-#'
-#'   \item{\code{addData(df, dataName)}}{And a data frame to the pivot table,
-#'   specifying a name that can be used to easily retrieve it or refer to it
-#'   later.}
-#'   \item{\code{getData(dataName)}}{Get the data frame with the specified
-#'   name.}
-#'   \item{\code{isKnownData(dataName)}}{Check if a data frame exists with the
-#'   specified name.}
-#'   \item{\code{addTotalData(dataFrame, dataName, variableNames)}}{Add
-#'   pre-calculated totals/aggregate data to the pivot table.}
-#'   \item{\code{getTotalData(dataName, variableNames)}}{Get pre-calculated
-#'   totals/aggregate data that was previously added to the pivot table.}
-#'   \item{\code{asList()}}{Get a list representation of the contained data
-#'   frames.}
-#'   \item{\code{asJSON()}}{Get a JSON representation of the contained data
-#'   frames.}
-#' }
 
 PivotData <- R6::R6Class("PivotData",
   public = list(
+
+   #' @description
+   #' Create a new `PivotData` object.
+   #' @param parentPivot The pivot table that this `PivotData`
+   #' instance belongs to.
+   #' @return A new `PivotData` object.
    initialize = function(parentPivot=NULL) {
      if(parentPivot$argumentCheckMode > 0) {
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotData", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -52,6 +35,15 @@ PivotData <- R6::R6Class("PivotData",
      private$p_defaultData <- NULL
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$new", "Created new Pivot Data.")
    },
+
+   #' @description
+   #' Add a data frame to the pivot table, specifying a name that can be used
+   #' later to easily retrieve it or refer to it.
+   #' @param dataFrame The data frame to add to the pivot table.
+   #' @param dataName The name to assign to this data frame in the pivot table.
+   #' If no name is specified, then the name of the data frame variable will
+   #' be used.
+   #' @return No return value.
    addData = function(dataFrame=NULL, dataName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
@@ -78,6 +70,12 @@ PivotData <- R6::R6Class("PivotData",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addData", "Added data.")
      return(invisible())
    },
+
+   #' @description
+   #' Retrieve the data frame with the specified name.
+   #' @param dataName The name that was assigned to the data frame when it was
+   #' added to the pivot table.
+   #' @return A data frame.
    getData = function(dataName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "getData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -88,6 +86,13 @@ PivotData <- R6::R6Class("PivotData",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addData", "Got data.")
      return(invisible(data))
    },
+
+   #' @description
+   #' Check if a data frame exists with the specified name.
+   #' @param dataName The name that was assigned to the data frame when it was
+   #' added to the pivot table.
+   #' @return `TRUE` if a data frame exists with the specified name,
+   #' `FALSE` otherwise.
    isKnownData = function(dataName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "isKnownData", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -97,6 +102,15 @@ PivotData <- R6::R6Class("PivotData",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$isKnownData", "Checked dataName.")
      return(invisible(TRUE))
    },
+
+   #' @description
+   #' Add pre-calculated totals/aggregate data to the pivot table.
+   #' @param dataFrame The data frame to add to the pivot table.
+   #' @param dataName The name of the associated data frame in the
+   #' pivot table which these totals relate to.
+   #' @param variableNames A character vector specifying the names
+   #' of the variables which these totals are grouped by.
+   #' @return No return value.
    addTotalData = function(dataFrame=NULL, dataName=NULL, variableNames=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addTotalData", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
@@ -126,6 +140,14 @@ PivotData <- R6::R6Class("PivotData",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addTotalData", "Added totals data.")
      return(invisible())
    },
+
+   #' @description
+   #' Count the number of data frames containing total/aggregate data that
+   #' exist in the pivot table associated with a specific named data frame.
+   #' @param dataName The name of the associated data frame in the
+   #' pivot table which these totals relate to.
+   #' @return The number of total/aggregate data frames that exist in the
+   #' pivot table associated with the specified data frame name.
    countTotalData = function(dataName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "countTotalData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -140,6 +162,14 @@ PivotData <- R6::R6Class("PivotData",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$countTotalData", "Counted total data.", list(data=data))
      return(invisible(length(private$p_totalData$dn)))
    },
+
+   #' @description
+   #' Retrieve pre-calculated totals/aggregate data from the pivot table.
+   #' @param dataName The name of the associated data frame in the
+   #' pivot table which these totals relate to.
+   #' @param variableNames A character vector specifying the names
+   #' of the variables which the totals are grouped by.
+   #' @return A data frame.
    getTotalData = function(dataName=NULL, variableNames=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "getTotalData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -170,6 +200,10 @@ PivotData <- R6::R6Class("PivotData",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$getTotalData", "Got total data.", list(data=data))
      return(invisible(data))
    },
+
+   #' @description
+   #' Return the contents of this object as a list for debugging.
+   #' @return A list of various object properties.
    asList = function() {
      lst <- list()
      if(length(private$p_data) > 0) {
@@ -183,11 +217,22 @@ PivotData <- R6::R6Class("PivotData",
      }
      return(invisible(lst))
    },
+
+   #' @description
+   #' Return the contents of this object as JSON for debugging.
+   #' @return A JSON representation of various object properties.
    asJSON = function() { return(jsonlite::toJSON(self$asList())) }
   ),
   active = list(
+
+    #' @field count The number of named data frames in the pivot table
+    #' (excluding totals/aggregate data frames).
     count = function(value) { return(invisible(length(private$p_data))) },
+
+    #' @field defaultData The default data frame in the pivot table.
     defaultData = function(value) { return(invisible(private$p_defaultData)) },
+
+    #' @field defaultName The name of the default data frame in the pivot table.
     defaultName = function(value) { return(invisible(private$p_defaultName)) }
   ),
   private = list(

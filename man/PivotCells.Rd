@@ -3,60 +3,571 @@
 \docType{class}
 \name{PivotCells}
 \alias{PivotCells}
-\title{A class that contains the cells from a pivot table.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods relating
-  to the cells of a pivot table.
+\title{R6 class that contains the cells in a pivot table.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotCells class contains all of the PivotCell objects that comprise the
-body of a pivot table.
+The `PivotCells` class contains all of the `PivotCell` instances that
+comprise the body of a pivot table.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-
-\item{\code{rowGroups}}{The row data groups that represent the row headings in the
-pivot table.}
-
-\item{\code{columnGroups}}{The column data groups that represent the column headings
-in the pivot table.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new set of pivot table cells, specifying
-  the field values documented above.}
-
-  \item{\code{getCell(r, c))}}{Get the PivotCell at the specified row and
-  column coordinates in the pivot table.}
-  \item{\code{setCell(r, c, cell))}}{Set the PivotCell at the specified row
-  and column coordinates in the pivot table.}
-  \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
-  columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE)}}{
-  Retrieve cells by a combination of row and/or column numbers.}
-  \item{\code{findCells(variableNames=NULL, variableValues=NULL,
-  totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
-  exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
-  emptyCells="exclude", outlineCells="exclude")}}{Find cells
-  matching the specified criteria.}
-  \item{\code{getColumnWidths())}}{Retrieve the width of the longest value
-  (in characters) in each column.}
-  \item{\code{asMatrix(rawValue=TRUE))}}{Get a matrix containing all of the
-  numerical values from the body of the pivot table (for rawValue=TRUE) or
-  all of the formatted (i.e. character) values (for rawValue=FALSE).}
-  \item{\code{asList())}}{Get a list representation of the pivot table
-  cells.}
-  \item{\code{asJSON()}}{Get a JSON representation of the pivot table cells.}
-}
-}
-
 \examples{
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{rowCount}}{The number of rows in the pivot table (excluding column headings).}
+
+\item{\code{columnCount}}{The number of columns in the pivot table (excluding column headings).}
+
+\item{\code{rowGroups}}{A list of the leaf-level data groups on the rows axis.}
+
+\item{\code{columnGroups}}{A list of the leaf-level data groups on the columns axis.}
+
+\item{\code{rows}}{A list of the rows in the pivot table.  Each element in this list is
+a list of `PivotCell` objects comprising the row.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotCells$new()}}
+\item \href{#method-reset}{\code{PivotCells$reset()}}
+\item \href{#method-getColumnGroup}{\code{PivotCells$getColumnGroup()}}
+\item \href{#method-getRowGroup}{\code{PivotCells$getRowGroup()}}
+\item \href{#method-setGroups}{\code{PivotCells$setGroups()}}
+\item \href{#method-getCell}{\code{PivotCells$getCell()}}
+\item \href{#method-setCell}{\code{PivotCells$setCell()}}
+\item \href{#method-getCells}{\code{PivotCells$getCells()}}
+\item \href{#method-findCells}{\code{PivotCells$findCells()}}
+\item \href{#method-findGroupColumnNumbers}{\code{PivotCells$findGroupColumnNumbers()}}
+\item \href{#method-findGroupRowNumbers}{\code{PivotCells$findGroupRowNumbers()}}
+\item \href{#method-getColumnWidths}{\code{PivotCells$getColumnWidths()}}
+\item \href{#method-removeColumn}{\code{PivotCells$removeColumn()}}
+\item \href{#method-removeColumns}{\code{PivotCells$removeColumns()}}
+\item \href{#method-removeRow}{\code{PivotCells$removeRow()}}
+\item \href{#method-removeRows}{\code{PivotCells$removeRows()}}
+\item \href{#method-asMatrix}{\code{PivotCells$asMatrix()}}
+\item \href{#method-asList}{\code{PivotCells$asList()}}
+\item \href{#method-asJSON}{\code{PivotCells$asJSON()}}
+\item \href{#method-clone}{\code{PivotCells$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotCells` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$new(parentPivot = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotCells`
+instance belongs to.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotCells` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-reset"></a>}}
+\if{latex}{\out{\hypertarget{method-reset}{}}}
+\subsection{Method \code{reset()}}{
+Remove all cells from the pivot table and reset row and column
+counts back to zero.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$reset()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getColumnGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-getColumnGroup}{}}}
+\subsection{Method \code{getColumnGroup()}}{
+Get the leaf-level data group that is associated with a specific column
+in the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$getColumnGroup(c = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{c}}{The column number.  The first column is column 1, excluding the
+column(s) associated with row-headings.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A `PivotDataGroup` that is associated with the specified column.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getRowGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-getRowGroup}{}}}
+\subsection{Method \code{getRowGroup()}}{
+Get the leaf-level data group that is associated with a specific row
+in the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$getRowGroup(r = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{r}}{The row number.  The first row is row 1, excluding the
+row(s) associated with column-headings.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A `PivotDataGroup` that is associated with the specified row
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-setGroups}{}}}
+\subsection{Method \code{setGroups()}}{
+An internal method used when building the cell structure
+of the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$setGroups(rowGroups = NULL, columnGroups = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{rowGroups}}{A list of `PivotDataGroup` objects to be set as the leaf-level row groups in the pivot table.}
+
+\item{\code{columnGroups}}{A list of `PivotDataGroup` objects to be set as the leaf-level column groups in the pivot table.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCell"></a>}}
+\if{latex}{\out{\hypertarget{method-getCell}{}}}
+\subsection{Method \code{getCell()}}{
+Get the cell at the specified row and column coordinates in the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$getCell(r = NULL, c = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{r}}{Row number of the cell to retrieve.}
+
+\item{\code{c}}{Column number of the cell to retrieve.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+The row and column numbers refer only to the cells in the body of the pivot
+table, i.e. row and column headings are excluded, e.g. row 1 is the first
+row of cells underneath the column headings.
+}
+
+\subsection{Returns}{
+A `PivotCell` object representing the cell.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setCell"></a>}}
+\if{latex}{\out{\hypertarget{method-setCell}{}}}
+\subsection{Method \code{setCell()}}{
+Set the cell at the specified row and column coordinates in the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$setCell(r, c, cell)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{r}}{Row number of the cell to retrieve.}
+
+\item{\code{c}}{Column number of the cell to retrieve.}
+
+\item{\code{cell}}{A `PivotCell` object to set into the pivot table cells.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This method is intended for internal package use only, used when building #
+the cell structure.
+The row and column numbers refer only to the cells in the body of the pivot
+table, i.e. row and column headings are excluded, e.g. row 1 is the first
+row of cells underneath the column headings.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCells"></a>}}
+\if{latex}{\out{\hypertarget{method-getCells}{}}}
+\subsection{Method \code{getCells()}}{
+Retrieve cells by a combination of row and/or column numbers.
+See the "Finding and Formatting" vignette for graphical examples.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$getCells(
+  specifyCellsAsList = TRUE,
+  rowNumbers = NULL,
+  columnNumbers = NULL,
+  cellCoordinates = NULL,
+  excludeEmptyCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{specifyCellsAsList}}{`TRUE` to specify how cells are retrieved.
+Default `TRUE`. More information is provided in the details section.}
+
+\item{\code{rowNumbers}}{A vector of row numbers that specify the rows or
+cells to retrieve.}
+
+\item{\code{columnNumbers}}{A vector of row numbers that specify the columns
+or cells to retrieve.}
+
+\item{\code{cellCoordinates}}{A list of two-element vectors that specify the
+coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.}
+
+\item{\code{excludeEmptyCells}}{`TRUE` (default) to also search empty cells.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+when `specifyCellsAsList=TRUE` (the default):
+Get one or more rows by specifying the row numbers as a vector as
+the rowNumbers argument and leaving the columnNumbers argument set
+to the default value of `NULL`, or
+Get one or more columns by specifying the column numbers as a vector
+as the columnNumbers argument and leaving the rowNumbers argument
+set to the default value of `NULL`, or
+Get one or more individual cells by specifying the cellCoordinates
+argument as a list of vectors of length 2, where each element in the
+list is the row and column number of one cell,
+e.g. `list(c(1, 2), c(3, 4))` specifies two cells, the first located
+at row 1, column 2 and the second located at row 3, column 4.
+When `specifyCellsAsList=FALSE`:
+Get one or more rows by specifying the row numbers as a vector as the
+rowNumbers argument and leaving the columnNumbers argument set to the
+default value of `NULL`, or
+Get one or more columns by specifying the column numbers as a vector
+as the columnNumbers argument and leaving the rowNumbers argument set
+to the default value of `NULL`, or
+Get one or more cells by specifying the row and column numbers as vectors
+for the rowNumbers and columnNumbers arguments, or
+a mixture of the above, where for entire rows/columns the element in the
+other vector is set to `NA`, e.g. to retrieve whole rows, specify the row
+numbers as the rowNumbers but set the corresponding elements in the
+columnNumbers vector to `NA`.
+}
+
+\subsection{Returns}{
+A list of `PivotCell` objects.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findCells"></a>}}
+\if{latex}{\out{\hypertarget{method-findCells}{}}}
+\subsection{Method \code{findCells()}}{
+Find cells matching specified criteria.
+See the "Finding and Formatting" vignette for graphical examples.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$findCells(
+  variableNames = NULL,
+  variableValues = NULL,
+  totals = "include",
+  calculationNames = NULL,
+  minValue = NULL,
+  maxValue = NULL,
+  exactValues = NULL,
+  includeNull = TRUE,
+  includeNA = TRUE,
+  emptyCells = "exclude",
+  outlineCells = "exclude"
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableNames}}{A character vector specifying the name/names of the
+variables to find.  This is useful generally only in pivot tables with
+irregular layouts, since in regular pivot tables every cell is related
+to every variable.}
+
+\item{\code{variableValues}}{A list specifying the variable names and values to find,
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
+Specify "**" as the variable value to match totals for the specified variable.
+Specify "!*" as the variable value to match non-totals for the specified variable.
+NB: The totals/non-totals criteria above won’t work when visual totals are used.}
+
+\item{\code{totals}}{A word that specifies how totals are matched (overrides the finer
+settings above) - must be one of "include" (default), "exclude" or "only".}
+
+\item{\code{calculationNames}}{A character vector specifying the name/names of the
+calculations to find.}
+
+\item{\code{minValue}}{A numerical value specifying a minimum value threshold.}
+
+\item{\code{maxValue}}{A numerical value specifying a maximum value threshold.}
+
+\item{\code{exactValues}}{A vector or list specifying a set of allowed values.}
+
+\item{\code{includeNull}}{specify TRUE to include `NULL` in the matched cells,
+FALSE to exclude `NULL` values.}
+
+\item{\code{includeNA}}{specify TRUE to include `NA` in the matched cells,
+FALSE to exclude `NA` values.}
+
+\item{\code{emptyCells}}{A word that specifies how empty cells are matched -
+must be one of "include", "exclude" (default) or "only".}
+
+\item{\code{outlineCells}}{A word that specifies how outline cells are matched -
+must be one of "include", "exclude" (default) or "only".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of `PivotCell` objects.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findGroupColumnNumbers"></a>}}
+\if{latex}{\out{\hypertarget{method-findGroupColumnNumbers}{}}}
+\subsection{Method \code{findGroupColumnNumbers()}}{
+Find the column numbers associated with a specific data group.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$findGroupColumnNumbers(group = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{group}}{A `PivotDataGroup` in the column data groups (i.e. a
+column heading).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A vector of column numbers related to the specified group.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findGroupRowNumbers"></a>}}
+\if{latex}{\out{\hypertarget{method-findGroupRowNumbers}{}}}
+\subsection{Method \code{findGroupRowNumbers()}}{
+Find the row numbers associated with a specific data group.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$findGroupRowNumbers(group = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{group}}{A `PivotDataGroup` in the row data groups (i.e. a
+row heading).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A vector of row numbers related to the specified group.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getColumnWidths"></a>}}
+\if{latex}{\out{\hypertarget{method-getColumnWidths}{}}}
+\subsection{Method \code{getColumnWidths()}}{
+Retrieve the width (in characters) of the longest value in each column.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$getColumnWidths()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A vector containing the length of the longest value in each column.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeColumn"></a>}}
+\if{latex}{\out{\hypertarget{method-removeColumn}{}}}
+\subsection{Method \code{removeColumn()}}{
+Remove a column from the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeColumn(c = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{c}}{The column number.  The first column is column 1, excluding the
+column(s) associated with row-headings.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This method removes both the related column group and cells.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeColumns"></a>}}
+\if{latex}{\out{\hypertarget{method-removeColumns}{}}}
+\subsection{Method \code{removeColumns()}}{
+Remove multiple column from the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeColumns(columnNumbers = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{columnNumbers}}{The column numbers.  The first column is column 1, excluding the
+column(s) associated with row-headings.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This method removes both the related column groups and cells.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeRow"></a>}}
+\if{latex}{\out{\hypertarget{method-removeRow}{}}}
+\subsection{Method \code{removeRow()}}{
+Remove a row from the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeRow(r = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{r}}{The row number.  The first row is row 1, excluding the
+row(s) associated with column-headings.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This method removes both the related row group and cells.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeRows"></a>}}
+\if{latex}{\out{\hypertarget{method-removeRows}{}}}
+\subsection{Method \code{removeRows()}}{
+Remove multiple rows from the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeRows(rowNumbers = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{rowNumbers}}{The row numbers.  The first row is row 1, excluding the
+rows(s) associated with column-headings.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This method removes both the related row groups and cells.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asMatrix"></a>}}
+\if{latex}{\out{\hypertarget{method-asMatrix}{}}}
+\subsection{Method \code{asMatrix()}}{
+Get a matrix containing all of the values from the body of the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$asMatrix(rawValue = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{rawValue}}{`TRUE` (default) to populate the matrix with the numerical
+raw values, `FALSE` to populate the matrix with the character formatted values.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A `matrix` containing the values from the body of the pivot table.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

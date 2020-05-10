@@ -3,43 +3,141 @@
 \docType{class}
 \name{PivotHtmlRenderer}
 \alias{PivotHtmlRenderer}
-\title{A class that renders a pivot table in HTML.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that
-  render to HTML.
+\title{R6 class that renders a pivot table in HTML.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotHtmlRenderer class creates a HTML representation of a pivot table.
+The `PivotHtmlRenderer` class creates a HTML representation of a pivot table.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot table renderer, specifying the
-  field value documented above.}
-
-  \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist
-  on the PivotDataGroup class.}
-  \item{\code{getTableHtml(styleNamePrefix=NULL, includeHeaderValues=FALSE,
-  includeRCFilters=FALSE, includeCalculationFilters=FALSE,
-  includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
-  includeCalculationNames=FALSE, includeRawValue=FALSE,
-  includeTotalInfo=FALSE, exportOptions=NULL,
-  showRowGroupHeaders=FALSE)}}{Get a HTML
-  representation of the pivot table,
-  optionally including additional detail for debugging purposes.}
-}
-}
-
 \examples{
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotHtmlRenderer$new()}}
+\item \href{#method-clearIsRenderedFlags}{\code{PivotHtmlRenderer$clearIsRenderedFlags()}}
+\item \href{#method-getTableHtml}{\code{PivotHtmlRenderer$getTableHtml()}}
+\item \href{#method-clone}{\code{PivotHtmlRenderer$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotHtmlRenderer` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotHtmlRenderer$new(parentPivot)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotHtmlRenderer`
+instance belongs to.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotHtmlRenderer` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clearIsRenderedFlags"></a>}}
+\if{latex}{\out{\hypertarget{method-clearIsRenderedFlags}{}}}
+\subsection{Method \code{clearIsRenderedFlags()}}{
+An internal method used when rendering a pivot table to HTML.
+Clear the IsRendered flags that exist on the `PivotDataGroup` class.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotHtmlRenderer$clearIsRenderedFlags()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getTableHtml"></a>}}
+\if{latex}{\out{\hypertarget{method-getTableHtml}{}}}
+\subsection{Method \code{getTableHtml()}}{
+Generate a HTML representation of the pivot table, optionally including
+additional detail for debugging purposes.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotHtmlRenderer$getTableHtml(
+  styleNamePrefix = NULL,
+  includeHeaderValues = FALSE,
+  includeRCFilters = FALSE,
+  includeCalculationFilters = FALSE,
+  includeWorkingData = FALSE,
+  includeEvaluationFilters = FALSE,
+  includeCalculationNames = FALSE,
+  includeRawValue = FALSE,
+  includeTotalInfo = FALSE,
+  exportOptions = NULL,
+  showRowGroupHeaders = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleNamePrefix}}{A character variable specifying a prefix for all named
+CSS styles, to avoid style name collisions where multiple pivot tables exist.}
+
+\item{\code{includeHeaderValues}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeRCFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeCalculationFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeWorkingData}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeEvaluationFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeCalculationNames}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeRawValue}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeTotalInfo}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{exportOptions}}{A list of additional export options - see the
+"A1. Appendix" for details.}
+
+\item{\code{showRowGroupHeaders}}{Default `FALSE`, specify `TRUE` to render the row
+group headings.  See the "Data Groups" vignette for details.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list containing HTML tags from the `htmltools` package.
+Convert this to a character variable using `as.character()`.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotHtmlRenderer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

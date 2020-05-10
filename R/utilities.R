@@ -5,7 +5,7 @@
 #'
 #' @param value The value to check.
 #' @param convertOneToNULL TRUE to convert 1 to NULL.
-#' @return NULL if value==1, otherwise value.
+#' @return NULL if value is 0 or 1, otherwise value.
 
 oneToNULL <- function(value, convertOneToNULL) {
   if(!convertOneToNULL) return(value)

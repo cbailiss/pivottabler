@@ -1,42 +1,28 @@
-#' A class that defines a collection of Excel styles as used by the openxlsx
+
+#' R6 class that defines a collection of Excel styles as used by the openxlsx
 #' package.
 #'
-#' The PivotOpenXlsxStyles class stores a collection of PivotTableOpenXlsx style
-#' objects.
+#' @description
+#' The `PivotOpenXlsxStyles` class stores a collection of `PivotOpenXlsxStyle`
+#' style objects.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
 #' @import jsonlite
 #' @export
-#' @return Object of \code{\link{R6Class}} with properties and methods that
-#'   define styles/a theme for a pivot table.
 #' @format \code{\link{R6Class}} object.
 #' @examples
-#' # This class is used internally by the Pivot Table.
-#' @field parentPivot Owning pivot table.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new set of styles, specifying the field
-#'   values documented above.}
-#'
-#'   \item{\code{findNamedStyle(baseStyleName)}}{Find an existing openxlsx style
-#'   matching the name of a base style.}
-#'   \item{\code{findOrAddStyle(action="findOrAdd", baseStyleName=NULL,
-#'   isBaseStyle=NULL, style=NULL, mapFromCss=TRUE)}}{Find an existing openxlsx
-#'   style and/or add a new openxlsx style matching a base style and/or
-#'   PivotStyle object.}
-#'   \item{\code{addNamedStyles(mapFromCss=TRUE)}}{Populate the OpenXlsx styles
-#'   based on the styles defined in the pivot table.}
-#'   \item{\code{asList()}}{Get a list representation of the styles.}
-#'   \item{\code{asJSON()}}{Get a JSON representation of the styles.}
-#'   \item{\code{asString()}}{Get a text representation of the styles.}
-#' }
+#' # This class should only be created by the pivot table.
+#' # It is not intended to be created outside of the pivot table.
 
 PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
   public = list(
+
+    #' @description
+    #' Create a new `PivotOpenXlsxStyles` object.
+    #' @param parentPivot The pivot table that this `PivotOpenXlsxStyles`
+    #' instance belongs to.
+    #' @return A new `PivotOpenXlsxStyles` object.
     initialize = function(parentPivot) {
       if(parentPivot$argumentCheckMode > 0) {
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyles", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -46,12 +32,21 @@ PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
       private$p_styles <- list()
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyles$new", "Created new Pivot OpenXlsx Styles.")
     },
+
+    #' @description
+    #' Clear the internal list of styles.
+    #' @return No return value.
     clearStyles = function() {
       if(private$p_parentPivot$traceEnabled==TRUE) p
-      private$p_parentPivot$trace("PivotOpenXlsxStyles$clearStyles", "Clearin styles...")
+      private$p_parentPivot$trace("PivotOpenXlsxStyles$clearStyles", "Clearing styles...")
       private$p_styles <- list()
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyles$clearStyles", "Cleared styles.")
     },
+
+    #' @description
+    #' Find an existing openxlsx style matching the name of a base style.
+    #' @param baseStyleName The name of the base style to find.
+    #' @return A `PivotOpenXlsxStyle` object with the specified name.
     findNamedStyle = function(baseStyleName) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyles", "initialize", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -68,9 +63,34 @@ PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
           }
       }
 
+      # finished
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyles$findNamedStyle", "Found named style.")
       return(invisible(matchedStyle))
     },
+
+    #' @description
+    #' Find an existing openxlsx style, add a new openxlsx style matching a base
+    #' style and/or existing `PivotStyle` object.
+    #' @details
+    #' This function is used in two different ways:
+    #' (1) When adding base styles (i.e. named styles in the pivot table) to
+    #' this `PivotOpenXlsxStyles` collection:
+    #' In this case, `baseStyleName` is the name of the style and `isBaseStyle=TRUE`
+    #' (so matching is by name only) and `style` is the `PivotStyle` object for the
+    #' base style.
+    #' (2) When finding styles that have been applied to individual cells using the
+    #' `PivotStyle` object that is attached to each cell:
+    #' In this case, `baseStyleName` may or may not be present, `isBaseStyle=FALSE`
+    #' and `style` is the `PivotStyle` object from the cell.
+    #' @param action Must be one of "find" (to search for an existing style), "add"
+    #' (to add a new style) or "findOrAdd" (default, to first search for an existing
+    #' style, and if no match is found then add a new style)
+    #' @param baseStyleName The name of the base style to find.
+    #' @param isBaseStyle `TRUE` if the style being sought is a base style.
+    #' @param style An existing `PivotStyle` object.
+    #' @param mapFromCss Default `TRUE`, to create a new `PivotOpenXlsxStyle` by
+    #' mapping from CSS style declarations.
+    #' @return A `PivotOpenXlsxStyle` object that has been found or added.
     findOrAddStyle = function(action="findOrAdd", baseStyleName=NULL, isBaseStyle=NULL, style=NULL, mapFromCss=TRUE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyles", "findOrAddStyle", action, missing(action), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("find", "add", "findOrAdd"))
@@ -80,12 +100,6 @@ PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyles", "findOrAddStyle", mapFromCss, missing(mapFromCss), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyles$findOrAddStyle", "Finding and/or adding style...")
-
-      # This function is used in two different ways:
-      # 1. When adding base styles (i.e. named styles in the pivot table) to this collection.
-      #    In this case, baseStyleName is the name of the style, isBaseStyle=TRUE (so matching is by name only) and style is the PivotStyle object for the base style.
-      # 2. When finding styles that have been applied to individual cells using the PivotStyle object that is attached to each cell.
-      #    In this case,baseStyleName may or may not be present, isBaseStyle=FALSE and style and the style object is the PivotStyle object from the cell.
 
       # font name
       fontName <- NULL
@@ -369,6 +383,12 @@ PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyles$findOrAddStyle", "Found and/or added style.")
       return(matchedStyle)
     },
+
+    #' @description
+    #' Populate the OpenXlsx styles based on the styles defined in the pivot table.
+    #' @param mapFromCss Default `TRUE`, to create a new `PivotOpenXlsxStyle` by
+    #' mapping from CSS style declarations.
+    #' @return No return value.
     addNamedStyles = function(mapFromCss=TRUE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyles", "addNamedStyles", mapFromCss, missing(mapFromCss), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -378,10 +398,14 @@ PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
       for(i in 1:length(private$p_parentPivot$styles$styles)) {
         style <- private$p_parentPivot$styles$styles[[i]]
         if(!is.null(self$findNamedStyle(baseStyleName=style$name))) next
-        openxlsxStyle <- self$findOrAddStyle(action="add", baseStyleName=style$name, isBaseStyle=TRUE, style=style, mapFromCss=TRUE)
+        openxlsxStyle <- self$findOrAddStyle(action="add", baseStyleName=style$name, isBaseStyle=TRUE, style=style, mapFromCss=mapFromCss)
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyles$addNamedStyles", "Added named styles.")
     },
+
+    #' @description
+    #' Return the contents of this object as a list for debugging.
+    #' @return A list of various object properties.
     asList = function() {
       lst <- list()
       if(length(private$p_styles) > 0) {
@@ -391,7 +415,17 @@ PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
       }
       return(invisible(lst))
     },
+
+    #' @description
+    #' Return the contents of this object as JSON for debugging.
+    #' @return A JSON representation of various object properties.
     asJSON = function() { return(jsonlite::toJSON(self$asList())) },
+
+    #' @description
+    #' Return a representation of this object as a character value.
+    #' @param seperator A character value used when concatenating
+    #' multiple styles.
+    #' @return A character summary of various object properties.
     asString = function(seperator=", ") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxStyles", "asString", seperator, missing(seperator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
@@ -409,7 +443,13 @@ PivotOpenXlsxStyles <- R6::R6Class("PivotOpenXlsxStyles",
     }
   ),
   active = list(
+
+    #' @field count The number of `PivotOpenXlsxStyle` objects in this
+    #' `PivotOpenXlsxStyles` collection.
     count = function(value) { return(invisible(length(private$p_styles))) },
+
+    #' @field styles A list containing the `PivotOpenXlsxStyle` objects in this
+    #' `PivotOpenXlsxStyles` collection.
     styles = function(value) { return(invisible(private$p_styles)) }
   ),
   private = list(

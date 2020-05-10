@@ -3,269 +3,16 @@
 \docType{class}
 \name{PivotTable}
 \alias{PivotTable}
-\title{A class that defines a pivot table.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that
-  define a pivot table.
+\title{R6 class that represents a pivot table.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotTable class represents a pivot table and is the primary class for
-constructing and interacting with the pivot table.
+The `PivotTable` class is the primary class for
+constructing and interacting with a pivot table.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{argumentCheckMode}}{A number (0-4 meaning none, minimal, basic,
-balanced, full) indicating the argument checking level.}
-
-\item{\code{traceEnabled}}{A logical value indicating whether actions are logged to
-a trace file.}
-
-\item{\code{processingLibrary}}{A character value indicating the processing library
-being used (base, dplyr, data.table).}
-
-\item{\code{data}}{A PivotData object containing the data frames used to populate
-the pivot table.}
-
-\item{\code{rowGroup}}{The top PivotDataGroup in the parent-child hierarchy of row
-data groups.}
-
-\item{\code{columnGroup}}{The top PivotDataGroup in the parent-child hierarchy of
-column data groups.}
-
-\item{\code{calculationGroups}}{A PivotCalculationGroups object containing all of
-the pivot calculations in the pivot table.}
-
-\item{\code{calculationsPosition}}{"row" or "column" indicating where the
-calculation names will appear (only if multiple calculations are defined
-and visible in the pivot table).}
-
-\item{\code{evaluationMode}}{Either "sequential" or "batch" to specify how summary
-calculations (i.e. where type="summary") are evaluated.}
-
-\item{\code{batchInfo}}{Get a text summary of the batch calculations from the last
-evaluation of this pivot table.}
-
-\item{\code{cells}}{A PivotCells object containing all of the cells in the body of
-the pivot table.}
-
-\item{\code{rowCount}}{The number of rows in the table.}
-
-\item{\code{columnCount}}{The number of columns in the table.}
-
-\item{\code{theme}}{The name of the theme currently applied to the pivot table.}
-
-\item{\code{styles}}{A PivotStyles object containing the styles used to theme the
-pivot table.}
-
-\item{\code{allowExternalStyles}}{Enable support for external styles, when producing
-content for external systems.}
-
-\item{\code{allTimings}}{The time taken for various activities related to
-constructing the pivot table.}
-
-\item{\code{significantTimings}}{The time taken for various activities related to
-constructing the pivot table, where the elapsed time > 0.1 seconds.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(processingLibrary="auto", evaluationMode="batch",
-  argumentCheckMode="auto", theme=NULL, replaceExistingStyles=FALSE,
-  tableStyle=NULL, headingStyle=NULL, cellStyle=NULL, totalStyle=NULL,
-  compatibility=NULL, traceEnabled=FALSE, traceFile=NULL)}}{Create a new
-  pivot table, optionally specifying styling and enabling debug logging.}
-
-  \item{\code{getNextInstanceId()}}{Return a unique object identifier.}
-  \item{\code{addData(df, dataName)}}{Add a data frame with the specified
-  name to the pivot table.}
-  \item{\code{getTopColumnGroups()}}{Get the very top column PivotDataGroup
-  that sits at the top of the parent-child hierarchy.}
-  \item{\code{getLeafColumnGroups()}}{Get the PivotDataGroups at the bottom
-  of the column heading parent-child hierarchy.}
-  \item{\code{addColumnGroup(variableName, filterType="ALL", values=NULL,
-  doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
-  isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
-  calculationGroupName=NULL, calculationName=NULL,
-  baseStyleName=NULL, styleDeclarations=NULL,
-  insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL,
-  mergeEmptySpace=NULL, cellBaseStyleName=NULL,
-  cellStyleDeclarations=NULL, sortAnchor=NULL, resetCells=TRUE)}}{
-  Add a new top-level column heading data group to the pivot table.}
-  \item{\code{addColumnDataGroups(variableName, atLevel, fromData=TRUE,
-  dataName, dataSortOrder="asc", dataFormat, dataFmtFuncArgs,
-  onlyCombinationsThatExist=TRUE,
-  explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
-  addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-  totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
-  styleDeclarations=NULL)}}{Generate new column heading data
-  groups based on the distinct values in a data frame or using explicitly
-  specified data values.}
-  \item{\code{normaliseColumnGroups(resetCells=TRUE) }}{Normalise the
-  column heading data group hierarchy so that all branches have the same
-  number of levels - accomplished by adding empty child data groups where
-  needed.}
-  \item{\code{sortColumnDataGroups(levelNumber=1, orderBy="calculation",
-  sortOrder="desc", calculationGroupName="default", calculationName,
-  fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
-  the column heading data groups either by the data group data value, caption
-  or based on calculation result values.}
-  \item{\code{getTopRowGroups()}}{Get the left-most row PivotDataGroup that
-  sits at the top of the parent-child hierarchy.}
-  \item{\code{getLeafRowGroups()}}{Get the PivotDataGroups at the bottom of
-  the row heading parent-child hierarchy.}
-  \item{\code{addRowGroup(variableName, filterType="ALL", values=NULL,
-  doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
-  isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
-  calculationGroupName=NULL, calculationName=NULL,
-  baseStyleName=NULL, styleDeclarations=NULL,
-  insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL,
-  mergeEmptySpace=NULL, cellBaseStyleName=NULL,
-  cellStyleDeclarations=NULL, sortAnchor=NULL, resetCells=TRUE)}}{
-  Add a new top-level row heading data group to the pivot table.}
-  \item{\code{addRowDataGroups(variableName, atLevel, fromData=TRUE,
-  dataName, dataSortOrder="asc", dataFormat, dataFmtFuncArgs,
-  onlyCombinationsThatExist=TRUE,
-  explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
-  addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-  totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
-  styleDeclarations=NULL, header=NULL, outlineBefore=NULL,
-  outlineAfter=NULL)}}{Generate new row heading data
-  groups based on the distinct values in a data frame or using explicitly
-  specified data values.}
-  \item{\code{normaliseRowGroups(resetCells=TRUE)}}{Normalise the row heading
-  data group hierarchy so that all branches have the same number of
-  levels - accomplished by adding empty child data groups where needed.}
-  \item{\code{sortRowDataGroups(levelNumber=1, orderBy="calculation",
-  sortOrder="desc", calculationGroupName="default", calculationName,
-  fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
-  the row heading data groups either by the data group data value, caption or
-  based on calculation result values.}
-  \item{\code{addCalculationGroup(calculationGroupName)}}{Create a new
-  calculation group (rarely needed since the default group is sufficient for
-  almost all scenarios).}
-  \item{\code{defineCalculation(calculationGroupName="default",
-  calculationName, caption, visible=TRUE, displayOrder, filters, format,
-  dataName, type="summary", valueName, summariseExpression,
-  calculationExpression, calculationFunction, basedOn, noDataValue,
-  noDataCaption)}}{Define a new calculation.  See the PivotCalculation class
-  for details.}
-  \item{\code{addColumnCalculationGroups(calculationGroupName="default",
-  atLevel, baseStyleName=NULL, styleDeclarations=NULL)}}{Add
-  calculation names on columns (if more than one calculation
-  is defined and visible, then the calculation names will appear as column
-  headings).}
-  \item{\code{addRowCalculationGroups(calculationGroupName="default",
-  atLevel, baseStyleName=NULL, styleDeclarations=NULL)}}{Add
-  calculation names on rows (if more than one calculation is
-  defined and visible, then the calculation names will appear as row
-  headings).}
-  \item{\code{addStyle(styleName, declarations)}}{Define a new PivotStyle and
-  add it to the PivotStyles collection.}
-  \item{\code{createInlineStyle(baseStyleName, declarations)}}{Create a
-  PivotStyle object that can be used to style individual cell in the pivot
-  table.}
-  \item{\code{setStyling(rFrom=NULL, cFrom=NULL, rTo=NULL, cTo=NULL,
-  groups=NULL, cells=NULL, baseStyleName=NULL, style=NULL,
-  declarations=NULL)}}{Set the styling for a one/multiple data groups and/or
-  cells in the pivot table.}
-  \item{\code{generateCellStructure()}}{Generate the empty pivot table cells
-  (after the row/column headings have been defined).}
-  \item{\code{resetCells()}}{Clear the cells of the pivot table (should be
-  done automatically after structural changes have been made to the pivot
-  table).}
-  \item{\code{evaluateCells()}}{Calculate the values of the cells in the body
-  of the pivot table.}
-  \item{\code{evaluatePivot()}}{A wrapper for calling
-  normaliseColumnGroups(), normaliseRowGroups(), generateCellStructure() and
-  evaluateCells() in sequence.}
-  \item{\code{findRowDataGroups(matchMode="simple", variableNames=NULL,
-  variableValues=NULL, totals="include", calculationNames=NULL,
-  includeDescendantGroups=FALSE, emptyGroups="exclude",
-  outlineGroups="exclude")}}{Find row data
-  groups matching the specified criteria.}
-  \item{\code{findColumnDataGroups(matchMode="simple", variableNames=NULL,
-  variableValues=NULL, totals="include", calculationNames=NULL,
-  includeDescendantGroups=FALSE, emptyGroups="exclude",
-  outlineGroups="exclude")}}{Find column
-  data groups matching the specified criteria.}
-  \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
-  columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE)}}{
-  Retrieve cells by a combination of row and/or column numbers.}
-  \item{\code{findCells(variableNames=NULL, variableValues=NULL,
-  totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
-  exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
-  emptyCells="exclude", outlineCells="exclude")}}{Find cells in the
-  body of the pivot table matching the specified criteria.}
-  \item{\code{print(asCharacter=FALSE, showRowGroupHeaders=TRUE)}}{Either
-  print the pivot table to the console or retrieve it as a character value.}
-  \item{\code{asMatrix(includeHeaders=TRUE, repeatHeaders=FALSE,
-  rawValue=FALSE)}}{Gets the pivot table as a character matrix, with the
-  pivot table row/column headings within the body of the matrix.}
-  \item{\code{asDataMatrix = function(includeHeaders=TRUE, rawValue=TRUE,
-  separator=" ")}}{Gets the pivot table as a matrix, with the pivot table
-  row/column headings set as the row/column names in the matrix.}
-  \item{\code{asDataFrame(separator=" ")}}{Gets the pivot table as a data
-  frame, combining multiple levels of headings with the specified separator.}
-  \item{\code{asTidyDataFrame(includeGroupCaptions=TRUE,
-  includeGroupValues=TRUE, separator=" ", excludeEmptyCells=TRUE)}}{Gets the
-  pivot table as a tidy data frame, where each cell in the body of the pivot
-  table becomes one row in the data frame.}
-  \item{\code{asBasicTable = function(exportOptions=NULL, compatibility=NULL,
-  showRowGroupHeaders=FALSE))}}{Generates a basictabler table (from the
-  basictabler R package) which allows further custom manipulation of the
-  pivot table.}
-  \item{\code{getCss(styleNamePrefix)}}{Get the CSS declarations for the
-  entire pivot table.}
-  \item{\code{getHtml(styleNamePrefix, includeHeaderValues=FALSE,
-  includeRCFilters=FALSE, includeCalculationFilters=FALSE,
-  includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
-  includeCalculationNames=FALSE, includeRawValue=FALSE,
-  includeTotalInfo=FALSE, exportOptions=NULL,
-  showRowGroupHeaders=FALSE)}}{Get
-  the HTML representation of the pivot table,
-  specifying the CSS style name prefix to use and whether additional debug
-  information should be included in the pivot table.}
-  \item{\code{saveHtml(filePath, fullPageHTML=TRUE, styleNamePrefix,
-  includeHeaderValues=FALSE, includeRCFilters=FALSE,
-  includeCalculationFilters=FALSE, includeWorkingData=FALSE,
-  includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
-  includeRawValue=FALSE, includeTotalInfo=FALSE,
-  exportOptions=NULL, showRowGroupHeaders=FALSE)}}{Save the HTML
-  representation of the pivot table to a file.}
-  \item{\code{renderPivot(width, height, styleNamePrefix,
-  includeHeaderValues=FALSE, includeRCFilters=FALSE,
-  includeCalculationFilters=FALSE, includeWorkingData=FALSE,
-  includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
-  includeRawValue=FALSE, includeTotalInfo=FALSE,
-  exportOptions=NULL, showRowGroupHeaders=FALSE)}}{
-  Render the pivot table as a htmlwidget.}
-  \item{\code{getLatex(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL,
-  fromColumn=NULL, toColumn=NULL, boldHeadings=FALSE,
-  italicHeadings=FALSE)}}{Get the Latex representation of the pivot table,
-  specifying the caption to appear above the table, the label to use when
-  referring to the table elsewhere in the document and how headings should be
-  styled.}
-  \item{\code{writeToExcelWorksheet(wb=NULL, wsName=NULL, topRowNumber=NULL,
-  leftMostColumnNumber=NULL, outputHeadingsAs="formattedValueAsText",
-  outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE,
-  exportOptions=NULL)}}{Output the
-  pivot table into the specified workbook and worksheet at the
-  specified row-column location.}
-  \item{\code{showBatchInfo()}}{Show a text summary of the batch calculations
-  from the last evaluation of this pivot table.}
-  \item{\code{asList()}}{Get a list representation of the pivot table.}
-  \item{\code{asJSON()}}{Get a JSON representation of the pivot table.}
-  \item{\code{viewJSON()}}{View the JSON representation of the pivot table.}
-}
-}
-
 \examples{
-# The package vignettes have many more examples of working with the
+# The package vignettes include extensive examples of working with the
 # PivotTable class.
 library(pivottabler)
 pt <- PivotTable$new()
@@ -275,4 +22,3061 @@ pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains",
 summariseExpression="n()")
 pt$renderPivot()
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{argumentCheckMode}}{The level of argument checking to perform.
+One of "auto", "none", "minimal", "basic", "balanced" (default)
+or "full".}
+
+\item{\code{compatibility}}{A list containing compatibility options to force
+legacy behaviours.  See the NEWS file for details.}
+
+\item{\code{traceEnabled}}{Default `FALSE`.  Specify `TRUE` to generate a trace
+for debugging purposes.}
+
+\item{\code{processingLibrary}}{The package to use when processing data.
+Must be one of "auto" (which today is dplyr), "dplyr" or "data.table".}
+
+\item{\code{data}}{A `PivotData` object containing the data frames added to the
+pivot table.}
+
+\item{\code{rowGroup}}{The hidden root `PivotDataGroup` at the top of the row
+data groups hierarchy.  The children of this group form the first level
+of visible row data groups.}
+
+\item{\code{columnGroup}}{The hidden root `PivotDataGroup` at the top of the
+column data groups hierarchy.  The children of this group form the first
+level of visible column data groups.}
+
+\item{\code{rowGroupLevelCount}}{The number of visible levels in the row data
+group hierarchy.}
+
+\item{\code{columnGroupLevelCount}}{The number of visible levels in the column
+data group hierarchy.}
+
+\item{\code{topColumnGroups}}{A list containing the first level of column data
+groups.}
+
+\item{\code{leafColumnGroups}}{A list containing the bottom level of column
+data groups.}
+
+\item{\code{allColumnGroups}}{A list containing all of the column data groups.}
+
+\item{\code{topRowGroups}}{A list containing the first level of row data
+groups.}
+
+\item{\code{leafRowGroups}}{A list containing the bottom level of row data
+groups.}
+
+\item{\code{allRowGroups}}{A list containing all of the row data groups.}
+
+\item{\code{rowGrpHeaders}}{A list containing the row group headers.}
+
+\item{\code{calculationGroups}}{A list containing the calculation groups in
+the pivot table.}
+
+\item{\code{calculationsPosition}}{Either "row" or "column" describing which axis
+the calculations are rendered.}
+
+\item{\code{evaluationMode}}{Either "batch" (default) or "sequential" (legacy).}
+
+\item{\code{batchInfo}}{Diagnostic information describing the batches used in the
+last pivot table evaluation.}
+
+\item{\code{cells}}{A list where each element represents one row in the pivot table.
+Each row is itself a list, where each list element is a `PivotCell` object.}
+
+\item{\code{rowCount}}{The number of rows in the pivot table, excluding headings.}
+
+\item{\code{columnCount}}{The number of columns in the pivot table, excluding headings.}
+
+\item{\code{fixedWidthSized}}{The total width of the pivot table in characters if
+the pivot table were to be rendered as plain text, e.g. to the console.}
+
+\item{\code{asCharacter}}{A plain test representation of the pivot table.}
+
+\item{\code{theme}}{The name of the theme used to style the pivot table.
+If setting this property, either a theme name can be used, or
+a list can be used (which specifies a simple theme) or a
+`PivotStyles` object can be used.
+See the "Styling" vignette for details and examples.}
+
+\item{\code{styles}}{A `PivotStyles` object that contains the styles
+applied to the pivot table.}
+
+\item{\code{allowExternalStyles}}{Default `FALSE`, which means the `PivotStyles`
+object checks that style names specified for styling the different
+parts of the pivot table must exist in the styles collection.  If they do
+not an error will occur.  Specify `TRUE` to disable this check, e.g. if
+the style definitions are not managed by `pivottabler` but instead
+in an external system.}
+
+\item{\code{mergeEmptyRowSpace}}{A character value describing how empty
+space is merged.  Allowed values:  "doNotMerge", "dataGroupsOnly",
+"cellsOnly", "dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2".}
+
+\item{\code{mergeEmptyColumnSpace}}{A character value describing how empty
+space is merged.  Allowed values:  "doNotMerge", "dataGroupsOnly",
+"cellsOnly", "dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2".}
+
+\item{\code{mergeEmptySpaceDirection}}{A character value describing how empty
+space is merged.  Allowed values:  "row" or "column"}
+
+\item{\code{allTimings}}{Get a data frame containing timing details
+of pivot table operations.}
+
+\item{\code{significantTimings}}{Get a data frame containing timing details
+of significant pivot table operations (i.e. where elapsed>0.1).}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotTable$new()}}
+\item \href{#method-setDefault}{\code{PivotTable$setDefault()}}
+\item \href{#method-getDefault1}{\code{PivotTable$getDefault1()}}
+\item \href{#method-getDefault2}{\code{PivotTable$getDefault2()}}
+\item \href{#method-getDefault3}{\code{PivotTable$getDefault3()}}
+\item \href{#method-getNextInstanceId}{\code{PivotTable$getNextInstanceId()}}
+\item \href{#method-addData}{\code{PivotTable$addData()}}
+\item \href{#method-addTotalData}{\code{PivotTable$addTotalData()}}
+\item \href{#method-getColumnGroupsByLevel}{\code{PivotTable$getColumnGroupsByLevel()}}
+\item \href{#method-getTopColumnGroups}{\code{PivotTable$getTopColumnGroups()}}
+\item \href{#method-getLeafColumnGroups}{\code{PivotTable$getLeafColumnGroups()}}
+\item \href{#method-getLeafColumnGroup}{\code{PivotTable$getLeafColumnGroup()}}
+\item \href{#method-addColumnGroup}{\code{PivotTable$addColumnGroup()}}
+\item \href{#method-addColumnDataGroups}{\code{PivotTable$addColumnDataGroups()}}
+\item \href{#method-normaliseColumnGroups}{\code{PivotTable$normaliseColumnGroups()}}
+\item \href{#method-sortColumnDataGroups}{\code{PivotTable$sortColumnDataGroups()}}
+\item \href{#method-getRowGroupsByLevel}{\code{PivotTable$getRowGroupsByLevel()}}
+\item \href{#method-getTopRowGroups}{\code{PivotTable$getTopRowGroups()}}
+\item \href{#method-getLeafRowGroups}{\code{PivotTable$getLeafRowGroups()}}
+\item \href{#method-getLeafRowGroup}{\code{PivotTable$getLeafRowGroup()}}
+\item \href{#method-addRowGroup}{\code{PivotTable$addRowGroup()}}
+\item \href{#method-addRowDataGroups}{\code{PivotTable$addRowDataGroups()}}
+\item \href{#method-normaliseRowGroups}{\code{PivotTable$normaliseRowGroups()}}
+\item \href{#method-sortRowDataGroups}{\code{PivotTable$sortRowDataGroups()}}
+\item \href{#method-setRowDataGroupHeader}{\code{PivotTable$setRowDataGroupHeader()}}
+\item \href{#method-addCalculationGroup}{\code{PivotTable$addCalculationGroup()}}
+\item \href{#method-defineCalculation}{\code{PivotTable$defineCalculation()}}
+\item \href{#method-addColumnCalculationGroups}{\code{PivotTable$addColumnCalculationGroups()}}
+\item \href{#method-addRowCalculationGroups}{\code{PivotTable$addRowCalculationGroups()}}
+\item \href{#method-addStyle}{\code{PivotTable$addStyle()}}
+\item \href{#method-createInlineStyle}{\code{PivotTable$createInlineStyle()}}
+\item \href{#method-setStyling}{\code{PivotTable$setStyling()}}
+\item \href{#method-generateCellStructure}{\code{PivotTable$generateCellStructure()}}
+\item \href{#method-resetCells}{\code{PivotTable$resetCells()}}
+\item \href{#method-evaluateCells}{\code{PivotTable$evaluateCells()}}
+\item \href{#method-evaluatePivot}{\code{PivotTable$evaluatePivot()}}
+\item \href{#method-findRowDataGroups}{\code{PivotTable$findRowDataGroups()}}
+\item \href{#method-findColumnDataGroups}{\code{PivotTable$findColumnDataGroups()}}
+\item \href{#method-getEmptyRows}{\code{PivotTable$getEmptyRows()}}
+\item \href{#method-getEmptyColumns}{\code{PivotTable$getEmptyColumns()}}
+\item \href{#method-getCell}{\code{PivotTable$getCell()}}
+\item \href{#method-getCells}{\code{PivotTable$getCells()}}
+\item \href{#method-findCells}{\code{PivotTable$findCells()}}
+\item \href{#method-findGroupColumnNumbers}{\code{PivotTable$findGroupColumnNumbers()}}
+\item \href{#method-findGroupRowNumbers}{\code{PivotTable$findGroupRowNumbers()}}
+\item \href{#method-removeColumn}{\code{PivotTable$removeColumn()}}
+\item \href{#method-removeColumns}{\code{PivotTable$removeColumns()}}
+\item \href{#method-removeEmptyColumns}{\code{PivotTable$removeEmptyColumns()}}
+\item \href{#method-removeRow}{\code{PivotTable$removeRow()}}
+\item \href{#method-removeRows}{\code{PivotTable$removeRows()}}
+\item \href{#method-removeEmptyRows}{\code{PivotTable$removeEmptyRows()}}
+\item \href{#method-print}{\code{PivotTable$print()}}
+\item \href{#method-asMatrix}{\code{PivotTable$asMatrix()}}
+\item \href{#method-asDataMatrix}{\code{PivotTable$asDataMatrix()}}
+\item \href{#method-asDataFrame}{\code{PivotTable$asDataFrame()}}
+\item \href{#method-asTidyDataFrame}{\code{PivotTable$asTidyDataFrame()}}
+\item \href{#method-getMerges}{\code{PivotTable$getMerges()}}
+\item \href{#method-asBasicTable}{\code{PivotTable$asBasicTable()}}
+\item \href{#method-getCss}{\code{PivotTable$getCss()}}
+\item \href{#method-getHtml}{\code{PivotTable$getHtml()}}
+\item \href{#method-saveHtml}{\code{PivotTable$saveHtml()}}
+\item \href{#method-renderPivot}{\code{PivotTable$renderPivot()}}
+\item \href{#method-getLatex}{\code{PivotTable$getLatex()}}
+\item \href{#method-writeToExcelWorksheet}{\code{PivotTable$writeToExcelWorksheet()}}
+\item \href{#method-trace}{\code{PivotTable$trace()}}
+\item \href{#method-showBatchInfo}{\code{PivotTable$showBatchInfo()}}
+\item \href{#method-asList}{\code{PivotTable$asList()}}
+\item \href{#method-asJSON}{\code{PivotTable$asJSON()}}
+\item \href{#method-viewJSON}{\code{PivotTable$viewJSON()}}
+\item \href{#method-finalize}{\code{PivotTable$finalize()}}
+\item \href{#method-clone}{\code{PivotTable$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotTable` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$new(
+  processingLibrary = "auto",
+  evaluationMode = "batch",
+  argumentCheckMode = "auto",
+  theme = NULL,
+  replaceExistingStyles = FALSE,
+  tableStyle = NULL,
+  headingStyle = NULL,
+  cellStyle = NULL,
+  totalStyle = NULL,
+  compatibility = NULL,
+  traceEnabled = FALSE,
+  traceFile = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{processingLibrary}}{The package to use when processing data.
+Must be one of "auto" (which today is dplyr), "dplyr" or "data.table".}
+
+\item{\code{evaluationMode}}{Either "batch" (default) or "sequential" (legacy).}
+
+\item{\code{argumentCheckMode}}{The level of argument checking to perform.
+Must be one of "auto", "none", "minimal", "basic", "balanced" (default)
+or "full".}
+
+\item{\code{theme}}{A theme to use to style the pivot table. Either:
+(1) The name of a built in theme, or
+(2) A list of simple style settings, or
+(3) A `PivotStyles` object containing a full set of styles.
+See the "Styling" vignette for many examples.}
+
+\item{\code{replaceExistingStyles}}{Default `FALSE` to retain existing styles in
+the styles collection and add specified styles as new custom styles.
+Specify `TRUE` to update the definitions of existing styles.}
+
+\item{\code{tableStyle}}{Styling to apply to the table.  Either:
+(1) The name of a built in style, or
+(2) A list of CSS style declarations, e.g.
+`list("font-weight"="bold", "color"="#0000FF")`, or
+(3) A `PivotStyle` object.}
+
+\item{\code{headingStyle}}{Styling to apply to the headings.
+See the `tableStyle` argument for details.}
+
+\item{\code{cellStyle}}{Styling to apply to the normal cells.
+See the `tableStyle` argument for details.}
+
+\item{\code{totalStyle}}{Styling to apply to the total cells.
+See the `tableStyle` argument for details.}
+
+\item{\code{compatibility}}{A list containing compatibility options to force
+legacy behaviours.  See the NEWS file for details.}
+
+\item{\code{traceEnabled}}{Default `FALSE`.  Specify `TRUE` to generate a trace
+for debugging purposes.}
+
+\item{\code{traceFile}}{If tracing is enabled, the location to generate the trace file.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotTable` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setDefault"></a>}}
+\if{latex}{\out{\hypertarget{method-setDefault}{}}}
+\subsection{Method \code{setDefault()}}{
+Specify default values for some function arguments.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$setDefault(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Default values to specify.  See details.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+Defaults can be set for the following agruments of
+`pt$addRowDataGroups()` and `pt$addColumnDataGroups()`:
+`logical` values: `addTotal`, `expandExistingTotals`, `visualTotals`.
+`character` values:  `totalPosition`, `totalCaption`.
+`list` or `logical` values:  `outlineBefore`, `outlineAfter`, `outlineTotal`.
+Errors are generated for default values that could not be set.
+Warnings are generated for attempts to set defaults that aren't supported.
+See the "A1. Appendix" vignette for more details.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getDefault1"></a>}}
+\if{latex}{\out{\hypertarget{method-getDefault1}{}}}
+\subsection{Method \code{getDefault1()}}{
+Get the default value of an argument.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getDefault1(argValue = NULL, useDefault = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{argValue}}{The name and value of the argument.}
+
+\item{\code{useDefault}}{Specify `TRUE` to use the default.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+Both the argument name and argument value are taken from the `argValue`
+argument.  The name is obtained from `as.character(substitute(argValue))`.
+This function is designed to easily slot into existing code, e.g.
+`getDefault1(addTotal, missing(addTotal))`.
+}
+
+\subsection{Returns}{
+The current value of the argument or the default value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getDefault2"></a>}}
+\if{latex}{\out{\hypertarget{method-getDefault2}{}}}
+\subsection{Method \code{getDefault2()}}{
+Get the default value of an argument.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getDefault2(argName = NULL, argValue = NULL, useDefault = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{argName}}{The name of the argument.}
+
+\item{\code{argValue}}{The current value of the argument.}
+
+\item{\code{useDefault}}{Specify `TRUE` to use the default.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The current value of the argument or the default value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getDefault3"></a>}}
+\if{latex}{\out{\hypertarget{method-getDefault3}{}}}
+\subsection{Method \code{getDefault3()}}{
+Get the default value of an argument.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getDefault3(argName)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{argName}}{The name of the argument.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The default value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getNextInstanceId"></a>}}
+\if{latex}{\out{\hypertarget{method-getNextInstanceId}{}}}
+\subsection{Method \code{getNextInstanceId()}}{
+Get the next unique object instance identifier.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getNextInstanceId()}\if{html}{\out{</div>}}
+}
+
+\subsection{Details}{
+R6 classes cannot be easily compared to check if two variables are both
+referring to the same object instance.  Instance ids are a mechanism to
+work around this problem.  Each data group and cell is assigned an
+instance id during object creation, which enables reliable reference
+comparisons.
+}
+
+\subsection{Returns}{
+An integer instance id.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addData"></a>}}
+\if{latex}{\out{\hypertarget{method-addData}{}}}
+\subsection{Method \code{addData()}}{
+Add a data frame with the specified name to the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$addData(dataFrame = NULL, dataName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataFrame}}{The data frame to add.}
+
+\item{\code{dataName}}{The name to be used to refer to the data frame.
+If no name is specified, the data frame variable name from the
+calling code is used, retrieved via `deparse(substitute(dataFrame))`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+The name is used to refer to the data frame when generating data groups
+or defining calculations.  The pivot table tracks the first data frame
+added as the default data frame, so if only a single data frame is used,
+it is typically not necessary to ever explicitly refer to the name.
+Pivot tables are typically based on a single data frame, however it
+is possible to build a pivot table that uses data from multiple data
+frames.
+}
+
+\subsection{Returns}{
+The `PivotData` object managing the data frames for the pivot table.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addTotalData"></a>}}
+\if{latex}{\out{\hypertarget{method-addTotalData}{}}}
+\subsection{Method \code{addTotalData()}}{
+Add a data frame containing totals data with the specified name and
+variables to the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$addTotalData(
+  dataFrame = NULL,
+  dataName = NULL,
+  variableNames = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataFrame}}{The data frame to add.}
+
+\item{\code{dataName}}{The name of the data frame to associate these totals with.}
+
+\item{\code{variableNames}}{A vector specifying how the aggregate data/totals in
+the data frame are grouped.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+When generating pivot tables, the package typically calculates cell values.
+However, the package can also use provided values (i.e. carry out no
+calculations).  This presents a challenge in that the sub-totals and totals
+in a pivot table display values at a higher aggregation level than the
+normal cells in the body of the pivot table.  This method allows further
+data frames to be specified that contain aggregated versions of the data.
+See the "Calculations" vignette for details and an example.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getColumnGroupsByLevel"></a>}}
+\if{latex}{\out{\hypertarget{method-getColumnGroupsByLevel}{}}}
+\subsection{Method \code{getColumnGroupsByLevel()}}{
+Retrieve the data groups at the specified level in the column groups hierarchy.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getColumnGroupsByLevel(level = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{level}}{An integer specifying the level number.
+Level 1 represents the first visible level of data groups.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list containing `PivotDataGroup` objects.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getTopColumnGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-getTopColumnGroups}{}}}
+\subsection{Method \code{getTopColumnGroups()}}{
+[Deprecated: Use topColumnGroups instead]
+Retrieve the first level of column data groups.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getTopColumnGroups()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list containing `PivotDataGroup` objects.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getLeafColumnGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-getLeafColumnGroups}{}}}
+\subsection{Method \code{getLeafColumnGroups()}}{
+[Deprecated: Use leafColumnGroups instead]
+Retrieve the bottom level of column data groups.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getLeafColumnGroups()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list containing `PivotDataGroup` objects.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getLeafColumnGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-getLeafColumnGroup}{}}}
+\subsection{Method \code{getLeafColumnGroup()}}{
+Retrieve the leaf-level data group associated with a specific column.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getLeafColumnGroup(c = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{c}}{An integer column number.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A `PivotDataGroup` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addColumnGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-addColumnGroup}{}}}
+\subsection{Method \code{addColumnGroup()}}{
+Add a new column data group at the top level of the column group
+hierarchy.  The new group is added as the last child unless an index
+is specified.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$addColumnGroup(
+  variableName = NULL,
+  filterType = "ALL",
+  values = NULL,
+  doNotExpand = FALSE,
+  isEmpty = FALSE,
+  isOutline = FALSE,
+  captionTemplate = "{value}",
+  caption = NULL,
+  isTotal = FALSE,
+  isLevelSubTotal = FALSE,
+  isLevelTotal = FALSE,
+  calculationGroupName = NULL,
+  calculationName = NULL,
+  baseStyleName = NULL,
+  styleDeclarations = NULL,
+  insertAtIndex = NULL,
+  insertBeforeGroup = NULL,
+  insertAfterGroup = NULL,
+  mergeEmptySpace = NULL,
+  cellBaseStyleName = NULL,
+  cellStyleDeclarations = NULL,
+  sortAnchor = NULL,
+  resetCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableName}}{A character value that specifies the name of the
+variable in the data frame that the group relates to and will filter.}
+
+\item{\code{filterType}}{Must be one of "ALL", "VALUES", or "NONE" to specify
+the filter type:
+ALL means no filtering is applied.
+VALUEs is the typical value used to specify that `variableName` is
+filtered to only `values`.
+NONE means no data will match this data group.}
+
+\item{\code{values}}{A vector that specifies the filter values applied to
+`variableName` to select the data to match this row/column in the pivot
+table.}
+
+\item{\code{doNotExpand}}{Default value `FALSE` - specify `TRUE` to
+prevent the high-level methods such as `addDataGroups()` from adding
+child groups.}
+
+\item{\code{isEmpty}}{Default value `FALSE`, specify `TRUE` to mark that
+this group contains no data (e.g. if
+it is part of a header or outline row)}
+
+\item{\code{isOutline}}{Default value `FALSE` - specify `TRUE` to mark
+that this data group is an outline group.}
+
+\item{\code{captionTemplate}}{A character value that specifies the template
+for the data group caption, default "{values}".}
+
+\item{\code{caption}}{Effectively a hard-coded caption that overrides the
+built-in logic for generating a caption.}
+
+\item{\code{isTotal}}{Default `FALSE` - specify `TRUE` to mark that this
+data group is a total.}
+
+\item{\code{isLevelSubTotal}}{Default `FALSE` - specify `TRUE` to mark that
+this data group is a sub-total within a level.}
+
+\item{\code{isLevelTotal}}{Default `FALSE` - specify `TRUE` to mark that
+this data group is level total.}
+
+\item{\code{calculationGroupName}}{For calculation groups, this character value
+specifies the calculation group that `calculationName` belongs to.}
+
+\item{\code{calculationName}}{For calculation groups, this character value
+specifies the name of the calculation.}
+
+\item{\code{baseStyleName}}{The style name for the data group.}
+
+\item{\code{styleDeclarations}}{A list of CSS style declarations to overlay
+on top of the base style.}
+
+\item{\code{insertAtIndex}}{An integer that specifies the index in the list
+of child groups where the new group should be inserted.}
+
+\item{\code{insertBeforeGroup}}{Specifies an existing group that the new group
+should be inserted before.}
+
+\item{\code{insertAfterGroup}}{Specifies an existing group that the new group
+should be inserted after}
+
+\item{\code{mergeEmptySpace}}{A character value that specifies how empty space
+should be merged. This is typically only used with outline groups
+(so applies to row groups only, not column groups).  Must be one of
+"doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1" or
+"dataGroupsAndCellsAs2".  See the "Regular Layout" vignette
+for more information.}
+
+\item{\code{cellBaseStyleName}}{The style name for cells related to this data
+group.}
+
+\item{\code{cellStyleDeclarations}}{A list of CSS style declarations to overlay
+on top of the base style for cells related to this data group}
+
+\item{\code{sortAnchor}}{Used to specify sort behaviour for outline groups, must
+be one of "fixed", "next" or "previous".}
+
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+See the "Irregular Layout" vignette for details and examples.
+}
+
+\subsection{Returns}{
+The new `PivotDataGroup` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addColumnDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-addColumnDataGroups}{}}}
+\subsection{Method \code{addColumnDataGroups()}}{
+Add multiple new data groups to the column group hierarchy
+based on the distinct values in a data frame
+column or using explicitly specified data values.
+See the "Data Groups" vignette for example usage.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$addColumnDataGroups(
+  variableName = NULL,
+  atLevel = NULL,
+  fromData = TRUE,
+  dataName = NULL,
+  dataSortOrder = "asc",
+  customSortOrder = NULL,
+  caption = "{value}",
+  dataFormat = NULL,
+  dataFmtFuncArgs = NULL,
+  onlyCombinationsThatExist = TRUE,
+  explicitListOfValues = NULL,
+  calculationGroupName = NULL,
+  expandExistingTotals = FALSE,
+  addTotal = TRUE,
+  visualTotals = FALSE,
+  totalPosition = "after",
+  totalCaption = "Total",
+  onlyAddGroupIf = NULL,
+  preGroupData = TRUE,
+  baseStyleName = NULL,
+  styleDeclarations = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableName}}{The name of the related column in the data frame(s) of
+the pivot table.}
+
+\item{\code{atLevel}}{The level number that specifies where to add the new
+groups.  Level 1 = on the first visible level of the hierarchy.
+`NULL` = create a new level at the bottom of the hierarchy for the new
+groups.}
+
+\item{\code{fromData}}{Default `TRUE` to generate the new data groups based on the
+data values that exist in the `variableName` column in the named data frame.
+If `FALSE`, then `explicitListOfValues` must be specified.}
+
+\item{\code{dataName}}{The name of the data frame (as specified in
+`pt$addData()`) to read the data group values from.}
+
+\item{\code{dataSortOrder}}{Must be one of "asc", "desc", "custom" or "none".}
+
+\item{\code{customSortOrder}}{A vector values sorted into the desired order.}
+
+\item{\code{caption}}{The template of data group captions to generate,
+default "{value}".}
+
+\item{\code{dataFormat}}{A character, list or custom function to format the
+data value.}
+
+\item{\code{dataFmtFuncArgs}}{A list that specifies any additional arguments to
+pass to a custom format function.}
+
+\item{\code{onlyCombinationsThatExist}}{Default `TRUE` to generate only
+combinations of data groups that exist in the data frame.}
+
+\item{\code{explicitListOfValues}}{A list of explicit values to create data
+groups from.  A data group is created for each element of the list.
+If a list element is vector of values (with length greater than 1),
+then a data group is created for multiple values instead of just
+a single value.}
+
+\item{\code{calculationGroupName}}{The calculation group that the new data groups
+are related to.}
+
+\item{\code{expandExistingTotals}}{Default `FALSE`, which means totals are not
+broken down in multi-level hierarchies.}
+
+\item{\code{addTotal}}{Default `TRUE`, which means sub-total and total data groups
+are automatically added.}
+
+\item{\code{visualTotals}}{Default `FALSE`, which means visual totals are disabled.
+See the "Data Groups" vignette for more details about visual totals.}
+
+\item{\code{totalPosition}}{Either "before" or "after" to specify where total groups
+are created, default "after".}
+
+\item{\code{totalCaption}}{The caption to display on total groups, default "Total".}
+
+\item{\code{onlyAddGroupIf}}{A filter expression that can be used to more finely
+control whether data groups are created at different locations in the
+hierarchy.  There must be at least one row that matches this filter and the
+filters from the ancestor groups in order that the child group is created.
+E.g. `MaxDisplayLevel>5`.}
+
+\item{\code{preGroupData}}{Default `TRUE`, which means that the pivot table
+pre-calculates the distinct combinations of variable values to reduce the CPU
+time and elapsed time required to generate data groups.
+Cannot be used in conjunction with the}
+
+\item{\code{baseStyleName}}{The name of the style applied to this data group (i.e.
+this row/column heading).  The style must exist in the `PivotStyles` object
+associated with the PivotTable.}
+
+\item{\code{styleDeclarations}}{CSS style declarations that can override the base
+style, expressed as a list, e.g. `list("font-weight"=bold")`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+There are broadly three different ways to call `addColumnDataGroups()`:
+(1) dataName=name, fromData=TRUE, onlyCombinationsThatExist=TRUE - which
+considers the ancestors of each existing data group to generate only those
+combinations of values that exist in the data frame.
+(2) dataName=name, fromData=TRUE, onlyCombinationsThatExist=FALSE - which
+ignores the ancestors of each existing data group and simply adds every
+distinct value of the specified variable under every existing data group,
+which can result in combinations of values in the pivot table that don't
+exist in the data frame (i.e. blank rows/columns in the pivot table).
+(3) fromData=FALSE, explicitListOfValues=list(...) - simply adds every
+value from the specified list under every existing data group.
+}
+
+\subsection{Returns}{
+A list of new `PivotDataGroup` objects that have been added.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-normaliseColumnGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-normaliseColumnGroups}{}}}
+\subsection{Method \code{normaliseColumnGroups()}}{
+Normalise the column data group hierarchy so that all branches have the
+same number of levels - accomplished by adding empty child data groups
+where needed.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$normaliseColumnGroups(resetCells = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of new `PivotDataGroup` objects that have been added.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-sortColumnDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-sortColumnDataGroups}{}}}
+\subsection{Method \code{sortColumnDataGroups()}}{
+Sort column data groups either by the data group data value, caption,
+a custom order or based on calculation result values.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$sortColumnDataGroups(
+  levelNumber = 1,
+  orderBy = "calculation",
+  customOrder = NULL,
+  sortOrder = "desc",
+  calculationGroupName = "default",
+  calculationName = NULL,
+  fromIndex = NULL,
+  toIndex = NULL,
+  resetCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{levelNumber}}{The level number to sort the data groups, e.g.
+level 1 (default) sorts the data groups at level 1 of the hierarchy
+(which is the first visible level of data groups).}
+
+\item{\code{orderBy}}{Must be either "value", "caption", "calculation",
+"customByValue" or "customByCaption".
+"value" sorts by the raw (i.e. unformatted) group value.
+"caption" sorts by the formatted character group caption.
+"calculation" sorts using one of the calculations defined in the pivot table.
+"customValue" sorts by the raw (i.e. unformatted) group value according to
+the specified custom sort order.
+"customCaption" sorts by the formatted character group caption according to
+the specified custom sort order.}
+
+\item{\code{customOrder}}{A vector values sorted into the desired order.}
+
+\item{\code{sortOrder}}{Must be either "asc" or "desc".}
+
+\item{\code{calculationGroupName}}{If sorting using a calculation, the name of the
+calculation group containing the specified calculation.}
+
+\item{\code{calculationName}}{If sorting using a calculation, the name of the
+calculation.}
+
+\item{\code{fromIndex}}{A boundary to limit the sort operation.}
+
+\item{\code{toIndex}}{A boundary to limit the sort operation.}
+
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getRowGroupsByLevel"></a>}}
+\if{latex}{\out{\hypertarget{method-getRowGroupsByLevel}{}}}
+\subsection{Method \code{getRowGroupsByLevel()}}{
+Retrieve the data groups at the specified level in the row groups hierarchy.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getRowGroupsByLevel(level = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{level}}{An integer specifying the level number.
+Level 1 represents the first visible level of data groups.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list containing `PivotDataGroup` objects.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getTopRowGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-getTopRowGroups}{}}}
+\subsection{Method \code{getTopRowGroups()}}{
+[Deprecated: Use topRowGroups instead]
+Retrieve the first level of row data groups.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getTopRowGroups()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list containing `PivotDataGroup` objects.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getLeafRowGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-getLeafRowGroups}{}}}
+\subsection{Method \code{getLeafRowGroups()}}{
+[Deprecated: Use leafRowGroups instead]
+Retrieve the bottom level of row data groups.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getLeafRowGroups()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list containing `PivotDataGroup` objects.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getLeafRowGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-getLeafRowGroup}{}}}
+\subsection{Method \code{getLeafRowGroup()}}{
+Retrieve the leaf-level data group associated with a specific row.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getLeafRowGroup(r = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{r}}{An integer row number.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A `PivotDataGroup` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addRowGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-addRowGroup}{}}}
+\subsection{Method \code{addRowGroup()}}{
+Add a new column data group at the top level of the row group
+hierarchy.  The new group is added as the last child unless an index
+is specified.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$addRowGroup(
+  variableName = NULL,
+  filterType = "ALL",
+  values = NULL,
+  doNotExpand = FALSE,
+  isEmpty = FALSE,
+  isOutline = FALSE,
+  captionTemplate = "{value}",
+  caption = NULL,
+  isTotal = FALSE,
+  isLevelSubTotal = FALSE,
+  isLevelTotal = FALSE,
+  calculationGroupName = NULL,
+  calculationName = NULL,
+  baseStyleName = NULL,
+  styleDeclarations = NULL,
+  insertAtIndex = NULL,
+  insertBeforeGroup = NULL,
+  insertAfterGroup = NULL,
+  mergeEmptySpace = NULL,
+  cellBaseStyleName = NULL,
+  cellStyleDeclarations = NULL,
+  sortAnchor = NULL,
+  resetCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableName}}{A character value that specifies the name of the
+variable in the data frame that the group relates to and will filter.}
+
+\item{\code{filterType}}{Must be one of "ALL", "VALUES", or "NONE" to specify
+the filter type:
+ALL means no filtering is applied.
+VALUEs is the typical value used to specify that `variableName` is
+filtered to only `values`.
+NONE means no data will match this data group.}
+
+\item{\code{values}}{A vector that specifies the filter values applied to
+`variableName` to select the data to match this row/column in the pivot
+table.}
+
+\item{\code{doNotExpand}}{Default value `FALSE` - specify `TRUE` to
+prevent the high-level methods such as `addDataGroups()` from adding
+child groups.}
+
+\item{\code{isEmpty}}{Default value `FALSE`, specify `TRUE` to mark that
+this group contains no data (e.g. if
+it is part of a header or outline row)}
+
+\item{\code{isOutline}}{Default value `FALSE` - specify `TRUE` to mark
+that this data group is an outline group.}
+
+\item{\code{captionTemplate}}{A character value that specifies the template
+for the data group caption, default "{values}".}
+
+\item{\code{caption}}{Effectively a hard-coded caption that overrides the
+built-in logic for generating a caption.}
+
+\item{\code{isTotal}}{Default `FALSE` - specify `TRUE` to mark that this
+data group is a total.}
+
+\item{\code{isLevelSubTotal}}{Default `FALSE` - specify `TRUE` to mark that
+this data group is a sub-total within a level.}
+
+\item{\code{isLevelTotal}}{Default `FALSE` - specify `TRUE` to mark that
+this data group is level total.}
+
+\item{\code{calculationGroupName}}{For calculation groups, this character value
+specifies the calculation group that `calculationName` belongs to.}
+
+\item{\code{calculationName}}{For calculation groups, this character value
+specifies the name of the calculation.}
+
+\item{\code{baseStyleName}}{The style name for the data group.}
+
+\item{\code{styleDeclarations}}{A list of CSS style declarations to overlay
+on top of the base style.}
+
+\item{\code{insertAtIndex}}{An integer that specifies the index in the list
+of child groups where the new group should be inserted.}
+
+\item{\code{insertBeforeGroup}}{Specifies an existing group that the new group
+should be inserted before.}
+
+\item{\code{insertAfterGroup}}{Specifies an existing group that the new group
+should be inserted after}
+
+\item{\code{mergeEmptySpace}}{A character value that specifies how empty space
+should be merged. This is typically only used with outline groups
+(so applies to row groups only, not column groups).  Must be one of
+"doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1" or
+"dataGroupsAndCellsAs2".  See the "Regular Layout" vignette
+for more information.}
+
+\item{\code{cellBaseStyleName}}{The style name for cells related to this data
+group.}
+
+\item{\code{cellStyleDeclarations}}{A list of CSS style declarations to overlay
+on top of the base style for cells related to this data group}
+
+\item{\code{sortAnchor}}{Used to specify sort behaviour for outline groups, must
+be one of "fixed", "next" or "previous".}
+
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+
+\item{\code{outlineLinkedGroupId}}{Used to link an outline group to the value
+data group which has the child data groups.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+See the "Irregular Layout" vignette for details and examples.
+}
+
+\subsection{Returns}{
+The new `PivotDataGroup` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addRowDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-addRowDataGroups}{}}}
+\subsection{Method \code{addRowDataGroups()}}{
+Add multiple new data groups to the row group hierarchy
+based on the distinct values in a data frame
+column or using explicitly specified data values.
+See the "Data Groups" vignette for example usage.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$addRowDataGroups(
+  variableName = NULL,
+  atLevel = NULL,
+  fromData = TRUE,
+  dataName = NULL,
+  dataSortOrder = "asc",
+  customSortOrder = NULL,
+  caption = "{value}",
+  dataFormat = NULL,
+  dataFmtFuncArgs = NULL,
+  onlyCombinationsThatExist = TRUE,
+  explicitListOfValues = NULL,
+  calculationGroupName = NULL,
+  expandExistingTotals = FALSE,
+  addTotal = TRUE,
+  visualTotals = FALSE,
+  totalPosition = "after",
+  totalCaption = "Total",
+  onlyAddGroupIf = NULL,
+  preGroupData = TRUE,
+  baseStyleName = NULL,
+  styleDeclarations = NULL,
+  header = NULL,
+  outlineBefore = NULL,
+  outlineAfter = NULL,
+  outlineTotal = NULL,
+  onlyAddOutlineChildGroupIf = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableName}}{The name of the related column in the data frame(s) of
+the pivot table.}
+
+\item{\code{atLevel}}{The level number that specifies where to add the new
+groups.  Level 1 = on the first visible level of the hierarchy.
+`NULL` = create a new level at the bottom of the hierarchy for the new
+groups.}
+
+\item{\code{fromData}}{Default `TRUE` to generate the new data groups based on the
+data values that exist in the `variableName` column in the named data frame.
+If `FALSE`, then `explicitListOfValues` must be specified.}
+
+\item{\code{dataName}}{The name of the data frame (as specified in
+`pt$addData()`) to read the data group values from.}
+
+\item{\code{dataSortOrder}}{Must be one of "asc", "desc", "custom" or "none".}
+
+\item{\code{customSortOrder}}{A vector values sorted into the desired order.}
+
+\item{\code{caption}}{The template of data group captions to generate,
+default "{value}".}
+
+\item{\code{dataFormat}}{A character, list or custom function to format the
+data value.}
+
+\item{\code{dataFmtFuncArgs}}{A list that specifies any additional arguments to
+pass to a custom format function.}
+
+\item{\code{onlyCombinationsThatExist}}{Default `TRUE` to generate only
+combinations of data groups that exist in the data frame.}
+
+\item{\code{explicitListOfValues}}{A list of explicit values to create data
+groups from.  A data group is created for each element of the list.
+If a list element is vector of values (with length greater than 1),
+then a data group is created for multiple values instead of just
+a single value.}
+
+\item{\code{calculationGroupName}}{The calculation group that the new data groups
+are related to.}
+
+\item{\code{expandExistingTotals}}{Default `FALSE`, which means totals are not
+broken down in multi-level hierarchies.}
+
+\item{\code{addTotal}}{Default `TRUE`, which means sub-total and total data groups
+are automatically added.}
+
+\item{\code{visualTotals}}{Default `FALSE`, which means visual totals are disabled.
+See the "Data Groups" vignette for more details about visual totals.}
+
+\item{\code{totalPosition}}{Either "before" or "after" to specify where total groups
+are created, default "after".}
+
+\item{\code{totalCaption}}{The caption to display on total groups, default "Total".}
+
+\item{\code{onlyAddGroupIf}}{A filter expression that can be used to more finely
+control whether data groups are created at different locations in the
+hierarchy.  There must be at least one row that matches this filter and the
+filters from the ancestor groups in order that the child group is created.
+E.g. `MaxDisplayLevel>5`.}
+
+\item{\code{preGroupData}}{Default `TRUE`, which means that the pivot table
+pre-calculates the distinct combinations of variable values to reduce the CPU
+time and elapsed time required to generate data groups.
+Cannot be used in conjunction with the}
+
+\item{\code{baseStyleName}}{The name of the style applied to this data group (i.e.
+this row/column heading).  The style must exist in the `PivotStyles` object
+associated with the PivotTable.}
+
+\item{\code{styleDeclarations}}{CSS style declarations that can override the base
+style, expressed as a list, e.g. `list("font-weight"=bold")`.}
+
+\item{\code{header}}{A character value used as the row-group column caption
+when row group headers are rendered.}
+
+\item{\code{outlineBefore}}{Default `FALSE` to disable the creation of outline header
+groups.  Specify either `TRUE` or a list of outline group settings to create
+outline header groups.  See the "Regular Layout" vignette for details.}
+
+\item{\code{outlineAfter}}{Default `FALSE` to disable the creation of outline footer
+groups.  Specify either `TRUE` or a list of outline group settings to create
+outline footer groups.  See the "Regular Layout" vignette for details.}
+
+\item{\code{outlineTotal}}{Default `FALSE` to disable the creation of outline
+totals.  Specify either `TRUE` or a list of outline group settings to create
+outline totals.  See the "Regular Layout" vignette for details.}
+
+\item{\code{onlyAddOutlineChildGroupIf}}{A filter expression that can be used to
+more finely control whether outline child groups are created at different
+locations in the hierarchy.  There must be at least one row that matches
+this filter and the filters from the ancestor groups in order that the
+outline child group is created.  E.g. `MaxDisplayLevel>5`.
+See the "Regular Layout" vignette for an example.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+There are broadly three different ways to call `addRowDataGroups()`:
+(1) dataName=name, fromData=TRUE, onlyCombinationsThatExist=TRUE - which
+considers the ancestors of each existing data group to generate only those
+combinations of values that exist in the data frame.
+(2) dataName=name, fromData=TRUE, onlyCombinationsThatExist=FALSE - which
+ignores the ancestors of each existing data group and simply adds every
+distinct value of the specified variable under every existing data group,
+which can result in combinations of values in the pivot table that don't
+exist in the data frame (i.e. blank rows/columns in the pivot table).
+(3) fromData=FALSE, explicitListOfValues=list(...) - simply adds every
+value from the specified list under every existing data group.
+}
+
+\subsection{Returns}{
+A list of new `PivotDataGroup` objects that have been added.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-normaliseRowGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-normaliseRowGroups}{}}}
+\subsection{Method \code{normaliseRowGroups()}}{
+Normalise the row data group hierarchy so that all branches have the
+same number of levels - accomplished by adding empty child data groups
+where needed.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$normaliseRowGroups(resetCells = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of new `PivotDataGroup` objects that have been added.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-sortRowDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-sortRowDataGroups}{}}}
+\subsection{Method \code{sortRowDataGroups()}}{
+Sort row data groups either by the data group data value, caption,
+a custom order or based on calculation result values.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$sortRowDataGroups(
+  levelNumber = 1,
+  orderBy = "calculation",
+  customOrder = NULL,
+  sortOrder = "desc",
+  calculationGroupName = "default",
+  calculationName = NULL,
+  fromIndex = NULL,
+  toIndex = NULL,
+  resetCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{levelNumber}}{The level number to sort the data groups, e.g.
+level 1 (default) sorts the data groups at level 1 of the hierarchy
+(which is the first visible level of data groups).}
+
+\item{\code{orderBy}}{Must be either "value", "caption", "calculation",
+"customByValue" or "customByCaption".
+"value" sorts by the raw (i.e. unformatted) group value.
+"caption" sorts by the formatted character group caption.
+"calculation" sorts using one of the calculations defined in the pivot table.
+"customValue" sorts by the raw (i.e. unformatted) group value according to
+the specified custom sort order.
+"customCaption" sorts by the formatted character group caption according to
+the specified custom sort order.}
+
+\item{\code{customOrder}}{A vector values sorted into the desired order.}
+
+\item{\code{sortOrder}}{Must be either "asc" or "desc".}
+
+\item{\code{calculationGroupName}}{If sorting using a calculation, the name of the
+calculation group containing the specified calculation.}
+
+\item{\code{calculationName}}{If sorting using a calculation, the name of the
+calculation.}
+
+\item{\code{fromIndex}}{A boundary to limit the sort operation.}
+
+\item{\code{toIndex}}{A boundary to limit the sort operation.}
+
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setRowDataGroupHeader"></a>}}
+\if{latex}{\out{\hypertarget{method-setRowDataGroupHeader}{}}}
+\subsection{Method \code{setRowDataGroupHeader()}}{
+Set the row group header associated with a level of the row data group
+hierarchy.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$setRowDataGroupHeader(levelNumber = NULL, header = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{levelNumber}}{An integer specifying the level number.}
+
+\item{\code{header}}{A character value specifying the caption.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+By default, the row data groups (i.e. row headings) at the left of the pivot
+table have no column headings.  This method can specify the headings, which
+can be rendered by specifying the `showRowGroupHeaders=TRUE` in the render
+methods.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addCalculationGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-addCalculationGroup}{}}}
+\subsection{Method \code{addCalculationGroup()}}{
+Create a new calculation group.  This is rarely needed since the
+default group is sufficient for all regular pivot tables.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$addCalculationGroup(calculationGroupName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationGroupName}}{The name of the new calculation group to create.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A `PivotCalculationGroup` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-defineCalculation"></a>}}
+\if{latex}{\out{\hypertarget{method-defineCalculation}{}}}
+\subsection{Method \code{defineCalculation()}}{
+Create a new `PivotCalculation` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$defineCalculation(
+  calculationGroupName = "default",
+  calculationName = NULL,
+  caption = NULL,
+  visible = TRUE,
+  displayOrder = NULL,
+  filters = NULL,
+  format = NULL,
+  fmtFuncArgs = NULL,
+  dataName = NULL,
+  type = "summary",
+  valueName = NULL,
+  summariseExpression = NULL,
+  calculationExpression = NULL,
+  calculationFunction = NULL,
+  calcFuncArgs = NULL,
+  basedOn = NULL,
+  noDataValue = NULL,
+  noDataCaption = NULL,
+  headingBaseStyleName = NULL,
+  headingStyleDeclarations = NULL,
+  cellBaseStyleName = NULL,
+  cellStyleDeclarations = NULL,
+  resetCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationGroupName}}{The name of the calculation group this
+calculation will belong to.  The default calculation group will be
+used if this parameter is not specified (this is sufficient for all
+regular pivot tables).}
+
+\item{\code{calculationName}}{Calculation unique name.}
+
+\item{\code{caption}}{Calculation display name}
+
+\item{\code{visible}}{`TRUE` to show the calculation in the pivot table or `FALSE`
+to hide it.  Hidden calculations are typically used as base values for
+other calculations.}
+
+\item{\code{displayOrder}}{The order the calculations are displayed in the
+pivot table.}
+
+\item{\code{filters}}{Any additional data filters specific to this calculation.
+This can be a `PivotFilters` object that further restricts the data for the
+calculation or a list of individual `PivotFilter` objects that provide more
+flexibility (and/or/replace).  See the Calculations vignette for details.}
+
+\item{\code{format}}{A character, list or custom function to format the calculation
+result.}
+
+\item{\code{fmtFuncArgs}}{A list that specifies any additional arguments to pass to
+a custom format function.}
+
+\item{\code{dataName}}{Specifies which data frame in the pivot table is used for
+this calculation (as specified in `pt$addData()`).}
+
+\item{\code{type}}{The calculation type:  "summary", "calculation", "function" or
+"value".}
+
+\item{\code{valueName}}{For type="value", the name of the column containing the
+value to display in the pivot table.}
+
+\item{\code{summariseExpression}}{For type="summary", either the dplyr expression to
+use with dplyr::summarise() or a data.table calculation expression.}
+
+\item{\code{calculationExpression}}{For type="calculation", an expression to combine
+aggregate values.}
+
+\item{\code{calculationFunction}}{For type="function", a reference to a custom R
+function that will carry out the calculation.}
+
+\item{\code{calcFuncArgs}}{For type="function", a list that specifies additional
+arguments to pass to calculationFunction.}
+
+\item{\code{basedOn}}{A character vector specifying the names of one or more
+calculations that this calculation depends on.}
+
+\item{\code{noDataValue}}{An integer or numeric value specifying the value to use if
+no data exists for a particular cell.}
+
+\item{\code{noDataCaption}}{A character value that will be displayed by the pivot
+table if no  data exists for a particular cell.}
+
+\item{\code{headingBaseStyleName}}{The name of a style defined in the pivot table
+to use as the base styling for the data group heading.}
+
+\item{\code{headingStyleDeclarations}}{A list of CSS style declarations (e.g.
+`list("font-weight"="bold")`) to override the base style.}
+
+\item{\code{cellBaseStyleName}}{The name of a style defined in the pivot table to
+use as the base styling for the cells related to this calculation.}
+
+\item{\code{cellStyleDeclarations}}{A list of CSS style declarations (e.g.
+`list("font-weight"="bold")`) to override the base style.}
+
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotCalculation` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addColumnCalculationGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-addColumnCalculationGroups}{}}}
+\subsection{Method \code{addColumnCalculationGroups()}}{
+Set calculations on existing data groups or add multiple new groups
+to the column data group hierarchy to represent calculations.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$addColumnCalculationGroups(
+  calculationGroupName = "default",
+  atLevel = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationGroupName}}{The name of the calculation group to add
+into the data group hierarchy.}
+
+\item{\code{atLevel}}{The level number that specifies where to add the new
+groups.  Level 1 = on the first visible level of the hierarchy.
+`NULL` = create a new level at the bottom of the hierarchy for the new
+groups.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+If only one calculation is defined in the pivot table, then the calculation
+is set onto the existing column data groups (and no new groups are generated).
+If multiple calculations are defined, then a new level of data groups is
+added, e.g. if two calculations are defined, then two new data groups will
+be created under each existing leaf-level column data group.
+}
+
+\subsection{Returns}{
+A list of new `PivotDataGroup` objects that have been added.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addRowCalculationGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-addRowCalculationGroups}{}}}
+\subsection{Method \code{addRowCalculationGroups()}}{
+Set calculations on existing data groups or add multiple new groups
+to the row data group hierarchy to represent calculations.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$addRowCalculationGroups(
+  calculationGroupName = "default",
+  atLevel = NULL,
+  outlineBefore = NULL,
+  outlineAfter = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationGroupName}}{The name of the calculation group to add
+into the data group hierarchy.}
+
+\item{\code{atLevel}}{The level number that specifies where to add the new
+groups.  Level 1 = on the first visible level of the hierarchy.
+`NULL` = create a new level at the bottom of the hierarchy for the new
+groups.}
+
+\item{\code{outlineBefore}}{Default `FALSE` to disable the creation of outline header
+groups.  Specify either `TRUE` or a list of outline group settings to create
+outline header groups.  See the "Regular Layout" vignette for details.}
+
+\item{\code{outlineAfter}}{Default `FALSE` to disable the creation of outline footer
+groups.  Specify either `TRUE` or a list of outline group settings to create
+outline footer groups.  See the "Regular Layout" vignette for details.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+If only one calculation is defined in the pivot table, then the calculation
+is set onto the existing row data groups (and no new groups are generated).
+If multiple calculations are defined, then a new level of data groups is
+added, e.g. if two calculations are defined, then two new data groups will
+be created under each existing leaf-level row data group.
+}
+
+\subsection{Returns}{
+A list of new `PivotDataGroup` objects that have been added.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-addStyle}{}}}
+\subsection{Method \code{addStyle()}}{
+Add a new named style to the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$addStyle(styleName = NULL, declarations = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleName}}{The name of the new style.}
+
+\item{\code{declarations}}{CSS style declarations in the form of a list, e.g.
+`list("font-weight"="bold", "color"="#0000FF")`}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The newly created `PivotStyle` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-createInlineStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-createInlineStyle}{}}}
+\subsection{Method \code{createInlineStyle()}}{
+Create an inline style that can be used to override a base style.
+For general use cases, the `setStyling()` method provides a simpler
+and more direct way of styling specific parts of a pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$createInlineStyle(baseStyleName = NULL, declarations = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{baseStyleName}}{The name of an existing style to base the new style on.}
+
+\item{\code{declarations}}{CSS style declarations in the form of a list, e.g.
+`list("font-weight"="bold", "color"="#0000FF")`}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+Inline styles are typically used to override the style of some specific
+cells in a pivot table.  Inline styles have no name.
+In HTML, they are rendered as 'style' attributes on specific table cells,
+where as named styles are linked to cells using the 'class' attribute.
+}
+
+\subsection{Returns}{
+The newly created `PivotStyle` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setStyling"></a>}}
+\if{latex}{\out{\hypertarget{method-setStyling}{}}}
+\subsection{Method \code{setStyling()}}{
+Apply styling to part of a pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$setStyling(
+  rFrom = NULL,
+  cFrom = NULL,
+  rTo = NULL,
+  cTo = NULL,
+  groups = NULL,
+  cells = NULL,
+  baseStyleName = NULL,
+  style = NULL,
+  declarations = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{rFrom}}{An integer row number that specifies the start row for the
+styling changes.}
+
+\item{\code{cFrom}}{An integer column number that specifies the start column for the
+styling changes.}
+
+\item{\code{rTo}}{An integer row number that specifies the end row for the styling
+changes.}
+
+\item{\code{cTo}}{An integer column number that specifies the end column for the
+styling changes.}
+
+\item{\code{groups}}{A list containing `PivotDataGroup` objects.}
+
+\item{\code{cells}}{A list containing `PivotCell` objects.}
+
+\item{\code{baseStyleName}}{The name of a style to apply.}
+
+\item{\code{style}}{A `PivotStyle` object to apply.}
+
+\item{\code{declarations}}{CSS style declarations to apply in the form of a list,
+e.g. `list("font-weight"="bold", "color"="#0000FF")`}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+There are three ways to specify the part of a pivot table to apply styling
+to:
+(1) By specifying a list of data groups using the `groups` argument.
+(2) By specifying a list of cells using the `cells` argument.
+(3) By specifying a rectangular cell range using `rFrom`, `cFrom`, `rTo`
+and `cTo`.
+See the "Finding and Formatting" vignette for more information and many
+examples.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-generateCellStructure"></a>}}
+\if{latex}{\out{\hypertarget{method-generateCellStructure}{}}}
+\subsection{Method \code{generateCellStructure()}}{
+Generate the cells that will form the body of the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$generateCellStructure()}\if{html}{\out{</div>}}
+}
+
+\subsection{Details}{
+This method rarely needs to be called explicitly, since other methods will
+invoke it if needed.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-resetCells"></a>}}
+\if{latex}{\out{\hypertarget{method-resetCells}{}}}
+\subsection{Method \code{resetCells()}}{
+Clear the cells of the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$resetCells()}\if{html}{\out{</div>}}
+}
+
+\subsection{Details}{
+The cells are reset automatically when structural changes are made to the
+pivot table, so this method rarely needs to be called explicitly.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-evaluateCells"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluateCells}{}}}
+\subsection{Method \code{evaluateCells()}}{
+Calculate the cell values in the body of the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$evaluateCells()}\if{html}{\out{</div>}}
+}
+
+\subsection{Details}{
+This method rarely needs to be called explicitly, since other methods will
+invoke it if needed.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-evaluatePivot"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluatePivot}{}}}
+\subsection{Method \code{evaluatePivot()}}{
+Calculate the cell values in the body of the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$evaluatePivot()}\if{html}{\out{</div>}}
+}
+
+\subsection{Details}{
+This generally only needs to be called explicitly if specific pivot cells
+need to be further processed (e.g. formatted) before the pivot table is
+rendered.
+This method is a wrapper for calling `normaliseColumnGroups()`,
+`normaliseRowGroups()`, `generateCellStructure()` and `evaluateCells()`
+in sequence.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findRowDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-findRowDataGroups}{}}}
+\subsection{Method \code{findRowDataGroups()}}{
+Find row data groups that match specified criteria.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$findRowDataGroups(
+  matchMode = "simple",
+  variableNames = NULL,
+  variableValues = NULL,
+  totals = "include",
+  calculationNames = NULL,
+  atLevels = NULL,
+  minChildCount = NULL,
+  maxChildCount = NULL,
+  emptyGroups = "exclude",
+  outlineGroups = "exclude",
+  outlineLinkedGroupExists = NULL,
+  includeDescendantGroups = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{matchMode}}{Either "simple" (default) or "combinations".
+"simple" is used when matching only one variable-value, multiple
+variable-value combinations are effectively logical "OR".
+"combinations" is used when matching for combinations of variable
+values, multiple variable-value combinations are effectively
+logical "AND".  A child group is viewed as having the variable-value
+filters of itself and it's parent/ancestors, e.g.
+`list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
+would return the "DMU" data group underneath "Express Passenger".
+See the "Finding and Formatting" vignette for graphical examples.}
+
+\item{\code{variableNames}}{A character vector specifying the name/names of the
+variables to find.  This is useful generally only in pivot tables with
+irregular layouts, since in regular pivot tables every cell is related
+to every variable.}
+
+\item{\code{variableValues}}{A list specifying the variable names and values to find,
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
+Specify "**" as the variable value to match totals for the specified variable.
+Specify "!*" as the variable value to match non-totals for the specified variable.
+NB: The totals/non-totals criteria above won’t work when visual totals are used.}
+
+\item{\code{totals}}{A word that specifies how totals are matched (overrides the finer
+settings above) - must be one of "include" (default), "exclude" or "only".}
+
+\item{\code{calculationNames}}{A character vector specifying the name/names of the
+calculations to find.}
+
+\item{\code{atLevels}}{An integer vector constraining the levels in the hierarchy to
+search.}
+
+\item{\code{minChildCount}}{Match only data groups with this minimum number of children.}
+
+\item{\code{maxChildCount}}{Match only data groups with this maximum number of children.}
+
+\item{\code{emptyGroups}}{A word that specifies how empty groups are matched -
+must be one of "include", "exclude" (default) or "only".}
+
+\item{\code{outlineGroups}}{A word that specifies how outline cells are matched -
+must be one of "include", "exclude" (default) or "only".}
+
+\item{\code{outlineLinkedGroupExists}}{`TRUE` to match only groups where the related
+outline child group still exists.  `FALSE` to match only groups where the related
+outline child group no longer exists.}
+
+\item{\code{includeDescendantGroups}}{Default `FALSE`.  Specify true to also return
+all descendants of data groups that match the specified criteria.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of data groups matching the specified criteria.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findColumnDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-findColumnDataGroups}{}}}
+\subsection{Method \code{findColumnDataGroups()}}{
+Find column data groups that match specified criteria.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$findColumnDataGroups(
+  matchMode = "simple",
+  variableNames = NULL,
+  variableValues = NULL,
+  totals = "include",
+  calculationNames = NULL,
+  atLevels = NULL,
+  minChildCount = NULL,
+  maxChildCount = NULL,
+  emptyGroups = "exclude",
+  includeDescendantGroups = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{matchMode}}{Either "simple" (default) or "combinations".
+"simple" is used when matching only one variable-value, multiple
+variable-value combinations are effectively logical "OR".
+"combinations" is used when matching for combinations of variable
+values, multiple variable-value combinations are effectively
+logical "AND".  A child group is viewed as having the variable-value
+filters of itself and it's parent/ancestors, e.g.
+`list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
+would return the "DMU" data group underneath "Express Passenger".
+See the "Finding and Formatting" vignette for graphical examples.}
+
+\item{\code{variableNames}}{A character vector specifying the name/names of the
+variables to find.  This is useful generally only in pivot tables with
+irregular layouts, since in regular pivot tables every cell is related
+to every variable.}
+
+\item{\code{variableValues}}{A list specifying the variable names and values to find,
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
+Specify "**" as the variable value to match totals for the specified variable.
+Specify "!*" as the variable value to match non-totals for the specified variable.
+NB: The totals/non-totals criteria above won’t work when visual totals are used.}
+
+\item{\code{totals}}{A word that specifies how totals are matched (overrides the finer
+settings above) - must be one of "include" (default), "exclude" or "only".}
+
+\item{\code{calculationNames}}{A character vector specifying the name/names of the
+calculations to find.}
+
+\item{\code{atLevels}}{An integer vector constraining the levels in the hierarchy to
+search.}
+
+\item{\code{minChildCount}}{Match only data groups with this minimum number of children.}
+
+\item{\code{maxChildCount}}{Match only data groups with this maximum number of children.}
+
+\item{\code{emptyGroups}}{A word that specifies how empty groups are matched -
+must be one of "include", "exclude" (default) or "only".}
+
+\item{\code{includeDescendantGroups}}{Default `FALSE`.  Specify true to also return
+all descendants of data groups that match the specified criteria.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of data groups matching the specified criteria.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getEmptyRows"></a>}}
+\if{latex}{\out{\hypertarget{method-getEmptyRows}{}}}
+\subsection{Method \code{getEmptyRows()}}{
+Retrieve row numbers for rows where all cells are empty.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getEmptyRows(
+  NAasEmpty = TRUE,
+  zeroAsEmpty = FALSE,
+  zeroTolerance = 1e-06,
+  includeOutlineRows = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{NAasEmpty}}{`TRUE` (default) specifies that `NA` is treated as empty.}
+
+\item{\code{zeroAsEmpty}}{`TRUE` specifies that zero is treated as empty,
+default `FALSE`.}
+
+\item{\code{zeroTolerance}}{The tolerance for zero comparisons, default 0.000001.}
+
+\item{\code{includeOutlineRows}}{`TRUE` to also examine outline rows, default `FALSE`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+`NULL` cell values are always regarded as empty.
+}
+
+\subsection{Returns}{
+An integer vector of row numbers.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getEmptyColumns"></a>}}
+\if{latex}{\out{\hypertarget{method-getEmptyColumns}{}}}
+\subsection{Method \code{getEmptyColumns()}}{
+Retrieve column numbers for columns where all cells are empty.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getEmptyColumns(
+  NAasEmpty = TRUE,
+  zeroAsEmpty = FALSE,
+  zeroTolerance = 1e-06
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{NAasEmpty}}{`TRUE` (default) specifies that `NA` is treated as empty.}
+
+\item{\code{zeroAsEmpty}}{`TRUE` specifies that zero is treated as empty,
+default `FALSE`.}
+
+\item{\code{zeroTolerance}}{The tolerance for zero comparisons, default 0.000001.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+`NULL` cell values are always regarded as empty.
+}
+
+\subsection{Returns}{
+An integer vector of column numbers.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCell"></a>}}
+\if{latex}{\out{\hypertarget{method-getCell}{}}}
+\subsection{Method \code{getCell()}}{
+Get the cell at the specified row and column coordinates in the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getCell(r = NULL, c = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{r}}{Row number of the cell to retrieve.}
+
+\item{\code{c}}{Column number of the cell to retrieve.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+The row and column numbers refer only to the cells in the body of the pivot
+table, i.e. row and column headings are excluded, e.g. row 1 is the first
+row of cells underneath the column headings.
+}
+
+\subsection{Returns}{
+A `PivotCell` object representing the cell.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCells"></a>}}
+\if{latex}{\out{\hypertarget{method-getCells}{}}}
+\subsection{Method \code{getCells()}}{
+Retrieve cells by a combination of row and/or column numbers.
+See the "Finding and Formatting" vignette for graphical examples.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getCells(
+  specifyCellsAsList = TRUE,
+  rowNumbers = NULL,
+  columnNumbers = NULL,
+  cellCoordinates = NULL,
+  excludeEmptyCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{specifyCellsAsList}}{`TRUE` to specify how cells are retrieved.
+Default `TRUE`. More information is provided in the details section.}
+
+\item{\code{rowNumbers}}{A vector of row numbers that specify the rows or
+cells to retrieve.}
+
+\item{\code{columnNumbers}}{A vector of row numbers that specify the columns
+or cells to retrieve.}
+
+\item{\code{cellCoordinates}}{A list of two-element vectors that specify the
+coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.}
+
+\item{\code{excludeEmptyCells}}{`TRUE` (default) to also search empty cells.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+when `specifyCellsAsList=TRUE` (the default):
+Get one or more rows by specifying the row numbers as a vector as
+the rowNumbers argument and leaving the columnNumbers argument set
+to the default value of `NULL`, or
+Get one or more columns by specifying the column numbers as a vector
+as the columnNumbers argument and leaving the rowNumbers argument
+set to the default value of `NULL`, or
+Get one or more individual cells by specifying the cellCoordinates
+argument as a list of vectors of length 2, where each element in the
+list is the row and column number of one cell,
+e.g. `list(c(1, 2), c(3, 4))` specifies two cells, the first located
+at row 1, column 2 and the second located at row 3, column 4.
+When `specifyCellsAsList=FALSE`:
+Get one or more rows by specifying the row numbers as a vector as the
+rowNumbers argument and leaving the columnNumbers argument set to the
+default value of `NULL`, or
+Get one or more columns by specifying the column numbers as a vector
+as the columnNumbers argument and leaving the rowNumbers argument set
+to the default value of `NULL`, or
+Get one or more cells by specifying the row and column numbers as vectors
+for the rowNumbers and columnNumbers arguments, or
+a mixture of the above, where for entire rows/columns the element in the
+other vector is set to `NA`, e.g. to retrieve whole rows, specify the row
+numbers as the rowNumbers but set the corresponding elements in the
+columnNumbers vector to `NA`.
+}
+
+\subsection{Returns}{
+A list of `PivotCell` objects.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findCells"></a>}}
+\if{latex}{\out{\hypertarget{method-findCells}{}}}
+\subsection{Method \code{findCells()}}{
+Find cells matching specified criteria.
+See the "Finding and Formatting" vignette for graphical examples.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$findCells(
+  variableNames = NULL,
+  variableValues = NULL,
+  totals = "include",
+  calculationNames = NULL,
+  minValue = NULL,
+  maxValue = NULL,
+  exactValues = NULL,
+  includeNull = TRUE,
+  includeNA = TRUE,
+  emptyCells = "exclude",
+  outlineCells = "exclude"
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableNames}}{A character vector specifying the name/names of the
+variables to find.  This is useful generally only in pivot tables with
+irregular layouts, since in regular pivot tables every cell is related
+to every variable.}
+
+\item{\code{variableValues}}{A list specifying the variable names and values to find,
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
+Specify "**" as the variable value to match totals for the specified variable.
+Specify "!*" as the variable value to match non-totals for the specified variable.
+NB: The totals/non-totals criteria above won’t work when visual totals are used.}
+
+\item{\code{totals}}{A word that specifies how totals are matched (overrides the finer
+settings above) - must be one of "include" (default), "exclude" or "only".}
+
+\item{\code{calculationNames}}{A character vector specifying the name/names of the
+calculations to find.}
+
+\item{\code{minValue}}{A numerical value specifying a minimum value threshold.}
+
+\item{\code{maxValue}}{A numerical value specifying a maximum value threshold.}
+
+\item{\code{exactValues}}{A vector or list specifying a set of allowed values.}
+
+\item{\code{includeNull}}{specify TRUE to include `NULL` in the matched cells,
+FALSE to exclude `NULL` values.}
+
+\item{\code{includeNA}}{specify TRUE to include `NA` in the matched cells,
+FALSE to exclude `NA` values.}
+
+\item{\code{emptyCells}}{A word that specifies how empty cells are matched -
+must be one of "include", "exclude" (default) or "only".}
+
+\item{\code{outlineCells}}{A word that specifies how outline cells are matched -
+must be one of "include", "exclude" (default) or "only".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of `PivotCell` objects.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findGroupColumnNumbers"></a>}}
+\if{latex}{\out{\hypertarget{method-findGroupColumnNumbers}{}}}
+\subsection{Method \code{findGroupColumnNumbers()}}{
+Find the column numbers associated with a specific data group.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$findGroupColumnNumbers(group = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{group}}{A `PivotDataGroup` in the column data groups (i.e. a
+column heading).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A vector of column numbers related to the specified group.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findGroupRowNumbers"></a>}}
+\if{latex}{\out{\hypertarget{method-findGroupRowNumbers}{}}}
+\subsection{Method \code{findGroupRowNumbers()}}{
+Find the row numbers associated with a specific data group.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$findGroupRowNumbers(group = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{group}}{A `PivotDataGroup` in the row data groups (i.e. a
+row heading).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A vector of row numbers related to the specified group.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeColumn"></a>}}
+\if{latex}{\out{\hypertarget{method-removeColumn}{}}}
+\subsection{Method \code{removeColumn()}}{
+Remove a column from the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$removeColumn(c = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{c}}{The column number.  The first column is column 1, excluding the
+column(s) associated with row-headings.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This method removes both the related column group and cells.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeColumns"></a>}}
+\if{latex}{\out{\hypertarget{method-removeColumns}{}}}
+\subsection{Method \code{removeColumns()}}{
+Remove multiple column from the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$removeColumns(columnNumbers = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{columnNumbers}}{The column numbers.  The first column is column 1, excluding the
+column(s) associated with row-headings.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This method removes both the related column groups and cells.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeEmptyColumns"></a>}}
+\if{latex}{\out{\hypertarget{method-removeEmptyColumns}{}}}
+\subsection{Method \code{removeEmptyColumns()}}{
+Remove columns where all cells are empty.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$removeEmptyColumns(
+  NAasEmpty = TRUE,
+  zeroAsEmpty = FALSE,
+  zeroTolerance = 1e-06
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{NAasEmpty}}{`TRUE` (default) specifies that `NA` is treated as empty.}
+
+\item{\code{zeroAsEmpty}}{`TRUE` specifies that zero is treated as empty,
+default `FALSE`.}
+
+\item{\code{zeroTolerance}}{The tolerance for zero comparisons, default 0.000001.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+`NULL` cell values are always regarded as empty.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeRow"></a>}}
+\if{latex}{\out{\hypertarget{method-removeRow}{}}}
+\subsection{Method \code{removeRow()}}{
+Remove a row from the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$removeRow(r = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{r}}{The row number.  The first row is row 1, excluding the
+row(s) associated with column-headings.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This method removes both the related row group and cells.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeRows"></a>}}
+\if{latex}{\out{\hypertarget{method-removeRows}{}}}
+\subsection{Method \code{removeRows()}}{
+Remove multiple rows from the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$removeRows(rowNumbers = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{rowNumbers}}{The row numbers.  The first row is row 1, excluding the
+rows(s) associated with column-headings.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This method removes both the related row groups and cells.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeEmptyRows"></a>}}
+\if{latex}{\out{\hypertarget{method-removeEmptyRows}{}}}
+\subsection{Method \code{removeEmptyRows()}}{
+Remove rows where all cells are empty.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$removeEmptyRows(
+  NAasEmpty = TRUE,
+  zeroAsEmpty = FALSE,
+  zeroTolerance = 1e-06,
+  includeOutlineRows = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{NAasEmpty}}{`TRUE` (default) specifies that `NA` is treated as empty.}
+
+\item{\code{zeroAsEmpty}}{`TRUE` specifies that zero is treated as empty,
+default `FALSE`.}
+
+\item{\code{zeroTolerance}}{The tolerance for zero comparisons, default 0.000001.}
+
+\item{\code{includeOutlineRows}}{`TRUE` to also remove empty outline rows,
+default `FALSE`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+`NULL` cell values are always regarded as empty.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
+\subsection{Method \code{print()}}{
+Outputs a plain text representation of the pivot table to the console or
+returns a character representation of the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$print(asCharacter = FALSE, showRowGroupHeaders = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{asCharacter}}{`FALSE`(default) outputs to the console, specify `TRUE`
+to instead return a character value (does not output to console).}
+
+\item{\code{showRowGroupHeaders}}{`TRUE` to include the row group headers in the
+output, default `FALSE`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Plain text representation of the pivot table.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asMatrix"></a>}}
+\if{latex}{\out{\hypertarget{method-asMatrix}{}}}
+\subsection{Method \code{asMatrix()}}{
+Convert the pivot table to a matrix, where the data group headings
+are included in the body of the matrix.  This method tends to produce
+a character matrix.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$asMatrix(
+  includeHeaders = TRUE,
+  repeatHeaders = FALSE,
+  rawValue = FALSE,
+  showRowGroupHeaders = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{includeHeaders}}{`TRUE` (default) to include the headings in the
+body of the matrix.  Specifying `FALSE` omits the headings.}
+
+\item{\code{repeatHeaders}}{`FALSE` (default) only outputs the first occurance of each
+header. Specify `TRUE` to repeat the headings.}
+
+\item{\code{rawValue}}{`FALSE` (default) outputs the formatted (character) values.
+Specify `TRUE` to output the raw cell values.}
+
+\item{\code{showRowGroupHeaders}}{`TRUE` to include the row group headers in the
+matrix, default `FALSE`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+The newer `asDataMatrix()` tends to produce more a useful matrix.
+See the "Outputs" vignette for a comparison of outputs.
+}
+
+\subsection{Returns}{
+A matrix.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asDataMatrix"></a>}}
+\if{latex}{\out{\hypertarget{method-asDataMatrix}{}}}
+\subsection{Method \code{asDataMatrix()}}{
+Convert the pivot table to a matrix, where the data group headings
+are included as row/column headings in the matrix.
+This method tends to produce a numeric matrix.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$asDataMatrix(
+  includeHeaders = TRUE,
+  rawValue = TRUE,
+  separator = " "
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{includeHeaders}}{`TRUE` (default) to include the headings in the matrix.
+Specifying `FALSE` omits the headings.}
+
+\item{\code{rawValue}}{`TRUE` (default) outputs the raw cell values.
+Specify `FALSE` to output the formatted (character) values.}
+
+\item{\code{separator}}{Specifies the character value used to concatenate data
+group captions where multiple levels exist in the data group hierarchy.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+Where there are multiple levels in a data group hierarchy, the captions are
+concatenated to form the row/column headings in the matrix.
+See the "Outputs" vignette for a comparison of outputs.
+}
+
+\subsection{Returns}{
+A matrix.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-asDataFrame}{}}}
+\subsection{Method \code{asDataFrame()}}{
+Convert the pivot table to a data frame, combining multiple levels of
+headings with the specified separator and/or exporting the row groups
+as columns in the data frame.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$asDataFrame(
+  separator = " ",
+  stringsAsFactors = default.stringsAsFactors(),
+  forceNumeric = FALSE,
+  rowGroupsAsColumns = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{separator}}{Specifies the character value used to concatenate data
+group captions where multiple levels exist in the data group hierarchy.}
+
+\item{\code{stringsAsFactors}}{Specify `TRUE`to convert strings to factors,
+default `default.stringsAsFactors()`.}
+
+\item{\code{forceNumeric}}{Specify `TRUE` to force the conversion of cell values
+to a numeric value, default `FALSE`.}
+
+\item{\code{rowGroupsAsColumns}}{Specify `TRUE` to include the row groups as
+additional columns in the data frame.  Default `FALSE`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+See the "Outputs" vignette for more details and examples
+}
+
+\subsection{Returns}{
+A data frame.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asTidyDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-asTidyDataFrame}{}}}
+\subsection{Method \code{asTidyDataFrame()}}{
+Convert the pivot table to tidy data frame, where each cell in the body of
+the pivot table becomes one row in the data frame.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$asTidyDataFrame(
+  includeGroupCaptions = TRUE,
+  includeGroupValues = TRUE,
+  separator = " ",
+  stringsAsFactors = default.stringsAsFactors(),
+  excludeEmptyCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{includeGroupCaptions}}{`TRUE` (default) to include the data group
+captions as columns in the data frame.}
+
+\item{\code{includeGroupValues}}{`TRUE` (default) to include the data group
+values as columns in the data frame.}
+
+\item{\code{separator}}{Specifies the character value used to concatendate
+filter values where multiple values exist in a filter.}
+
+\item{\code{stringsAsFactors}}{Specify `TRUE`to convert strings to factors,
+default `default.stringsAsFactors()`.}
+
+\item{\code{excludeEmptyCells}}{Specify `FALSE` to also include rows for
+empty cells in the data frame, default `TRUE`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+See the "Outputs" vignette for more details and examples
+}
+
+\subsection{Returns}{
+A data frame.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getMerges"></a>}}
+\if{latex}{\out{\hypertarget{method-getMerges}{}}}
+\subsection{Method \code{getMerges()}}{
+Generate a list of the merged cell information arising from the data
+group hierarchies.
+This is an internal method used to support rendering the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getMerges(axis = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{axis}}{Either "row" or "column".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list containing details of the merged cells.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asBasicTable"></a>}}
+\if{latex}{\out{\hypertarget{method-asBasicTable}{}}}
+\subsection{Method \code{asBasicTable()}}{
+Convert the pivot table to a `basictabler` table (from the `basictabler`
+R package) which allows further custom manipulation of the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$asBasicTable(
+  exportOptions = NULL,
+  compatibility = NULL,
+  showRowGroupHeaders = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{exportOptions}}{A list of additional export options - see the
+"A1. Appendix" for details.}
+
+\item{\code{compatibility}}{A list containing compatibility options to force
+legacy behaviours in the resulting `basictabler` table.}
+
+\item{\code{showRowGroupHeaders}}{`TRUE` to include the row group headers in the
+matrix, default `FALSE`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+See the "Outputs" vignette for more details and examples
+}
+
+\subsection{Returns}{
+A `basictabler` table.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCss"></a>}}
+\if{latex}{\out{\hypertarget{method-getCss}{}}}
+\subsection{Method \code{getCss()}}{
+Get the CSS declarations for the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getCss(styleNamePrefix = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleNamePrefix}}{A character variable specifying a prefix for all named
+CSS styles, to avoid style name collisions where multiple pivot tables exist.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+See the "Outputs" vignette for more details and examples.
+}
+
+\subsection{Returns}{
+A character value containing the CSS style declaration.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getHtml"></a>}}
+\if{latex}{\out{\hypertarget{method-getHtml}{}}}
+\subsection{Method \code{getHtml()}}{
+Generate a HTML representation of the pivot table, optionally including
+additional detail for debugging purposes.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getHtml(
+  styleNamePrefix = NULL,
+  includeHeaderValues = FALSE,
+  includeRCFilters = FALSE,
+  includeCalculationFilters = FALSE,
+  includeWorkingData = FALSE,
+  includeEvaluationFilters = FALSE,
+  includeCalculationNames = FALSE,
+  includeRawValue = FALSE,
+  includeTotalInfo = FALSE,
+  exportOptions = NULL,
+  showRowGroupHeaders = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleNamePrefix}}{A character variable specifying a prefix for all named
+CSS styles, to avoid style name collisions where multiple pivot tables exist.}
+
+\item{\code{includeHeaderValues}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeRCFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeCalculationFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeWorkingData}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeEvaluationFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeCalculationNames}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeRawValue}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeTotalInfo}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{exportOptions}}{A list of additional export options - see the
+"A1. Appendix" for details.}
+
+\item{\code{showRowGroupHeaders}}{Default `FALSE`, specify `TRUE` to render the row
+group headings.  See the "Data Groups" vignette for details.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+See the "Outputs" vignette for more details and examples.
+}
+
+\subsection{Returns}{
+A list containing HTML tags from the `htmltools` package.
+Convert this to a character variable using `as.character()`.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-saveHtml"></a>}}
+\if{latex}{\out{\hypertarget{method-saveHtml}{}}}
+\subsection{Method \code{saveHtml()}}{
+Save a HTML representation of the pivot table to file, optionally including
+additional detail for debugging purposes.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$saveHtml(
+  filePath = NULL,
+  fullPageHTML = TRUE,
+  styleNamePrefix = NULL,
+  includeHeaderValues = FALSE,
+  includeRCFilters = FALSE,
+  includeCalculationFilters = FALSE,
+  includeWorkingData = FALSE,
+  includeEvaluationFilters = FALSE,
+  includeCalculationNames = FALSE,
+  includeRawValue = FALSE,
+  includeTotalInfo = FALSE,
+  exportOptions = NULL,
+  showRowGroupHeaders = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filePath}}{The file to save the HTML to.}
+
+\item{\code{fullPageHTML}}{`TRUE` (default) includes basic HTML around the pivot
+table HTML so that the result file is a valid HTML file.}
+
+\item{\code{styleNamePrefix}}{A character variable specifying a prefix for all named
+CSS styles, to avoid style name collisions where multiple pivot tables exist.}
+
+\item{\code{includeHeaderValues}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeRCFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeCalculationFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeWorkingData}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeEvaluationFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeCalculationNames}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeRawValue}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeTotalInfo}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{exportOptions}}{A list of additional export options - see the
+"A1. Appendix" for details.}
+
+\item{\code{showRowGroupHeaders}}{Default `FALSE`, specify `TRUE` to render the row
+group headings.  See the "Data Groups" vignette for details.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+See the "Outputs" vignette for more details and examples.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-renderPivot"></a>}}
+\if{latex}{\out{\hypertarget{method-renderPivot}{}}}
+\subsection{Method \code{renderPivot()}}{
+Render a HTML representation of the pivot table as an HTML widget,
+optionally including additional detail for debugging purposes.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$renderPivot(
+  width = NULL,
+  height = NULL,
+  styleNamePrefix = NULL,
+  includeHeaderValues = FALSE,
+  includeRCFilters = FALSE,
+  includeCalculationFilters = FALSE,
+  includeWorkingData = FALSE,
+  includeEvaluationFilters = FALSE,
+  includeCalculationNames = FALSE,
+  includeRawValue = FALSE,
+  includeTotalInfo = FALSE,
+  exportOptions = NULL,
+  showRowGroupHeaders = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{width}}{The width of the widget.}
+
+\item{\code{height}}{The height of the widget.}
+
+\item{\code{styleNamePrefix}}{A character variable specifying a prefix for all named
+CSS styles, to avoid style name collisions where multiple pivot tables exist.}
+
+\item{\code{includeHeaderValues}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeRCFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeCalculationFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeWorkingData}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeEvaluationFilters}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeCalculationNames}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeRawValue}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{includeTotalInfo}}{Default `FALSE`, specify `TRUE` to render
+this debug information.}
+
+\item{\code{exportOptions}}{A list of additional export options - see the
+"A1. Appendix" for details.}
+
+\item{\code{showRowGroupHeaders}}{Default `FALSE`, specify `TRUE` to render the row
+group headings.  See the "Data Groups" vignette for details.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+See the "Outputs" vignette for more details and examples.
+}
+
+\subsection{Returns}{
+A HTML widget from the `htmlwidgets` package.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getLatex"></a>}}
+\if{latex}{\out{\hypertarget{method-getLatex}{}}}
+\subsection{Method \code{getLatex()}}{
+Generate a Latex representation of the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$getLatex(
+  caption = NULL,
+  label = NULL,
+  fromRow = NULL,
+  toRow = NULL,
+  fromColumn = NULL,
+  toColumn = NULL,
+  boldHeadings = FALSE,
+  italicHeadings = FALSE,
+  exportOptions = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{caption}}{The caption to appear above the table.}
+
+\item{\code{label}}{The label to use when referring to the table elsewhere in
+the document}
+
+\item{\code{fromRow}}{The row number to render from.}
+
+\item{\code{toRow}}{The row number to render to.}
+
+\item{\code{fromColumn}}{The column number to render from.}
+
+\item{\code{toColumn}}{The column number to render to.}
+
+\item{\code{boldHeadings}}{Default `FALSE`, specify `TRUE` to render headings
+in bold.}
+
+\item{\code{italicHeadings}}{Default `FALSE`, specify `TRUE` to render headings
+in italic.}
+
+\item{\code{exportOptions}}{A list of additional export options - see the
+"A1. Appendix" for details.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character variable containing the Latex representation of
+the pivot table.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-writeToExcelWorksheet"></a>}}
+\if{latex}{\out{\hypertarget{method-writeToExcelWorksheet}{}}}
+\subsection{Method \code{writeToExcelWorksheet()}}{
+Write the pivot table into the specified workbook and worksheet at
+the specified row-column location.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$writeToExcelWorksheet(
+  wb = NULL,
+  wsName = NULL,
+  topRowNumber = NULL,
+  leftMostColumnNumber = NULL,
+  outputHeadingsAs = "formattedValueAsText",
+  outputValuesAs = "rawValue",
+  applyStyles = TRUE,
+  mapStylesFromCSS = TRUE,
+  exportOptions = NULL,
+  showRowGroupHeaders = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{wb}}{A `Workbook` object representing the Excel file being written
+to.}
+
+\item{\code{wsName}}{A character value specifying the name of the worksheet to
+write to.}
+
+\item{\code{topRowNumber}}{An integer value specifying the row number in the
+Excel worksheet  to write the pivot table.}
+
+\item{\code{leftMostColumnNumber}}{An integer value specifying the column number
+in the Excel worksheet to write the pivot table.}
+
+\item{\code{outputHeadingsAs}}{Must be one of "rawValue",
+"formattedValueAsText" (default) or "formattedValueAsNumber" to specify
+how data groups are written into the Excel sheet.}
+
+\item{\code{outputValuesAs}}{Must be one of "rawValue" (default),
+"formattedValueAsText" or "formattedValueAsNumber" to specify
+how cell values are written into the Excel sheet.}
+
+\item{\code{applyStyles}}{Default `TRUE` to write styling information to the cell.}
+
+\item{\code{mapStylesFromCSS}}{Default `TRUE` to automatically convert CSS style
+declarations to their Excel equivalents.}
+
+\item{\code{exportOptions}}{A list of additional export options - see the
+"A1. Appendix" for details.}
+
+\item{\code{showRowGroupHeaders}}{Default `FALSE`, specify `TRUE` to write row
+group headers.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-trace"></a>}}
+\if{latex}{\out{\hypertarget{method-trace}{}}}
+\subsection{Method \code{trace()}}{
+Capture a call for tracing purposes.
+This is an internal method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$trace(methodName, desc, detailList = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{methodName}}{The name of the method being invoked.}
+
+\item{\code{desc}}{Short description of method call.}
+
+\item{\code{detailList}}{A list containing detail such as parameter values.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-showBatchInfo"></a>}}
+\if{latex}{\out{\hypertarget{method-showBatchInfo}{}}}
+\subsection{Method \code{showBatchInfo()}}{
+Output batch information to the console.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$showBatchInfo()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of the pivot table as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of the pivot table as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-viewJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-viewJSON}{}}}
+\subsection{Method \code{viewJSON()}}{
+Use the `listviewer` package to view the pivot table as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$viewJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-finalize"></a>}}
+\if{latex}{\out{\hypertarget{method-finalize}{}}}
+\subsection{Method \code{finalize()}}{
+Clean-up the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$finalize()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

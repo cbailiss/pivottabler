@@ -3,43 +3,43 @@
 \docType{class}
 \name{PivotOpenXlsxStyle}
 \alias{PivotOpenXlsxStyle}
-\title{A class that specifies Excel styling as used by the openxlsx package.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that help
-  define styles.
+\title{R6 class that specifies Excel styling as used by the openxlsx package.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotOpenXlsxStyle class specifies the styling for cells in an
+The `PivotOpenXlsxStyle` class specifies the styling for cells in an
 Excel worksheet.
 }
-\section{Fields}{
-
+\examples{
+# PivotOpenXlsxStyle objects are created by the PivotOpenXlsxRenderer class.
+# See that class for details.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-
 \item{\code{baseStyleName}}{The name of the base style in the pivot table.}
 
-\item{\code{isBaseStyle}}{TRUE when this style is the equivalent of a named style in
-the pivot table, FALSE if this style has additional settings over and above
+\item{\code{isBaseStyle}}{`TRUE` when this style is the equivalent of a named style in
+the pivot table, `FALSE` if this style has additional settings over and above
 the base style of the same name.}
 
 \item{\code{fontName}}{The name of the font (single font name, not a CSS style
 list).}
 
-\item{\code{fontSize}}{The size of the font (units: point).}
+\item{\code{fontSize}}{The size of the font (units: point, 4-72).}
 
-\item{\code{bold}}{TRUE if text is bold.}
+\item{\code{bold}}{`TRUE` if text is bold.}
 
-\item{\code{italic}}{TRUE if text is italic.}
+\item{\code{italic}}{`TRUE` if text is italic.}
 
-\item{\code{underline}}{TRUE if text is underlined.}
+\item{\code{underline}}{`TRUE` if text is underlined.}
 
-\item{\code{strikethrough}}{TRUE if text has a line through it.}
+\item{\code{strikethrough}}{`TRUE` if text has a line through it.}
 
-\item{\code{superscript}}{TRUE if text is small and raised.}
+\item{\code{superscript}}{`TRUE` if text is small and raised.}
 
-\item{\code{subscript}}{TRUE if text is small and lowered.}
+\item{\code{subscript}}{`TRUE` if text is small and lowered.}
 
 \item{\code{fillColor}}{The background colour for the cell (as a hex value, e.g.
 #00FF00).}
@@ -50,11 +50,14 @@ list).}
 
 \item{\code{vAlign}}{The vertical alignment of the text:  top, middle or bottom.}
 
-\item{\code{wrapText}}{TRUE if the text is allowed to wrap onto multiple lines.}
+\item{\code{wrapText}}{`TRUE` if the text is allowed to wrap onto multiple lines.}
 
-\item{\code{textRotation}}{The rotation angle of the text or 255 for vertical.}
+\item{\code{textRotation}}{The rotation angle of the text (0 to 359) or 255 for
+vertical.}
 
-\item{\code{border}}{A list (with elements style and color) specifying the border
+\item{\code{indent}}{Horizontal indentation of cell contents (0 to 250.).}
+
+\item{\code{borderAll}}{A list (with elements style and color) specifying the border
 settings for all four sides of each cell at once.}
 
 \item{\code{borderLeft}}{A list (with elements style and color) specifying the
@@ -72,40 +75,342 @@ border settings for the bottom border of each cell.}
 \item{\code{valueFormat}}{The Excel formatting applied to the field value.  One of
 the following values: GENERAL, NUMBER, CURRENCY, ACCOUNTING, DATE,
 LONGDATE, TIME, PERCENTAGE, FRACTION, SCIENTIFIC, TEXT, COMMA. Or for
-dates/datetimes, a combination of d, m, y. Or for numeric values, use 0.00
-etc.}
+dates/datetimes, a combination of d, m, y. Or for numeric values, use
+a numeric format code such as 0.00, #,###.00, etc}
 
-\item{\code{minColumnWidth}}{The minimum width of this column.}
+\item{\code{minColumnWidth}}{The minimum width of this column (0 to 255).}
 
-\item{\code{minRowHeight}}{The minimum height of this row.}
-}}
+\item{\code{minRowHeight}}{The minimum height of this row (0 to 400).}
 
+\item{\code{openxlsxStyle}}{The style object returned from `openxlsx::createStyle()`.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotOpenXlsxStyle$new()}}
+\item \href{#method-isBasicStyleNameMatch}{\code{PivotOpenXlsxStyle$isBasicStyleNameMatch()}}
+\item \href{#method-isFullStyleDetailMatch}{\code{PivotOpenXlsxStyle$isFullStyleDetailMatch()}}
+\item \href{#method-createOpenXslxStyle}{\code{PivotOpenXlsxStyle$createOpenXslxStyle()}}
+\item \href{#method-asList}{\code{PivotOpenXlsxStyle$asList()}}
+\item \href{#method-asJSON}{\code{PivotOpenXlsxStyle$asJSON()}}
+\item \href{#method-asString}{\code{PivotOpenXlsxStyle$asString()}}
+\item \href{#method-clone}{\code{PivotOpenXlsxStyle$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotOpenXlsxStyle` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$new(
+  parentPivot,
+  baseStyleName = NULL,
+  isBaseStyle = NULL,
+  fontName = NULL,
+  fontSize = NULL,
+  bold = NULL,
+  italic = NULL,
+  underline = NULL,
+  strikethrough = NULL,
+  superscript = NULL,
+  subscript = NULL,
+  fillColor = NULL,
+  textColor = NULL,
+  hAlign = NULL,
+  vAlign = NULL,
+  wrapText = NULL,
+  textRotation = NULL,
+  indent = NULL,
+  borderAll = NULL,
+  borderLeft = NULL,
+  borderRight = NULL,
+  borderTop = NULL,
+  borderBottom = NULL,
+  valueFormat = NULL,
+  minColumnWidth = NULL,
+  minRowHeight = NULL
+)}\if{html}{\out{</div>}}
+}
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new Excel style, specifying the field
-  values documented above.}
+\item{\code{parentPivot}}{The pivot table that this `PivotOpenXlsxStyle`
+instance belongs to.}
 
-  \item{\code{isBasicStyleNameMatch(baseStyleName=NULL)}}{Find a matching
-  base style by name.}
-  \item{\code{isFullStyleDetailMatch = function(baseStyleName=NULL,
-  isBaseStyle=NULL, fontName=NULL, fontSize=NULL, bold=NULL, italic=NULL,
-  underline=NULL, strikethrough=NULL, superscript=NULL, subscript=NULL,
-  fillColor=NULL, textColor=NULL, hAlign=NULL, vAlign=NULL, wrapText=NULL,
-  textRotation=NULL, indent=NULL, borderAll=NULL, borderLeft=NULL,
-  borderRight=NULL, borderTop=NULL, borderBottom=NULL, valueFormat=NULL,
-  minColumnWidth=NULL, minRowHeight=NULL}}{Find a matching style matching on
-  all the attributes of the style.}
-  \item{\code{createOpenXslxStyle()}}{Create the openxlsx style.}
-  \item{\code{asList()}}{Get a list representation of this style.}
-  \item{\code{asJSON()}}{Get a JSON representation of this style.}
-  \item{\code{asString()}}{Get a text representation of this style.}
+\item{\code{baseStyleName}}{The name of the base style in the pivot table.}
+
+\item{\code{isBaseStyle}}{`TRUE` when this style is the equivalent of a named style in
+the pivot table, `FALSE` if this style has additional settings over and above
+the base style of the same name.}
+
+\item{\code{fontName}}{The name of the font (single font name, not a CSS style
+list).}
+
+\item{\code{fontSize}}{The size of the font (units: point, 4-72).}
+
+\item{\code{bold}}{`TRUE` if text is bold.}
+
+\item{\code{italic}}{`TRUE` if text is italic.}
+
+\item{\code{underline}}{`TRUE` if text is underlined.}
+
+\item{\code{strikethrough}}{`TRUE` if text has a line through it.}
+
+\item{\code{superscript}}{`TRUE` if text is small and raised.}
+
+\item{\code{subscript}}{`TRUE` if text is small and lowered.}
+
+\item{\code{fillColor}}{The background colour for the cell (as a hex value, e.g.
+#00FF00).}
+
+\item{\code{textColor}}{The color of the text (as a hex value).}
+
+\item{\code{hAlign}}{The horizontal alignment of the text:  left, center or right.}
+
+\item{\code{vAlign}}{The vertical alignment of the text:  top, middle or bottom.}
+
+\item{\code{wrapText}}{`TRUE` if the text is allowed to wrap onto multiple lines.}
+
+\item{\code{textRotation}}{The rotation angle of the text (0 to 359) or 255 for
+vertical.}
+
+\item{\code{indent}}{Horizontal indentation of cell contents (0 to 250.).}
+
+\item{\code{borderAll}}{A list (with elements style and color) specifying the border
+settings for all four sides of each cell at once.}
+
+\item{\code{borderLeft}}{A list (with elements style and color) specifying the
+border settings for the left border of each cell.}
+
+\item{\code{borderRight}}{A list (with elements style and color) specifying the
+border settings for the right border of each cell.}
+
+\item{\code{borderTop}}{A list (with elements style and color) specifying the border
+settings for the top border of each cell.}
+
+\item{\code{borderBottom}}{A list (with elements style and color) specifying the
+border settings for the bottom border of each cell.}
+
+\item{\code{valueFormat}}{The Excel formatting applied to the field value.  One of
+the following values: GENERAL, NUMBER, CURRENCY, ACCOUNTING, DATE,
+LONGDATE, TIME, PERCENTAGE, FRACTION, SCIENTIFIC, TEXT, COMMA. Or for
+dates/datetimes, a combination of d, m, y. Or for numeric values, use
+a numeric format code such as 0.00, #,###.00, etc}
+
+\item{\code{minColumnWidth}}{The minimum width of this column (0 to 255).}
+
+\item{\code{minRowHeight}}{The minimum height of this row (0 to 400).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotOpenXlsxStyle` object.
 }
 }
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-isBasicStyleNameMatch"></a>}}
+\if{latex}{\out{\hypertarget{method-isBasicStyleNameMatch}{}}}
+\subsection{Method \code{isBasicStyleNameMatch()}}{
+Test whether a style is a base style with the specified name.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$isBasicStyleNameMatch(baseStyleName = NULL)}\if{html}{\out{</div>}}
+}
 
-\examples{
-# PivotOpenXlsxStyle objects are created by the PivotOpenXlsxRenderer class.
-# See that class for details.
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{baseStyleName}}{The name of the style to match.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-isFullStyleDetailMatch"></a>}}
+\if{latex}{\out{\hypertarget{method-isFullStyleDetailMatch}{}}}
+\subsection{Method \code{isFullStyleDetailMatch()}}{
+Test whether a style has matching style attributes.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$isFullStyleDetailMatch(
+  baseStyleName = NULL,
+  isBaseStyle = NULL,
+  fontName = NULL,
+  fontSize = NULL,
+  bold = NULL,
+  italic = NULL,
+  underline = NULL,
+  strikethrough = NULL,
+  superscript = NULL,
+  subscript = NULL,
+  fillColor = NULL,
+  textColor = NULL,
+  hAlign = NULL,
+  vAlign = NULL,
+  wrapText = NULL,
+  textRotation = NULL,
+  indent = NULL,
+  borderAll = NULL,
+  borderLeft = NULL,
+  borderRight = NULL,
+  borderTop = NULL,
+  borderBottom = NULL,
+  valueFormat = NULL,
+  minColumnWidth = NULL,
+  minRowHeight = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{baseStyleName}}{The name of the base style in the pivot table.}
+
+\item{\code{isBaseStyle}}{`TRUE` when this style is the equivalent of a named style in
+the pivot table, `FALSE` if this style has additional settings over and above
+the base style of the same name.}
+
+\item{\code{fontName}}{The name of the font (single font name, not a CSS style
+list).}
+
+\item{\code{fontSize}}{The size of the font (units: point, 4-72).}
+
+\item{\code{bold}}{`TRUE` if text is bold.}
+
+\item{\code{italic}}{`TRUE` if text is italic.}
+
+\item{\code{underline}}{`TRUE` if text is underlined.}
+
+\item{\code{strikethrough}}{`TRUE` if text has a line through it.}
+
+\item{\code{superscript}}{`TRUE` if text is small and raised.}
+
+\item{\code{subscript}}{`TRUE` if text is small and lowered.}
+
+\item{\code{fillColor}}{The background colour for the cell (as a hex value, e.g.
+#00FF00).}
+
+\item{\code{textColor}}{The color of the text (as a hex value).}
+
+\item{\code{hAlign}}{The horizontal alignment of the text:  left, center or right.}
+
+\item{\code{vAlign}}{The vertical alignment of the text:  top, middle or bottom.}
+
+\item{\code{wrapText}}{`TRUE` if the text is allowed to wrap onto multiple lines.}
+
+\item{\code{textRotation}}{The rotation angle of the text (0 to 359) or 255 for
+vertical.}
+
+\item{\code{indent}}{Horizontal indentation of cell contents (0 to 250.).}
+
+\item{\code{borderAll}}{A list (with elements style and color) specifying the border
+settings for all four sides of each cell at once.}
+
+\item{\code{borderLeft}}{A list (with elements style and color) specifying the
+border settings for the left border of each cell.}
+
+\item{\code{borderRight}}{A list (with elements style and color) specifying the
+border settings for the right border of each cell.}
+
+\item{\code{borderTop}}{A list (with elements style and color) specifying the border
+settings for the top border of each cell.}
+
+\item{\code{borderBottom}}{A list (with elements style and color) specifying the
+border settings for the bottom border of each cell.}
+
+\item{\code{valueFormat}}{The Excel formatting applied to the field value.  One of
+the following values: GENERAL, NUMBER, CURRENCY, ACCOUNTING, DATE,
+LONGDATE, TIME, PERCENTAGE, FRACTION, SCIENTIFIC, TEXT, COMMA. Or for
+dates/datetimes, a combination of d, m, y. Or for numeric values, use
+a numeric format code such as 0.00, #,###.00, etc}
+
+\item{\code{minColumnWidth}}{The minimum width of this column (0 to 255).}
+
+\item{\code{minRowHeight}}{The minimum height of this row (0 to 400).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+Base styles are compared on name only, otherwise the style attributes
+are compared.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-createOpenXslxStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-createOpenXslxStyle}{}}}
+\subsection{Method \code{createOpenXslxStyle()}}{
+Create an `openxlsx` style from this style definition.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$createOpenXslxStyle()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.  Retrieve the style using the `openxlsxStyle` property.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-asString}{}}}
+\subsection{Method \code{asString()}}{
+Return a representation of this object as a character value.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$asString()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A character summary of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

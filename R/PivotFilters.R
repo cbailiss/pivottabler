@@ -1,16 +1,44 @@
-#' A class that defines a set of filter conditions
+
+#' R6 class that defines a set of filter conditions.
 #'
-#' The PivotFilters class allows multiple filter conditions relating to
-#' different data frame columns to be combined, i.e. a PivotFilters object can
-#' contain multiple \code{\link{PivotFilter}} objects.
+#' @description
+#' The `PivotFilters` class allows multiple filter conditions relating to
+#' different data frame columns to be combined, i.e. a `PivotFilters` object
+#' typically contains multiple \code{\link{PivotFilter}} objects.
+#'
+#' @details
+#' As well as acting as a container for multiple filter conditions, the
+#' `PivotFilters` class also contains logic for combining filter.
+#' The `action` parameter in many of the methods controls how two filters
+#' are combined.
+#  Most common cases:
+#  (1) When working out the rowColFilters for each pivot table cell, the
+#      filters from the row and column leaf groups are combined using
+#      `action="intersect"`.
+#  (2) When combining the rowColFilters with calculation filters the
+#      action could be any of (in order of most typical)
+#      "intersect", "replace" or "union".
+#      "intersect" would apply additional restrictions, e.g. see the
+#      example in the Calculations vignette that has a measure for
+#      weekend trains only.
+#      "replace" would apply when doing things like percentage of row
+#      total calculations - again, see example in the calculations vignette
+#      "union" is probably much less likely (hard to envisage many
+#      situations when that would be needed).
+#  (3) In custom calculation functions, the action could be any of
+#      "intersect", "replace" or "union".
+#  NOTE: `pivottabler` does not allow complex conditions to be built up,
+#      such as ((A=X) or (B=Y)) and (C=2) since there is complex precedence
+#      involved and conditions like this are not typical of pivot tables.
+#      If they were really needed, a workaround would be to use a custom
+#      calculation function and include this logic in that function.
+#  See Appendix 2 vignette for many more complex calculation details.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
 #' @importFrom data.table data.table is.data.table
 #' @import jsonlite
 #' @export
-#' @return Object of \code{\link{R6Class}} with properties and methods that
-#'   define a set of filter conditions.
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' pt <- PivotTable$new()
@@ -26,53 +54,23 @@
 #' filters$setFilterValues(variableName="Product", values="Cadbury Dairy Milk
 #' Chocolate 100g")
 #' # filters now contains criteria for Year, Country and Product
-#' @field parentPivot Owning pivot table.
-#' @field count The number of PivotFilter objects in this PivotFilters object.
-#' @field filters The PivotFilter objects in this PivotFilters object.
-#' @field isALL If TRUE, this PivotFilters object matches all data.
-#' @field isNONE If TRUE, this PivotFilters object matches no data.
-#' @field filteredVariables A list of the variables that are filtered by this
-#'   PivotFilters object.
-#' @field filteredValues A list of the criteria values for each of the variables
-#'   filtered by this PivotFilters object.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new pivot filters object, specifying the field
-#'   values documented above.}
-#'
-#'   \item{\code{clearFilters()}}{Remove all filters.}
-#'   \item{\code{getFilter(variableName=NULL)}}{Find a filter with the specified
-#'   variable name.}
-#'   \item{\code{isFilterMatch(variableNames=NULL, variableValues=NULL)}}{Test
-#'   whether these filters match the specified criteria.}
-#'   \item{\code{setFilters(filters=NULL, action="replace")}}{Update the value of this
-#'   PivotFilters object with the filters from the specified PivotFilters
-#'   object, either unioning, intersecting or replacing the filter criteria.}
-#'   \item{\code{setFilter(filter=NULL, action="replace")}}{Update the value of this
-#'   PivotFilters object with the specified PivotFilter object, either unioning,
-#'   intersecting or replacing the filter criteria.}
-#'   \item{\code{setFilterValues(variableName=NULL, type=NULL, values=NULL,
-#'   action="replace")}}{Update the value of this PivotFilters object with the
-#'   specified criteria, either unioning, intersecting or replacing the filter
-#'   criteria.}
-#'   \item{\code{addFilter()}}{Directly add a PivotFilter object to this
-#'   PivotFilters object.}
-#'   \item{\code{getFilteredDataFrame(dataFrame=NULL)}}{Filters the specified
-#'   data frame and returns the results as another data frame.}
-#'   \item{\code{getCopy()}}{Get a copy of this set of filters.}
-#'   \item{\code{asList()}}{Get a list representation of this PivotFilters
-#'   object.}
-#'   \item{\code{asJSON()}}{Get a JSON representation of this PivotFilters
-#'   object.}
-#'   \item{\code{asString(includeVariableName=TRUE, seperator=", ")}}{Get a text
-#'   representation of this PivotFilters object.}
-#' }
 
 PivotFilters <- R6::R6Class("PivotFilters",
   public = list(
+
+    #' @description
+    #' Create a new `PivotFilters` object, optionally adding a filter.
+    #' @param parentPivot The pivot table that this `PivotFilters`
+    #' instance belongs to.
+    #' @param variableName The name of the column in the data frame that this filter
+    #' applies to.  Specify `NULL` to skip adding a filter.
+    #' @param type Must be either "ALL", "VALUES" or "NONE".  "VALUES" is the most
+    #' common type and means the data is filtered to a subset of values.  "ALL" means
+    #' there is no filtering, i.e. all values match.  "NONE" means there can be no
+    #' matching values/data.
+    #' @param values A single data value or a vector of multiple data values that
+    #' the filter will match on.
+    #' @return A new `PivotFilters` object.
     initialize = function(parentPivot=NULL, variableName=NULL, type="ALL", values=NULL) {
       if(parentPivot$argumentCheckMode > 0) {
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilters", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -88,12 +86,23 @@ PivotFilters <- R6::R6Class("PivotFilters",
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$new", "Created new Pivot Filters.")
     },
+
+    #' @description
+    #' Remove all filters from this `PivotFilters` object.
+    #' @return No return value.
     clearFilters = function() {
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$clearFilters", "Clearing filters...")
       private$p_filters <- list()
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$clearFilters", "Cleared filters.")
-      return(invisible(filter))
+      return(invisible())
     },
+
+    #' @description
+    #' Remove the filters for all variables except those specified.
+    #' @param variableNames A character vector specifying the variable names
+    #' to retain the filter criteria for. Filter criteria for all other variables
+    #' will be cleared.
+    #' @return No return value.
     keepOnlyFiltersFor = function(variableNames=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "keepOnlyFiltersFor", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -108,8 +117,15 @@ PivotFilters <- R6::R6Class("PivotFilters",
       }
       private$p_filters <- newlst
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$keepOnlyFiltersFor", "Kept filters only for.")
-      return(invisible(filter))
+      return(invisible())
     },
+
+    #' @description
+    #' Remove the filters for the specified variables.
+    #' @param variableNames A character vector specifying the variable names
+    #' for which the filter criteria will be cleared.  Filter criteria for all
+    #' other variables will be retained.
+    #' @return No return value.
     removeFiltersFor = function(variableNames=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "removeFiltersFor", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -124,8 +140,13 @@ PivotFilters <- R6::R6Class("PivotFilters",
       }
       private$p_filters <- newlst
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$removeFiltersFor", "Removed filters for.")
-      return(invisible(filter))
+      return(invisible())
     },
+
+    #' @description
+    #' Find a filter with the specified variable name.
+    #' @param variableName The variable name to find a filter for.
+    #' @return A `PivotFilter` object that filters on the specified variable.
     getFilter = function(variableName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "getFilter", variableName, missing(variableName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -135,8 +156,29 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilter", "Got filter.")
       return(invisible(filter))
     },
+
+
     # isFilterMatch is used when searching for row/column headings (see the "Finding and Formatting" vignette),
     # i.e. it compares the criteria of one filter to specified criteria, e.g. to find the PivotDataGroup thats is Country=UK.
+
+    #' @description
+    #' Tests whether this `PivotFilters` object matches specified criteria.
+    #' @param matchMode Either "simple" (default) or "combinations".
+    #' "simple" is used when matching only one variable-value, multiple
+    #' variable-value combinations are effectively logical "OR", i.e.
+    #' any one single `PivotFilter` match means the `PivotFilters` object
+    #' is a match.
+    #' "combinations" is used when matching for combinations of variable
+    #' values, multiple variable-value combinations are effectively
+    #' logical "AND", i.e. there must be a matching `PivotFilter` for
+    #' every variable name / variable values criteria specified.
+    #' See the "Finding and Formatting" vignette for graphical examples.
+    #' @param variableNames The variable name(s) to find a filter for.  This
+    #' can be a vector containing more than one variable name.
+    #' @param variableValues A list specifying the variable names and values
+    #' to find, e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
+    #' @return `TRUE` if this filters object matches the specified criteria,
+    #' `FALSE` otherwise.
     isFilterMatch = function(matchMode="simple", variableNames=NULL, variableValues=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "isFilterMatch", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
@@ -228,19 +270,16 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(matchMode=="simple") return(invisible(FALSE))
       else return(invisible(TRUE))
     },
-    # The action parameter below controls how two filters are combined.
-    # Basic principle:  A filter is a list of allowed values for a specific variable.
-    # The action parameters describe below relate to how those lists of allowed values can be combined.
-    # Most common cases:
-    #   1) When working out the rowColFilters for each pivot table cell (action=intersect when combining row and column heading filters)
-    #   2) When combining the rowColFilters with calculation filters (in order of most typical, action could be any of: intersect/replace/union)
-    #      "intersect" would apply additional restrictions, e.g. see the example in the Calculations vignette that has a measure for weekend trains only
-    #      "replace" would apply when doing things like percentage of row total calculations - again, see example in the calculations vignette
-    #      "union" is probably much less likely (can't envisage many situations when that would be needed)
-    #   3) in custom calculation functions (action could be any of intersect/replace/union)
-    # pivottabler does not allow complex conditions to be built up, such as ((A=X) or (B=Y)) and (C=2)
-    # since as the above illustrates, there is complex logic around precedence of "and" vs. "or".
-    # See Appendix 2 vignette for more details.
+
+    #' @description
+    #' Update the value of this `PivotFilters` object with the filters from the
+    #' specified `PivotFilters` object, either intersecting, replacing or unioning
+    #' the filter criteria.
+    #' @param filters A `PivotFilters` object.
+    #' @param action Specifies how the criteria defined in `filters` should be
+    #' combined with the existing filter criteria.
+    #' Must be one of "intersect", "replace" or "union".
+    #' @return No return value.
     setFilters = function(filters=NULL, action="replace") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
@@ -255,6 +294,16 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilters", "Set filters.")
       return(invisible())
     },
+
+    #' @description
+    #' Update the value of this `PivotFilters` object with the filters from the
+    #' specified `PivotFilter` object, either intersecting, replacing or unioning
+    #' the filter criteria.
+    #' @param filter A `PivotFilter` object.
+    #' @param action Specifies how the criteria defined in `filter` should be
+    #' combined with the existing filter criteria.
+    #' Must be one of "intersect", "replace" or "union".
+    #' @return No return value.
     setFilter = function(filter=NULL, action="replace") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilters", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
@@ -265,6 +314,19 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilter", "Set filter.")
       return(invisible())
     },
+
+    #' @description
+    #' Update the value of this `PivotFilters` object with additional filter criteria,
+    #' either intersecting, replacing or unioning the filter criteria.
+    #' @param variableName The name of the column in the data frame that this criteria
+    #' applies to.
+    #' @param type Must be either "ALL", "VALUES" or "NONE".
+    #' @param values A single data value or a vector of multiple data values that
+    #' comprise the additional filter criteria.
+    #' @param action Specifies how the criteria defined in `filter` should be
+    #' combined with the existing filter criteria.
+    #' Must be one of "intersect", "replace" or "union".
+    #' @return No return value.
     setFilterValues = function(variableName=NULL, type="ALL", values=NULL, action="replace") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "setFilterValues", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -290,6 +352,12 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$setFilterValues", "Set filter values.")
       return(invisible())
     },
+
+    #' @description
+    #' Add a new `PivotFilter` object to the filter list in this `PivotFilters`
+    #' object.
+    #' @param filter A `PivotFilter` object.
+    #' @return No return value.
     addFilter = function(filter=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "addFilter", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
@@ -299,6 +367,12 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$addFilter", "Added filter.")
       return(invisible())
     },
+
+    #' @description
+    #' Filters the specified data frame using the filters defined in this
+    #' `PivotFilters` object and returns the results as another data frame.
+    #' @param dataFrame A data frame to filter.
+    #' @return A data frame filtered according to the criteria in this `PivotFilters` object.
     getFilteredDataFrame = function(dataFrame=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotFilters", "getFilteredDataFrame", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
@@ -411,6 +485,10 @@ PivotFilters <- R6::R6Class("PivotFilters",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilters$getFilteredDataFrame", "Got filtered data frame (SOME DATA).")
       return(invisible(data))
     },
+
+    #' @description
+    #' Create a copy of this `PivotFilters` object.
+    #' @return A copy of this `PivotFilters` object.
     getCopy = function() {
       copy <- PivotFilters$new(private$p_parentPivot)
       if(length(private$p_filters) > 0) {
@@ -420,6 +498,10 @@ PivotFilters <- R6::R6Class("PivotFilters",
       }
       return(invisible(copy))
     },
+
+    #' @description
+    #' Return the contents of this object as a list for debugging.
+    #' @return A list of various object properties.
     asList = function() {
       lst <- list()
       if(length(private$p_filters) > 0) {
@@ -429,7 +511,19 @@ PivotFilters <- R6::R6Class("PivotFilters",
       }
       return(invisible(lst))
     },
+
+    #' @description
+    #' Return the contents of this object as JSON for debugging.
+    #' @return A JSON representation of various object properties.
     asJSON = function() { return(jsonlite::toJSON(self$asList())) },
+
+    #' @description
+    #' Return a representation of this object as a character value.
+    #' @param includeVariableName `TRUE` (default) to include the variable name in
+    #'  the string.
+    #' @param seperator A character value used when concatenating
+    #' multiple filters.
+    #' @return A character summary of various object properties.
     asString = function(includeVariableName=TRUE, seperator=", ") {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilters", "asString", includeVariableName, missing(includeVariableName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -448,8 +542,14 @@ PivotFilters <- R6::R6Class("PivotFilters",
     }
   ),
   active = list(
+
+    #' @field count The number of `PivotFilter` objects in this `PivotFilters` object.
     count = function(value) { return(invisible(length(private$p_filters))) },
+
+    #' @field filters A list of `PivotFilter` objects in this `PivotFilters` object.
     filters = function(value) { return(invisible(private$p_filters)) },
+
+    #' @field isALL If TRUE, this `PivotFilters` object matches all data.
     isALL = function(value) {
       if(self$count==0) return(TRUE)
       else {
@@ -464,6 +564,8 @@ PivotFilters <- R6::R6Class("PivotFilters",
         return(bALL)
       }
     },
+
+    #' @field isNONE If TRUE, this `PivotFilters` object matches no data.
     isNONE = function(value) {
       if(self$count==0) return(FALSE)
       else {
@@ -474,6 +576,9 @@ PivotFilters <- R6::R6Class("PivotFilters",
         return(FALSE)
       }
     },
+
+    #' @field filteredVariables The names of the variables that are filtered by this
+    #' `PivotFilters` object.
     filteredVariables = function(value) { # returns a character vector of variable names that are filtered
       variableNames = NULL
       if(!is.null(private$p_filters)) {
@@ -488,6 +593,10 @@ PivotFilters <- R6::R6Class("PivotFilters",
       }
       return(variableNames)
     },
+
+    #' @field filteredValues A list of the criteria values for each of the variables
+    #' filtered by this `PivotFilters` object, where the list element names are the
+    #' variable names.
     filteredValues = function(value) { # returns a list of variable names that are filtered plus the filter values
       values = list()
       if(!is.null(private$p_filters)) {

@@ -4,7 +4,8 @@
 \name{bhmtrains}
 \alias{bhmtrains}
 \title{Birmingham Trains, Dec 2016-Feb 2017.}
-\format{A data frame with 83710 rows and 16 variables:
+\format{
+A data frame with 83710 rows and 16 variables:
 \describe{
   \item{ServiceId}{Unique train identifier}
   \item{Status}{Train status: A=Active, C=Cancelled, R=Reinstated}
@@ -25,7 +26,8 @@
   \item{DestinationGbttArrival}{Scheduled arrival time in the GBTT at the
   destination station}
   \item{DestinationActualArrival}{Actual arrival time at the destination station}
-}}
+}
+}
 \source{
 \url{http://www.recenttraintimes.co.uk/}
 }

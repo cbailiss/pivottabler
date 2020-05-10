@@ -1,42 +1,25 @@
-#' A class that renders a pivot table in Latex.
+
+#' R6 class that renders a pivot table in Latex.
 #'
-#' The PivotLatexRenderer class creates a Latex representation of a pivot table.
+#' @description
+#' The `PivotLatexRenderer` class creates a Latex representation of a pivot table.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @import htmltools
-#' @return Object of \code{\link{R6Class}} with properties and methods that
-#'   render to Latex.
+#' @import jsonlite
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
-#' @field parentPivot Owning pivot table.
 
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new pivot table renderer, specifying the
-#'   field value documented above.}
-#'
-#'   \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist
-#'   on the PivotDataGroup class.}
-#'   \item{\code{resetVisibleRange()}}{Clears the visible range that has been
-#'   set, so the next call to getTableLatex() will render the whole table.}
-#'   \item{\code{setVisibleRange(fromRow=NULL, toRow=NULL, fromColumn=NULL,
-#'   toColumn=NULL)}}{Specifies a subset of the pivot table to be rendered, e.g.
-#'   for use when a pivot table will not fit into a single A4 page.}
-#'   \item{\code{clearIsRenderedFlags()}}{}
-#'   \item{\code{getTableLatex = function(caption=NULL, label=NULL,
-#'   boldHeadings=FALSE, italicHeadings=FALSE, exportOptions=NULL))}}{Get
-#'   a Latex representation of the pivot table, specifying the caption to
-#'   appear above the table, the label to use when referring to the table
-#'   elsewhere in the document and how headings should be styled.}
-#' }
-#'
 PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
   public = list(
+
+    #' @description
+    #' Create a new `PivotLatexRenderer` object.
+    #' @param parentPivot The pivot table that this `PivotLatexRenderer`
+    #' instance belongs to.
+    #' @return A new `PivotLatexRenderer` object.
     initialize = function(parentPivot=NULL) {
       if(parentPivot$argumentCheckMode > 0) {
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -45,6 +28,11 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$new", "Creating new Latex Renderer...")
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$new", "Created new Latex Renderer.")
     },
+
+    #' @description
+    #' An internal method used when rendering a pivot table to Latex
+    #' Clear the IsRendered flags that exist on the `PivotDataGroup` class.
+    #' @return No return value.
     clearIsRenderedFlags = function() {
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$clearIsRenderedFlags", "Clearing isRendered flags...")
       clearFlags <- function(dg) {
@@ -57,6 +45,11 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$clearIsRenderedFlags", "Cleared isRendered flags...")
       return(invisible())
     },
+
+    #' @description
+    #' Clears the visible range that has been set, so the next call to
+    #' `getTableLatex()` will render the whole table.
+    #' @return No return value.
     resetVisibleRange = function() {
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$resetVisibleRange", "Resetting visible range...")
       private$p_fromRow <- NULL
@@ -66,6 +59,15 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$resetVisibleRange", "Reset visible range.")
       return(invisible())
     },
+
+    #' @description
+    #' Specifies a subset of the pivot table to be rendered, e.g.
+    #' for use when a pivot table will not fit into a single A4 page.
+    #' @param fromRow The row number to render from.
+    #' @param toRow The row number to render to.
+    #' @param fromColumn The column number to render from.
+    #' @param toColumn The column number to render to.
+    #' @return No return value.
     setVisibleRange = function(fromRow=NULL, toRow=NULL, fromColumn=NULL, toColumn=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "setVisibleRange", fromRow, missing(fromRow), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"), minValue=1)
@@ -145,6 +147,20 @@ PivotLatexRenderer <- R6::R6Class("PivotLatexRenderer",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotLatexRenderer$setVisibleRange", "Set visible range.")
       return(invisible())
     },
+
+    #' @description
+    #' Generate a Latex representation of the pivot table.
+    #' @param caption The caption to appear above the table.
+    #' @param label The label to use when referring to the table elsewhere in
+    #' the document
+    #' @param boldHeadings Default `FALSE`, specify `TRUE` to render headings
+    #' in bold.
+    #' @param italicHeadings Default `FALSE`, specify `TRUE` to render headings
+    #' in italic.
+    #' @param exportOptions A list of additional export options - see the
+    #' "A1. Appendix" for details.
+    #' @return A character variable containing the Latex representation of
+    #' the pivot table.
     getTableLatex = function(caption=NULL, label=NULL, boldHeadings=FALSE, italicHeadings=FALSE, exportOptions=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotLatexRenderer", "getTableLatex", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")

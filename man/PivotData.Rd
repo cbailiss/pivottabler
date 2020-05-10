@@ -3,45 +3,250 @@
 \docType{class}
 \name{PivotData}
 \alias{PivotData}
-\title{A class that contains named data frames.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that help
-  quickly storing and retrieving data frames.
+\title{R6 class that contains named data frames and associated totals.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
 The PivotData class stores all of the data frames associated with a pivot
 table.
+Each data frame can have a set of associated "totals" data frames,
+which are used to enable the "value" calculation type.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot data container, specifying the
-  field value documented above.}
-
-  \item{\code{addData(df, dataName)}}{And a data frame to the pivot table,
-  specifying a name that can be used to easily retrieve it or refer to it
-  later.}
-  \item{\code{getData(dataName)}}{Get the data frame with the specified
-  name.}
-  \item{\code{isKnownData(dataName))}}{Check if a data frame exists with the
-  specified name.}
-  \item{\code{asList()}}{Get a list representation of the contained data
-  frames.}
-  \item{\code{asJSON()}}{Get a JSON representation of the contained data
-  frames.}
-}
-}
-
 \examples{
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{count}}{The number of named data frames in the pivot table
+(excluding totals/aggregate data frames).}
+
+\item{\code{defaultData}}{The default data frame in the pivot table.}
+
+\item{\code{defaultName}}{The name of the default data frame in the pivot table.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotData$new()}}
+\item \href{#method-addData}{\code{PivotData$addData()}}
+\item \href{#method-getData}{\code{PivotData$getData()}}
+\item \href{#method-isKnownData}{\code{PivotData$isKnownData()}}
+\item \href{#method-addTotalData}{\code{PivotData$addTotalData()}}
+\item \href{#method-countTotalData}{\code{PivotData$countTotalData()}}
+\item \href{#method-getTotalData}{\code{PivotData$getTotalData()}}
+\item \href{#method-asList}{\code{PivotData$asList()}}
+\item \href{#method-asJSON}{\code{PivotData$asJSON()}}
+\item \href{#method-clone}{\code{PivotData$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotData` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotData$new(parentPivot = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotData`
+instance belongs to.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotData` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addData"></a>}}
+\if{latex}{\out{\hypertarget{method-addData}{}}}
+\subsection{Method \code{addData()}}{
+Add a data frame to the pivot table, specifying a name that can be used
+later to easily retrieve it or refer to it.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotData$addData(dataFrame = NULL, dataName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataFrame}}{The data frame to add to the pivot table.}
+
+\item{\code{dataName}}{The name to assign to this data frame in the pivot table.
+If no name is specified, then the name of the data frame variable will
+be used.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getData"></a>}}
+\if{latex}{\out{\hypertarget{method-getData}{}}}
+\subsection{Method \code{getData()}}{
+Retrieve the data frame with the specified name.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotData$getData(dataName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataName}}{The name that was assigned to the data frame when it was
+added to the pivot table.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A data frame.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-isKnownData"></a>}}
+\if{latex}{\out{\hypertarget{method-isKnownData}{}}}
+\subsection{Method \code{isKnownData()}}{
+Check if a data frame exists with the specified name.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotData$isKnownData(dataName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataName}}{The name that was assigned to the data frame when it was
+added to the pivot table.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+`TRUE` if a data frame exists with the specified name,
+`FALSE` otherwise.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addTotalData"></a>}}
+\if{latex}{\out{\hypertarget{method-addTotalData}{}}}
+\subsection{Method \code{addTotalData()}}{
+Add pre-calculated totals/aggregate data to the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotData$addTotalData(dataFrame = NULL, dataName = NULL, variableNames = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataFrame}}{The data frame to add to the pivot table.}
+
+\item{\code{dataName}}{The name of the associated data frame in the
+pivot table which these totals relate to.}
+
+\item{\code{variableNames}}{A character vector specifying the names
+of the variables which these totals are grouped by.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-countTotalData"></a>}}
+\if{latex}{\out{\hypertarget{method-countTotalData}{}}}
+\subsection{Method \code{countTotalData()}}{
+Count the number of data frames containing total/aggregate data that
+exist in the pivot table associated with a specific named data frame.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotData$countTotalData(dataName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataName}}{The name of the associated data frame in the
+pivot table which these totals relate to.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The number of total/aggregate data frames that exist in the
+pivot table associated with the specified data frame name.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getTotalData"></a>}}
+\if{latex}{\out{\hypertarget{method-getTotalData}{}}}
+\subsection{Method \code{getTotalData()}}{
+Retrieve pre-calculated totals/aggregate data from the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotData$getTotalData(dataName = NULL, variableNames = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataName}}{The name of the associated data frame in the
+pivot table which these totals relate to.}
+
+\item{\code{variableNames}}{A character vector specifying the names
+of the variables which the totals are grouped by.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A data frame.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotData$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotData$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotData$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

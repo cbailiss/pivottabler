@@ -3,54 +3,239 @@
 \docType{class}
 \name{PivotStyle}
 \alias{PivotStyle}
-\title{A class that specifies styling.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that help
-  define styles.
+\title{R6 class that specifies styling.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotStyle class specifies the styling for headers and cells in a pivot
+The `PivotStyle` class specifies the styling for headers and cells in a pivot
 table.  Styles are specified in the form of Cascading Style Sheet (CSS)
 name-value pairs.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-
-\item{\code{styleName}}{Style unique name.}
-
-\item{\code{declarations}}{CSS style declarations.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new style declaration, specifying the field
-  values documented above.}
-
-  \item{\code{setPropertyValue(property, value)}}{Set a single style
-  property.}
-  \item{\code{setPropertyValues(declarations)}}{Set multiple style
-  properties, where declarations is a list similar to the code example
-  below.}
-  \item{\code{getPropertyValue(property)}}{Get the style declarations for a
-  single property.}
-  \item{\code{asCSSRule(selector)}}{Get this style definition in the form of
-  a CSS rule.}
-  \item{\code{asNamedCSSStyle(styleNamePrefix)}}{Get this style definition in
-  the form of a named CSS style.}
-  \item{\code{getCopy(newStyleName)}}{Get a copy of this style.}
-  \item{\code{asList()}}{Get a list representation of this style.}
-  \item{\code{asJSON()}}{Get a JSON representation of this style.}
-}
-}
-
 \examples{
-# PivotStyle objects are normally created indirectly via one of the helper
-# methods.
-# For an example, see the PivotStyles class.
+# This class should only be created by the pivot table.
+# It is not intended to be created outside of the pivot table.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{name}}{The name of the style (for a named style).}
+
+\item{\code{declarations}}{A list containing the style declarations.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotStyle$new()}}
+\item \href{#method-setPropertyValue}{\code{PivotStyle$setPropertyValue()}}
+\item \href{#method-setPropertyValues}{\code{PivotStyle$setPropertyValues()}}
+\item \href{#method-getPropertyValue}{\code{PivotStyle$getPropertyValue()}}
+\item \href{#method-asCSSRule}{\code{PivotStyle$asCSSRule()}}
+\item \href{#method-asNamedCSSStyle}{\code{PivotStyle$asNamedCSSStyle()}}
+\item \href{#method-getCopy}{\code{PivotStyle$getCopy()}}
+\item \href{#method-asList}{\code{PivotStyle$asList()}}
+\item \href{#method-asJSON}{\code{PivotStyle$asJSON()}}
+\item \href{#method-clone}{\code{PivotStyle$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotStyle` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyle$new(parentPivot, styleName = NULL, declarations = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotStyle`
+instance belongs to.}
+
+\item{\code{styleName}}{The name of the style (for a named style).}
+
+\item{\code{declarations}}{CSS style declarations in the form of a list, e.g.
+`list("font-weight"="bold", "color"="#0000FF")`}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotStyle` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setPropertyValue"></a>}}
+\if{latex}{\out{\hypertarget{method-setPropertyValue}{}}}
+\subsection{Method \code{setPropertyValue()}}{
+Set a single style property.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyle$setPropertyValue(property = NULL, value = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{property}}{The name of the style property to set, e.g. "font-weight".}
+
+\item{\code{value}}{The value of the style property to set, e.g. "bold".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setPropertyValues"></a>}}
+\if{latex}{\out{\hypertarget{method-setPropertyValues}{}}}
+\subsection{Method \code{setPropertyValues()}}{
+Set multiple style properties.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyle$setPropertyValues(declarations = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{declarations}}{CSS style declarations in the form of a list, e.g.
+`list("font-weight"="bold", "color"="#0000FF")`}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getPropertyValue"></a>}}
+\if{latex}{\out{\hypertarget{method-getPropertyValue}{}}}
+\subsection{Method \code{getPropertyValue()}}{
+Get the value of a single style property.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyle$getPropertyValue(property = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{property}}{The name of the style property to set, e.g. "font-weight".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The value of the style property.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asCSSRule"></a>}}
+\if{latex}{\out{\hypertarget{method-asCSSRule}{}}}
+\subsection{Method \code{asCSSRule()}}{
+Get the style definition in the form of a CSS rule.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyle$asCSSRule(selector = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{selector}}{A CSS selector, used to select the element(s) to be styled.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The style declarations in the form of a CSS rule,
+i.e. selector { property-name1: property-value1,
+property-name2: property-value2, ... }
+e.g. div { font-weight: bold, color: #0000FF }
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asNamedCSSStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-asNamedCSSStyle}{}}}
+\subsection{Method \code{asNamedCSSStyle()}}{
+Get the style definition in the form of a named CSS style.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyle$asNamedCSSStyle(styleNamePrefix = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleNamePrefix}}{A prefix to prepend to the style name.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The style declarations in the form of named CSS style,
+i.e. .prefix-stylename { property-name1: property-value1,
+property-name2: property-value2, ... }
+e.g. .pvt1Cell { font-weight: bold, color: #0000FF }
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCopy"></a>}}
+\if{latex}{\out{\hypertarget{method-getCopy}{}}}
+\subsection{Method \code{getCopy()}}{
+Create a copy of this `PivotStyle` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyle$getCopy(newStyleName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{newStyleName}}{The name of the new style.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A `PivotStyle` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyle$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyle$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyle$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

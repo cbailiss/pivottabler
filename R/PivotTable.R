@@ -1,7 +1,9 @@
-#' A class that defines a pivot table.
+
+#' R6 class that represents a pivot table.
 #'
-#' The PivotTable class represents a pivot table and is the primary class for
-#' constructing and interacting with the pivot table.
+#' @description
+#' The `PivotTable` class is the primary class for
+#' constructing and interacting with a pivot table.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
@@ -10,11 +12,9 @@
 #' @import htmltools
 #' @import jsonlite
 #' @export
-#' @return Object of \code{\link{R6Class}} with properties and methods that
-#'   define a pivot table.
 #' @format \code{\link{R6Class}} object.
 #' @examples
-#' # The package vignettes have many more examples of working with the
+#' # The package vignettes include extensive examples of working with the
 #' # PivotTable class.
 #' library(pivottabler)
 #' pt <- PivotTable$new()
@@ -24,265 +24,43 @@
 #' pt$defineCalculation(calculationName="TotalTrains",
 #' summariseExpression="n()")
 #' pt$renderPivot()
-#' @field argumentCheckMode A number (0-4 meaning none, minimal, basic,
-#'   balanced, full) indicating the argument checking level.
-#' @field traceEnabled A logical value indicating whether actions are logged to
-#'   a trace file.
-#' @field processingLibrary A character value indicating the processing library
-#'   being used (base, dplyr, data.table).
-#' @field data A PivotData object containing the data frames used to populate
-#'   the pivot table.
-#' @field rowGroup The top PivotDataGroup in the parent-child hierarchy of row
-#'   data groups.
-#' @field columnGroup The top PivotDataGroup in the parent-child hierarchy of
-#'   column data groups.
-#' @field calculationGroups A PivotCalculationGroups object containing all of
-#'   the pivot calculations in the pivot table.
-#' @field calculationsPosition "row" or "column" indicating where the
-#'   calculation names will appear (only if multiple calculations are defined
-#'   and visible in the pivot table).
-#' @field evaluationMode Either "sequential" or "batch" to specify how summary
-#'   calculations (i.e. where type="summary") are evaluated.
-#' @field batchInfo Get a text summary of the batch calculations from the last
-#'   evaluation of this pivot table.
-#' @field cells A PivotCells object containing all of the cells in the body of
-#'   the pivot table.
-#' @field rowCount The number of rows in the table.
-#' @field columnCount The number of columns in the table.
-#' @field theme The name of the theme currently applied to the pivot table.
-#' @field styles A PivotStyles object containing the styles used to theme the
-#'   pivot table.
-#' @field allowExternalStyles Enable support for external styles, when producing
-#'   content for external systems.
-#' @field allTimings The time taken for various activities related to
-#'   constructing the pivot table.
-#' @field significantTimings The time taken for various activities related to
-#'   constructing the pivot table, where the elapsed time > 0.1 seconds.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(processingLibrary="auto", evaluationMode="batch",
-#'   argumentCheckMode="auto", theme=NULL, replaceExistingStyles=FALSE,
-#'   tableStyle=NULL, headingStyle=NULL, cellStyle=NULL, totalStyle=NULL,
-#'   compatibility=NULL, traceEnabled=FALSE, traceFile=NULL)}}{Create a new
-#'   pivot table, optionally specifying styling and enabling debug logging.}
-#'
-#'   \item{\code{getNextInstanceId()}}{Return a unique object identifier.}
-#'   \item{\code{addData(df, dataName)}}{Add a data frame with the specified
-#'   name to the pivot table.}
-#'   \item{\code{addTotalData(df, dataName, variableNames)}}{Add a data frame
-#'   containing totals data with the specified name and variables to the pivot
-#'   table.}
-#'   \item{\code{getTopColumnGroups()}}{Get the very top column PivotDataGroup
-#'   that sits at the top of the parent-child hierarchy.}
-#'   \item{\code{getLeafColumnGroups()}}{Get the PivotDataGroups at the bottom
-#'   of the column heading parent-child hierarchy.}
-#'   \item{\code{addColumnGroup(variableName, filterType="ALL", values=NULL,
-#'   doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
-#'   isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
-#'   calculationGroupName=NULL, calculationName=NULL,
-#'   baseStyleName=NULL, styleDeclarations=NULL,
-#'   insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL,
-#'   mergeEmptySpace=NULL, cellBaseStyleName=NULL,
-#'   cellStyleDeclarations=NULL, sortAnchor=NULL, resetCells=TRUE)}}{
-#'   Add a new top-level column heading data group to the pivot table.}
-#'   \item{\code{addColumnDataGroups(variableName, atLevel, fromData=TRUE,
-#'   dataName, dataSortOrder="asc", customSortOrder, caption="{value}",
-#'   dataFormat, dataFmtFuncArgs, onlyCombinationsThatExist=TRUE,
-#'   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
-#'   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-#'   totalCaption="Total", onlyAddGroupIf, preGroupData=TRUE,
-#'   baseStyleName=NULL, styleDeclarations=NULL)}}{Generate new column
-#'   heading data groups based on the distinct values in a data frame or
-#'   using explicitly specified data values.}
-#'   \item{\code{normaliseColumnGroups(resetCells=TRUE) }}{Normalise the
-#'   column heading data group hierarchy so that all branches have the same
-#'   number of levels - accomplished by adding empty child data groups where
-#'   needed.}
-#'   \item{\code{sortColumnDataGroups(levelNumber=1, orderBy="calculation",
-#'   customOrder, sortOrder="desc", calculationGroupName="default",
-#'   calculationName, fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
-#'   the column heading data groups either by the data group data value, caption
-#'   or based on calculation result values.}
-#'   \item{\code{getTopRowGroups()}}{Get the left-most row PivotDataGroup that
-#'   sits at the top of the parent-child hierarchy.}
-#'   \item{\code{getLeafRowGroups()}}{Get the PivotDataGroups at the bottom of
-#'   the row heading parent-child hierarchy.}
-#'   \item{\code{addRowGroup(variableName, filterType="ALL", values=NULL,
-#'   doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
-#'   isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
-#'   calculationGroupName=NULL, calculationName=NULL,
-#'   baseStyleName=NULL, styleDeclarations=NULL,
-#'   insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL,
-#'   mergeEmptySpace=NULL, cellBaseStyleName=NULL,
-#'   cellStyleDeclarations=NULL, sortAnchor=NULL, resetCells=TRUE)}}{
-#'   Add a new top-level row heading data group to the pivot table.}
-#'   \item{\code{addRowDataGroups(variableName, atLevel, fromData=TRUE,
-#'   dataName, dataSortOrder="asc", customSortOrder, caption="{value}",
-#'   dataFormat, dataFmtFuncArgs, onlyCombinationsThatExist=TRUE,
-#'   explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
-#'   addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-#'   totalCaption="Total", onlyAddGroupIf, preGroupData=TRUE,
-#'   baseStyleName=NULL, styleDeclarations=NULL,
-#'   header=NULL, outlineBefore=NULL, outlineAfter=NULL)}}{Generate
-#'   new row heading data groups based on the distinct values in a data frame
-#'   or using explicitly specified data values.}
-#'   \item{\code{normaliseRowGroups(resetCells=TRUE)}}{Normalise the row heading
-#'   data group hierarchy so that all branches have the same number of
-#'   levels - accomplished by adding empty child data groups where needed.}
-#'   \item{\code{sortRowDataGroups(levelNumber=1, orderBy="calculation",
-#'   customOrder, sortOrder="desc", calculationGroupName="default",
-#'   calculationName, fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
-#'   the row heading data groups either by the data group data value, caption or
-#'   based on calculation result values.}
-#'   \item{\code{addCalculationGroup(calculationGroupName)}}{Create a new
-#'   calculation group (rarely needed since the default group is sufficient for
-#'   almost all scenarios).}
-#'   \item{\code{defineCalculation(calculationGroupName="default",
-#'   calculationName, caption, visible=TRUE, displayOrder, filters, format,
-#'   dataName, type="summary", valueName, summariseExpression,
-#'   calculationExpression, calculationFunction, basedOn, noDataValue,
-#'   noDataCaption)}}{Define a new calculation.  See the PivotCalculation class
-#'   for details.}
-#'   \item{\code{addColumnCalculationGroups(calculationGroupName="default",
-#'   atLevel, baseStyleName=NULL, styleDeclarations=NULL)}}{Add
-#'   calculation names on columns (if more than one calculation
-#'   is defined and visible, then the calculation names will appear as column
-#'   headings).}
-#'   \item{\code{addRowCalculationGroups(calculationGroupName="default",
-#'   atLevel, baseStyleName=NULL, styleDeclarations=NULL)}}{Add
-#'   calculation names on rows (if more than one calculation is
-#'   defined and visible, then the calculation names will appear as row
-#'   headings).}
-#'   \item{\code{addStyle(styleName, declarations)}}{Define a new PivotStyle and
-#'   add it to the PivotStyles collection.}
-#'   \item{\code{createInlineStyle(baseStyleName, declarations)}}{Create a
-#'   PivotStyle object that can be used to style individual cell in the pivot
-#'   table.}
-#'   \item{\code{setStyling(rFrom=NULL, cFrom=NULL, rTo=NULL, cTo=NULL,
-#'   groups=NULL, cells=NULL, baseStyleName=NULL, style=NULL,
-#'   declarations=NULL)}}{Set the styling for a one/multiple data groups and/or
-#'   cells in the pivot table.}
-#'   \item{\code{generateCellStructure()}}{Generate the empty pivot table cells
-#'   (after the row/column headings have been defined).}
-#'   \item{\code{resetCells()}}{Clear the cells of the pivot table (should be
-#'   done automatically after structural changes have been made to the pivot
-#'   table).}
-#'   \item{\code{evaluateCells()}}{Calculate the values of the cells in the body
-#'   of the pivot table.}
-#'   \item{\code{evaluatePivot()}}{A wrapper for calling
-#'   normaliseColumnGroups(), normaliseRowGroups(), generateCellStructure() and
-#'   evaluateCells() in sequence.}
-#'   \item{\code{findRowDataGroups(matchMode="simple", variableNames=NULL,
-#'   variableValues=NULL, totals="include", calculationNames=NULL,
-#'   atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
-#'   emptyGroups="exclude",
-#'   outlineGroups="exclude", outlineLinkedGroupExists=NULL,
-#'   includeDescendantGroups=FALSE)}}{Find row data
-#'   groups matching the specified criteria.}
-#'   \item{\code{findColumnDataGroups(matchMode="simple", variableNames=NULL,
-#'   variableValues=NULL, totals="include", calculationNames=NULL,
-#'   atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
-#'   emptyGroups="exclude", includeDescendantGroups=FALSE)}}{Find column
-#'   data groups matching the specified criteria.}
-#'   \item{\code{getEmptyRows(NAasEmpty=TRUE, zeroAsEmpty=FALSE,
-#'   includeOutlineRows=FALSE)}}{Find rows where all cells (calculation
-#'   values) are NULL.}
-#'   \item{\code{getEmptyColumns(NAasEmpty=TRUE, zeroAsEmpty=FALSE)}}{
-#'   Find columns where all cells (calculation values) are NULL.}
-#'   \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
-#'   columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE)}}{
-#'   Retrieve cells by a combination of row and/or column numbers.}
-#'   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
-#'   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
-#'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
-#'   emptyCells="exclude", outlineCells="exclude")}}{Find cells in the
-#'   body of the pivot table matching the specified criteria.}
-#'   \item{\code{findGroupColumnNumbers(group))}}{Find the column numbers
-#'   associated with a specific group.}
-#'   \item{\code{findGroupRowNumbers(group))}}{Find the row numbers
-#'   associated with a specific group.}
-#'   \item{\code{removeColumn(c))}}{Remove a single column from the pivot
-#'   table.}
-#'   \item{\code{removeColumns(columnNumbers))}}{Remove multiple columns from
-#'   the pivot table.}
-#'   \item{\code{removeEmptyColumns(NAasEmpty=TRUE, zeroAsEmpty=FALSE))}}{
-#'   Remove columns from the pivot table where all cells (calculation
-#'   values) are NULL.}
-#'   \item{\code{removeRow(r))}}{Remove a single row from the pivot table.}
-#'   \item{\code{removeRows(rowNumbers))}}{Remove multiple rows from the pivot
-#'   table.}
-#'   \item{\code{removeEmptyRows(NAasEmpty=TRUE, zeroAsEmpty=FALSE,
-#'   includeOutlineRows=FALSE))}}{Remove rows from
-#'   the pivot table where all cells (calculation values) are NULL.}
-#'   \item{\code{print(asCharacter=FALSE, showRowGroupHeaders=TRUE)}}{Either
-#'   print the pivot table to the console or retrieve it as a character value.}
-#'   \item{\code{asMatrix(includeHeaders=TRUE, repeatHeaders=FALSE,
-#'   rawValue=FALSE)}}{Gets the pivot table as a character matrix, with the
-#'   pivot table row/column headings within the body of the matrix.}
-#'   \item{\code{asDataMatrix = function(includeHeaders=TRUE, rawValue=TRUE,
-#'   separator=" ")}}{Gets the pivot table as a matrix, with the pivot table
-#'   row/column headings set as the row/column names in the matrix.}
-#'   \item{\code{asDataFrame(separator=" ", stringsAsFactors,
-#'   forceNumeric=FALSE, rowGroupsAsColumns=FALSE)}}{Gets the pivot table as a
-#'   data frame, combining multiple levels of headings with the specified
-#'   separator and/or exporting the row groups as columns in the data frame.}
-#'   \item{\code{asTidyDataFrame(includeGroupCaptions=TRUE,
-#'   includeGroupValues=TRUE, separator=" ", excludeEmptyCells=TRUE)}}{Gets the
-#'   pivot table as a tidy data frame, where each cell in the body of the pivot
-#'   table becomes one row in the data frame.}
-#'   \item{\code{asBasicTable = function(exportOptions=NULL, compatibility=NULL,
-#'   showRowGroupHeaders=FALSE))}}{Generates a basictabler table (from the
-#'   basictabler R package) which allows further custom manipulation of the
-#'   pivot table.}
-#'   \item{\code{getCss(styleNamePrefix)}}{Get the CSS declarations for the
-#'   entire pivot table.}
-#'   \item{\code{getHtml(styleNamePrefix, includeHeaderValues=FALSE,
-#'   includeRCFilters=FALSE, includeCalculationFilters=FALSE,
-#'   includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
-#'   includeCalculationNames=FALSE, includeRawValue=FALSE,
-#'   includeTotalInfo=FALSE, exportOptions=NULL,
-#'   showRowGroupHeaders=FALSE)}}{Get
-#'   the HTML representation of the pivot table,
-#'   specifying the CSS style name prefix to use and whether additional debug
-#'   information should be included in the pivot table.}
-#'   \item{\code{saveHtml(filePath, fullPageHTML=TRUE, styleNamePrefix,
-#'   includeHeaderValues=FALSE, includeRCFilters=FALSE,
-#'   includeCalculationFilters=FALSE, includeWorkingData=FALSE,
-#'   includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
-#'   includeRawValue=FALSE, includeTotalInfo=FALSE,
-#'   exportOptions=NULL, showRowGroupHeaders=FALSE)}}{Save the HTML
-#'   representation of the pivot table to a file.}
-#'   \item{\code{renderPivot(width, height, styleNamePrefix,
-#'   includeHeaderValues=FALSE, includeRCFilters=FALSE,
-#'   includeCalculationFilters=FALSE, includeWorkingData=FALSE,
-#'   includeEvaluationFilters=FALSE, includeCalculationNames=FALSE,
-#'   includeRawValue=FALSE, includeTotalInfo=FALSE,
-#'   exportOptions=NULL, showRowGroupHeaders=FALSE)}}{
-#'   Render the pivot table as a htmlwidget.}
-#'   \item{\code{getLatex(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL,
-#'   fromColumn=NULL, toColumn=NULL, boldHeadings=FALSE,
-#'   italicHeadings=FALSE)}}{Get the Latex representation of the pivot table,
-#'   specifying the caption to appear above the table, the label to use when
-#'   referring to the table elsewhere in the document and how headings should be
-#'   styled.}
-#'   \item{\code{writeToExcelWorksheet(wb=NULL, wsName=NULL, topRowNumber=NULL,
-#'   leftMostColumnNumber=NULL, outputHeadingsAs="formattedValueAsText",
-#'   outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE,
-#'   exportOptions=NULL)}}{Output the
-#'   pivot table into the specified workbook and worksheet at the
-#'   specified row-column location.}
-#'   \item{\code{showBatchInfo()}}{Show a text summary of the batch calculations
-#'   from the last evaluation of this pivot table.}
-#'   \item{\code{asList()}}{Get a list representation of the pivot table.}
-#'   \item{\code{asJSON()}}{Get a JSON representation of the pivot table.}
-#'   \item{\code{viewJSON()}}{View the JSON representation of the pivot table.}
-#' }
 
 PivotTable <- R6::R6Class("PivotTable",
   public = list(
+
+    #' @description
+    #' Create a new `PivotTable` object.
+    #' @param processingLibrary The package to use when processing data.
+    #' Must be one of "auto" (which today is dplyr), "dplyr" or "data.table".
+    #' @param evaluationMode Either "batch" (default) or "sequential" (legacy).
+    #' @param argumentCheckMode The level of argument checking to perform.
+    #' Must be one of "auto", "none", "minimal", "basic", "balanced" (default)
+    #' or "full".
+    #' @param theme A theme to use to style the pivot table. Either:
+    #' (1) The name of a built in theme, or
+    #' (2) A list of simple style settings, or
+    #' (3) A `PivotStyles` object containing a full set of styles.
+    #' See the "Styling" vignette for many examples.
+    #' @param replaceExistingStyles Default `FALSE` to retain existing styles in
+    #' the styles collection and add specified styles as new custom styles.
+    #' Specify `TRUE` to update the definitions of existing styles.
+    #' @param tableStyle Styling to apply to the table.  Either:
+    #' (1) The name of a built in style, or
+    #' (2) A list of CSS style declarations, e.g.
+    #' `list("font-weight"="bold", "color"="#0000FF")`, or
+    #' (3) A `PivotStyle` object.
+    #' @param headingStyle Styling to apply to the headings.
+    #' See the `tableStyle` argument for details.
+    #' @param cellStyle Styling to apply to the normal cells.
+    #' See the `tableStyle` argument for details.
+    #' @param totalStyle Styling to apply to the total cells.
+    #' See the `tableStyle` argument for details.
+    #' @param compatibility A list containing compatibility options to force
+    #' legacy behaviours.  See the NEWS file for details.
+    #' @param traceEnabled Default `FALSE`.  Specify `TRUE` to generate a trace
+    #' for debugging purposes.
+    #' @param traceFile If tracing is enabled, the location to generate the trace file.
+    #' @return A new `PivotTable` object.
     initialize = function(processingLibrary="auto", evaluationMode="batch", argumentCheckMode="auto",
                           theme=NULL, replaceExistingStyles=FALSE,
                           tableStyle=NULL, headingStyle=NULL, cellStyle=NULL, totalStyle=NULL,
@@ -452,6 +230,20 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$new", "Created new Pivot Table.")
       return(invisible())
     },
+
+    #' @description
+    #' Specify default values for some function arguments.
+    #' @param ... Default values to specify.  See details.
+    #' @details
+    #' Defaults can be set for the following agruments of
+    #' `pt$addRowDataGroups()` and `pt$addColumnDataGroups()`:
+    #' `logical` values: `addTotal`, `expandExistingTotals`, `visualTotals`.
+    #' `character` values:  `totalPosition`, `totalCaption`.
+    #' `list` or `logical` values:  `outlineBefore`, `outlineAfter`, `outlineTotal`.
+    #' Errors are generated for default values that could not be set.
+    #' Warnings are generated for attempts to set defaults that aren't supported.
+    #' See the "A1. Appendix" vignette for more details.
+    #' @return No return value.
     setDefault = function(...) {
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$setDefault", "Setting defaults...")
       # get the defaults
@@ -501,26 +293,74 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$setDefault", "Set defaults.")
     },
-    # designed to be used as a simple wrappers inside existing code, e.g. getDefault1(addTotal, missing(addTotal))
+
+    #' @description
+    #' Get the default value of an argument.
+    #' @param argValue The name and value of the argument.
+    #' @param useDefault Specify `TRUE` to use the default.
+    #' @details
+    #' Both the argument name and argument value are taken from the `argValue`
+    #' argument.  The name is obtained from `as.character(substitute(argValue))`.
+    #' This function is designed to easily slot into existing code, e.g.
+    #' `getDefault1(addTotal, missing(addTotal))`.
+    #' @return The current value of the argument or the default value.
     getDefault1 = function(argValue=NULL, useDefault=NULL) {
       argName <- as.character(substitute(argValue))
       return(invisible(self$getDefault2(argName=argName, argValue=argValue, useDefault=useDefault)))
     },
+
+    #' @description
+    #' Get the default value of an argument.
+    #' @param argName The name of the argument.
+    #' @param argValue The current value of the argument.
+    #' @param useDefault Specify `TRUE` to use the default.
+    #' @return The current value of the argument or the default value.
     getDefault2 = function(argName=NULL, argValue=NULL, useDefault=NULL) {
       if(!isTRUE(useDefault)) return(invisible(argValue))
       defaultNames <- names(private$p_defaults)
       if(argName %in% defaultNames) return(invisible(private$p_defaults[[argName]]))
       else return(invisible(argValue))
     },
+
+    #' @description
+    #' Get the default value of an argument.
+    #' @param argName The name of the argument.
+    #' @return The default value.
     getDefault3 = function(argName) {
       defaultNames <- names(private$p_defaults)
       if(argName %in% defaultNames) return(invisible(private$p_defaults[[argName]]))
       else return(invisible(NULL))
     },
+
+    #' @description
+    #' Get the next unique object instance identifier.
+    #' @details
+    #' R6 classes cannot be easily compared to check if two variables are both
+    #' referring to the same object instance.  Instance ids are a mechanism to
+    #' work around this problem.  Each data group and cell is assigned an
+    #' instance id during object creation, which enables reliable reference
+    #' comparisons.
+    #' @return An integer instance id.
     getNextInstanceId = function() { # used for reliable object instance comparisons (since R6 cannot easily compare object instances)
       private$p_lastInstanceId <- private$p_lastInstanceId + 1
       return(invisible(private$p_lastInstanceId))
     },
+
+    #' @description
+    #' Add a data frame with the specified name to the pivot table.
+    #' @param dataFrame The data frame to add.
+    #' @param dataName The name to be used to refer to the data frame.
+    #' If no name is specified, the data frame variable name from the
+    #' calling code is used, retrieved via `deparse(substitute(dataFrame))`.
+    #' @details
+    #' The name is used to refer to the data frame when generating data groups
+    #' or defining calculations.  The pivot table tracks the first data frame
+    #' added as the default data frame, so if only a single data frame is used,
+    #' it is typically not necessary to ever explicitly refer to the name.
+    #' Pivot tables are typically based on a single data frame, however it
+    #' is possible to build a pivot table that uses data from multiple data
+    #' frames.
+    #' @return The `PivotData` object managing the data frames for the pivot table.
     addData = function(dataFrame=NULL, dataName=NULL) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
@@ -535,6 +375,23 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming(paste0("addData(", dn, ")"), timeStart)
       return(invisible(private$p_data))
     },
+
+    #' @description
+    #' Add a data frame containing totals data with the specified name and
+    #' variables to the pivot table.
+    #' @param dataFrame The data frame to add.
+    #' @param dataName The name of the data frame to associate these totals with.
+    #' @param variableNames A vector specifying how the aggregate data/totals in
+    #' the data frame are grouped.
+    #' @details
+    #' When generating pivot tables, the package typically calculates cell values.
+    #' However, the package can also use provided values (i.e. carry out no
+    #' calculations).  This presents a challenge in that the sub-totals and totals
+    #' in a pivot table display values at a higher aggregation level than the
+    #' normal cells in the body of the pivot table.  This method allows further
+    #' data frames to be specified that contain aggregated versions of the data.
+    #' See the "Calculations" vignette for details and an example.
+    #' @return No return value.
     addTotalData = function(dataFrame=NULL, dataName=NULL, variableNames=NULL) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
@@ -548,18 +405,29 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("addTotalData()", timeStart)
       return(invisible())
     },
+
+    #' @description
+    #' Retrieve the data groups at the specified level in the column groups hierarchy.
+    #' @param level An integer specifying the level number.
+    #' Level 1 represents the first visible level of data groups.
+    #' @return A list containing `PivotDataGroup` objects.
     getColumnGroupsByLevel = function(level=NULL) {
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getColumnGroupsByLevel", "Getting level column groups...")
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getColumnGroupsByLevel", level, missing(level), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
       }
-      if(level<0) stop("PivotTable$getColumnGroupsByLevel():  level must be greater than or equal to zero.", call. = FALSE)
+      if(level<1) stop("PivotTable$getColumnGroupsByLevel():  level must be greater than or equal to one.", call. = FALSE)
       levelCount <- self$columnGroupLevelCount
       if(level>levelCount) stop(paste0("PivotTable$getColumnGroupsByLevel():  level must be less than or equal to ", levelCount, "."), call. = FALSE)
       grps <- private$p_columnGroup$getLevelGroups(level=level)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getColumnGroupsByLevel", "Got level column groups.", list(count = length(grps)))
       return(invisible(grps))
     },
+
+    #' @description
+    #' [Deprecated: Use topColumnGroups instead]
+    #' Retrieve the first level of column data groups.
+    #' @return A list containing `PivotDataGroup` objects.
     getTopColumnGroups = function() {
       .Deprecated(new="topColumnGroups")
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopColumnGroups", "Getting top level column groups...")
@@ -567,6 +435,11 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopColumnGroups", "Got top level column groups.", list(count = length(grps)))
       return(invisible(grps))
     },
+
+    #' @description
+    #' [Deprecated: Use leafColumnGroups instead]
+    #' Retrieve the bottom level of column data groups.
+    #' @return A list containing `PivotDataGroup` objects.
     getLeafColumnGroups = function() {
       .Deprecated(new="leafColumnGroups")
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafColumnGroups", "Getting leaf level column groups...")
@@ -575,6 +448,11 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafColumnGroups", "Got leaf level column groups.", list(count = length(grps)))
       return(invisible(grps))
     },
+
+    #' @description
+    #' Retrieve the leaf-level data group associated with a specific column.
+    #' @param c An integer column number.
+    #' @return A `PivotDataGroup` object.
     getLeafColumnGroup = function(c=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getLeafColumnGroup", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -592,6 +470,70 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafColumnGroup", "Got leaf level column group.")
       return(invisible(grp))
     },
+
+    #' @description
+    #' Add a new column data group at the top level of the column group
+    #' hierarchy.  The new group is added as the last child unless an index
+    #' is specified.
+    #' @details See the "Irregular Layout" vignette for details and examples.
+    #' @param variableName A character value that specifies the name of the
+    #' variable in the data frame that the group relates to and will filter.
+    #' @param filterType Must be one of "ALL", "VALUES", or "NONE" to specify
+    #' the filter type:
+    #' ALL means no filtering is applied.
+    #' VALUEs is the typical value used to specify that `variableName` is
+    #' filtered to only `values`.
+    #' NONE means no data will match this data group.
+    #' @param values A vector that specifies the filter values applied to
+    #' `variableName` to select the data to match this row/column in the pivot
+    #' table.
+    #' @param doNotExpand Default value `FALSE` - specify `TRUE` to
+    #' prevent the high-level methods such as `addDataGroups()` from adding
+    #' child groups.
+    #' @param isEmpty Default value `FALSE`, specify `TRUE` to mark that
+    #' this group contains no data (e.g. if
+    #' it is part of a header or outline row)
+    #' @param isOutline Default value `FALSE` - specify `TRUE` to mark
+    #' that this data group is an outline group.
+    #' @param captionTemplate A character value that specifies the template
+    #' for the data group caption, default "{values}".
+    #' @param caption Effectively a hard-coded caption that overrides the
+    #' built-in logic for generating a caption.
+    #' @param isTotal Default `FALSE` - specify `TRUE` to mark that this
+    #' data group is a total.
+    #' @param isLevelSubTotal Default `FALSE` - specify `TRUE` to mark that
+    #' this data group is a sub-total within a level.
+    #' @param isLevelTotal Default `FALSE` - specify `TRUE` to mark that
+    #' this data group is level total.
+    #' @param calculationGroupName For calculation groups, this character value
+    #' specifies the calculation group that `calculationName` belongs to.
+    #' @param calculationName For calculation groups, this character value
+    #' specifies the name of the calculation.
+    #' @param baseStyleName The style name for the data group.
+    #' @param styleDeclarations A list of CSS style declarations to overlay
+    #' on top of the base style.
+    #' @param insertAtIndex An integer that specifies the index in the list
+    #' of child groups where the new group should be inserted.
+    #' @param insertBeforeGroup Specifies an existing group that the new group
+    #'  should be inserted before.
+    #' @param insertAfterGroup Specifies an existing group that the new group
+    #'  should be inserted after
+    #' @param mergeEmptySpace A character value that specifies how empty space
+    #' should be merged. This is typically only used with outline groups
+    #' (so applies to row groups only, not column groups).  Must be one of
+    #' "doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1" or
+    #' "dataGroupsAndCellsAs2".  See the "Regular Layout" vignette
+    #' for more information.
+    #' @param cellBaseStyleName The style name for cells related to this data
+    #' group.
+    #' @param cellStyleDeclarations A list of CSS style declarations to overlay
+    #' on top of the base style for cells related to this data group
+    #' @param sortAnchor Used to specify sort behaviour for outline groups, must
+    #' be one of "fixed", "next" or "previous".
+    #' @param resetCells Default `TRUE` to reset any cells that currently exist
+    #' in the pivot table and trigger a recalculation of the pivot table when
+    #' it is next rendered.
+    #' @return The new `PivotDataGroup` object.
     addColumnGroup = function(variableName=NULL, filterType="ALL", values=NULL,
                              doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE,
                              captionTemplate="{value}", caption=NULL,
@@ -647,11 +589,81 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_argumentCheckMode==TRUE) private$p_traceEnabled("PivotTable$addColumnGroup", "Added column group.")
       return(invisible(grp))
     },
+
+    #' @description
+    #' Add multiple new data groups to the column group hierarchy
+    #' based on the distinct values in a data frame
+    #' column or using explicitly specified data values.
+    #' See the "Data Groups" vignette for example usage.
+    #' @details
+    #' There are broadly three different ways to call `addColumnDataGroups()`:
+    #' (1) dataName=name, fromData=TRUE, onlyCombinationsThatExist=TRUE - which
+    #' considers the ancestors of each existing data group to generate only those
+    #' combinations of values that exist in the data frame.
+    #' (2) dataName=name, fromData=TRUE, onlyCombinationsThatExist=FALSE - which
+    #' ignores the ancestors of each existing data group and simply adds every
+    #' distinct value of the specified variable under every existing data group,
+    #' which can result in combinations of values in the pivot table that don't
+    #' exist in the data frame (i.e. blank rows/columns in the pivot table).
+    #' (3) fromData=FALSE, explicitListOfValues=list(...) - simply adds every
+    #' value from the specified list under every existing data group.
+    #' @param variableName The name of the related column in the data frame(s) of
+    #'   the pivot table.
+    #' @param atLevel The level number that specifies where to add the new
+    #' groups.  Level 1 = on the first visible level of the hierarchy.
+    #' `NULL` = create a new level at the bottom of the hierarchy for the new
+    #' groups.
+    #' @param fromData Default `TRUE` to generate the new data groups based on the
+    #' data values that exist in the `variableName` column in the named data frame.
+    #' If `FALSE`, then `explicitListOfValues` must be specified.
+    #' @param dataName The name of the data frame (as specified in
+    #' `pt$addData()`) to read the data group values from.
+    #' @param dataSortOrder Must be one of "asc", "desc", "custom" or "none".
+    #' @param customSortOrder A vector values sorted into the desired order.
+    #' @param caption The template of data group captions to generate,
+    #' default "{value}".
+    #' @param dataFormat A character, list or custom function to format the
+    #' data value.
+    #' @param dataFmtFuncArgs A list that specifies any additional arguments to
+    #' pass to a custom format function.
+    #' @param onlyCombinationsThatExist Default `TRUE` to generate only
+    #' combinations of data groups that exist in the data frame.
+    #' @param explicitListOfValues A list of explicit values to create data
+    #' groups from.  A data group is created for each element of the list.
+    #' If a list element is vector of values (with length greater than 1),
+    #' then a data group is created for multiple values instead of just
+    #' a single value.
+    #' @param calculationGroupName The calculation group that the new data groups
+    #' are related to.
+    #' @param expandExistingTotals Default `FALSE`, which means totals are not
+    #' broken down in multi-level hierarchies.
+    #' @param addTotal Default `TRUE`, which means sub-total and total data groups
+    #' are automatically added.
+    #' @param visualTotals Default `FALSE`, which means visual totals are disabled.
+    #' See the "Data Groups" vignette for more details about visual totals.
+    #' @param totalPosition Either "before" or "after" to specify where total groups
+    #' are created, default "after".
+    #' @param totalCaption The caption to display on total groups, default "Total".
+    #' @param onlyAddGroupIf A filter expression that can be used to more finely
+    #' control whether data groups are created at different locations in the
+    #' hierarchy.  There must be at least one row that matches this filter and the
+    #' filters from the ancestor groups in order that the child group is created.
+    #' E.g. `MaxDisplayLevel>5`.
+    #' @param preGroupData Default `TRUE`, which means that the pivot table
+    #' pre-calculates the distinct combinations of variable values to reduce the CPU
+    #' time and elapsed time required to generate data groups.
+    #' Cannot be used in conjunction with the
+    #' @param baseStyleName The name of the style applied to this data group (i.e.
+    #'   this row/column heading).  The style must exist in the `PivotStyles` object
+    #'   associated with the PivotTable.
+    #' @param styleDeclarations CSS style declarations that can override the base
+    #' style, expressed as a list, e.g. `list("font-weight"=bold")`.
+    #' @return A list of new `PivotDataGroup` objects that have been added.
     addColumnDataGroups = function(variableName=NULL, atLevel=NULL, fromData=TRUE, # atLevel=1 is the top level, (since 1 is the top level as visible to the user)
                                    dataName=NULL, dataSortOrder="asc", customSortOrder=NULL, caption="{value}", dataFormat=NULL, dataFmtFuncArgs=NULL,
                                    onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
                                    expandExistingTotals=FALSE, addTotal=TRUE, visualTotals=FALSE, totalPosition="after", totalCaption="Total",
-                                   onlyAddGroupIf=NULL, preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL) {
+                                   onlyAddGroupIf=NULL, preGroupData=TRUE, baseStyleName=NULL, styleDeclarations=NULL) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnDataGroups", variableName, missing(variableName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -703,6 +715,15 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming(paste0("addColumnDataGroups(", variableName, ")"), timeStart)
       return(invisible(grp))
     },
+
+    #' @description
+    #' Normalise the column data group hierarchy so that all branches have the
+    #' same number of levels - accomplished by adding empty child data groups
+    #' where needed.
+    #' @param resetCells Default `TRUE` to reset any cells that currently exist
+    #' in the pivot table and trigger a recalculation of the pivot table when
+    #' it is next rendered.
+    #' @return A list of new `PivotDataGroup` objects that have been added.
     normaliseColumnGroups = function(resetCells=TRUE) {
       timeStart <- proc.time()
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$normaliseColumnGroups", "Normalising column groups...")
@@ -711,6 +732,34 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("normaliseColumnGroups", timeStart)
       return(invisible())
     },
+
+    #' @description
+    #' Sort column data groups either by the data group data value, caption,
+    #' a custom order or based on calculation result values.
+    #' @param levelNumber The level number to sort the data groups, e.g.
+    #' level 1 (default) sorts the data groups at level 1 of the hierarchy
+    #' (which is the first visible level of data groups).
+    #' @param orderBy Must be either "value", "caption", "calculation",
+    #' "customByValue" or "customByCaption".
+    #' "value" sorts by the raw (i.e. unformatted) group value.
+    #' "caption" sorts by the formatted character group caption.
+    #' "calculation" sorts using one of the calculations defined in the pivot table.
+    #' "customValue" sorts by the raw (i.e. unformatted) group value according to
+    #' the specified custom sort order.
+    #' "customCaption" sorts by the formatted character group caption according to
+    #' the specified custom sort order.
+    #' @param customOrder A vector values sorted into the desired order.
+    #' @param sortOrder Must be either "asc" or "desc".
+    #' @param calculationGroupName If sorting using a calculation, the name of the
+    #' calculation group containing the specified calculation.
+    #' @param calculationName If sorting using a calculation, the name of the
+    #' calculation.
+    #' @param fromIndex A boundary to limit the sort operation.
+    #' @param toIndex A boundary to limit the sort operation.
+    #' @param resetCells Default `TRUE` to reset any cells that currently exist
+    #' in the pivot table and trigger a recalculation of the pivot table when
+    #' it is next rendered.
+    #' @return No return value.
     sortColumnDataGroups = function(levelNumber=1, orderBy="calculation", customOrder=NULL, sortOrder="desc",
                                     calculationGroupName="default", calculationName=NULL,
                                     fromIndex=NULL, toIndex=NULL, resetCells=TRUE) {
@@ -738,18 +787,29 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("sortColumnDataGroups", timeStart)
       return(invisible())
     },
+
+    #' @description
+    #' Retrieve the data groups at the specified level in the row groups hierarchy.
+    #' @param level An integer specifying the level number.
+    #' Level 1 represents the first visible level of data groups.
+    #' @return A list containing `PivotDataGroup` objects.
     getRowGroupsByLevel = function(level=NULL) {
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getRowGroupsByLevel", "Getting level row groups...")
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getRowGroupsByLevel", level, missing(level), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
       }
-      if(level<0) stop("PivotTable$getRowGroupsByLevel():  level must be greater than or equal to zero.", call. = FALSE)
+      if(level<1) stop("PivotTable$getRowGroupsByLevel():  level must be greater than or equal to one.", call. = FALSE)
       levelCount <- self$rowGroupLevelCount
       if(level>levelCount) stop(paste0("PivotTable$getRowGroupsByLevel():  level must be less than or equal to ", levelCount, "."), call. = FALSE)
       grps <- private$p_rowGroup$getLevelGroups(level=level)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getRowGroupsByLevel", "Got level row groups", list(count = length(grps)))
       return(invisible(grps))
     },
+
+    #' @description
+    #' [Deprecated: Use topRowGroups instead]
+    #' Retrieve the first level of row data groups.
+    #' @return A list containing `PivotDataGroup` objects.
     getTopRowGroups = function() {
       .Deprecated(new="topRowGroups")
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopRowGroups", "Getting top level row groups...")
@@ -757,6 +817,11 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopRowGroups", "Got top level row groups", list(count = length(grps)))
       return(invisible(grps))
     },
+
+    #' @description
+    #' [Deprecated: Use leafRowGroups instead]
+    #' Retrieve the bottom level of row data groups.
+    #' @return A list containing `PivotDataGroup` objects.
     getLeafRowGroups = function() {
       .Deprecated(new="leafRowGroups")
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafRowGroups", "Getting leaf level row groups...")
@@ -765,6 +830,11 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getTopRowGroups", "Got leaf level row groups", list(count = length(grps)))
       return(invisible(grps))
     },
+
+    #' @description
+    #' Retrieve the leaf-level data group associated with a specific row.
+    #' @param r An integer row number.
+    #' @return A `PivotDataGroup` object.
     getLeafRowGroup = function(r=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getLeafRowGroup", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -782,6 +852,72 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getLeafRowGroup", "Got leaf level row group.")
       return(invisible(grp))
     },
+
+    #' @description
+    #' Add a new column data group at the top level of the row group
+    #' hierarchy.  The new group is added as the last child unless an index
+    #' is specified.
+    #' @details See the "Irregular Layout" vignette for details and examples.
+    #' @param variableName A character value that specifies the name of the
+    #' variable in the data frame that the group relates to and will filter.
+    #' @param filterType Must be one of "ALL", "VALUES", or "NONE" to specify
+    #' the filter type:
+    #' ALL means no filtering is applied.
+    #' VALUEs is the typical value used to specify that `variableName` is
+    #' filtered to only `values`.
+    #' NONE means no data will match this data group.
+    #' @param values A vector that specifies the filter values applied to
+    #' `variableName` to select the data to match this row/column in the pivot
+    #' table.
+    #' @param doNotExpand Default value `FALSE` - specify `TRUE` to
+    #' prevent the high-level methods such as `addDataGroups()` from adding
+    #' child groups.
+    #' @param isEmpty Default value `FALSE`, specify `TRUE` to mark that
+    #' this group contains no data (e.g. if
+    #' it is part of a header or outline row)
+    #' @param isOutline Default value `FALSE` - specify `TRUE` to mark
+    #' that this data group is an outline group.
+    #' @param captionTemplate A character value that specifies the template
+    #' for the data group caption, default "{values}".
+    #' @param caption Effectively a hard-coded caption that overrides the
+    #' built-in logic for generating a caption.
+    #' @param isTotal Default `FALSE` - specify `TRUE` to mark that this
+    #' data group is a total.
+    #' @param isLevelSubTotal Default `FALSE` - specify `TRUE` to mark that
+    #' this data group is a sub-total within a level.
+    #' @param isLevelTotal Default `FALSE` - specify `TRUE` to mark that
+    #' this data group is level total.
+    #' @param calculationGroupName For calculation groups, this character value
+    #' specifies the calculation group that `calculationName` belongs to.
+    #' @param calculationName For calculation groups, this character value
+    #' specifies the name of the calculation.
+    #' @param baseStyleName The style name for the data group.
+    #' @param styleDeclarations A list of CSS style declarations to overlay
+    #' on top of the base style.
+    #' @param insertAtIndex An integer that specifies the index in the list
+    #' of child groups where the new group should be inserted.
+    #' @param insertBeforeGroup Specifies an existing group that the new group
+    #'  should be inserted before.
+    #' @param insertAfterGroup Specifies an existing group that the new group
+    #'  should be inserted after
+    #' @param mergeEmptySpace A character value that specifies how empty space
+    #' should be merged. This is typically only used with outline groups
+    #' (so applies to row groups only, not column groups).  Must be one of
+    #' "doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1" or
+    #' "dataGroupsAndCellsAs2".  See the "Regular Layout" vignette
+    #' for more information.
+    #' @param cellBaseStyleName The style name for cells related to this data
+    #' group.
+    #' @param cellStyleDeclarations A list of CSS style declarations to overlay
+    #' on top of the base style for cells related to this data group
+    #' @param sortAnchor Used to specify sort behaviour for outline groups, must
+    #' be one of "fixed", "next" or "previous".
+    #' @param outlineLinkedGroupId Used to link an outline group to the value
+    #' data group which has the child data groups.
+    #' @param resetCells Default `TRUE` to reset any cells that currently exist
+    #' in the pivot table and trigger a recalculation of the pivot table when
+    #' it is next rendered.
+    #' @return The new `PivotDataGroup` object.
     addRowGroup = function(variableName=NULL, filterType="ALL", values=NULL,
                            doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE,
                            captionTemplate="{value}", caption=NULL,
@@ -837,6 +973,93 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_argumentCheckMode==TRUE) private$p_traceEnabled("PivotTable$addRowGroup", "Added row group.")
       return(invisible(grp))
     },
+
+    #' @description
+    #' Add multiple new data groups to the row group hierarchy
+    #' based on the distinct values in a data frame
+    #' column or using explicitly specified data values.
+    #' See the "Data Groups" vignette for example usage.
+    #' @details
+    #' There are broadly three different ways to call `addRowDataGroups()`:
+    #' (1) dataName=name, fromData=TRUE, onlyCombinationsThatExist=TRUE - which
+    #' considers the ancestors of each existing data group to generate only those
+    #' combinations of values that exist in the data frame.
+    #' (2) dataName=name, fromData=TRUE, onlyCombinationsThatExist=FALSE - which
+    #' ignores the ancestors of each existing data group and simply adds every
+    #' distinct value of the specified variable under every existing data group,
+    #' which can result in combinations of values in the pivot table that don't
+    #' exist in the data frame (i.e. blank rows/columns in the pivot table).
+    #' (3) fromData=FALSE, explicitListOfValues=list(...) - simply adds every
+    #' value from the specified list under every existing data group.
+    #' @param variableName The name of the related column in the data frame(s) of
+    #'   the pivot table.
+    #' @param atLevel The level number that specifies where to add the new
+    #' groups.  Level 1 = on the first visible level of the hierarchy.
+    #' `NULL` = create a new level at the bottom of the hierarchy for the new
+    #' groups.
+    #' @param fromData Default `TRUE` to generate the new data groups based on the
+    #' data values that exist in the `variableName` column in the named data frame.
+    #' If `FALSE`, then `explicitListOfValues` must be specified.
+    #' @param dataName The name of the data frame (as specified in
+    #' `pt$addData()`) to read the data group values from.
+    #' @param dataSortOrder Must be one of "asc", "desc", "custom" or "none".
+    #' @param customSortOrder A vector values sorted into the desired order.
+    #' @param caption The template of data group captions to generate,
+    #' default "{value}".
+    #' @param dataFormat A character, list or custom function to format the
+    #' data value.
+    #' @param dataFmtFuncArgs A list that specifies any additional arguments to
+    #' pass to a custom format function.
+    #' @param onlyCombinationsThatExist Default `TRUE` to generate only
+    #' combinations of data groups that exist in the data frame.
+    #' @param explicitListOfValues A list of explicit values to create data
+    #' groups from.  A data group is created for each element of the list.
+    #' If a list element is vector of values (with length greater than 1),
+    #' then a data group is created for multiple values instead of just
+    #' a single value.
+    #' @param calculationGroupName The calculation group that the new data groups
+    #' are related to.
+    #' @param expandExistingTotals Default `FALSE`, which means totals are not
+    #' broken down in multi-level hierarchies.
+    #' @param addTotal Default `TRUE`, which means sub-total and total data groups
+    #' are automatically added.
+    #' @param visualTotals Default `FALSE`, which means visual totals are disabled.
+    #' See the "Data Groups" vignette for more details about visual totals.
+    #' @param totalPosition Either "before" or "after" to specify where total groups
+    #' are created, default "after".
+    #' @param totalCaption The caption to display on total groups, default "Total".
+    #' @param onlyAddGroupIf A filter expression that can be used to more finely
+    #' control whether data groups are created at different locations in the
+    #' hierarchy.  There must be at least one row that matches this filter and the
+    #' filters from the ancestor groups in order that the child group is created.
+    #' E.g. `MaxDisplayLevel>5`.
+    #' @param preGroupData Default `TRUE`, which means that the pivot table
+    #' pre-calculates the distinct combinations of variable values to reduce the CPU
+    #' time and elapsed time required to generate data groups.
+    #' Cannot be used in conjunction with the
+    #' @param baseStyleName The name of the style applied to this data group (i.e.
+    #'   this row/column heading).  The style must exist in the `PivotStyles` object
+    #'   associated with the PivotTable.
+    #' @param styleDeclarations CSS style declarations that can override the base
+    #' style, expressed as a list, e.g. `list("font-weight"=bold")`.
+    #' @param header A character value used as the row-group column caption
+    #' when row group headers are rendered.
+    #' @param outlineBefore Default `FALSE` to disable the creation of outline header
+    #' groups.  Specify either `TRUE` or a list of outline group settings to create
+    #' outline header groups.  See the "Regular Layout" vignette for details.
+    #' @param outlineAfter Default `FALSE` to disable the creation of outline footer
+    #' groups.  Specify either `TRUE` or a list of outline group settings to create
+    #' outline footer groups.  See the "Regular Layout" vignette for details.
+    #' @param outlineTotal  Default `FALSE` to disable the creation of outline
+    #' totals.  Specify either `TRUE` or a list of outline group settings to create
+    #' outline totals.  See the "Regular Layout" vignette for details.
+    #' @param onlyAddOutlineChildGroupIf A filter expression that can be used to
+    #' more finely control whether outline child groups are created at different
+    #' locations in the hierarchy.  There must be at least one row that matches
+    #' this filter and the filters from the ancestor groups in order that the
+    #' outline child group is created.  E.g. `MaxDisplayLevel>5`.
+    #' See the "Regular Layout" vignette for an example.
+    #' @return A list of new `PivotDataGroup` objects that have been added.
     addRowDataGroups = function(variableName=NULL, atLevel=NULL, fromData=TRUE, # atLevel=1 is the top level, (since 1 is the top level as visible to the user)
                                 dataName=NULL, dataSortOrder="asc", customSortOrder=NULL, caption="{value}", dataFormat=NULL, dataFmtFuncArgs=NULL,
                                 onlyCombinationsThatExist=TRUE, explicitListOfValues=NULL, calculationGroupName=NULL,
@@ -921,6 +1144,15 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming(paste0("addRowDataGroups(", variableName, ")"), timeStart)
       return(invisible(grps))
     },
+
+    #' @description
+    #' Normalise the row data group hierarchy so that all branches have the
+    #' same number of levels - accomplished by adding empty child data groups
+    #' where needed.
+    #' @param resetCells Default `TRUE` to reset any cells that currently exist
+    #' in the pivot table and trigger a recalculation of the pivot table when
+    #' it is next rendered.
+    #' @return A list of new `PivotDataGroup` objects that have been added.
     normaliseRowGroups = function(resetCells=TRUE) {
       timeStart <- proc.time()
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$normaliseRowGroups", "Normalising row groups...")
@@ -930,6 +1162,34 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("normaliseRowGroups", timeStart)
       return(invisible())
     },
+
+    #' @description
+    #' Sort row data groups either by the data group data value, caption,
+    #' a custom order or based on calculation result values.
+    #' @param levelNumber The level number to sort the data groups, e.g.
+    #' level 1 (default) sorts the data groups at level 1 of the hierarchy
+    #' (which is the first visible level of data groups).
+    #' @param orderBy Must be either "value", "caption", "calculation",
+    #' "customByValue" or "customByCaption".
+    #' "value" sorts by the raw (i.e. unformatted) group value.
+    #' "caption" sorts by the formatted character group caption.
+    #' "calculation" sorts using one of the calculations defined in the pivot table.
+    #' "customValue" sorts by the raw (i.e. unformatted) group value according to
+    #' the specified custom sort order.
+    #' "customCaption" sorts by the formatted character group caption according to
+    #' the specified custom sort order.
+    #' @param customOrder A vector values sorted into the desired order.
+    #' @param sortOrder Must be either "asc" or "desc".
+    #' @param calculationGroupName If sorting using a calculation, the name of the
+    #' calculation group containing the specified calculation.
+    #' @param calculationName If sorting using a calculation, the name of the
+    #' calculation.
+    #' @param fromIndex A boundary to limit the sort operation.
+    #' @param toIndex A boundary to limit the sort operation.
+    #' @param resetCells Default `TRUE` to reset any cells that currently exist
+    #' in the pivot table and trigger a recalculation of the pivot table when
+    #' it is next rendered.
+    #' @return No return value.
     sortRowDataGroups = function(levelNumber=1, orderBy="calculation", customOrder=NULL, sortOrder="desc",
                                  calculationGroupName="default", calculationName=NULL,
                                  fromIndex=NULL, toIndex=NULL, resetCells=TRUE) {
@@ -957,6 +1217,18 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("sortRowDataGroups", timeStart)
       return(invisible())
     },
+
+    #' @description
+    #' Set the row group header associated with a level of the row data group
+    #' hierarchy.
+    #' @param levelNumber An integer specifying the level number.
+    #' @param header A character value specifying the caption.
+    #' @details
+    #' By default, the row data groups (i.e. row headings) at the left of the pivot
+    #' table have no column headings.  This method can specify the headings, which
+    #' can be rendered by specifying the `showRowGroupHeaders=TRUE` in the render
+    #' methods.
+    #' @return No return value.
     setRowDataGroupHeader = function(levelNumber=NULL, header=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setRowDataGroupHeader", levelNumber, missing(levelNumber), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -966,6 +1238,12 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_rowGrpHeaders[[levelNumber]] <- header
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$setRowDataGroupHeader", "Set row group header.")
     },
+
+    #' @description
+    #' Create a new calculation group.  This is rarely needed since the
+    #' default group is sufficient for all regular pivot tables.
+    #' @param calculationGroupName The name of the new calculation group to create.
+    #' @return A `PivotCalculationGroup` object.
     addCalculationGroup = function(calculationGroupName=NULL) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
@@ -979,6 +1257,60 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("addCalculationGroup", timeStart)
       return(invisible(calculationGroup))
     },
+
+    #' @description
+    #' Create a new `PivotCalculation` object.
+    #' @param calculationGroupName The name of the calculation group this
+    #' calculation will belong to.  The default calculation group will be
+    #' used if this parameter is not specified (this is sufficient for all
+    #' regular pivot tables).
+    #' @param calculationName Calculation unique name.
+    #' @param caption Calculation display name
+    #' @param visible `TRUE` to show the calculation in the pivot table or `FALSE`
+    #' to hide it.  Hidden calculations are typically used as base values for
+    #' other calculations.
+    #' @param displayOrder The order the calculations are displayed in the
+    #' pivot table.
+    #' @param filters Any additional data filters specific to this calculation.
+    #' This can be a `PivotFilters` object that further restricts the data for the
+    #' calculation or a list of individual `PivotFilter` objects that provide more
+    #' flexibility (and/or/replace).  See the Calculations vignette for details.
+    #' @param format A character, list or custom function to format the calculation
+    #' result.
+    #' @param fmtFuncArgs A list that specifies any additional arguments to pass to
+    #' a custom format function.
+    #' @param dataName Specifies which data frame in the pivot table is used for
+    #' this calculation (as specified in `pt$addData()`).
+    #' @param type The calculation type:  "summary", "calculation", "function" or
+    #' "value".
+    #' @param valueName For type="value", the name of the column containing the
+    #' value to display in the pivot table.
+    #' @param summariseExpression For type="summary", either the dplyr expression to
+    #' use with dplyr::summarise() or a data.table calculation expression.
+    #' @param calculationExpression For type="calculation", an expression to combine
+    #' aggregate values.
+    #' @param calculationFunction For type="function", a reference to a custom R
+    #' function that will carry out the calculation.
+    #' @param calcFuncArgs For type="function", a list that specifies additional
+    #' arguments to pass to calculationFunction.
+    #' @param basedOn A character vector specifying the names of one or more
+    #' calculations that this calculation depends on.
+    #' @param noDataValue An integer or numeric value specifying the value to use if
+    #' no data exists for a particular cell.
+    #' @param noDataCaption A character value that will be displayed by the pivot
+    #' table if no  data exists for a particular cell.
+    #' @param headingBaseStyleName The name of a style defined in the pivot table
+    #' to use as the base styling for the data group heading.
+    #' @param headingStyleDeclarations A list of CSS style declarations (e.g.
+    #' `list("font-weight"="bold")`) to override the base style.
+    #' @param cellBaseStyleName The name of a style defined in the pivot table to
+    #' use as the base styling for the cells related to this calculation.
+    #' @param cellStyleDeclarations A list of CSS style declarations (e.g.
+    #' `list("font-weight"="bold")`) to override the base style.
+    #' @param resetCells Default `TRUE` to reset any cells that currently exist
+    #' in the pivot table and trigger a recalculation of the pivot table when
+    #' it is next rendered.
+    #' @return A new `PivotCalculation` object.
     defineCalculation = function(calculationGroupName="default", calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
                          filters=NULL, format=NULL, fmtFuncArgs=NULL, dataName=NULL, type="summary",
                          valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, calcFuncArgs=NULL,
@@ -1045,6 +1377,23 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming(paste0("defineCalculation(", calculationGroupName, ":", calculationName, ")"), timeStart)
       return(invisible(calculation))
     },
+
+    #' @description
+    #' Set calculations on existing data groups or add multiple new groups
+    #' to the column data group hierarchy to represent calculations.
+    #' @details
+    #' If only one calculation is defined in the pivot table, then the calculation
+    #' is set onto the existing column data groups (and no new groups are generated).
+    #' If multiple calculations are defined, then a new level of data groups is
+    #' added, e.g. if two calculations are defined, then two new data groups will
+    #' be created under each existing leaf-level column data group.
+    #' @param calculationGroupName The name of the calculation group to add
+    #' into the data group hierarchy.
+    #' @param atLevel The level number that specifies where to add the new
+    #' groups.  Level 1 = on the first visible level of the hierarchy.
+    #' `NULL` = create a new level at the bottom of the hierarchy for the new
+    #' groups.
+    #' @return A list of new `PivotDataGroup` objects that have been added.
     addColumnCalculationGroups = function(calculationGroupName="default", atLevel=NULL) { # atLevel=1 is the top level, (since 1 is the top level as visible to the user)
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
@@ -1061,6 +1410,29 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addColumnCalculationGroups", "Added column calculation groups.")
       return(invisible(grps))
     },
+
+    #' @description
+    #' Set calculations on existing data groups or add multiple new groups
+    #' to the row data group hierarchy to represent calculations.
+    #' @details
+    #' If only one calculation is defined in the pivot table, then the calculation
+    #' is set onto the existing row data groups (and no new groups are generated).
+    #' If multiple calculations are defined, then a new level of data groups is
+    #' added, e.g. if two calculations are defined, then two new data groups will
+    #' be created under each existing leaf-level row data group.
+    #' @param calculationGroupName The name of the calculation group to add
+    #' into the data group hierarchy.
+    #' @param atLevel The level number that specifies where to add the new
+    #' groups.  Level 1 = on the first visible level of the hierarchy.
+    #' `NULL` = create a new level at the bottom of the hierarchy for the new
+    #' groups.
+    #' @param outlineBefore Default `FALSE` to disable the creation of outline header
+    #' groups.  Specify either `TRUE` or a list of outline group settings to create
+    #' outline header groups.  See the "Regular Layout" vignette for details.
+    #' @param outlineAfter Default `FALSE` to disable the creation of outline footer
+    #' groups.  Specify either `TRUE` or a list of outline group settings to create
+    #' outline footer groups.  See the "Regular Layout" vignette for details.
+    #' @return A list of new `PivotDataGroup` objects that have been added.
     addRowCalculationGroups = function(calculationGroupName="default", atLevel=NULL, outlineBefore=NULL, outlineAfter=NULL) { # atLevel=1 is the top level, (since 1 is the top level as visible to the user)
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowCalculationGroups", calculationGroupName, missing(calculationGroupName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
@@ -1087,6 +1459,13 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addRowCalculationGroups", "Added row calculation groups.")
       return(invisible(grps))
     },
+
+    #' @description
+    #' Add a new named style to the pivot table.
+    #' @param styleName The name of the new style.
+    #' @param declarations CSS style declarations in the form of a list, e.g.
+    #' `list("font-weight"="bold", "color"="#0000FF")`
+    #' @return The newly created `PivotStyle` object.
     addStyle = function(styleName=NULL, declarations=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addStyle", styleName, missing(styleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -1097,6 +1476,20 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addStyle", "Added style.")
       return(invisible(style))
     },
+
+    #' @description
+    #' Create an inline style that can be used to override a base style.
+    #' For general use cases, the `setStyling()` method provides a simpler
+    #' and more direct way of styling specific parts of a pivot table.
+    #' @details
+    #' Inline styles are typically used to override the style of some specific
+    #' cells in a pivot table.  Inline styles have no name.
+    #' In HTML, they are rendered as 'style' attributes on specific table cells,
+    #' where as named styles are linked to cells using the 'class' attribute.
+    #' @param baseStyleName The name of an existing style to base the new style on.
+    #' @param declarations CSS style declarations in the form of a list, e.g.
+    #' `list("font-weight"="bold", "color"="#0000FF")`
+    #' @return The newly created `PivotStyle` object.
     createInlineStyle = function(baseStyleName=NULL, declarations=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "createInlineStyle", declarations, missing(declarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="character")
@@ -1113,6 +1506,33 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$createInlineStyle", "Created inline style.")
       return(invisible(style))
     },
+
+    #' @description
+    #' Apply styling to part of a pivot table.
+    #' @details
+    #' There are three ways to specify the part of a pivot table to apply styling
+    #' to:
+    #' (1) By specifying a list of data groups using the `groups` argument.
+    #' (2) By specifying a list of cells using the `cells` argument.
+    #' (3) By specifying a rectangular cell range using `rFrom`, `cFrom`, `rTo`
+    #' and `cTo`.
+    #' See the "Finding and Formatting" vignette for more information and many
+    #' examples.
+    #' @param rFrom An integer row number that specifies the start row for the
+    #' styling changes.
+    #' @param cFrom An integer column number that specifies the start column for the
+    #' styling changes.
+    #' @param rTo An integer row number that specifies the end row for the styling
+    #' changes.
+    #' @param cTo An integer column number that specifies the end column for the
+    #' styling changes.
+    #' @param groups A list containing `PivotDataGroup` objects.
+    #' @param cells A list containing `PivotCell` objects.
+    #' @param baseStyleName The name of a style to apply.
+    #' @param style A `PivotStyle` object to apply.
+    #' @param declarations CSS style declarations to apply in the form of a list,
+    #' e.g. `list("font-weight"="bold", "color"="#0000FF")`
+    #' @return No return value.
     setStyling = function(rFrom=NULL, cFrom=NULL, rTo=NULL, cTo=NULL, groups=NULL, cells=NULL, baseStyleName=NULL, style=NULL, declarations=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", rFrom, missing(rFrom), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
@@ -1184,6 +1604,13 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$setStyling", "Set styling.")
     },
+
+    #' @description
+    #' Generate the cells that will form the body of the pivot table.
+    #' @details
+    #' This method rarely needs to be called explicitly, since other methods will
+    #' invoke it if needed.
+    #' @return No return value.
     generateCellStructure = function() {
       timeStart <- proc.time()
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$generateCellStructure", "Generating cell structure...")
@@ -1364,6 +1791,13 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("generateCellStructure", timeStart)
       return(invisible(private$cells))
     },
+
+    #' @description
+    #' Clear the cells of the pivot table.
+    #' @details
+    #' The cells are reset automatically when structural changes are made to the
+    #' pivot table, so this method rarely needs to be called explicitly.
+    #' @return No return value.
     resetCells = function() {
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$resetCells", "Resetting cells...")
       if(private$p_evaluated==TRUE){
@@ -1377,6 +1811,13 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$resetCells", "Reset cells.")
       return(invisible())
     },
+
+    #' @description
+    #' Calculate the cell values in the body of the pivot table.
+    #' @details
+    #' This method rarely needs to be called explicitly, since other methods will
+    #' invoke it if needed.
+    #' @return No return value.
     evaluateCells = function() {
       timeStartT <- proc.time()
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$evaluateCells", "Evaluating cell values...")
@@ -1417,6 +1858,17 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("evaluateCells:total", timeStartT)
       return(invisible())
     },
+
+    #' @description
+    #' Calculate the cell values in the body of the pivot table.
+    #' @details
+    #' This generally only needs to be called explicitly if specific pivot cells
+    #' need to be further processed (e.g. formatted) before the pivot table is
+    #' rendered.
+    #' This method is a wrapper for calling `normaliseColumnGroups()`,
+    #' `normaliseRowGroups()`, `generateCellStructure()` and `evaluateCells()`
+    #' in sequence.
+    #' @return No return value.
     evaluatePivot = function() {
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$evaluatePivot", "Evaluating pivot table...")
       self$normaliseColumnGroups()
@@ -1426,6 +1878,46 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$evaluatePivot", "Evaluated pivot table.")
       return(invisible())
     },
+
+    #' @description
+    #' Find row data groups that match specified criteria.
+    #' @param matchMode Either "simple" (default) or "combinations".
+    #' "simple" is used when matching only one variable-value, multiple
+    #' variable-value combinations are effectively logical "OR".
+    #' "combinations" is used when matching for combinations of variable
+    #' values, multiple variable-value combinations are effectively
+    #' logical "AND".  A child group is viewed as having the variable-value
+    #' filters of itself and it's parent/ancestors, e.g.
+    #' `list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
+    #' would return the "DMU" data group underneath "Express Passenger".
+    #' See the "Finding and Formatting" vignette for graphical examples.
+    #' @param variableNames A character vector specifying the name/names of the
+    #' variables to find.  This is useful generally only in pivot tables with
+    #' irregular layouts, since in regular pivot tables every cell is related
+    #' to every variable.
+    #' @param variableValues A list specifying the variable names and values to find,
+    #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
+    #' Specify "**" as the variable value to match totals for the specified variable.
+    #' Specify "!*" as the variable value to match non-totals for the specified variable.
+    #' NB: The totals/non-totals criteria above won’t work when visual totals are used.
+    #' @param totals A word that specifies how totals are matched (overrides the finer
+    #' settings above) - must be one of "include" (default), "exclude" or "only".
+    #' @param calculationNames A character vector specifying the name/names of the
+    #' calculations to find.
+    #' @param atLevels An integer vector constraining the levels in the hierarchy to
+    #' search.
+    #' @param minChildCount Match only data groups with this minimum number of children.
+    #' @param maxChildCount Match only data groups with this maximum number of children.
+    #' @param emptyGroups A word that specifies how empty groups are matched -
+    #' must be one of "include", "exclude" (default) or "only".
+    #' @param outlineGroups A word that specifies how outline cells are matched -
+    #' must be one of "include", "exclude" (default) or "only".
+    #' @param outlineLinkedGroupExists `TRUE` to match only groups where the related
+    #' outline child group still exists.  `FALSE` to match only groups where the related
+    #' outline child group no longer exists.
+    #' @param includeDescendantGroups Default `FALSE`.  Specify true to also return
+    #' all descendants of data groups that match the specified criteria.
+    #' @return A list of data groups matching the specified criteria.
     findRowDataGroups = function(matchMode="simple", variableNames=NULL, variableValues=NULL,
                                  totals="include", calculationNames=NULL,
                                  atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
@@ -1456,6 +1948,41 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findRowDataGroups", "Found row data groups.")
       return(invisible(grps))
     },
+
+    #' @description
+    #' Find column data groups that match specified criteria.
+    #' @param matchMode Either "simple" (default) or "combinations".
+    #' "simple" is used when matching only one variable-value, multiple
+    #' variable-value combinations are effectively logical "OR".
+    #' "combinations" is used when matching for combinations of variable
+    #' values, multiple variable-value combinations are effectively
+    #' logical "AND".  A child group is viewed as having the variable-value
+    #' filters of itself and it's parent/ancestors, e.g.
+    #' `list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
+    #' would return the "DMU" data group underneath "Express Passenger".
+    #' See the "Finding and Formatting" vignette for graphical examples.
+    #' @param variableNames A character vector specifying the name/names of the
+    #' variables to find.  This is useful generally only in pivot tables with
+    #' irregular layouts, since in regular pivot tables every cell is related
+    #' to every variable.
+    #' @param variableValues A list specifying the variable names and values to find,
+    #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
+    #' Specify "**" as the variable value to match totals for the specified variable.
+    #' Specify "!*" as the variable value to match non-totals for the specified variable.
+    #' NB: The totals/non-totals criteria above won’t work when visual totals are used.
+    #' @param totals A word that specifies how totals are matched (overrides the finer
+    #' settings above) - must be one of "include" (default), "exclude" or "only".
+    #' @param calculationNames A character vector specifying the name/names of the
+    #' calculations to find.
+    #' @param atLevels An integer vector constraining the levels in the hierarchy to
+    #' search.
+    #' @param minChildCount Match only data groups with this minimum number of children.
+    #' @param maxChildCount Match only data groups with this maximum number of children.
+    #' @param emptyGroups A word that specifies how empty groups are matched -
+    #' must be one of "include", "exclude" (default) or "only".
+    #' @param includeDescendantGroups Default `FALSE`.  Specify true to also return
+    #' all descendants of data groups that match the specified criteria.
+    #' @return A list of data groups matching the specified criteria.
     findColumnDataGroups = function(matchMode="simple", variableNames=NULL, variableValues=NULL,
                                     totals="include", calculationNames=NULL,
                                     atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
@@ -1481,10 +2008,22 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findColumnDataGroups", "Found column data groups.")
       return(invisible(grps))
     },
-    getEmptyRows = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE, includeOutlineRows=FALSE) {
+
+    #' @description
+    #' Retrieve row numbers for rows where all cells are empty.
+    #' @details
+    #' `NULL` cell values are always regarded as empty.
+    #' @param NAasEmpty `TRUE` (default) specifies that `NA` is treated as empty.
+    #' @param zeroAsEmpty `TRUE` specifies that zero is treated as empty,
+    #' default `FALSE`.
+    #' @param zeroTolerance The tolerance for zero comparisons, default 0.000001.
+    #' @param includeOutlineRows `TRUE` to also examine outline rows, default `FALSE`.
+    #' @return An integer vector of row numbers.
+    getEmptyRows = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE, zeroTolerance=0.000001, includeOutlineRows=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyRows", NAasEmpty, missing(NAasEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyRows", zeroAsEmpty, missing(zeroAsEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyRows", zeroTolerance, missing(zeroTolerance), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer","numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyRows", includeOutlineRows, missing(includeOutlineRows), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyRows", "Getting empty rows...")
@@ -1503,7 +2042,7 @@ PivotTable <- R6::R6Class("PivotTable",
           isNULL <- FALSE
           isNULL <- isNULL || is.null(cell$rawValue)
           isNULL <- isNULL || ((NAasEmpty==TRUE)&&(is.na(cell$rawValue)))
-          isNULL <- isNULL || ((zeroAsEmpty==TRUE)&&(cell$rawValue==0))
+          isNULL <- isNULL || ((zeroAsEmpty==TRUE)&&(abs(cell$rawValue)<zeroTolerance))
           if(isNULL==FALSE) {
             allCellsNull <- FALSE
             break
@@ -1516,10 +2055,21 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyRows", "Got empty rows.")
       return(invisible(emptyRowNumbers))
     },
-    getEmptyColumns = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE) {
+
+    #' @description
+    #' Retrieve column numbers for columns where all cells are empty.
+    #' @details
+    #' `NULL` cell values are always regarded as empty.
+    #' @param NAasEmpty `TRUE` (default) specifies that `NA` is treated as empty.
+    #' @param zeroAsEmpty `TRUE` specifies that zero is treated as empty,
+    #' default `FALSE`.
+    #' @param zeroTolerance The tolerance for zero comparisons, default 0.000001.
+    #' @return An integer vector of column numbers.
+    getEmptyColumns = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE, zeroTolerance=0.000001) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyColumns", NAasEmpty, missing(NAasEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyColumns", zeroAsEmpty, missing(zeroAsEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getEmptyRows", zeroTolerance, missing(zeroTolerance), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer","numeric"))
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyColumns", "Getting empty columns...")
       if(!private$p_evaluated) stop("PivotTable$getEmptyColumns():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
@@ -1534,7 +2084,7 @@ PivotTable <- R6::R6Class("PivotTable",
           isNULL <- FALSE
           isNULL <- isNULL || is.null(cell$rawValue)
           isNULL <- isNULL || ((NAasEmpty==TRUE)&&(is.na(cell$rawValue)))
-          isNULL <- isNULL || ((zeroAsEmpty==TRUE)&&(cell$rawValue==0))
+          isNULL <- isNULL || ((zeroAsEmpty==TRUE)&&(abs(cell$rawValue)<zeroTolerance))
           if(isNULL==FALSE) {
             allCellsNull <- FALSE
             break
@@ -1547,6 +2097,16 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyColumns", "Got empty columns.")
       return(invisible(emptyColumnNumbers))
     },
+
+    #' @description
+    #' Get the cell at the specified row and column coordinates in the pivot table.
+    #' @details
+    #' The row and column numbers refer only to the cells in the body of the pivot
+    #' table, i.e. row and column headings are excluded, e.g. row 1 is the first
+    #' row of cells underneath the column headings.
+    #' @param r Row number of the cell to retrieve.
+    #' @param c Column number of the cell to retrieve.
+    #' @return A `PivotCell` object representing the cell.
     getCell = function(r=NULL, c=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCell", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -1560,6 +2120,46 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getCell", "Got cell.")
       return(invisible(cell))
     },
+
+    #' @description
+    #' Retrieve cells by a combination of row and/or column numbers.
+    #' See the "Finding and Formatting" vignette for graphical examples.
+    #' @details
+    #' when `specifyCellsAsList=TRUE` (the default):
+    #' Get one or more rows by specifying the row numbers as a vector as
+    #' the rowNumbers argument and leaving the columnNumbers argument set
+    #' to the default value of `NULL`, or
+    #' Get one or more columns by specifying the column numbers as a vector
+    #' as the columnNumbers argument and leaving the rowNumbers argument
+    #' set to the default value of `NULL`, or
+    #' Get one or more individual cells by specifying the cellCoordinates
+    #' argument as a list of vectors of length 2, where each element in the
+    #' list is the row and column number of one cell,
+    #' e.g. `list(c(1, 2), c(3, 4))` specifies two cells, the first located
+    #' at row 1, column 2 and the second located at row 3, column 4.
+    #' When `specifyCellsAsList=FALSE`:
+    #' Get one or more rows by specifying the row numbers as a vector as the
+    #' rowNumbers argument and leaving the columnNumbers argument set to the
+    #' default value of `NULL`, or
+    #' Get one or more columns by specifying the column numbers as a vector
+    #' as the columnNumbers argument and leaving the rowNumbers argument set
+    #' to the default value of `NULL`, or
+    #' Get one or more cells by specifying the row and column numbers as vectors
+    #' for the rowNumbers and columnNumbers arguments, or
+    #' a mixture of the above, where for entire rows/columns the element in the
+    #' other vector is set to `NA`, e.g. to retrieve whole rows, specify the row
+    #' numbers as the rowNumbers but set the corresponding elements in the
+    #' columnNumbers vector to `NA`.
+    #' @param specifyCellsAsList `TRUE` to specify how cells are retrieved.
+    #' Default `TRUE`. More information is provided in the details section.
+    #' @param rowNumbers A vector of row numbers that specify the rows or
+    #' cells to retrieve.
+    #' @param columnNumbers A vector of row numbers that specify the columns
+    #' or cells to retrieve.
+    #' @param cellCoordinates A list of two-element vectors that specify the
+    #' coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.
+    #' @param excludeEmptyCells `TRUE` (default) to also search empty cells.
+    #' @return A list of `PivotCell` objects.
     getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", specifyCellsAsList, missing(specifyCellsAsList), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
@@ -1581,6 +2181,35 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getCells", "Got cells.")
       return(invisible(cells))
     },
+
+    #' @description
+    #' Find cells matching specified criteria.
+    #' See the "Finding and Formatting" vignette for graphical examples.
+    #' @param variableNames A character vector specifying the name/names of the
+    #' variables to find.  This is useful generally only in pivot tables with
+    #' irregular layouts, since in regular pivot tables every cell is related
+    #' to every variable.
+    #' @param variableValues A list specifying the variable names and values to find,
+    #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
+    #' Specify "**" as the variable value to match totals for the specified variable.
+    #' Specify "!*" as the variable value to match non-totals for the specified variable.
+    #' NB: The totals/non-totals criteria above won’t work when visual totals are used.
+    #' @param totals A word that specifies how totals are matched (overrides the finer
+    #' settings above) - must be one of "include" (default), "exclude" or "only".
+    #' @param calculationNames A character vector specifying the name/names of the
+    #' calculations to find.
+    #' @param minValue A numerical value specifying a minimum value threshold.
+    #' @param maxValue A numerical value specifying a maximum value threshold.
+    #' @param exactValues A vector or list specifying a set of allowed values.
+    #' @param includeNull specify TRUE to include `NULL` in the matched cells,
+    #' FALSE to exclude `NULL` values.
+    #' @param includeNA specify TRUE to include `NA` in the matched cells,
+    #' FALSE to exclude `NA` values.
+    #' @param emptyCells A word that specifies how empty cells are matched -
+    #' must be one of "include", "exclude" (default) or "only".
+    #' @param outlineCells A word that specifies how outline cells are matched -
+    #' must be one of "include", "exclude" (default) or "only".
+    #' @return A list of `PivotCell` objects.
     findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
                          minValue=NULL, maxValue=NULL, exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
                          emptyCells="exclude", outlineCells="exclude") {
@@ -1606,6 +2235,12 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findCells", "Found cells.")
       return(invisible(cells))
     },
+
+    #' @description
+    #' Find the column numbers associated with a specific data group.
+    #' @param group A `PivotDataGroup` in the column data groups (i.e. a
+    #' column heading).
+    #' @return A vector of column numbers related to the specified group.
     findGroupColumnNumbers = function(group=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findGroupColumnNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
@@ -1617,6 +2252,12 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$findGroupColumnNumbers", "Found group column numbers.")
       return(invisible(matchingColumnNumbers))
     },
+
+    #' @description
+    #' Find the row numbers associated with a specific data group.
+    #' @param group A `PivotDataGroup` in the row data groups (i.e. a
+    #' row heading).
+    #' @return A vector of row numbers related to the specified group.
     findGroupRowNumbers = function(group=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findGroupRowNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
@@ -1628,6 +2269,14 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$findGroupRowNumbers", "Found group row numbers.")
       return(invisible(matchingColumnNumbers))
     },
+
+    #' @description
+    #' Remove a column from the pivot table.
+    #' @details
+    #' This method removes both the related column group and cells.
+    #' @param c The column number.  The first column is column 1, excluding the
+    #' column(s) associated with row-headings.
+    #' @return No return value.
     removeColumn = function(c=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeColumn", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -1638,6 +2287,14 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_cells$removeColumn(c)
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeColumn", "Removed column.")
     },
+
+    #' @description
+    #' Remove multiple column from the pivot table.
+    #' @details
+    #' This method removes both the related column groups and cells.
+    #' @param columnNumbers The column numbers.  The first column is column 1, excluding the
+    #' column(s) associated with row-headings.
+    #' @return No return value.
     removeColumns = function(columnNumbers=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeColumns", columnNumbers, missing(columnNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -1648,18 +2305,37 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_cells$removeColumns(columnNumbers)
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeColumns", "Removed columns.")
     },
-    removeEmptyColumns = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE) {
+
+    #' @description
+    #' Remove columns where all cells are empty.
+    #' @details
+    #' `NULL` cell values are always regarded as empty.
+    #' @param NAasEmpty `TRUE` (default) specifies that `NA` is treated as empty.
+    #' @param zeroAsEmpty `TRUE` specifies that zero is treated as empty,
+    #' default `FALSE`.
+    #' @param zeroTolerance The tolerance for zero comparisons, default 0.000001.
+    #' @return No return value.
+    removeEmptyColumns = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE, zeroTolerance=0.000001) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyColumns", NAasEmpty, missing(NAasEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyColumns", zeroAsEmpty, missing(zeroAsEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyColumns", zeroTolerance, missing(zeroTolerance), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
       }
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeEmptyColumns", "Removing empty columns...")
       if(!private$p_evaluated) stop("PivotTable$removeEmptyColumns():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$removeEmptyColumns():  No cells exist to retrieve.", call. = FALSE)
-      columnNumbers <- self$getEmptyColumns(NAasEmpty=NAasEmpty, zeroAsEmpty=zeroAsEmpty)
+      columnNumbers <- self$getEmptyColumns(NAasEmpty=NAasEmpty, zeroAsEmpty=zeroAsEmpty, zeroTolerance=zeroTolerance)
       if((!is.null(columnNumbers))&&(length(columnNumbers)>0)) private$p_cells$removeColumns(columnNumbers)
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeEmptyColumns", "Removed empty columns.")
     },
+
+    #' @description
+    #' Remove a row from the pivot table.
+    #' @details
+    #' This method removes both the related row group and cells.
+    #' @param r The row number.  The first row is row 1, excluding the
+    #' row(s) associated with column-headings.
+    #' @return No return value.
     removeRow = function(r=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeRow", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -1670,6 +2346,14 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_cells$removeRow(r)
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeRow", "Removed row.")
     },
+
+    #' @description
+    #' Remove multiple rows from the pivot table.
+    #' @details
+    #' This method removes both the related row groups and cells.
+    #' @param rowNumbers The row numbers.  The first row is row 1, excluding the
+    #' rows(s) associated with column-headings.
+    #' @return No return value.
     removeRows = function(rowNumbers=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeRows", rowNumbers, missing(rowNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -1680,19 +2364,41 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_cells$removeRows(rowNumbers)
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeRows", "Removed rows.")
     },
-    removeEmptyRows = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE, includeOutlineRows=FALSE) {
+
+    #' @description
+    #' Remove rows where all cells are empty.
+    #' @details
+    #' `NULL` cell values are always regarded as empty.
+    #' @param NAasEmpty `TRUE` (default) specifies that `NA` is treated as empty.
+    #' @param zeroAsEmpty `TRUE` specifies that zero is treated as empty,
+    #' default `FALSE`.
+    #' @param zeroTolerance The tolerance for zero comparisons, default 0.000001.
+    #' @param includeOutlineRows `TRUE` to also remove empty outline rows,
+    #' default `FALSE`.
+    #' @return No return value.
+    removeEmptyRows = function(NAasEmpty=TRUE, zeroAsEmpty=FALSE, zeroTolerance=0.000001, includeOutlineRows=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyRows", NAasEmpty, missing(NAasEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyRows", zeroAsEmpty, missing(zeroAsEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyRows", zeroTolerance, missing(zeroTolerance), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "removeEmptyRows", includeOutlineRows, missing(includeOutlineRows), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeEmptyRows", "Removing empty rows...")
       if(!private$p_evaluated) stop("PivotTable$removeEmptyRows():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$removeEmptyRows():  No cells exist to retrieve.", call. = FALSE)
-      rowNumbers <- self$getEmptyRows(NAasEmpty=NAasEmpty, zeroAsEmpty=zeroAsEmpty, includeOutlineRows=includeOutlineRows)
+      rowNumbers <- self$getEmptyRows(NAasEmpty=NAasEmpty, zeroAsEmpty=zeroAsEmpty, zeroTolerance=zeroTolerance, includeOutlineRows=includeOutlineRows)
       if((!is.null(rowNumbers))&&(length(rowNumbers)>0)) private$p_cells$removeRows(rowNumbers)
       if(private$p_traceEnabled==TRUE) private$p_parentPivot$trace("PivotTable$removeEmptyRows", "Removed empty rows.")
     },
+
+    #' @description
+    #' Outputs a plain text representation of the pivot table to the console or
+    #' returns a character representation of the pivot table.
+    #' @param asCharacter `FALSE`(default) outputs to the console, specify `TRUE`
+    #' to instead return a character value (does not output to console).
+    #' @param showRowGroupHeaders `TRUE` to include the row group headers in the
+    #' output, default `FALSE`.
+    #' @return Plain text representation of the pivot table.
     print = function(asCharacter=FALSE, showRowGroupHeaders=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "print", asCharacter, missing(asCharacter), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -1888,6 +2594,23 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$print", "Printed matrix.")
       return(invisible(paste0(returnLines, sep="", collapse="\n")))
     },
+
+    #' @description
+    #' Convert the pivot table to a matrix, where the data group headings
+    #' are included in the body of the matrix.  This method tends to produce
+    #' a character matrix.
+    #' @details
+    #' The newer `asDataMatrix()` tends to produce more a useful matrix.
+    #' See the "Outputs" vignette for a comparison of outputs.
+    #' @param includeHeaders `TRUE` (default) to include the headings in the
+    #' body of the matrix.  Specifying `FALSE` omits the headings.
+    #' @param repeatHeaders `FALSE` (default) only outputs the first occurance of each
+    #' header. Specify `TRUE` to repeat the headings.
+    #' @param rawValue `FALSE` (default) outputs the formatted (character) values.
+    #' Specify `TRUE` to output the raw cell values.
+    #' @param showRowGroupHeaders `TRUE` to include the row group headers in the
+    #' matrix, default `FALSE`.
+    #' @return A matrix.
     asMatrix = function(includeHeaders=TRUE, repeatHeaders=FALSE, rawValue=FALSE, showRowGroupHeaders=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asMatrix", includeHeaders, missing(includeHeaders), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -1972,10 +2695,27 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asMatrix", "Got pivot table as a matrix.")
       return(m)
     },
+
+    #' @description
+    #' Convert the pivot table to a matrix, where the data group headings
+    #' are included as row/column headings in the matrix.
+    #' This method tends to produce a numeric matrix.
+    #' @details
+    #' Where there are multiple levels in a data group hierarchy, the captions are
+    #' concatenated to form the row/column headings in the matrix.
+    #' See the "Outputs" vignette for a comparison of outputs.
+    #' @param includeHeaders `TRUE` (default) to include the headings in the matrix.
+    #' Specifying `FALSE` omits the headings.
+    #' @param rawValue `TRUE` (default) outputs the raw cell values.
+    #' Specify `FALSE` to output the formatted (character) values.
+    #' @param separator Specifies the character value used to concatenate data
+    #' group captions where multiple levels exist in the data group hierarchy.
+    #' @return A matrix.
     asDataMatrix = function(includeHeaders=TRUE, rawValue=TRUE, separator=" ") {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataMatrix", includeHeaders, missing(includeHeaders), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataMatrix", rawValue, missing(rawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataMatrix", separator, missing(separator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asDataMatrix", "Getting pivot table as a data matrix...",
                                                   list(rawValue=rawValue, separator=separator))
@@ -2032,6 +2772,22 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asDataMatrix", "Got pivot table as a data matrix.")
       return(m)
     },
+
+    #' @description
+    #' Convert the pivot table to a data frame, combining multiple levels of
+    #' headings with the specified separator and/or exporting the row groups
+    #' as columns in the data frame.
+    #' @details
+    #' See the "Outputs" vignette for more details and examples
+    #' @param separator Specifies the character value used to concatenate data
+    #' group captions where multiple levels exist in the data group hierarchy.
+    #' @param stringsAsFactors Specify `TRUE`to convert strings to factors,
+    #' default `default.stringsAsFactors()`.
+    #' @param forceNumeric Specify `TRUE` to force the conversion of cell values
+    #' to a numeric value, default `FALSE`.
+    #' @param rowGroupsAsColumns Specify `TRUE` to include the row groups as
+    #' additional columns in the data frame.  Default `FALSE`.
+    #' @return A data frame.
     asDataFrame = function(separator=" ", stringsAsFactors=default.stringsAsFactors(), forceNumeric=FALSE, rowGroupsAsColumns=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataFrame", separator, missing(separator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
@@ -2127,6 +2883,23 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asDataFrame", "Got pivot table as a data frame.")
       return(df)
     },
+
+    #' @description
+    #' Convert the pivot table to tidy data frame, where each cell in the body of
+    #' the pivot table becomes one row in the data frame.
+    #' @details
+    #' See the "Outputs" vignette for more details and examples
+    #' @param includeGroupCaptions `TRUE` (default) to include the data group
+    #' captions as columns in the data frame.
+    #' @param includeGroupValues `TRUE` (default) to include the data group
+    #' values as columns in the data frame.
+    #' @param separator Specifies the character value used to concatendate
+    #' filter values where multiple values exist in a filter.
+    #' @param stringsAsFactors Specify `TRUE`to convert strings to factors,
+    #' default `default.stringsAsFactors()`.
+    #' @param excludeEmptyCells Specify `FALSE` to also include rows for
+    #' empty cells in the data frame, default `TRUE`.
+    #' @return A data frame.
     asTidyDataFrame = function(includeGroupCaptions=TRUE, includeGroupValues=TRUE, separator=" ", stringsAsFactors=default.stringsAsFactors(),
                                excludeEmptyCells=TRUE) {
       if(private$p_argumentCheckMode > 0) {
@@ -2245,6 +3018,13 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asTidyDataFrame", "Got pivot table as a tidy data frame.")
       return(invisible(as.data.frame(df, stringsAsFactors=stringsAsFactors)))
     },
+
+    #' @description
+    #' Generate a list of the merged cell information arising from the data
+    #' group hierarchies.
+    #' This is an internal method used to support rendering the pivot table.
+    #' @param axis Either "row" or "column".
+    #' @return A list containing details of the merged cells.
     getMerges = function(axis=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getMerges", axis, missing(axis), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character", allowedValues=c("row", "column"))
@@ -2366,6 +3146,19 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getMerges", "Got merges.")
       return(invisible(mergeInfo))
     },
+
+    #' @description
+    #' Convert the pivot table to a `basictabler` table (from the `basictabler`
+    #' R package) which allows further custom manipulation of the pivot table.
+    #' @details
+    #' See the "Outputs" vignette for more details and examples
+    #' @param exportOptions A list of additional export options - see the
+    #' "A1. Appendix" for details.
+    #' @param compatibility A list containing compatibility options to force
+    #' legacy behaviours in the resulting `basictabler` table.
+    #' @param showRowGroupHeaders `TRUE` to include the row group headers in the
+    #' matrix, default `FALSE`.
+    #' @return A `basictabler` table.
     asBasicTable = function(exportOptions=NULL, compatibility=NULL, showRowGroupHeaders=FALSE) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
@@ -2381,6 +3174,14 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("asBasicTable", timeStart)
       return(invisible(btbl))
     },
+
+    #' @description
+    #' Get the CSS declarations for the pivot table.
+    #' @details
+    #' See the "Outputs" vignette for more details and examples.
+    #' @param styleNamePrefix A character variable specifying a prefix for all named
+    #' CSS styles, to avoid style name collisions where multiple pivot tables exist.
+    #' @return A character value containing the CSS style declaration.
     getCss = function(styleNamePrefix=NULL) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
@@ -2399,6 +3200,36 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("getCss", timeStart)
       return(invisible(styles))
     },
+
+    #' @description
+    #' Generate a HTML representation of the pivot table, optionally including
+    #' additional detail for debugging purposes.
+    #' @details
+    #' See the "Outputs" vignette for more details and examples.
+    #' @param styleNamePrefix A character variable specifying a prefix for all named
+    #' CSS styles, to avoid style name collisions where multiple pivot tables exist.
+    #' @param includeHeaderValues Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeRCFilters Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeCalculationFilters Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeWorkingData Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeEvaluationFilters Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeCalculationNames Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeRawValue Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeTotalInfo Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param exportOptions A list of additional export options - see the
+    #' "A1. Appendix" for details.
+    #' @param showRowGroupHeaders Default `FALSE`, specify `TRUE` to render the row
+    #' group headings.  See the "Data Groups" vignette for details.
+    #' @return A list containing HTML tags from the `htmltools` package.
+    #' Convert this to a character variable using `as.character()`.
     getHtml = function(styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE,
                        includeCalculationFilters=FALSE, includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
                        includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE,
@@ -2430,6 +3261,38 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("getHtml", timeStart)
       return(invisible(htmlTable))
     },
+
+    #' @description
+    #' Save a HTML representation of the pivot table to file, optionally including
+    #' additional detail for debugging purposes.
+    #' @details
+    #' See the "Outputs" vignette for more details and examples.
+    #' @param filePath The file to save the HTML to.
+    #' @param fullPageHTML `TRUE` (default) includes basic HTML around the pivot
+    #' table HTML so that the result file is a valid HTML file.
+    #' @param styleNamePrefix A character variable specifying a prefix for all named
+    #' CSS styles, to avoid style name collisions where multiple pivot tables exist.
+    #' @param includeHeaderValues Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeRCFilters Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeCalculationFilters Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeWorkingData Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeEvaluationFilters Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeCalculationNames Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeRawValue Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeTotalInfo Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param exportOptions A list of additional export options - see the
+    #' "A1. Appendix" for details.
+    #' @param showRowGroupHeaders Default `FALSE`, specify `TRUE` to render the row
+    #' group headings.  See the "Data Groups" vignette for details.
+    #' @return No return value.
     saveHtml = function(filePath=NULL, fullPageHTML=TRUE, styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE,
                         includeCalculationFilters=FALSE, includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
                         includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE,
@@ -2483,6 +3346,37 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$saveHtml", "Saved HTML.")
       return(invisible())
     },
+
+    #' @description
+    #' Render a HTML representation of the pivot table as an HTML widget,
+    #' optionally including additional detail for debugging purposes.
+    #' @details
+    #' See the "Outputs" vignette for more details and examples.
+    #' @param width The width of the widget.
+    #' @param height The height of the widget.
+    #' @param styleNamePrefix A character variable specifying a prefix for all named
+    #' CSS styles, to avoid style name collisions where multiple pivot tables exist.
+    #' @param includeHeaderValues Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeRCFilters Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeCalculationFilters Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeWorkingData Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeEvaluationFilters Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeCalculationNames Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeRawValue Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param includeTotalInfo Default `FALSE`, specify `TRUE` to render
+    #' this debug information.
+    #' @param exportOptions A list of additional export options - see the
+    #' "A1. Appendix" for details.
+    #' @param showRowGroupHeaders Default `FALSE`, specify `TRUE` to render the row
+    #' group headings.  See the "Data Groups" vignette for details.
+    #' @return A HTML widget from the `htmlwidgets` package.
     renderPivot = function(width=NULL, height=NULL, styleNamePrefix=NULL, includeHeaderValues=FALSE, includeRCFilters=FALSE,
                            includeCalculationFilters=FALSE, includeWorkingData=FALSE, includeEvaluationFilters=FALSE,
                            includeCalculationNames=FALSE, includeRawValue=FALSE, includeTotalInfo=FALSE,
@@ -2535,6 +3429,24 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$renderPivot", "Rendered htmlwidget.")
       return(w)
     },
+
+    #' @description
+    #' Generate a Latex representation of the pivot table.
+    #' @param caption The caption to appear above the table.
+    #' @param label The label to use when referring to the table elsewhere in
+    #' the document
+    #' @param fromRow The row number to render from.
+    #' @param toRow The row number to render to.
+    #' @param fromColumn The column number to render from.
+    #' @param toColumn The column number to render to.
+    #' @param boldHeadings Default `FALSE`, specify `TRUE` to render headings
+    #' in bold.
+    #' @param italicHeadings Default `FALSE`, specify `TRUE` to render headings
+    #' in italic.
+    #' @param exportOptions A list of additional export options - see the
+    #' "A1. Appendix" for details.
+    #' @return A character variable containing the Latex representation of
+    #' the pivot table.
     getLatex = function(caption=NULL, label=NULL, fromRow=NULL, toRow=NULL, fromColumn=NULL, toColumn=NULL,
                         boldHeadings=FALSE, italicHeadings=FALSE, exportOptions=NULL) {
       timeStart <- proc.time()
@@ -2561,7 +3473,34 @@ PivotTable <- R6::R6Class("PivotTable",
       private$addTiming("getLatex", timeStart)
       return(ltx)
     },
-    writeToExcelWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, outputHeadingsAs="formattedValueAsText", outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE, exportOptions=NULL, showRowGroupHeaders=FALSE) {
+
+    #' @description
+    #' Write the pivot table into the specified workbook and worksheet at
+    #' the specified row-column location.
+    #' @param wb A `Workbook` object representing the Excel file being written
+    #' to.
+    #' @param wsName A character value specifying the name of the worksheet to
+    #' write to.
+    #' @param topRowNumber An integer value specifying the row number in the
+    #' Excel worksheet  to write the pivot table.
+    #' @param leftMostColumnNumber An integer value specifying the column number
+    #' in the Excel worksheet to write the pivot table.
+    #' @param outputHeadingsAs Must be one of "rawValue",
+    #' "formattedValueAsText" (default) or "formattedValueAsNumber" to specify
+    #' how data groups are written into the Excel sheet.
+    #' @param outputValuesAs Must be one of "rawValue" (default),
+    #' "formattedValueAsText" or "formattedValueAsNumber" to specify
+    #' how cell values are written into the Excel sheet.
+    #' @param applyStyles Default `TRUE` to write styling information to the cell.
+    #' @param mapStylesFromCSS Default `TRUE` to automatically convert CSS style
+    #' declarations to their Excel equivalents.
+    #' @param exportOptions A list of additional export options - see the
+    #' "A1. Appendix" for details.
+    #' @param showRowGroupHeaders Default `FALSE`, specify `TRUE` to write row
+    #' group headers.
+    #' @return No return value.
+    writeToExcelWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, outputHeadingsAs="formattedValueAsText",
+                                     outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE, exportOptions=NULL, showRowGroupHeaders=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="Workbook")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
@@ -2585,6 +3524,14 @@ PivotTable <- R6::R6Class("PivotTable",
                                                   exportOptions=exportOptions, showRowGroupHeaders=showRowGroupHeaders)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$writeToExcelWorksheet", "Written to worksheet.")
     },
+
+    #' @description
+    #' Capture a call for tracing purposes.
+    #' This is an internal method.
+    #' @param methodName The name of the method being invoked.
+    #' @param desc Short description of method call.
+    #' @param detailList A list containing detail such as parameter values.
+    #' @return No return value.
     trace = function(methodName, desc, detailList=NULL) {
       if(!private$p_traceEnabled) return()
       stackdepth <- length(sys.calls())
@@ -2610,9 +3557,17 @@ PivotTable <- R6::R6Class("PivotTable",
       if(is.null(private$p_traceFile)) { message(msg) }
       else { cat(msg, file=private$p_traceFile, sep="\r\n", append=TRUE)}
     },
+
+    #' @description
+    #' Output batch information to the console.
+    #' @return No return value.
     showBatchInfo = function() {
       message(self$batchInfo)
     },
+
+    #' @description
+    #' Return the contents of the pivot table as a list for debugging.
+    #' @return A list of various object properties.
     asList = function() {
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asList", "Getting list...")
       lst <- list(
@@ -2627,20 +3582,43 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asList", "Got list.")
       return(lst)
     },
+
+    #' @description
+    #' Return the contents of the pivot table as JSON for debugging.
+    #' @return A JSON representation of various object properties.
     asJSON = function() { return(jsonlite::toJSON(self$asList())) },
+
+
+    #' @description
+    #' Use the `listviewer` package to view the pivot table as JSON for debugging.
+    #' @return No return value.
     viewJSON = function() {
       if (!requireNamespace("listviewer", quietly = TRUE)) {
         stop("PivotTable$asJSON():  The listviewer package is needed to view the internal structure of the PivotTable as JSON.  Please install it.", call. = FALSE)
       }
       listviewer::jsonedit(self$asList(), mode="code")
     },
+
+    #' @description
+    #' Clean-up the pivot table.
+    #' @return No return value.
     finalize = function() {
       if(!is.null(private$p_traceFile)) close(private$p_traceFile)
     }
   ),
   active = list(
+
+    #' @field argumentCheckMode The level of argument checking to perform.
+    #' One of "auto", "none", "minimal", "basic", "balanced" (default)
+    #' or "full".
     argumentCheckMode = function(value) { return(private$p_argumentCheckMode) },
+
+    #' @field compatibility A list containing compatibility options to force
+    #' legacy behaviours.  See the NEWS file for details.
     compatibility = function(value) { return(private$p_compatibility) },
+
+    #' @field traceEnabled Default `FALSE`.  Specify `TRUE` to generate a trace
+    #' for debugging purposes.
     traceEnabled = function(value){
       if(missing(value)) return(invisible(private$p_traceEnabled))
       else {
@@ -2649,38 +3627,82 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+
+    #' @field processingLibrary The package to use when processing data.
+    #' Must be one of "auto" (which today is dplyr), "dplyr" or "data.table".
     processingLibrary = function(value) { return(private$p_processingLibrary) },
+
+    #' @field data A `PivotData` object containing the data frames added to the
+    #' pivot table.
     data = function(value) { return(private$p_data) },
+
+    #' @field rowGroup The hidden root `PivotDataGroup` at the top of the row
+    #' data groups hierarchy.  The children of this group form the first level
+    #' of visible row data groups.
     rowGroup = function(value) { return(invisible(private$p_rowGroup ))},
+
+    #' @field columnGroup The hidden root `PivotDataGroup` at the top of the
+    #' column data groups hierarchy.  The children of this group form the first
+    #' level of visible column data groups.
     columnGroup = function(value) { return(invisible(private$p_columnGroup ))},
+
+    #' @field rowGroupLevelCount The number of visible levels in the row data
+    #' group hierarchy.
     rowGroupLevelCount = function(value) { return(invisible(private$p_rowGroup$getLevelCount())) },
+
+    #' @field columnGroupLevelCount The number of visible levels in the column
+    #' data group hierarchy.
     columnGroupLevelCount = function(value) { return(invisible(private$p_columnGroup$getLevelCount())) },
+
+    #' @field topColumnGroups A list containing the first level of column data
+    #' groups.
     topColumnGroups = function(value) {
       return(private$p_columnGroup$childGroups)
     },
+
+    #' @field leafColumnGroups  A list containing the bottom level of column
+    #' data groups.
     leafColumnGroups = function(value) {
       leafGroups = list()
       grps <- private$p_columnGroup$getLeafGroups(leafGroups)
       return(invisible(grps))
     },
+
+    #' @field allColumnGroups  A list containing all of the column data groups.
     allColumnGroups = function(value) {
       grps <- private$p_columnGroup$getDescendantGroups()
       return(invisible(grps))
     },
+
+    #' @field topRowGroups A list containing the first level of row data
+    #' groups.
     topRowGroups = function(value) {
       return(private$p_rowGroup$childGroups)
     },
+
+    #' @field leafRowGroups A list containing the bottom level of row data
+    #' groups.
     leafRowGroups = function(value) {
       leafGroups = list()
       grps <- private$p_rowGroup$getLeafGroups(leafGroups)
       return(invisible(grps))
     },
+
+    #' @field allRowGroups  A list containing all of the row data groups.
     allRowGroups = function(value) {
       grps <- private$p_rowGroup$getDescendantGroups()
       return(invisible(grps))
     },
+
+    #' @field rowGrpHeaders A list containing the row group headers.
     rowGrpHeaders = function() { return(invisible(private$p_rowGrpHeaders ))},
+
+    #' @field calculationGroups A list containing the calculation groups in
+    #' the pivot table.
     calculationGroups = function(value) { return(invisible(private$p_calculationGroups)) },
+
+    #' @field calculationsPosition Either "row" or "column" describing which axis
+    #' the calculations are rendered.
     calculationsPosition = function(value) {
       if(missing(value)) { return(invisible(private$p_calculationsPosition)) }
       else {
@@ -2695,11 +3717,26 @@ PivotTable <- R6::R6Class("PivotTable",
         }
       }
     },
+
+    #' @field evaluationMode Either "batch" (default) or "sequential" (legacy).
     evaluationMode = function(value) { return(invisible(private$p_evaluationMode)) },
+
+    #' @field batchInfo Diagnostic information describing the batches used in the
+    #' last pivot table evaluation.
     batchInfo = function(value) { return(invisible(private$p_lastCellBatchInfo)) },
+
+    #' @field cells A list where each element represents one row in the pivot table.
+    #' Each row is itself a list, where each list element is a `PivotCell` object.
     cells = function(value) { return(invisible(private$p_cells)) },
+
+    #' @field rowCount The number of rows in the pivot table, excluding headings.
     rowCount = function(value) { return(invisible(private$p_cells$rowCount)) },
+
+    #' @field columnCount The number of columns in the pivot table, excluding headings.
     columnCount = function(value) { return(invisible(private$p_cells$columnCount)) },
+
+    #' @field fixedWidthSized The total width of the pivot table in characters if
+    #' the pivot table were to be rendered as plain text, e.g. to the console.
     fixedWidthSized = function(value) {
       if(missing(value)) return(invisible(private$p_fixedWidthSized))
       else {
@@ -2708,7 +3745,15 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+
+    #' @field asCharacter A plain test representation of the pivot table.
     asCharacter = function() { return(self$print(asCharacter=TRUE)) },
+
+    #' @field theme The name of the theme used to style the pivot table.
+    #' If setting this property, either a theme name can be used, or
+    #' a list can be used (which specifies a simple theme) or a
+    #' `PivotStyles` object can be used.
+    #' See the "Styling" vignette for details and examples.
     theme = function(value) {
       if(missing(value)) {
         if(is.null(private$p_styles)) return(invisible(NULL))
@@ -2724,6 +3769,9 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+
+    #' @field styles A `PivotStyles` object that contains the styles
+    #' applied to the pivot table.
     styles = function(value) {
       if(missing(value)) return(invisible(private$p_styles))
       else {
@@ -2734,6 +3782,13 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+
+    #' @field allowExternalStyles Default `FALSE`, which means the `PivotStyles`
+    #' object checks that style names specified for styling the different
+    #' parts of the pivot table must exist in the styles collection.  If they do
+    #' not an error will occur.  Specify `TRUE` to disable this check, e.g. if
+    #' the style definitions are not managed by `pivottabler` but instead
+    #' in an external system.
     allowExternalStyles = function(value) {
       if(missing(value)) {
         if(is.null(private$p_styles)) return(invisible(NULL))
@@ -2747,6 +3802,10 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+
+    #' @field mergeEmptyRowSpace A character value describing how empty
+    #' space is merged.  Allowed values:  "doNotMerge", "dataGroupsOnly",
+    #' "cellsOnly", "dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2".
     mergeEmptyRowSpace = function(value) {
       if(missing(value)) return(invisible(private$p_mergeEmptyRowSpace))
       else {
@@ -2757,6 +3816,10 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+
+    #' @field mergeEmptyColumnSpace A character value describing how empty
+    #' space is merged.  Allowed values:  "doNotMerge", "dataGroupsOnly",
+    #' "cellsOnly", "dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2".
     mergeEmptyColumnSpace = function(value) {
       if(missing(value)) return(invisible(private$p_mergeEmptyColumnSpace))
       else {
@@ -2767,6 +3830,9 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+
+    #' @field mergeEmptySpaceDirection A character value describing how empty
+    #' space is merged.  Allowed values:  "row" or "column"
     mergeEmptySpaceDirection = function(value) {
       if(missing(value)) return(invisible(private$p_mergeEmptySpaceDirection))
       else {
@@ -2777,6 +3843,9 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
     },
+
+    #' @field allTimings Get a data frame containing timing details
+    #' of pivot table operations.
     allTimings = function(value) {
       descriptions <- sapply(private$p_timings, function(x) { return(ifelse(is.null(x$desc), NA, x$desc)) })
       user <- sapply(private$p_timings, function(x) { return(ifelse(is.null(x$time["user.self"]), NA, x$time["user.self"])) })
@@ -2784,6 +3853,9 @@ PivotTable <- R6::R6Class("PivotTable",
       elapsed <- sapply(private$p_timings, function(x) { return(ifelse(is.null(x$time["elapsed"]), NA, x$time["elapsed"])) })
       return(data.frame(action=descriptions, user=user, system=system, elapsed=elapsed))
     },
+
+    #' @field significantTimings Get a data frame containing timing details
+    #' of significant pivot table operations (i.e. where elapsed>0.1).
     significantTimings = function(value) {
       df <- self$allTimings
       df <- df[df$elapsed>0.1, ]

@@ -3,180 +3,1256 @@
 \docType{class}
 \name{PivotDataGroup}
 \alias{PivotDataGroup}
-\title{A class that defines a row or column heading.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that help
-  define the row and column headings in a pivot table.
+\title{R6 class that defines a row or column data group.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotDataGroup class represents one row or column heading in a pivot
-table.  PivotDataGroups have a parent-child relationship, i.e. each
-PivotDataGroup can have one or more child PivotDataGroups.
+The `PivotDataGroup` class represents one row or column heading in a pivot
+table.  Data groups exist in a hierarchy and have a parent-child relationship,
+i.e. each `PivotDataGroup` instance can have one or more child data groups.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentGroup}}{Parent PivotDataGroup.}
-
-\item{\code{parentPivot}}{Owning pivot table.}
-
-\item{\code{rowOrColumn}}{"row" or "column" indicating which axis this data group
-exists on.}
-
-\item{\code{doNotExpand}}{Indicates whether addDataGroups() will expand this group.}
-
-\item{\code{isEmpty}}{Indicates whether this data group contains no data (e.g. if
-it is part of a header / outline row).}
-
-\item{\code{isOutline}}{Indicates whether this data group is an outline group used
-in outlined layouts (e.g. a header row for each data group).}
-
-\item{\code{caption}}{The friendly display name for this data group.}
-
-\item{\code{variableName}}{The name of the related column in the data frame(s) of
-the pivot table.}
-
-\item{\code{values}}{The data value(s) which this data group represents.  Can be a
-vector of values.}
-
-\item{\code{sortValue}}{The data value used when sorting the data groups.}
-
-\item{\code{isTotal}}{Whether this data group is a total group.}
-
-\item{\code{isLevelSubTotal}}{Whether this data group is a sub-total group in the
-current level.}
-
-\item{\code{isLevelTotal}}{Whether this data group is a total group in the current
-level.}
-
-\item{\code{visualTotals}}{Whether visual totals are enabled for this data group.}
-
-\item{\code{calculationGroupName}}{The name of the calculation group applied to this
-data group.}
-
-\item{\code{calculationName}}{The name of the calculation applied to this data group.}
-
-\item{\code{rowColumnNumber}}{The row or column number of this data group, i.e.
-where it exists in the pivot table.}
-
-\item{\code{baseStyleName}}{The name of the style applied to this data group (i.e.
-this row/column heading).  The style must exist in the PivotStyles object
-associated with the PivotTable.}
-
-\item{\code{fixedWidthSize}}{the width of this data group in characters.  Only
-applies to column data groups, not row data groups.}
-
-\item{\code{style}}{A PivotStyle object that can apply overrides to the base style
-for this data group.}
-
-\item{\code{mergeEmptySpace}}{Specifies if/how empty space groups/cells should be
-merged when the pivot table is rendered.}
-
-\item{\code{cellBaseStyleName}}{Specifies the name of the style applied to
-cells.  Overrides the default cell styles.}
-
-\item{\code{cellStyle}}{A PivotStyle object that can apply
-overrides to cells.  Overrides the default cell styles.}
-
-\item{\code{isMatch}}{Whether or not this data group matches the criteria of the
-last find.}
-
-\item{\code{isRendered}}{Whether or not this data group has been rendered yet (used
-as part of the rendering routines).}
-
-\item{\code{isWithinVisibleRange}}{whether or not this data group is visible (used
-as part of the rendering routines).}
-
-\item{\code{visibleChildGroupCount}}{The number of visible child groups (used
-as part of the rendering routines)}
-
-\item{\code{visibleDescendantGroupCount}}{The number of visible descendant groups
-(used as part of the rendering routines).}
-
-\item{\code{visibleLeafGroupCount}}{The number of visible leaf groups beneath this
-group (used as part of the rendering routines).}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot data group, specifying the field
-  values documented above.}
-
-  \item{\code{getLevelNumber()}}{Get the level number of this data group,
-  where level 1 is the top data group.}
-  \item{\code{getAncestorGroups(ancestors, includeCurrentGroup=FALSE)}}{Get
-  all of the data groups above the current data group in the parent-child
-  data group hierarchy.}
-  \item{\code{getDescendantGroups(descendants,
-  includeCurrentGroup=FALSE)}}{Get all of the data groups below the current
-  data group in the parent-child data group hierarchy.}
-  \item{\code{getLeafGroups(leafGroups)}}{Get all of the data groups across
-  the bottom level of the data group hierarchy.}
-  \item{\code{getLevelCount(includeCurrentLevel=FALSE)}}{Count the number of
-  levels in the data group hierarchy.}
-  \item{\code{getLevelGroups(level, levelGroups)}}{Get all of the data groups
-  at a specific level in the data group hierarchy.}
-  \item{\code{addChildGroup(variableName, filterType="ALL", values=NULL,
-  doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, caption=NULL,
-  isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
-  calculationGroupName=NULL, calculationName=NULL,
-  baseStyleName=NULL, styleDeclarations=NULL,
-  insertAtIndex=NULL, insertBeforeGroup=NULL, insertAfterGroup=NULL,
-  mergeEmptySpace=NULL, cellBaseStyleName=NULL,
-  cellStyleDeclarations=NULL, sortAnchor=NULL, resetCells=TRUE)}}{
-  Add a new data group as the child of the current data group.}
-  \item{\code{removeChildGroup(index=NULL, group=NULL, resetCells=TRUE)}}{
-  Remove a data group that is a child of the current data group.}
-  \item{\code{removeGroup(resetCells=TRUE)}}{
-  Remove the current data group.}
-  \item{\code{addDataGroups(variableName, atLevel, fromData=TRUE, dataName,
-  dataSortOrder="asc", dataFormat, onlyCombinationsThatExist=TRUE,
-  explicitListOfValues, calculationGroupName, expandExistingTotals=FALSE,
-  addTotal=TRUE, visualTotals=FALSE, totalPosition="after",
-  totalCaption="Total", preGroupData=TRUE, baseStyleName=NULL,
-  styleDeclarations=NULL, outlineBefore=NULL, outlineAfter=NULL,
-  resetCells=TRUE)}}{
-  Generate new data groups based on the distinct
-  values in a data frame or using explicitly specified data values.}
-  \item{\code{sortDataGroups(levelNumber=1, orderBy="calculation",
-  sortOrder="desc", calculationGroupName="default", calculationName,
-  fromIndex=NULL, toIndex=NULL, resetCells=TRUE)}}{Sort
-  data groups either by the data group data value, caption or based on
-  calculation result values.}
-  \item{\code{addCalculationGroups(calculationGroupName, atLevel,
-  outlineBefore, outlineAfter, resetCells=TRUE)}}{Add a
-  calculation group to the data group hierarchy.}
-  \item{\code{normaliseDataGroup(resetCells=TRUE)}}{Normalise the
-  data group hierarchy so that all branches have the same number
-  of levels - accomplished by adding empty child data groups where needed.}
-  \item{\code{getNetFilters()}}{Get a PivotFilters object that contains all
-  of the filters applied in this data group and all of its ancestors.}
-  \item{\code{getNetCalculationName()}}{Get the calculation name applied in
-  this data group or its nearest ancestor.}
-  \item{\code{isFindMatch(matchMode="simple", variableNames=NULL,
-  variableValues=NULL, totals="include", calculationNames=NULL,
-  emptyGroups="exclude", outlineGroups="exclude")}}{
-  Tests whether this data group matches the specified criteria.}
-  \item{\code{findDataGroups(matchMode="simple", variableNames=NULL,
-  variableValues=NULL, totals="include", calculationNames=NULL,
-  includeChildGroups=FALSE, emptyGroups="exclude",
-  outlineGroups="exclude")}}{Searches all data
-  groups underneath this data group to find groups that match the specified
-  criteria.}
-  \item{\code{setStyling(styleDeclarations=NULL)}}{Used to set style declarations.}
-  \item{\code{clearSortGroups()}}{Used internally during sort operations.}
-  \item{\code{addSortGroupBefore()}}{Used internally during sort operations.}
-  \item{\code{addSortGroupAfter()}}{Used internally during sort operations.}
-  \item{\code{asList()}}{Get a list representation of the data group(s).}
-  \item{\code{asJSON()}}{Get a JSON representation of the data group(s).}
-}
-}
-
 \examples{
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{instanceId}}{An integer value that uniquely identifies this group.
+NB:  This number is guaranteed to be unique within the pivot table,
+but the method of generation of the values may change in future, so
+you are advised not to base any logic on specific values.}
+
+\item{\code{parentGroup}}{The parent `PivotDataGroup` instance that this
+`PivotDataGroup` instance belongs to.}
+
+\item{\code{childGroups}}{A list of `PivotDataGroup` objects that are the
+children of this data group.}
+
+\item{\code{childGroupCount}}{A count of `PivotDataGroup` objects that are the
+children of this data group.}
+
+\item{\code{leafGroups}}{A list of `PivotDataGroup` objects that are leaf-level
+descendants of this data group.}
+
+\item{\code{levelNumber}}{An integer value specifying the level number where this
+data group exists in the hierarchy.}
+
+\item{\code{filters}}{A `PivotFilters` object containing the filters associated
+with this data group.}
+
+\item{\code{variableName}}{A character value that specifies the name of the
+variable in the data frame that this group relates to and will filter.}
+
+\item{\code{values}}{A vector that specifies the filter values applied to
+`variableName` to select the data to match this row/column in the pivot
+table.}
+
+\item{\code{calculationGroupName}}{For calculation groups, this character value
+specifies the calculation group that `calculationName` belongs to.}
+
+\item{\code{calculationName}}{For calculation groups, this character value
+specifies the name of the calculation.}
+
+\item{\code{doNotExpand}}{`TRUE` if this data group prevent the high-level
+methods such as `addDataGroups()` from adding child groups.}
+
+\item{\code{isEmpty}}{`TRUE` if this group contains no data (e.g. if
+it is part of a header or outline row)}
+
+\item{\code{isOutline}}{`TRUE` if this data group is an outline group.}
+
+\item{\code{outlineLinkedGroupId}}{The instance id of the child group related
+to this group, if this group is an outline group.}
+
+\item{\code{outlineLinkedGroupExists}}{`TRUE` if the group specified by
+`outlineLinkedGroupId` still exists.}
+
+\item{\code{captionTemplate}}{A character value that specifies the template
+for the data group caption, default "{values}".}
+
+\item{\code{caption}}{The data group caption.
+Assigning a caption effectively overrides the
+built-in logic for generating a caption.}
+
+\item{\code{sortValue}}{The raw (i.e. unformatted, typically numerical) value that
+represents this data group in sort operations.}
+
+\item{\code{isTotal}}{`TRUE` if this data group is a total.}
+
+\item{\code{isLevelSubTotal}}{`TRUE` if this data group is a sub-total.}
+
+\item{\code{isLevelTotal}}{`TRUE` if this data group is a level-total.}
+
+\item{\code{rowColumnNumber}}{The row or column number that this data group relates to.
+This property only has a value for leaf-level data groups.}
+
+\item{\code{baseStyleName}}{The style name for the data group.}
+
+\item{\code{style}}{A `PivotStyle` object that contains additional CSS style
+declarations that override the base style.}
+
+\item{\code{mergeEmptySpace}}{A logical value that specifies whether empty space
+should be merged.}
+
+\item{\code{cellBaseStyleName}}{The style name for cells related to this data
+group.}
+
+\item{\code{cellStyle}}{A `PivotStyle` object that contains additional CSS style
+declarations that override the base style for cells related to this data
+group.}
+
+\item{\code{fixedWidthSize}}{The width (in characters) needed for
+this data group when rendering to plain text.}
+
+\item{\code{isMatch}}{An internal property used when finding data groups.}
+
+\item{\code{isRendered}}{An internal property used when rendering data groups.}
+
+\item{\code{isWithinVisibleRange}}{An internal property used when rendering
+data groups.}
+
+\item{\code{visibleChildGroupCount}}{An internal property used when rendering
+data groups.}
+
+\item{\code{visibleDescendantGroupCount}}{An internal property used when
+rendering data groups.}
+
+\item{\code{visibleLeafGroupCount}}{An internal property used when rendering
+data groups.}
+
+\item{\code{sortAnchor}}{Used to specify sort behaviour for outline groups, must
+be one of "fixed", "next" or "previous".}
+
+\item{\code{sortGroupsBefore}}{An internal property used when sorting
+data groups.}
+
+\item{\code{sortGroupsAfter}}{An internal property used when sorting
+data groups.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotDataGroup$new()}}
+\item \href{#method-getLevelNumber}{\code{PivotDataGroup$getLevelNumber()}}
+\item \href{#method-getAncestorGroups}{\code{PivotDataGroup$getAncestorGroups()}}
+\item \href{#method-getDescendantGroups}{\code{PivotDataGroup$getDescendantGroups()}}
+\item \href{#method-getLeafGroups}{\code{PivotDataGroup$getLeafGroups()}}
+\item \href{#method-getLevelCount}{\code{PivotDataGroup$getLevelCount()}}
+\item \href{#method-getLevelGroups}{\code{PivotDataGroup$getLevelGroups()}}
+\item \href{#method-getRelatedOutlineGroups}{\code{PivotDataGroup$getRelatedOutlineGroups()}}
+\item \href{#method-getChildIndex}{\code{PivotDataGroup$getChildIndex()}}
+\item \href{#method-findChildIndex}{\code{PivotDataGroup$findChildIndex()}}
+\item \href{#method-addChildGroup}{\code{PivotDataGroup$addChildGroup()}}
+\item \href{#method-removeChildGroup}{\code{PivotDataGroup$removeChildGroup()}}
+\item \href{#method-removeGroup}{\code{PivotDataGroup$removeGroup()}}
+\item \href{#method-addDataGroups}{\code{PivotDataGroup$addDataGroups()}}
+\item \href{#method-sortDataGroups}{\code{PivotDataGroup$sortDataGroups()}}
+\item \href{#method-addCalculationGroups}{\code{PivotDataGroup$addCalculationGroups()}}
+\item \href{#method-normaliseDataGroup}{\code{PivotDataGroup$normaliseDataGroup()}}
+\item \href{#method-getNetFilters}{\code{PivotDataGroup$getNetFilters()}}
+\item \href{#method-getNetCalculationName}{\code{PivotDataGroup$getNetCalculationName()}}
+\item \href{#method-isFindMatch}{\code{PivotDataGroup$isFindMatch()}}
+\item \href{#method-findDataGroups}{\code{PivotDataGroup$findDataGroups()}}
+\item \href{#method-setStyling}{\code{PivotDataGroup$setStyling()}}
+\item \href{#method-clearSortGroups}{\code{PivotDataGroup$clearSortGroups()}}
+\item \href{#method-addSortGroupBefore}{\code{PivotDataGroup$addSortGroupBefore()}}
+\item \href{#method-addSortGroupAfter}{\code{PivotDataGroup$addSortGroupAfter()}}
+\item \href{#method-asList}{\code{PivotDataGroup$asList()}}
+\item \href{#method-asJSON}{\code{PivotDataGroup$asJSON()}}
+\item \href{#method-clone}{\code{PivotDataGroup$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotDataGroup` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$new(
+  parentGroup = NULL,
+  parentPivot = NULL,
+  rowOrColumn = NULL,
+  doNotExpand = FALSE,
+  isEmpty = FALSE,
+  isOutline = FALSE,
+  captionTemplate = "{value}",
+  caption = NULL,
+  isTotal = FALSE,
+  isLevelSubTotal = FALSE,
+  isLevelTotal = FALSE,
+  variableName = NULL,
+  filterType = "ALL",
+  values = NULL,
+  calculationGroupName = NULL,
+  calculationName = NULL,
+  baseStyleName = NULL,
+  styleDeclarations = NULL,
+  mergeEmptySpace = NULL,
+  cellBaseStyleName = NULL,
+  cellStyleDeclarations = NULL,
+  sortAnchor = NULL,
+  outlineLinkedGroupId = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentGroup}}{The parent `PivotDataGroup` instance that this
+`PivotDataGroup` instance belongs to.}
+
+\item{\code{parentPivot}}{The pivot table that this `PivotDataGroup`
+instance belongs to.}
+
+\item{\code{rowOrColumn}}{Either "row" or "column" indicating which axis
+this data group exists on.}
+
+\item{\code{doNotExpand}}{Default value `FALSE` - specify `TRUE` to
+prevent the high-level methods such as `addDataGroups()` from adding
+child groups.}
+
+\item{\code{isEmpty}}{Default value `FALSE`, specify `TRUE` to mark that
+this group contains no data (e.g. if
+it is part of a header or outline row)}
+
+\item{\code{isOutline}}{Default value `FALSE` - specify `TRUE` to mark
+that this data group is an outline group.}
+
+\item{\code{captionTemplate}}{A character value that specifies the template
+for the data group caption, default "{values}".}
+
+\item{\code{caption}}{Effectively a hard-coded caption that overrides the
+built-in logic for generating a caption.}
+
+\item{\code{isTotal}}{Default `FALSE` - specify `TRUE` to mark that this
+data group is a total.}
+
+\item{\code{isLevelSubTotal}}{Default `FALSE` - specify `TRUE` to mark that
+this data group is a sub-total within a level.}
+
+\item{\code{isLevelTotal}}{Default `FALSE` - specify `TRUE` to mark that
+this data group is level total.}
+
+\item{\code{variableName}}{A character value that specifies the name of the
+variable in the data frame that the group relates to and will filter.}
+
+\item{\code{filterType}}{Must be one of "ALL", "VALUES", or "NONE" to specify
+the filter type:
+ALL means no filtering is applied.
+VALUEs is the typical value used to specify that `variableName` is
+filtered to only `values`.
+NONE means no data will match this data group.}
+
+\item{\code{values}}{A vector that specifies the filter values applied to
+`variableName` to select the data to match this row/column in the pivot
+table.}
+
+\item{\code{calculationGroupName}}{For calculation groups, this character value
+specifies the calculation group that `calculationName` belongs to.}
+
+\item{\code{calculationName}}{For calculation groups, this character value
+specifies the name of the calculation.}
+
+\item{\code{baseStyleName}}{The style name for the data group.}
+
+\item{\code{styleDeclarations}}{A list of CSS style declarations to overlay
+on top of the base style.}
+
+\item{\code{mergeEmptySpace}}{A character value that specifies how empty space
+should be merged. This is typically only used with outline groups
+(so applies to row groups only, not column groups).  Must be one of
+"doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1" or
+"dataGroupsAndCellsAs2".  See the "Regular Layout" vignette
+for more information.}
+
+\item{\code{cellBaseStyleName}}{The style name for cells related to this data
+group.}
+
+\item{\code{cellStyleDeclarations}}{A list of CSS style declarations to overlay
+on top of the base style for cells related to this data group}
+
+\item{\code{sortAnchor}}{Used to specify sort behaviour for outline groups, must
+be one of "fixed", "next" or "previous".}
+
+\item{\code{outlineLinkedGroupId}}{Used to link an outline group to the value
+data group which has the child data groups.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotDataGroup` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getLevelNumber"></a>}}
+\if{latex}{\out{\hypertarget{method-getLevelNumber}{}}}
+\subsection{Method \code{getLevelNumber()}}{
+Retrieve the level number in the hierarchy that the current data
+group exists at.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$getLevelNumber()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+An integer value specifying the level number where the
+data group exists.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getAncestorGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-getAncestorGroups}{}}}
+\subsection{Method \code{getAncestorGroups()}}{
+Get all of the data groups above the current data group in the
+parent-child data group hierarchy.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$getAncestorGroups(ancestors = NULL, includeCurrentGroup = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{ancestors}}{A list containing ancestors closer to the current data
+group - to enable recursive execution of this function, or `NULL` to
+begin with.}
+
+\item{\code{includeCurrentGroup}}{Specify `TRUE` to include the current group
+in the return value.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of data groups, where element 1 is the parent of the
+current group, element 2 is the grandparent of the current group, etc.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getDescendantGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-getDescendantGroups}{}}}
+\subsection{Method \code{getDescendantGroups()}}{
+Get all of the data groups below the current
+data group in the parent-child data group hierarchy.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$getDescendantGroups(
+  descendants = NULL,
+  includeCurrentGroup = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{descendants}}{A list containing descendants closer to the current data
+group - to enable recursive execution of this function, or `NULL` to
+begin with.}
+
+\item{\code{includeCurrentGroup}}{Specify `TRUE` to include the current group
+in the return value.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of descendant data groups.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getLeafGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-getLeafGroups}{}}}
+\subsection{Method \code{getLeafGroups()}}{
+Get all of the data groups below the current
+data group in the parent-child data group hierarchy.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$getLeafGroups(leafGroups = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{leafGroups}}{A list containing other leaf-level groups - to enable
+recursive execution of this function, or `NULL` to begin with.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of leaf-level data groups.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getLevelCount"></a>}}
+\if{latex}{\out{\hypertarget{method-getLevelCount}{}}}
+\subsection{Method \code{getLevelCount()}}{
+Count the number of levels in the data group hierarchy.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$getLevelCount(includeCurrentLevel = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{includeCurrentLevel}}{Default `FALSE` to exclude the current level from the
+level count (since this method is most often called on the hidden root group).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The maximum number of levels in the hierarchy.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getLevelGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-getLevelGroups}{}}}
+\subsection{Method \code{getLevelGroups()}}{
+Retrieve all of the data groups at a specific level in the data group
+hierarchy.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$getLevelGroups(level = NULL, levelGroups = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{level}}{An integer specifying the level number.
+Level 0 represents the current data group.}
+
+\item{\code{levelGroups}}{A list containing groups accumulated so far -
+to enable recursive execution of this function, or `NULL` to begin with.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of data groups at the specified level in the hierarchy.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getRelatedOutlineGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-getRelatedOutlineGroups}{}}}
+\subsection{Method \code{getRelatedOutlineGroups()}}{
+Retrieve the a list of the typically two or three related data groups that
+were created as one outlined group.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$getRelatedOutlineGroups(group = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{group}}{The group to find the related outline groups.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of related outline data groups.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getChildIndex"></a>}}
+\if{latex}{\out{\hypertarget{method-getChildIndex}{}}}
+\subsection{Method \code{getChildIndex()}}{
+Get the index of a child group (or groups) in the current groups list of child groups.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$getChildIndex(childGroup = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{childGroup}}{A single data group or a list of data groups that are children
+of the current group.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An integer vector.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findChildIndex"></a>}}
+\if{latex}{\out{\hypertarget{method-findChildIndex}{}}}
+\subsection{Method \code{findChildIndex()}}{
+Find the index of a child group (or groups) corresponding to the specified
+instance id(s) in the current groups list of child groups.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$findChildIndex(childGroupInstanceId = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{childGroupInstanceId}}{An integer vector containing the instance ids
+of child groups of the current group.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An integer vector.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addChildGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-addChildGroup}{}}}
+\subsection{Method \code{addChildGroup()}}{
+Add a new data group as a child of the current data group.
+The new group is added as the last child unless an index
+is specified.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$addChildGroup(
+  variableName = NULL,
+  filterType = "ALL",
+  values = NULL,
+  doNotExpand = FALSE,
+  isEmpty = FALSE,
+  isOutline = FALSE,
+  captionTemplate = "{value}",
+  caption = NULL,
+  isTotal = FALSE,
+  isLevelSubTotal = FALSE,
+  isLevelTotal = FALSE,
+  calculationGroupName = NULL,
+  calculationName = NULL,
+  baseStyleName = NULL,
+  styleDeclarations = NULL,
+  insertAtIndex = NULL,
+  insertBeforeGroup = NULL,
+  insertAfterGroup = NULL,
+  mergeEmptySpace = NULL,
+  cellBaseStyleName = NULL,
+  cellStyleDeclarations = NULL,
+  sortAnchor = NULL,
+  outlineLinkedGroupId = NULL,
+  resetCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableName}}{A character value that specifies the name of the
+variable in the data frame that the group relates to and will filter.}
+
+\item{\code{filterType}}{Must be one of "ALL", "VALUES", or "NONE" to specify
+the filter type:
+ALL means no filtering is applied.
+VALUEs is the typical value used to specify that `variableName` is
+filtered to only `values`.
+NONE means no data will match this data group.}
+
+\item{\code{values}}{A vector that specifies the filter values applied to
+`variableName` to select the data to match this row/column in the pivot
+table.}
+
+\item{\code{doNotExpand}}{Default value `FALSE` - specify `TRUE` to
+prevent the high-level methods such as `addDataGroups()` from adding
+child groups.}
+
+\item{\code{isEmpty}}{Default value `FALSE`, specify `TRUE` to mark that
+this group contains no data (e.g. if
+it is part of a header or outline row)}
+
+\item{\code{isOutline}}{Default value `FALSE` - specify `TRUE` to mark
+that this data group is an outline group.}
+
+\item{\code{captionTemplate}}{A character value that specifies the template
+for the data group caption, default "{values}".}
+
+\item{\code{caption}}{Effectively a hard-coded caption that overrides the
+built-in logic for generating a caption.}
+
+\item{\code{isTotal}}{Default `FALSE` - specify `TRUE` to mark that this
+data group is a total.}
+
+\item{\code{isLevelSubTotal}}{Default `FALSE` - specify `TRUE` to mark that
+this data group is a sub-total within a level.}
+
+\item{\code{isLevelTotal}}{Default `FALSE` - specify `TRUE` to mark that
+this data group is level total.}
+
+\item{\code{calculationGroupName}}{For calculation groups, this character value
+specifies the calculation group that `calculationName` belongs to.}
+
+\item{\code{calculationName}}{For calculation groups, this character value
+specifies the name of the calculation.}
+
+\item{\code{baseStyleName}}{The style name for the data group.}
+
+\item{\code{styleDeclarations}}{A list of CSS style declarations to overlay
+on top of the base style.}
+
+\item{\code{insertAtIndex}}{An integer that specifies the index in the list
+of child groups where the new group should be inserted.}
+
+\item{\code{insertBeforeGroup}}{Specifies an existing group that the new group
+should be inserted before.}
+
+\item{\code{insertAfterGroup}}{Specifies an existing group that the new group
+should be inserted after}
+
+\item{\code{mergeEmptySpace}}{A character value that specifies how empty space
+should be merged. This is typically only used with outline groups
+(so applies to row groups only, not column groups).  Must be one of
+"doNotMerge", "dataGroupsOnly", "cellsOnly", "dataGroupsAndCellsAs1" or
+"dataGroupsAndCellsAs2".  See the "Regular Layout" vignette
+for more information.}
+
+\item{\code{cellBaseStyleName}}{The style name for cells related to this data
+group.}
+
+\item{\code{cellStyleDeclarations}}{A list of CSS style declarations to overlay
+on top of the base style for cells related to this data group}
+
+\item{\code{sortAnchor}}{Used to specify sort behaviour for outline groups, must
+be one of "fixed", "next" or "previous".}
+
+\item{\code{outlineLinkedGroupId}}{Used to link an outline group to the value
+data group which has the child data groups.}
+
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The new `PivotDataGroup` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeChildGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-removeChildGroup}{}}}
+\subsection{Method \code{removeChildGroup()}}{
+Remove a data group that is a child of the current data group.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$removeChildGroup(index = NULL, group = NULL, resetCells = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{index}}{An index that specifies the location of the group to
+remove in the list of child groups.}
+
+\item{\code{group}}{A `PivotDataGroup` object to be removed.  Only one of
+`index` or `group` needs to be specified.}
+
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-removeGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-removeGroup}{}}}
+\subsection{Method \code{removeGroup()}}{
+Remove the current data group.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$removeGroup(
+  removeAncestorsIfNoRemainingChildren = FALSE,
+  removedRelatedOutlineGroups = FALSE,
+  resetCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{removeAncestorsIfNoRemainingChildren}}{Default `FALSE` - specify `TRUE` to
+recursively remove ancestor groups if they have no remaining child groups.}
+
+\item{\code{removedRelatedOutlineGroups}}{Default `FALSE` - specify `TRUE` to remove
+related outline groups.}
+
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-addDataGroups}{}}}
+\subsection{Method \code{addDataGroups()}}{
+Add multiple new data groups based on the distinct values in a data frame
+column or using explicitly specified data values.
+See the "Irregular Layout" vignette for example usage.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$addDataGroups(
+  variableName = NULL,
+  atLevel = NULL,
+  fromData = TRUE,
+  dataName = NULL,
+  dataSortOrder = "asc",
+  customSortOrder = NULL,
+  caption = "{value}",
+  dataFormat = NULL,
+  dataFmtFuncArgs = NULL,
+  onlyCombinationsThatExist = TRUE,
+  explicitListOfValues = NULL,
+  calculationGroupName = NULL,
+  expandExistingTotals = FALSE,
+  addTotal = TRUE,
+  visualTotals = FALSE,
+  totalPosition = "after",
+  totalCaption = "Total",
+  onlyAddGroupIf = NULL,
+  preGroupData = TRUE,
+  baseStyleName = NULL,
+  styleDeclarations = NULL,
+  outlineBefore = NULL,
+  outlineAfter = NULL,
+  outlineTotal = FALSE,
+  onlyAddOutlineChildGroupIf = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{variableName}}{The name of the related column in the data frame(s) of
+the pivot table.}
+
+\item{\code{atLevel}}{The number of levels below the current group to add the new
+groups.  0 = at the current level, 1 = one level below the current group, etc.
+`NULL` = create a new level at the bottom of the hierarchy for the new
+groups.}
+
+\item{\code{fromData}}{Default `TRUE` to generate the new data groups based on the
+data values that exist in the `variableName` column in the named data frame.
+If `FALSE`, then `explicitListOfValues` must be specified.}
+
+\item{\code{dataName}}{The name of the data frame (as specified in
+`pt$addData()`) to read the data group values from.}
+
+\item{\code{dataSortOrder}}{Must be one of "asc", "desc", "custom" or "none".}
+
+\item{\code{customSortOrder}}{A vector values sorted into the desired order.}
+
+\item{\code{caption}}{The template of data group captions to generate,
+default "{value}".}
+
+\item{\code{dataFormat}}{A character, list or custom function to format the
+data value.}
+
+\item{\code{dataFmtFuncArgs}}{A list that specifies any additional arguments to
+pass to a custom format function.}
+
+\item{\code{onlyCombinationsThatExist}}{Default `TRUE` to generate only
+combinations of data groups that exist in the data frame.}
+
+\item{\code{explicitListOfValues}}{A list of explicit values to create data
+groups from.  A data group is created for each element of the list.
+If a list element is vector of values (with length greater than 1),
+then a data group is created for multiple values instead of just
+a single value.}
+
+\item{\code{calculationGroupName}}{The calculation group that the new data groups
+are related to.}
+
+\item{\code{expandExistingTotals}}{Default `FALSE`, which means totals are not
+broken down in multi-level hierarchies.}
+
+\item{\code{addTotal}}{Default `TRUE`, which means sub-total and total data groups
+are automatically added.}
+
+\item{\code{visualTotals}}{Default `FALSE`, which means visual totals are disabled.
+See the "Data Groups" vignette for more details about visual totals.}
+
+\item{\code{totalPosition}}{Either "before" or "after" to specify where total groups
+are created, default "after".}
+
+\item{\code{totalCaption}}{The caption to display on total groups, default "Total".}
+
+\item{\code{onlyAddGroupIf}}{A filter expression that can be used to more finely
+control whether data groups are created at different locations in the
+hierarchy.  There must be at least one row that matches this filter and the
+filters from the ancestor groups in order that the child group is created.
+E.g. `MaxDisplayLevel>5`.}
+
+\item{\code{preGroupData}}{Default `TRUE`, which means that the pivot table
+pre-calculates the distinct combinations of variable values to reduce the CPU
+time and elapsed time required to generate data groups.
+Cannot be used in conjunction with the}
+
+\item{\code{baseStyleName}}{The name of the style applied to this data group (i.e.
+this row/column heading).  The style must exist in the `PivotStyles` object
+associated with the PivotTable.}
+
+\item{\code{styleDeclarations}}{CSS style declarations that can override the base
+style, expressed as a list, e.g. `list("font-weight"=bold")`.}
+
+\item{\code{outlineBefore}}{Default `FALSE` to disable the creation of outline header
+groups.  Specify either `TRUE` or a list of outline group settings to create
+outline header groups.  See the "Regular Layout" vignette for details.}
+
+\item{\code{outlineAfter}}{Default `FALSE` to disable the creation of outline footer
+groups.  Specify either `TRUE` or a list of outline group settings to create
+outline footer groups.  See the "Regular Layout" vignette for details.}
+
+\item{\code{outlineTotal}}{Default `FALSE` to disable the creation of outline
+totals.  Specify either `TRUE` or a list of outline group settings to create
+outline totals.  See the "Regular Layout" vignette for details.}
+
+\item{\code{onlyAddOutlineChildGroupIf}}{A filter expression that can be used to
+more finely control whether outline child groups are created at different
+locations in the hierarchy.  There must be at least one row that matches
+this filter and the filters from the ancestor groups in order that the
+outline child group is created.  E.g. `MaxDisplayLevel>5`.
+See the "Regular Layout" vignette for an example.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+There are broadly three different ways to call `addDataGroups()`:
+(1) dataName=name, fromData=TRUE, onlyCombinationsThatExist=TRUE - which
+considers the ancestors of each existing data group to generate only those
+combinations of values that exist in the data frame.
+(2) dataName=name, fromData=TRUE, onlyCombinationsThatExist=FALSE - which
+ignores the ancestors of each existing data group and simply adds every
+distinct value of the specified variable under every existing data group,
+which can result in combinations of values in the pivot table that don't
+exist in the data frame (i.e. blank rows/columns in the pivot table).
+(3) fromData=FALSE, explicitListOfValues=list(...) - simply adds every
+value from the specified list under every existing data group.
+}
+
+\subsection{Returns}{
+A list of new `PivotDataGroup` objects that have been added.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-sortDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-sortDataGroups}{}}}
+\subsection{Method \code{sortDataGroups()}}{
+Sort data groups either by the data group data value, caption, a custom order
+or based on calculation result values.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$sortDataGroups(
+  levelNumber = 1,
+  orderBy = "calculation",
+  customOrder = NULL,
+  sortOrder = "desc",
+  calculationGroupName = "default",
+  calculationName = NULL,
+  fromIndex = NULL,
+  toIndex = NULL,
+  resetCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{levelNumber}}{The number of levels below the current group to sort the
+data groups.  0 = at the current level, 1 = one level below the current
+group, etc.}
+
+\item{\code{orderBy}}{Must be either "value", "caption", "calculation",
+"customByValue" or "customByCaption".
+"value" sorts by the raw (i.e. unformatted) group value.
+"caption" sorts by the formatted character group caption.
+"calculation" sorts using one of the calculations defined in the pivot table.
+"customValue" sorts by the raw (i.e. unformatted) group value according to
+the specified custom sort order.
+"customCaption" sorts by the formatted character group caption according to
+the specified custom sort order.}
+
+\item{\code{customOrder}}{A vector values sorted into the desired order.}
+
+\item{\code{sortOrder}}{Must be either "asc" or "desc".}
+
+\item{\code{calculationGroupName}}{If sorting using a calculation, the name of the
+calculation group containing the specified calculation.}
+
+\item{\code{calculationName}}{If sorting using a calculation, the name of the
+calculation.}
+
+\item{\code{fromIndex}}{A boundary to limit the sort operation.}
+
+\item{\code{toIndex}}{A boundary to limit the sort operation.}
+
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addCalculationGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-addCalculationGroups}{}}}
+\subsection{Method \code{addCalculationGroups()}}{
+Add multiple new groups to the data group hierarchy to represent calculations.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$addCalculationGroups(
+  calculationGroupName = NULL,
+  atLevel = NULL,
+  outlineBefore = NULL,
+  outlineAfter = NULL,
+  resetCells = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationGroupName}}{The name of the calculation group to add
+into the data group hierarchy.}
+
+\item{\code{atLevel}}{The number of levels below the current group to add the new
+groups.  0 = at the current level, 1 = one level below the current group, etc.
+`NULL` = create a new level at the bottom of the hierarchy for the new
+groups.}
+
+\item{\code{outlineBefore}}{Default `FALSE` to disable the creation of outline header
+groups.  Specify either `TRUE` or a list of outline group settings to create
+outline header groups.  See the "Regular Layout" vignette for details.}
+
+\item{\code{outlineAfter}}{Default `FALSE` to disable the creation of outline footer
+groups.  Specify either `TRUE` or a list of outline group settings to create
+outline footer groups.  See the "Regular Layout" vignette for details.}
+
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of new `PivotDataGroup` objects that have been added.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-normaliseDataGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-normaliseDataGroup}{}}}
+\subsection{Method \code{normaliseDataGroup()}}{
+Normalise the data group hierarchy so that all branches have the same number
+of levels - accomplished by adding empty child data groups where needed.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$normaliseDataGroup(resetCells = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{resetCells}}{Default `TRUE` to reset any cells that currently exist
+in the pivot table and trigger a recalculation of the pivot table when
+it is next rendered.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of new `PivotDataGroup` objects that have been added.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getNetFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-getNetFilters}{}}}
+\subsection{Method \code{getNetFilters()}}{
+Get a `PivotFilters` object that contains the filters applied in this
+data group and all of its ancestors in the data group hierarchy.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$getNetFilters()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A `PivotFilters` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getNetCalculationName"></a>}}
+\if{latex}{\out{\hypertarget{method-getNetCalculationName}{}}}
+\subsection{Method \code{getNetCalculationName()}}{
+Get the calculation name set in this data group or its nearest ancestor.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$getNetCalculationName()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+The name of a calculation.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-isFindMatch"></a>}}
+\if{latex}{\out{\hypertarget{method-isFindMatch}{}}}
+\subsection{Method \code{isFindMatch()}}{
+Test whether this data group matches specified criteria.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$isFindMatch(
+  matchMode = "simple",
+  variableNames = NULL,
+  variableValues = NULL,
+  totals = "include",
+  calculationNames = NULL,
+  atLevels = NULL,
+  minChildCount = NULL,
+  maxChildCount = NULL,
+  emptyGroups = "exclude",
+  outlineGroups = "exclude",
+  outlineLinkedGroupExists = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{matchMode}}{Either "simple" (default) or "combinations".
+"simple" is used when matching only one variable-value, multiple
+variable-value combinations are effectively logical "OR".
+"combinations" is used when matching for combinations of variable
+values, multiple variable-value combinations are effectively
+logical "AND".  A child group is viewed as having the variable-value
+filters of itself and it's parent/ancestors, e.g.
+`list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
+would return the "DMU" data group underneath "Express Passenger".
+See the "Finding and Formatting" vignette for graphical examples.}
+
+\item{\code{variableNames}}{A character vector specifying the name/names of the
+variables to find.  This is useful generally only in pivot tables with
+irregular layouts, since in regular pivot tables every cell is related
+to every variable.}
+
+\item{\code{variableValues}}{A list specifying the variable names and values to find,
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
+Specify "**" as the variable value to match totals for the specified variable.
+Specify "!*" as the variable value to match non-totals for the specified variable.
+NB: The totals/non-totals criteria above won’t work when visual totals are used.}
+
+\item{\code{totals}}{A word that specifies how totals are matched (overrides the finer
+settings above) - must be one of "include" (default), "exclude" or "only".}
+
+\item{\code{calculationNames}}{A character vector specifying the name/names of the
+calculations to find.}
+
+\item{\code{atLevels}}{An integer vector constraining the levels in the hierarchy to
+search.}
+
+\item{\code{minChildCount}}{Match only data groups with this minimum number of children.}
+
+\item{\code{maxChildCount}}{Match only data groups with this maximum number of children.}
+
+\item{\code{emptyGroups}}{A word that specifies how empty groups are matched -
+must be one of "include", "exclude" (default) or "only".}
+
+\item{\code{outlineGroups}}{A word that specifies how outline cells are matched -
+must be one of "include", "exclude" (default) or "only".}
+
+\item{\code{outlineLinkedGroupExists}}{`TRUE` to match only groups where the related
+outline child group still exists.  `FALSE` to match only groups where the related
+outline child group no longer exists.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+`TRUE` if this group matches the specified criteria, `FALSE` otherwise.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-findDataGroups}{}}}
+\subsection{Method \code{findDataGroups()}}{
+Find data groups that match specified criteria.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$findDataGroups(
+  matchMode = "simple",
+  variableNames = NULL,
+  variableValues = NULL,
+  totals = "include",
+  calculationNames = NULL,
+  atLevels = NULL,
+  minChildCount = NULL,
+  maxChildCount = NULL,
+  emptyGroups = "exclude",
+  outlineGroups = "exclude",
+  outlineLinkedGroupExists = NULL,
+  includeDescendantGroups = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{matchMode}}{Either "simple" (default) or "combinations".
+"simple" is used when matching only one variable-value, multiple
+variable-value combinations are effectively logical "OR".
+"combinations" is used when matching for combinations of variable
+values, multiple variable-value combinations are effectively
+logical "AND".  A child group is viewed as having the variable-value
+filters of itself and it's parent/ancestors, e.g.
+`list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
+would return the "DMU" data group underneath "Express Passenger".
+See the "Finding and Formatting" vignette for graphical examples.}
+
+\item{\code{variableNames}}{A character vector specifying the name/names of the
+variables to find.  This is useful generally only in pivot tables with
+irregular layouts, since in regular pivot tables every cell is related
+to every variable.}
+
+\item{\code{variableValues}}{A list specifying the variable names and values to find,
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
+Specify "**" as the variable value to match totals for the specified variable.
+Specify "!*" as the variable value to match non-totals for the specified variable.
+NB: The totals/non-totals criteria above won’t work when visual totals are used.}
+
+\item{\code{totals}}{A word that specifies how totals are matched (overrides the finer
+settings above) - must be one of "include" (default), "exclude" or "only".}
+
+\item{\code{calculationNames}}{A character vector specifying the name/names of the
+calculations to find.}
+
+\item{\code{atLevels}}{An integer vector constraining the levels in the hierarchy to
+search.}
+
+\item{\code{minChildCount}}{Match only data groups with this minimum number of children.}
+
+\item{\code{maxChildCount}}{Match only data groups with this maximum number of children.}
+
+\item{\code{emptyGroups}}{A word that specifies how empty groups are matched -
+must be one of "include", "exclude" (default) or "only".}
+
+\item{\code{outlineGroups}}{A word that specifies how outline cells are matched -
+must be one of "include", "exclude" (default) or "only".}
+
+\item{\code{outlineLinkedGroupExists}}{`TRUE` to match only groups where the related
+outline child group still exists.  `FALSE` to match only groups where the related
+outline child group no longer exists.}
+
+\item{\code{includeDescendantGroups}}{Default `FALSE`.  Specify true to also return
+all descendants of data groups that match the specified criteria.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of data groups matching the specified criteria.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setStyling"></a>}}
+\if{latex}{\out{\hypertarget{method-setStyling}{}}}
+\subsection{Method \code{setStyling()}}{
+An internal method used to set style declarations on the data group.
+Using `pt$setStyling(cells=x)` is preferred for users.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$setStyling(styleDeclarations = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleDeclarations}}{A list containing CSS style declarations.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clearSortGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-clearSortGroups}{}}}
+\subsection{Method \code{clearSortGroups()}}{
+An internal method that clears state data used during sorting operations.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$clearSortGroups()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addSortGroupBefore"></a>}}
+\if{latex}{\out{\hypertarget{method-addSortGroupBefore}{}}}
+\subsection{Method \code{addSortGroupBefore()}}{
+An internal method used during sorting operations.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$addSortGroupBefore(grp)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{grp}}{The group to insert as part of sorting.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addSortGroupAfter"></a>}}
+\if{latex}{\out{\hypertarget{method-addSortGroupAfter}{}}}
+\subsection{Method \code{addSortGroupAfter()}}{
+An internal method used during sorting operations.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$addSortGroupAfter(grp)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{grp}}{The group to insert as part of sorting.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotDataGroup$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

@@ -3,26 +3,47 @@
 \docType{class}
 \name{PivotStyles}
 \alias{PivotStyles}
-\title{A class that defines a collection of styles.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that
-  define styles/a theme for a pivot table.
+\title{R6 class that defines a collection of styles.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotStyles class defines all of the base styles needed to style/theme a
+The `PivotStyles` class is a collection of `PivotStyle` objects.
+It defines all of the base styles needed to style/theme a
 pivot table.  It also defines the names of the styles that are used for
 styling the different parts of the pivot table.
 }
-\section{Fields}{
-
+\examples{
+pt <- PivotTable$new()
+# ...
+pivotStyles <- PivotStyles$new(pt, themeName="compact")
+pivotStyles$addStyle(styleName="MyNewStyle", list(
+    font="0.75em arial",
+    padding="2px",
+    border="1px solid lightgray",
+    "vertical-align"="middle",
+    "text-align"="center",
+    "font-weight"="bold",
+    "background-color"="#F2F2F2"
+  ))
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{parentPivot}}{Owning pivot table.}
+\item{\code{count}}{The number of `PivotStyle` objects in this
+`PivotStyles` collection.}
 
-\item{\code{themeName}}{The name of the theme.}
+\item{\code{theme}}{A theme name to represent this collection of styles.}
 
-\item{\code{allowExternalStyles}}{Enables integration scenarios where an external
-system is supplying the CSS definitions.}
+\item{\code{styles}}{A list containing the `PivotStyle` objects in this
+`PivotStyles` collection.}
+
+\item{\code{allowExternalStyles}}{Default `FALSE`, which means this `PivotStyles`
+object checks that style names specified for styling the different
+parts of the pivot table must exist in the styles collection.  If they do
+not an error will occur.  Specify `TRUE` to disable this check, e.g. if
+the style definitions are not managed by `pivottabler` but instead
+in an external system.}
 
 \item{\code{tableStyle}}{The name of the style for the HTML table element.}
 
@@ -49,44 +70,254 @@ outline cells in the body of the pivot table.}
 
 \item{\code{totalStyle}}{The name of the cell style for the total cells in the pivot
 table.}
-}}
-
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotStyles$new()}}
+\item \href{#method-isExistingStyle}{\code{PivotStyles$isExistingStyle()}}
+\item \href{#method-getStyle}{\code{PivotStyles$getStyle()}}
+\item \href{#method-addStyle}{\code{PivotStyles$addStyle()}}
+\item \href{#method-copyStyle}{\code{PivotStyles$copyStyle()}}
+\item \href{#method-asCSSRule}{\code{PivotStyles$asCSSRule()}}
+\item \href{#method-asNamedCSSStyle}{\code{PivotStyles$asNamedCSSStyle()}}
+\item \href{#method-asList}{\code{PivotStyles$asList()}}
+\item \href{#method-asJSON}{\code{PivotStyles$asJSON()}}
+\item \href{#method-asString}{\code{PivotStyles$asString()}}
+\item \href{#method-clone}{\code{PivotStyles$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotStyles` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyles$new(parentPivot, themeName = NULL, allowExternalStyles = FALSE)}\if{html}{\out{</div>}}
+}
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new set of styles, specifying the field
-  values documented above.}
+\item{\code{parentPivot}}{The pivot table that this `PivotStyles`
+instance belongs to.}
 
-  \item{\code{isExistingStyle(styleName)}}{Check whether the specified style
-  exists.}
-  \item{\code{getStyle(styleName)}}{Get the specified style.}
-  \item{\code{addStyle(styleName, declarations)}}{Add a new style to the
-  collection of styles.}
-  \item{\code{copyStyle(styleName, newStyleName)}}{Create a copy of a style
-  with the specified name.}
-  \item{\code{asCSSRule(styleName, selector)}}{Get a style definition in the
-  form of a CSS rule.}
-  \item{\code{asNamedCSSStyle(styleName, styleNamePrefix)}}{Get a style
-  definition in the form of a named CSS style.}
-  \item{\code{asList()}}{Get a list representation of the styles.}
-  \item{\code{asJSON()}}{Get a JSON representation of the styles.}
-  \item{\code{asString()}}{Get a text representation of the styles.}
+\item{\code{themeName}}{A theme name to represent this collection of styles.}
+
+\item{\code{allowExternalStyles}}{Default `FALSE`, which means this `PivotStyles`
+object checks that style names specified for styling the different
+parts of the pivot table must exist in the styles collection.  If they do
+not an error will occur.  Specify `TRUE` to disable this check, e.g. if
+the style definitions are not managed by `pivottabler` but instead
+in an external system.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotStyles` object.
 }
 }
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-isExistingStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-isExistingStyle}{}}}
+\subsection{Method \code{isExistingStyle()}}{
+Check whether a style with the specified style name exists in the
+collection.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyles$isExistingStyle(styleName = NULL)}\if{html}{\out{</div>}}
+}
 
-\examples{
-pt <- PivotTable$new()
-# ...
-pivotStyles <- PivotStyles$new(pt, themeName="compact")
-pivotStyles$addStyle(styleName="MyNewStyle", list(
-    font="0.75em arial",
-    padding="2px",
-    border="1px solid lightgray",
-    "vertical-align"="middle",
-    "text-align"="center",
-    "font-weight"="bold",
-    "background-color"="#F2F2F2"
-  ))
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleName}}{The name of the style.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+`TRUE` if a style with the specified name exists, `FALSE` otherwise.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-getStyle}{}}}
+\subsection{Method \code{getStyle()}}{
+Retrieve a style with the specified style name.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyles$getStyle(styleName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleName}}{The name of the style.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A `PivotStyle` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-addStyle}{}}}
+\subsection{Method \code{addStyle()}}{
+Add a new style to the collection of styles.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyles$addStyle(styleName = NULL, declarations = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleName}}{The name of the new style.}
+
+\item{\code{declarations}}{CSS style declarations in the form of a list, e.g.
+`list("font-weight"="bold", "color"="#0000FF")`}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The newly created `PivotStyle` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-copyStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-copyStyle}{}}}
+\subsection{Method \code{copyStyle()}}{
+Create a copy of a style with the specified name and store
+it in the collection.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyles$copyStyle(styleName = NULL, newStyleName = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleName}}{The name of the style to copy.}
+
+\item{\code{newStyleName}}{The name for the new style.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The newly created `PivotStyle` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asCSSRule"></a>}}
+\if{latex}{\out{\hypertarget{method-asCSSRule}{}}}
+\subsection{Method \code{asCSSRule()}}{
+Get a style definition in the form of a CSS rule.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyles$asCSSRule(styleName = NULL, selector = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleName}}{The name of the style.}
+
+\item{\code{selector}}{A CSS selector, used to select the element(s) to be styled.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The style declarations in the form of a CSS rule,
+i.e. selector { property-name1: property-value1,
+property-name2: property-value2, ... }
+e.g. div { font-weight: bold, color: #0000FF }
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asNamedCSSStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-asNamedCSSStyle}{}}}
+\subsection{Method \code{asNamedCSSStyle()}}{
+Get a style definition in the form of a named CSS style.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyles$asNamedCSSStyle(styleName = NULL, styleNamePrefix = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleName}}{The name of the style.}
+
+\item{\code{styleNamePrefix}}{A prefix to prepend to the style name.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The style declarations in the form of named CSS style,
+i.e. .prefix-stylename { property-name1: property-value1,
+property-name2: property-value2, ... }
+e.g. .pvt1Cell { font-weight: bold, color: #0000FF }
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyles$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyles$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-asString}{}}}
+\subsection{Method \code{asString()}}{
+Return a representation of this object as a character value.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyles$asString(seperator = ", ")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{seperator}}{A character value to use when concatenating
+multiple styles.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character summary of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotStyles$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

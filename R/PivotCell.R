@@ -1,69 +1,44 @@
-#' A class that represents a cell in a pivot table
+
+#' R6 class that represents a cell in a pivot table.
 #'
-#' The PivotCell class represents a cell in the body of a pivot table (i.e. not
+#' @description
+#' The `PivotCell` class represents a cell in the body of a pivot table (i.e. not
 #' a row/column heading, rather a cell typically containing a numerical value).
 #'
 #' @docType class
 #' @importFrom R6 R6Class
 #' @import jsonlite
-#' @return Object of \code{\link{R6Class}} with properties and methods that
-#'   define a single pivot table cell
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
-#' @field parentPivot Owning pivot table.
-#' @field rowNumber The row number of the cell.  1 = the first (i.e. top) data
-#'   row.
-#' @field columnNumber The column number of the cell.  1 = the first (i.e.
-#'   leftmost) data column.
-#' @field rowLeafGroup The row data group linked to this row.
-#' @field columnLeafGroup The column data group linked to this column.
-#' @field calculationName The name of the calculation that is displayed in the
-#'   cell.
-#' @field calculationGroupName The name of the calculation group that owns the
-#'   above calculation.
-#' @field isEmpty Indicates whether this cell contains no data (e.g. if it is
-#'   part of a header / outline row).
-#' @field rowFilters The data filters applied to this cell from the row
-#'   headings.
-#' @field columnFilters The data filters applied to this cell from the column
-#'   headings.
-#' @field rowColFilters The data filters applied to this cell from both the row
-#'   and column headings.
-#' @field calculationFilters The data filters applied to this cell from the
-#'   calculation definition.
-#' @field workingData The data filters and batchNames used applied when running
-#'   calculations (including the filters needed for base calculations when
-#'   calculation type="calculation").
-#' @field evaluationFilters The final and actual data filters used in the
-#'   calculation of the cell value (e.g. custom calculation functions can
-#'   override the working filters).
-#' @field isTotal Whether this cell is a total cell.
-#' @field rawValue The numerical calculation result.
-#' @field formattedValue The formatted calculation result (i.e. character data type).
-#' @field baseStyleName The name of the style applied to this cell (a character
-#'   value).  The style must exist in the PivotStyles object associated with the
-#'   PivotTable.
-#' @field style A PivotStyle object that can apply overrides to the base style
-#'   for this cell.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new pivot table cell, specifying the field
-#'   values documented above.}
-#'
-#'   \item{\code{setStyling(styleDeclarations=NULL))}}{Used to set style
-#'   declarations.}
-#'   \item{\code{getCopy())}}{Get a copy of this cell.}
-#'   \item{\code{asList())}}{Get a list representation of this cell}
-#'   \item{\code{asJSON()}}{Get a JSON representation of this cell}
-#' }
 
 PivotCell <- R6::R6Class("PivotCell",
   public = list(
+
+   #' @description
+   #' Create a new `PivotCell` object.
+   #' @param parentPivot The pivot table that this `PivotCell`
+   #' instance belongs to.
+   #' @param rowNumber The row number of the cell.  1 = the first (i.e. top) data
+   #' row.
+   #' @param columnNumber The column number of the cell.  1 = the first (i.e.
+   #' leftmost) data column.
+   #' @param calculationName The name of the calculation that is displayed in the
+   #' cell.
+   #' @param calculationGroupName The name of the calculation group that owns the
+   #' calculation.
+   #' @param isEmpty `TRUE` if this cell contains no data (e.g. if it is
+   #'   part of a header / outline row), `FALSE` otherwise.
+   #' @param rowFilters A `PivotFilters` object containing the filters applied to
+   #' this cell from the row data groups (i.e. row headings).
+   #' @param columnFilters A `PivotFilters` object containing the filters applied to
+   #' this cell from the column data groups (i.e. column headings).
+   #' @param rowColFilters A `PivotFilters` object containing the combined filters
+   #' applied to this cell from both the row and column data groups.
+   #' @param rowLeafGroup The row data group linked to this row.
+   #' @param columnLeafGroup The column data group linked to this column.
+   #' @return A new `PivotCell` object.
    initialize = function(parentPivot, rowNumber=NULL, columnNumber=NULL,
                          calculationName=NULL, calculationGroupName=NULL,
                          isEmpty=FALSE, rowFilters=NULL, columnFilters=NULL, rowColFilters=NULL,
@@ -100,6 +75,12 @@ PivotCell <- R6::R6Class("PivotCell",
      private$p_columnLeafGroup <- columnLeafGroup
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCell$new", "Created new PivotCell")
    },
+
+   #' @description
+   #' An internal method used to set style declarations on the cell.
+   #' Using `pt$setStyling(cells=x)` is preferred for users.
+   #' @param styleDeclarations A list containing CSS style declarations.
+   #' @return No return value.
    setStyling = function(styleDeclarations=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCell", "setStyling", styleDeclarations, missing(styleDeclarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
@@ -110,10 +91,18 @@ PivotCell <- R6::R6Class("PivotCell",
       else private$p_style$setPropertyValues(styleDeclarations)
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCell$setStyling", "Set style declarations.")
    },
+
+   #' @description
+   #' Non-functional legacy method soon to be removed.
+   #' @return Returns an empty list.
    getCopy = function() {
      copy <- list()
      return(invisible(copy))
    },
+
+   #' @description
+   #' Return the contents of this object as a list for debugging.
+   #' @return A list of various object properties.
    asList = function() {
      fstr1 <- NULL
      fstr2 <- NULL
@@ -157,18 +146,55 @@ PivotCell <- R6::R6Class("PivotCell",
      )
      return(invisible(lst))
    },
+
+   #' @description
+   #' Return the contents of this object as JSON for debugging.
+   #' @return A JSON representation of various object properties.
    asJSON = function() { return(jsonlite::toJSON(asList())) }
   ),
   active = list(
+
+   #' @field instanceId An integer value that uniquely identifies this cell.
+   #' NB:  This number is guaranteed to be unique within the pivot table,
+   #' but the method of generation of the values may change in future, so
+   #' you are advised not to base any logic on specific values.
    instanceId = function(value) { return(invisible(private$p_instanceId)) },
+
+   #' @field rowNumber The row number of the cell.  1 = the first (i.e. top) data
+   #' row.
    rowNumber = function(value) { return(invisible(private$p_rowNumber)) },
+
+   #' @field columnNumber The column number of the cell.  1 = the first (i.e.
+   #' leftmost) data column.
    columnNumber = function(value) { return(invisible(private$p_columnNumber)) },
+
+   #' @field calculationName The name of the calculation that is displayed in the
+   #' cell.
    calculationName = function(value) { return(invisible(private$p_calculationName)) },
+
+   #' @field calculationGroupName The name of the calculation group that owns the
+   #' calculation.
    calculationGroupName = function(value) { return(invisible(private$p_calculationGroupName)) },
+
+   #' @field isEmpty `TRUE` if this cell contains no data (e.g. if it is
+   #'   part of a header / outline row), `FALSE` otherwise.
    isEmpty = function(value) { return(invisible(private$p_isEmpty)) },
+
+   #' @field rowFilters A `PivotFilters` object containing the filters applied to
+   #' this cell from the row data groups (i.e. row headings).
    rowFilters = function(value) { return(invisible(private$p_rowFilters)) },
+
+   #' @field columnFilters A `PivotFilters` object containing the filters applied to
+   #' this cell from the column data groups (i.e. column headings).
    columnFilters = function(value) { return(invisible(private$p_columnFilters)) },
+
+   #' @field rowColFilters A `PivotFilters` object containing the combined filters
+   #' applied to this cell from both the row and column data groups.
    rowColFilters = function(value) { return(invisible(private$p_rowColFilters)) },
+
+   #' @field calculationFilters The set of filters that apply to this cell to support
+   #' calculation logic.  Either a `PivotFilters` object or a `PivotFilterOverrides`
+   #' object.  See the "Appendix: Calculations" vignette for details.
    calculationFilters = function(value) {
      if(missing(value)) { return(invisible(private$p_calculationFilters)) }
      else {
@@ -179,6 +205,12 @@ PivotCell <- R6::R6Class("PivotCell",
        return(invisible())
      }
    },
+
+   #' @field workingData A list of filter objects that results when the
+   #' `rowColFilters` and `calculationFilters` are combined prior to calculating
+   #' the cell value.  This is a list since some cells involve multiple
+   #' calculations - where `calc$type` is "calculation" or "function", the
+   #' calculation can be based on the values of other calculations.
    workingData = function(value) {
      if(missing(value)) { return(invisible(private$p_workingData)) }
      else {
@@ -189,6 +221,9 @@ PivotCell <- R6::R6Class("PivotCell",
        return(invisible())
      }
    },
+
+   #' @field evaluationFilters The same as `workingData` generally, except
+   #' when custom calculation functions modify the filters whilst executing.
    evaluationFilters = function(value) {
      if(missing(value)) { return(invisible(private$p_evaluationFilters)) }
      else {
@@ -199,9 +234,17 @@ PivotCell <- R6::R6Class("PivotCell",
        return(invisible())
      }
    },
+
+   #' @field rowLeafGroup The row data group linked to this row.
    rowLeafGroup = function(value) { return(invisible(private$p_rowLeafGroup)) },
+
+   #' @field columnLeafGroup The column data group linked to this column.
    columnLeafGroup = function(value) { return(invisible(private$p_columnLeafGroup)) },
+
+   #' @field isTotal `TRUE` is this cell is a total, `FALSE` otherwise-
    isTotal = function(Value) { return(invisible(private$p_rowLeafGroup$isTotal|private$p_columnLeafGroup$isTotal)) },
+
+   #' @field rawValue The raw cell value - i.e. unformatted, typically a numeric value.
    rawValue = function(value) {
      if(missing(value)) return(invisible(private$p_rawValue))
      else {
@@ -212,6 +255,8 @@ PivotCell <- R6::R6Class("PivotCell",
        return(invisible())
      }
    },
+
+   #' @field formattedValue The formatted value - typically a character value.
    formattedValue = function(value) {
      if(missing(value)) return(invisible(private$p_formattedValue))
      else {
@@ -222,6 +267,9 @@ PivotCell <- R6::R6Class("PivotCell",
        return(invisible())
      }
    },
+
+   #' @field baseStyleName The name of the style that defines the visual
+   #' appearance of the cell.
    baseStyleName = function(value) {
      if(missing(value)) { return(invisible(private$p_baseStyleName)) }
      else {
@@ -232,6 +280,9 @@ PivotCell <- R6::R6Class("PivotCell",
        return(invisible())
      }
    },
+
+   #' @field style A `PivotStyle` object that assists in managing the CSS
+   #' style declarations that override the base style.
    style = function(value) {
      if(missing(value)) { return(invisible(private$p_style)) }
      else {

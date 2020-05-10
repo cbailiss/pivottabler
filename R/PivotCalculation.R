@@ -1,66 +1,68 @@
-#' A class that defines a calculation.
+
+#' R6 class that defines a calculation.
 #'
-#' The PivotCalculation class defines one calculation in a pivot table.
+#' @description
+#' The `PivotCalculation` class defines one calculation in a pivot table.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
 #' @import jsonlite
-#' @return Object of \code{\link{R6Class}} with properties and methods that
-#'   define a single pivot table calculation.
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
-#' @field parentPivot Owning pivot table.
-#' @field calculationName Calculation unique name.
-#' @field caption Calculation display name - i.e. the name shown in the pivot
-#'   table.
-#' @field visible Show or hide the calculation.  Hidden calculations are
-#'   typically used as base values for other calculations.
-#' @field displayOrder The order the calculations are displayed in the pivot
-#'   table.
-#' @field filters Any additional data filters specific to this calculation.
-#'   This can be a PivotFilters object that further restrict the data for the
-#'   calculation of a list of individual PivotFilter objects that provide more
-#'   flexibility (and/or/replace).  See the Calculations vignette for details.
-#' @field format A character, list or custom function to format the calculation
-#'   result.
-#' @field fmtFuncArgs A list that specifies any additional arguments to pass to a
-#'   a custom format function.
-#' @field dataName Specifies which data frame in the pivot table is used for
-#'   this calculation.
-#' @field type The calculation type:  "summary", "calculation", "function" or
-#'   "value".
-#' @field valueName For type="value", the name of the column containing the
-#'   value to display in the pivot table.
-#' @field summariseExpression For type="summary", either the dplyr expression to
-#'   use with dplyr::summarise() or a data.table calculation expression.
-#' @field calculationExpression For type="calculation", an expression to combine
-#'   aggregate values.
-#' @field calculationFunction For type="function", a reference to a custom R
-#'   function that will carry out the calculation.
-#' @field calcFuncArgs For type="function", a list that specifies additional
-#'   arguments to pass to calculationFunction.
-#' @field basedOn A character vector specifying the names of one or more
-#'   calculations that this calculation depends on.
-#' @field noDataValue An integer or numeric value specifying the value to use if
-#'   no data exists for a particular cell.
-#' @field noDataCaption A character value that will be displayed by the pivot
-#'   table if no  data exists for a particular cell.
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new pivot calculation, specifying the field
-#'   values documented above.}
-#'
-#'   \item{\code{asList()}}{Get a list representation of this calculation.}
-#'   \item{\code{asJSON()}}{Get a JSON representation of this calculation.}
-#'   \item{\code{asString()}}{Get a text representation of this calculation.}
-#' }
 
 PivotCalculation <- R6::R6Class("PivotCalculation",
   public = list(
+
+    #' @description
+    #' Create a new `PivotCalculation` object.
+    #' @param parentPivot The pivot table that this `PivotCalculation`
+    #' instance belongs to.
+    #' @param calculationName Calculation unique name.
+    #' @param caption Calculation display name
+    #' @param visible `TRUE` to show the calculation in the pivot table or `FALSE`
+    #' to hide it.  Hidden calculations are typically used as base values for
+    #' other calculations.
+    #' @param displayOrder The order the calculations are displayed in the
+    #' pivot table.
+    #' @param filters Any additional data filters specific to this calculation.
+    #' This can be a `PivotFilters`` object that further restricts the data for the
+    #' calculation or a list of individual `PivotFilter`` objects that provide more
+    #' flexibility (and/or/replace).  See the Calculations vignette for details.
+    #' @param format A character, list or custom function to format the calculation
+    #' result.
+    #' @param fmtFuncArgs A list that specifies any additional arguments to pass to
+    #' a custom format function.
+    #' @param dataName Specifies which data frame in the pivot table is used for
+    #' this calculation (as specified in `pt$addData()`).
+    #' @param type The calculation type:  "summary", "calculation", "function" or
+    #' "value".
+    #' @param valueName For type="value", the name of the column containing the
+    #' value to display in the pivot table.
+    #' @param summariseExpression For type="summary", either the dplyr expression to
+    #' use with dplyr::summarise() or a data.table calculation expression.
+    #' @param calculationExpression For type="calculation", an expression to combine
+    #' aggregate values.
+    #' @param calculationFunction For type="function", a reference to a custom R
+    #' function that will carry out the calculation.
+    #' @param calcFuncArgs For type="function", a list that specifies additional
+    #' arguments to pass to calculationFunction.
+    #' @param basedOn A character vector specifying the names of one or more
+    #' calculations that this calculation depends on.
+    #' @param noDataValue An integer or numeric value specifying the value to use if
+    #' no data exists for a particular cell.
+    #' @param noDataCaption A character value that will be displayed by the pivot
+    #' table if no  data exists for a particular cell.
+    #' @param headingBaseStyleName The name of a style defined in the pivot table
+    #' to use as the base styling for the data group heading.
+    #' @param headingStyleDeclarations A list of CSS style declarations (e.g.
+    #' `list("font-weight"="bold")`) to override the base style.
+    #' @param cellBaseStyleName The name of a style defined in the pivot table to
+    #' use as the base styling for the cells related to this calculation.
+    #' @param cellStyleDeclarations A list of CSS style declarations (e.g.
+    #' `list("font-weight"="bold")`) to override the base style.
+    #' @return A new `PivotCalculation` object.
    initialize = function(parentPivot, calculationName=NULL, caption=NULL, visible=TRUE, displayOrder=NULL,
                          filters=NULL, format=NULL, fmtFuncArgs=NULL, dataName=NULL, type="summary",
                          valueName=NULL, summariseExpression=NULL, calculationExpression=NULL, calculationFunction=NULL, calcFuncArgs=NULL,
@@ -158,6 +160,10 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
      private$p_cellStyleDeclarations <- cellStyleDeclarations
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculation$new", "Created new Pivot Calculation")
    },
+
+   #' @description
+   #' Return the contents of this object as a list for debugging.
+   #' @return A list of various object properties.
    asList = function() {
      lst <- list(
        name = private$p_name,
@@ -184,7 +190,15 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
      )
      return(invisible(lst))
    },
+
+   #' @description
+   #' Return the contents of this object as JSON for debugging.
+   #' @return A JSON representation of various object properties.
    asJSON = function() { return(jsonlite::toJSON(self$asList())) },
+
+   #' @description
+   #' Return a representation of this object as a character value.
+   #' @return A character summary of various object properties.
    asString = function() {
      cstr <- NULL
      fstr <- NULL
@@ -197,26 +211,90 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
    }
   ),
   active = list(
+
+    #' @field calculationName Calculation unique name.
     calculationName = function(value) { return(invisible(private$p_name)) },
+
+    #' @field caption Calculation display name
     caption = function(value) { return(invisible(private$p_caption)) },
+
+    #' @field visible `TRUE` to show the calculation in the pivot table or `FALSE`
+    #' to hide it.  Hidden calculations are typically used as base values for
+    #' other calculations.
     visible = function(value) { return(invisible(private$p_visible)) },
+
+    #' @field displayOrder The order the calculations are displayed in the
+    #' pivot table.
     displayOrder = function(value) { return(invisible(private$p_displayOrder)) },
+
+    #' @field filters Any additional data filters specific to this calculation.
+    #' This can be a `PivotFilters`` object that further restricts the data for the
+    #' calculation or a list of individual `PivotFilter`` objects that provide more
+    #' flexibility (and/or/replace).  See the Calculations vignette for details.
     filters = function(value) { return(invisible(private$p_filters)) },
+
+    #' @field format A character, list or custom function to format the calculation
+    #' result.
     format = function(value) { return(invisible(private$p_format)) },
+
+    #' @field fmtFuncArgs A list that specifies any additional arguments to pass to
+    #' a custom format function.
     fmtFuncArgs = function(value) { return(invisible(private$p_fmtFuncArgs)) },
+
+    #' @field dataName Specifies which data frame in the pivot table is used for
+    #' this calculation (as specified in `pt$addData()`).
     dataName = function(value) { return(invisible(private$p_dataName)) },
+
+    #' @field type The calculation type:  "summary", "calculation", "function" or
+    #' "value".
     type = function(value) { return(invisible(private$p_type)) },
+
+    #' @field valueName For type="value", the name of the column containing the
+    #' value to display in the pivot table.
     valueName = function(value) { return(invisible(private$p_valueName)) },
+
+    #' @field summariseExpression For type="summary", either the dplyr expression to
+    #' use with dplyr::summarise() or a data.table calculation expression.
     summariseExpression = function(value) { return(invisible(private$p_summariseExpression)) },
+
+    #' @field calculationExpression For type="calculation", an expression to combine
+    #' aggregate values.
     calculationExpression = function(value) { return(invisible(private$p_calculationExpression)) },
+
+    #' @field calculationFunction For type="function", a reference to a custom R
+    #' function that will carry out the calculation.
     calculationFunction = function(value) { return(invisible(private$p_calculationFunction)) },
+
+    #' @field calcFuncArgs For type="function", a list that specifies additional
+    #' arguments to pass to calculationFunction.
     calcFuncArgs = function(value) { return(invisible(private$p_calcFuncArgs)) },
+
+    #' @field basedOn A character vector specifying the names of one or more
+    #' calculations that this calculation depends on.
     basedOn = function(value) { return(invisible(private$p_basedOn)) },
+
+    #' @field noDataValue An integer or numeric value specifying the value to use if
+    #' no data exists for a particular cell.
     noDataValue = function(value) { return(invisible(private$p_noDataValue)) },
+
+    #' @field noDataCaption A character value that will be displayed by the pivot
+    #' table if no  data exists for a particular cell.
     noDataCaption = function(value) { return(invisible(private$p_noDataCaption)) },
+
+    #' @field headingBaseStyleName The name of a style defined in the pivot table
+    #' to use as the base styling for the data group heading.
     headingBaseStyleName = function(value) { return(invisible(private$p_headingBaseStyleName)) },
+
+    #' @field headingStyleDeclarations A list of CSS style declarations (e.g.
+    #' `list("font-weight"="bold")`) to override the base style.
     headingStyleDeclarations = function(value) { return(invisible(private$p_headingStyleDeclarations)) },
+
+    #' @field cellBaseStyleName The name of a style defined in the pivot table to
+    #' use as the base styling for the cells related to this calculation.
     cellBaseStyleName = function(value) { return(invisible(private$p_cellBaseStyleName)) },
+
+    #' @field cellStyleDeclarations A list of CSS style declarations (e.g.
+    #' `list("font-weight"="bold")`) to override the base style.
     cellStyleDeclarations = function(value) { return(invisible(private$p_cellStyleDeclarations)) }
   ),
   private = list(

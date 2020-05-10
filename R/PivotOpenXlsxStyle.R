@@ -1,82 +1,66 @@
-#' A class that specifies Excel styling as used by the openxlsx package.
+
+#' R6 class that specifies Excel styling as used by the openxlsx package.
 #'
-#' The PivotOpenXlsxStyle class specifies the styling for cells in an
+#' @description
+#' The `PivotOpenXlsxStyle` class specifies the styling for cells in an
 #' Excel worksheet.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
 #' @import jsonlite
 #' @export
-#' @return Object of \code{\link{R6Class}} with properties and methods that help
-#'   define styles.
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # PivotOpenXlsxStyle objects are created by the PivotOpenXlsxRenderer class.
 #' # See that class for details.
-#' @field parentPivot Owning pivot table.
-#' @field baseStyleName The name of the base style in the pivot table.
-#' @field isBaseStyle TRUE when this style is the equivalent of a named style in
-#'   the pivot table, FALSE if this style has additional settings over and above
-#'   the base style of the same name.
-#' @field fontName The name of the font (single font name, not a CSS style
-#'   list).
-#' @field fontSize The size of the font (units: point).
-#' @field bold TRUE if text is bold.
-#' @field italic TRUE if text is italic.
-#' @field underline TRUE if text is underlined.
-#' @field strikethrough TRUE if text has a line through it.
-#' @field superscript TRUE if text is small and raised.
-#' @field subscript TRUE if text is small and lowered.
-#' @field fillColor The background colour for the cell (as a hex value, e.g.
-#'   #00FF00).
-#' @field textColor The color of the text (as a hex value).
-#' @field hAlign The horizontal alignment of the text:  left, center or right.
-#' @field vAlign The vertical alignment of the text:  top, middle or bottom.
-#' @field wrapText TRUE if the text is allowed to wrap onto multiple lines.
-#' @field textRotation The rotation angle of the text or 255 for vertical.
-#' @field border A list (with elements style and color) specifying the border
-#'   settings for all four sides of each cell at once.
-#' @field borderLeft A list (with elements style and color) specifying the
-#'   border settings for the left border of each cell.
-#' @field borderRight A list (with elements style and color) specifying the
-#'   border settings for the right border of each cell.
-#' @field borderTop A list (with elements style and color) specifying the border
-#'   settings for the top border of each cell.
-#' @field borderBottom A list (with elements style and color) specifying the
-#'   border settings for the bottom border of each cell.
-#' @field valueFormat The Excel formatting applied to the field value.  One of
-#'   the following values: GENERAL, NUMBER, CURRENCY, ACCOUNTING, DATE,
-#'   LONGDATE, TIME, PERCENTAGE, FRACTION, SCIENTIFIC, TEXT, COMMA. Or for
-#'   dates/datetimes, a combination of d, m, y. Or for numeric values, use 0.00
-#'   etc.
-#' @field minColumnWidth The minimum width of this column.
-#' @field minRowHeight The minimum height of this row.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new Excel style, specifying the field
-#'   values documented above.}
-#'
-#'   \item{\code{isBasicStyleNameMatch(baseStyleName=NULL)}}{Find a matching
-#'   base style by name.}
-#'   \item{\code{isFullStyleDetailMatch = function(baseStyleName=NULL,
-#'   isBaseStyle=NULL, fontName=NULL, fontSize=NULL, bold=NULL, italic=NULL,
-#'   underline=NULL, strikethrough=NULL, superscript=NULL, subscript=NULL,
-#'   fillColor=NULL, textColor=NULL, hAlign=NULL, vAlign=NULL, wrapText=NULL,
-#'   textRotation=NULL, indent=NULL, borderAll=NULL, borderLeft=NULL,
-#'   borderRight=NULL, borderTop=NULL, borderBottom=NULL, valueFormat=NULL,
-#'   minColumnWidth=NULL, minRowHeight=NULL}}{Find a matching style matching on
-#'   all the attributes of the style.}
-#'   \item{\code{createOpenXslxStyle()}}{Create the openxlsx style.}
-#'   \item{\code{asList()}}{Get a list representation of this style.}
-#'   \item{\code{asJSON()}}{Get a JSON representation of this style.}
-#'   \item{\code{asString()}}{Get a text representation of this style.}
-#' }
 
 PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
   public = list(
+
+    #' @description
+    #' Create a new `PivotOpenXlsxStyle` object.
+    #' @param parentPivot The pivot table that this `PivotOpenXlsxStyle`
+    #' instance belongs to.
+    #' @param baseStyleName The name of the base style in the pivot table.
+    #' @param isBaseStyle `TRUE` when this style is the equivalent of a named style in
+    #' the pivot table, `FALSE` if this style has additional settings over and above
+    #' the base style of the same name.
+    #' @param fontName The name of the font (single font name, not a CSS style
+    #' list).
+    #' @param fontSize The size of the font (units: point, 4-72).
+    #' @param bold `TRUE` if text is bold.
+    #' @param italic `TRUE` if text is italic.
+    #' @param underline `TRUE` if text is underlined.
+    #' @param strikethrough `TRUE` if text has a line through it.
+    #' @param superscript `TRUE` if text is small and raised.
+    #' @param subscript `TRUE` if text is small and lowered.
+    #' @param fillColor The background colour for the cell (as a hex value, e.g.
+    #' #00FF00).
+    #' @param textColor The color of the text (as a hex value).
+    #' @param hAlign The horizontal alignment of the text:  left, center or right.
+    #' @param vAlign The vertical alignment of the text:  top, middle or bottom.
+    #' @param wrapText `TRUE` if the text is allowed to wrap onto multiple lines.
+    #' @param textRotation The rotation angle of the text (0 to 359) or 255 for
+    #' vertical.
+    #' @param indent Horizontal indentation of cell contents (0 to 250.).
+    #' @param borderAll A list (with elements style and color) specifying the border
+    #' settings for all four sides of each cell at once.
+    #' @param borderLeft A list (with elements style and color) specifying the
+    #' border settings for the left border of each cell.
+    #' @param borderRight A list (with elements style and color) specifying the
+    #' border settings for the right border of each cell.
+    #' @param borderTop A list (with elements style and color) specifying the border
+    #' settings for the top border of each cell.
+    #' @param borderBottom A list (with elements style and color) specifying the
+    #' border settings for the bottom border of each cell.
+    #' @param valueFormat The Excel formatting applied to the field value.  One of
+    #' the following values: GENERAL, NUMBER, CURRENCY, ACCOUNTING, DATE,
+    #' LONGDATE, TIME, PERCENTAGE, FRACTION, SCIENTIFIC, TEXT, COMMA. Or for
+    #' dates/datetimes, a combination of d, m, y. Or for numeric values, use
+    #' a numeric format code such as 0.00, #,###.00, etc
+    #' @param minColumnWidth The minimum width of this column (0 to 255).
+    #' @param minRowHeight The minimum height of this row (0 to 400).
+    #' @return A new `PivotOpenXlsxStyle` object.
     initialize = function(parentPivot, baseStyleName=NULL, isBaseStyle=NULL,
                          fontName=NULL, fontSize=NULL, bold=NULL,
                          italic=NULL, underline=NULL, strikethrough=NULL,
@@ -228,9 +212,60 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
 
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyle$new", "Created new Pivot Style")
    },
+
+   #' @description
+   #' Test whether a style is a base style with the specified name.
+   #' @param baseStyleName The name of the style to match.
+   #' @return No return value.
    isBasicStyleNameMatch = function(baseStyleName=NULL) {
      return(private$p_isBaseStyle && (baseStyleName==private$p_baseStyleName))
    },
+
+   #' @description
+   #' Test whether a style has matching style attributes.
+   #' @details
+   #' Base styles are compared on name only, otherwise the style attributes
+   #' are compared.
+   #' @param baseStyleName The name of the base style in the pivot table.
+   #' @param isBaseStyle `TRUE` when this style is the equivalent of a named style in
+   #' the pivot table, `FALSE` if this style has additional settings over and above
+   #' the base style of the same name.
+   #' @param fontName The name of the font (single font name, not a CSS style
+   #' list).
+   #' @param fontSize The size of the font (units: point, 4-72).
+   #' @param bold `TRUE` if text is bold.
+   #' @param italic `TRUE` if text is italic.
+   #' @param underline `TRUE` if text is underlined.
+   #' @param strikethrough `TRUE` if text has a line through it.
+   #' @param superscript `TRUE` if text is small and raised.
+   #' @param subscript `TRUE` if text is small and lowered.
+   #' @param fillColor The background colour for the cell (as a hex value, e.g.
+   #' #00FF00).
+   #' @param textColor The color of the text (as a hex value).
+   #' @param hAlign The horizontal alignment of the text:  left, center or right.
+   #' @param vAlign The vertical alignment of the text:  top, middle or bottom.
+   #' @param wrapText `TRUE` if the text is allowed to wrap onto multiple lines.
+   #' @param textRotation The rotation angle of the text (0 to 359) or 255 for
+   #' vertical.
+   #' @param indent Horizontal indentation of cell contents (0 to 250.).
+   #' @param borderAll A list (with elements style and color) specifying the border
+   #' settings for all four sides of each cell at once.
+   #' @param borderLeft A list (with elements style and color) specifying the
+   #' border settings for the left border of each cell.
+   #' @param borderRight A list (with elements style and color) specifying the
+   #' border settings for the right border of each cell.
+   #' @param borderTop A list (with elements style and color) specifying the border
+   #' settings for the top border of each cell.
+   #' @param borderBottom A list (with elements style and color) specifying the
+   #' border settings for the bottom border of each cell.
+   #' @param valueFormat The Excel formatting applied to the field value.  One of
+   #' the following values: GENERAL, NUMBER, CURRENCY, ACCOUNTING, DATE,
+   #' LONGDATE, TIME, PERCENTAGE, FRACTION, SCIENTIFIC, TEXT, COMMA. Or for
+   #' dates/datetimes, a combination of d, m, y. Or for numeric values, use
+   #' a numeric format code such as 0.00, #,###.00, etc
+   #' @param minColumnWidth The minimum width of this column (0 to 255).
+   #' @param minRowHeight The minimum height of this row (0 to 400).
+   #' @return No return value.
    isFullStyleDetailMatch = function(baseStyleName=NULL, isBaseStyle=NULL,
                            fontName=NULL, fontSize=NULL, bold=NULL,
                            italic=NULL, underline=NULL, strikethrough=NULL,
@@ -287,6 +322,10 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
                 private$isMatch(minColumnWidth, private$p_minColumnWidth) && private$isMatch(minRowHeight, private$p_minRowHeight))
       }
     },
+
+   #' @description
+   #' Create an `openxlsx` style from this style definition.
+   #' @return No return value.  Retrieve the style using the `openxlsxStyle` property.
     createOpenXslxStyle = function() {
       # consolidate the borders
       borderSides <- list()
@@ -382,6 +421,10 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
         textDecoration=textDecoration, wrapText=private$p_wrapText,
         textRotation=private$p_textRotation, indent=private$p_indent)
     },
+
+   #' @description
+   #' Return the contents of this object as a list for debugging.
+   #' @return A list of various object properties.
    asList = function() {
      lst <- list(
        baseStyleName = private$p_baseStyleName,
@@ -412,7 +455,15 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
      )
      return(invisible(lst))
    },
+
+   #' @description
+   #' Return the contents of this object as JSON for debugging.
+   #' @return A JSON representation of various object properties.
    asJSON = function() { return(jsonlite::toJSON(asList())) },
+
+   #' @description
+   #' Return a representation of this object as a character value.
+   #' @return A character summary of various object properties.
    asString = function() {
      lst <- self$asList()
      if(is.null(lst)||length(lst)==0) return("")
@@ -429,31 +480,97 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
    }
   ),
   active = list(
+
+    #' @field baseStyleName The name of the base style in the pivot table.
     baseStyleName = function(value) { return(invisible(private$p_baseStyleName)) },
+
+    #' @field isBaseStyle `TRUE` when this style is the equivalent of a named style in
+    #' the pivot table, `FALSE` if this style has additional settings over and above
+    #' the base style of the same name.
     isBaseStyle = function(value) { return(invisible(private$p_isBaseStyle)) },
+
+    #' @field fontName The name of the font (single font name, not a CSS style
+    #' list).
     fontName = function(value) { return(invisible(private$p_fontName)) },
+
+    #' @field fontSize The size of the font (units: point, 4-72).
     fontSize = function(value) { return(invisible(private$p_fontSize)) },
+
+    #' @field bold `TRUE` if text is bold.
     bold = function(value) { return(invisible(private$p_bold)) },
+
+    #' @field italic `TRUE` if text is italic.
     italic = function(value) { return(invisible(private$p_italic)) },
+
+    #' @field underline `TRUE` if text is underlined.
     underline = function(value) { return(invisible(private$p_underline)) },
+
+    #' @field strikethrough `TRUE` if text has a line through it.
     strikethrough = function(value) { return(invisible(private$p_strikethrough)) },
+
+    #' @field superscript `TRUE` if text is small and raised.
     superscript = function(value) { return(invisible(private$p_superscript)) },
+
+    #' @field subscript `TRUE` if text is small and lowered.
     subscript = function(value) { return(invisible(private$p_subscript)) },
+
+    #' @field fillColor The background colour for the cell (as a hex value, e.g.
+    #' #00FF00).
     fillColor = function(value) { return(invisible(private$p_fillColor)) },
+
+    #' @field textColor The color of the text (as a hex value).
     textColor = function(value) { return(invisible(private$p_textColor)) },
+
+    #' @field hAlign The horizontal alignment of the text:  left, center or right.
     hAlign = function(value) { return(invisible(private$p_hAlign)) },
+
+    #' @field vAlign The vertical alignment of the text:  top, middle or bottom.
     vAlign = function(value) { return(invisible(private$p_vAlign)) },
+
+    #' @field wrapText `TRUE` if the text is allowed to wrap onto multiple lines.
     wrapText = function(value) { return(invisible(private$p_wrapText)) },
+
+    #' @field textRotation The rotation angle of the text (0 to 359) or 255 for
+    #' vertical.
     textRotation = function(value) { return(invisible(private$p_textRotation)) },
+
+    #' @field indent Horizontal indentation of cell contents (0 to 250.).
     indent = function(value) { return(invisible(private$p_indent)) },
+
+    #' @field borderAll A list (with elements style and color) specifying the border
+    #' settings for all four sides of each cell at once.
     borderAll = function(value) { return(invisible(private$p_borderAll)) },
+
+    #' @field borderLeft A list (with elements style and color) specifying the
+    #' border settings for the left border of each cell.
     borderLeft = function(value) { return(invisible(private$p_borderLeft)) },
+
+    #' @field borderRight A list (with elements style and color) specifying the
+    #' border settings for the right border of each cell.
     borderRight = function(value) { return(invisible(private$p_borderRight)) },
+
+    #' @field borderTop A list (with elements style and color) specifying the border
+    #' settings for the top border of each cell.
     borderTop = function(value) { return(invisible(private$p_borderTop)) },
+
+    #' @field borderBottom A list (with elements style and color) specifying the
+    #' border settings for the bottom border of each cell.
     borderBottom = function(value) { return(invisible(private$p_borderBottom)) },
+
+    #' @field valueFormat The Excel formatting applied to the field value.  One of
+    #' the following values: GENERAL, NUMBER, CURRENCY, ACCOUNTING, DATE,
+    #' LONGDATE, TIME, PERCENTAGE, FRACTION, SCIENTIFIC, TEXT, COMMA. Or for
+    #' dates/datetimes, a combination of d, m, y. Or for numeric values, use
+    #' a numeric format code such as 0.00, #,###.00, etc
     valueFormat = function(value) { return(invisible(private$p_valueFormat)) },
+
+    #' @field minColumnWidth The minimum width of this column (0 to 255).
     minColumnWidth = function(value) { return(invisible(private$p_minColumnWidth)) },
+
+    #' @field minRowHeight The minimum height of this row (0 to 400).
     minRowHeight = function(value) { return(invisible(private$p_minRowHeight)) },
+
+    #' @field openxlsxStyle The style object returned from `openxlsx::createStyle()`.
     openxlsxStyle = function(value) { return(invisible(private$p_openxlsxStyle)) }
   ),
   private = list(

@@ -4,7 +4,8 @@
 \name{bhmtraindisruption}
 \alias{bhmtraindisruption}
 \title{Birmingham Train Disruptions, Dec 2016-Feb 2017.}
-\format{A data frame with 2982 rows and  10 variables:
+\format{
+A data frame with 2982 rows and  10 variables:
 \describe{
   \item{ServiceId}{Unique train identifier}
   \item{LastCancellationAt}{Time of the last cancellation}
@@ -22,7 +23,8 @@
   changed}
   \item{LastChangeOfOriginReasonDesc}{A more specific reason why the origin
   was changed}
-}}
+}
+}
 \source{
 \url{http://www.recenttraintimes.co.uk/}
 }

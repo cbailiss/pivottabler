@@ -144,10 +144,10 @@ The low level methods have the following parameters:
   + ALL means no filtering is applied.
   + VALUEs is the typical value used to specify that `variableName` is filtered to only `values`.
   + NONE means no data will match this data group.
-- `values` specifies the filter values applied to `variableName` in order for data to match this row/column in the pivot table.
+- `values` specifies the filter values applied to `variableName` to select the data to match this row/column in the pivot table.
 - `doNotExpand` - a logical value, default `FALSE` - specify `TRUE` to prevent the high-level methods from adding child groups.
-- `isEmpty`- a logical value, default `FALSE` - specify `TRUE` to prevent any data from matching this data group.
-- `isOutline` - specifies whether this data group is an outline group or not.
+- `isEmpty`- a logical value, default `FALSE` - specify `TRUE` to mark that this data group is empty.
+- `isOutline` - a logical value, default `FALSE` - specify `TRUE` to mark that this data group is an outline group.
   + Typically sets of two or three groups (header/before, value and footer/after) are added for each data value when generating outline groups.
   + Normally, the `doNotExpand`, `sortAnchor` and `outlineLinkedGroupId` parameters are set for an outline group.
   + See the [Regular Layout](v04-regularlayout.html) vignette for more information about outline groups.
@@ -155,10 +155,10 @@ The low level methods have the following parameters:
   + The default caption template of `{values}` simply displays the value without any prefix or suffix.
   + See the [Data Groups](v02-datagroups.html) vignette for an example of setting the caption template.
 - `caption` - effectively a hard-coded caption that overrides the built-in logic for generating a caption.
-- `isTotal` - a logical value that specifies whether this data group is a total.
-- `isLevelSubTotal` - a logical value that specifies whether this data group is a sub-total within a level
+- `isTotal` - a logical value, default `FALSE` - specify `TRUE` to mark that this data group is a total.
+- `isLevelSubTotal` - a logical value, default `FALSE` - specify `TRUE` to mark that this data group is a sub-total within a level.
   + Typically there are multiple sub-totals within a level.
-- `isLevelTotal` - a logical value that specifies whether this data group is the total for a level.
+- `isLevelTotal` - a logical value, default `FALSE` - specify `TRUE` to mark that this data group is level total.
 - `calculationGroupName` - for calculation groups, this character value specifies the calculation group that `calculationName` belongs to.
 - `calculationName` - for calculation groups, this character value specifies the name of the calculation.
 - `baseStyleName` - the style name for the data group.

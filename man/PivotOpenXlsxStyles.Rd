@@ -3,45 +3,232 @@
 \docType{class}
 \name{PivotOpenXlsxStyles}
 \alias{PivotOpenXlsxStyles}
-\title{A class that defines a collection of Excel styles as used by the openxlsx
+\title{R6 class that defines a collection of Excel styles as used by the openxlsx
 package.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that
-  define styles/a theme for a pivot table.
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotOpenXlsxStyles class stores a collection of PivotTableOpenXlsx style
-objects.
+The `PivotOpenXlsxStyles` class stores a collection of `PivotOpenXlsxStyle`
+style objects.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new set of styles, specifying the field
-  values documented above.}
-
-  \item{\code{findNamedStyle(baseStyleName)}}{Find an existing openxlsx style
-  matching the name of a base style.}
-  \item{\code{findOrAddStyle(action="findOrAdd", baseStyleName=NULL,
-  isBaseStyle=NULL, style=NULL, mapFromCss=TRUE)}}{Find an existing openxlsx
-  style and/or add a new openxlsx style matching a base style and/or
-  PivotStyle object.}
-  \item{\code{addNamedStyles(mapFromCss=TRUE)}}{Populate the OpenXlsx styles
-  based on the styles defined in the pivot table.}
-  \item{\code{asList()}}{Get a list representation of the styles.}
-  \item{\code{asJSON()}}{Get a JSON representation of the styles.}
-  \item{\code{asString()}}{Get a text representation of the styles.}
-}
-}
-
 \examples{
-# This class is used internally by the Pivot Table.
+# This class should only be created by the pivot table.
+# It is not intended to be created outside of the pivot table.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{count}}{The number of `PivotOpenXlsxStyle` objects in this
+`PivotOpenXlsxStyles` collection.}
+
+\item{\code{styles}}{A list containing the `PivotOpenXlsxStyle` objects in this
+`PivotOpenXlsxStyles` collection.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotOpenXlsxStyles$new()}}
+\item \href{#method-clearStyles}{\code{PivotOpenXlsxStyles$clearStyles()}}
+\item \href{#method-findNamedStyle}{\code{PivotOpenXlsxStyles$findNamedStyle()}}
+\item \href{#method-findOrAddStyle}{\code{PivotOpenXlsxStyles$findOrAddStyle()}}
+\item \href{#method-addNamedStyles}{\code{PivotOpenXlsxStyles$addNamedStyles()}}
+\item \href{#method-asList}{\code{PivotOpenXlsxStyles$asList()}}
+\item \href{#method-asJSON}{\code{PivotOpenXlsxStyles$asJSON()}}
+\item \href{#method-asString}{\code{PivotOpenXlsxStyles$asString()}}
+\item \href{#method-clone}{\code{PivotOpenXlsxStyles$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotOpenXlsxStyles` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyles$new(parentPivot)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotOpenXlsxStyles`
+instance belongs to.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotOpenXlsxStyles` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clearStyles"></a>}}
+\if{latex}{\out{\hypertarget{method-clearStyles}{}}}
+\subsection{Method \code{clearStyles()}}{
+Clear the internal list of styles.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyles$clearStyles()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findNamedStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-findNamedStyle}{}}}
+\subsection{Method \code{findNamedStyle()}}{
+Find an existing openxlsx style matching the name of a base style.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyles$findNamedStyle(baseStyleName)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{baseStyleName}}{The name of the base style to find.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A `PivotOpenXlsxStyle` object with the specified name.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-findOrAddStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-findOrAddStyle}{}}}
+\subsection{Method \code{findOrAddStyle()}}{
+Find an existing openxlsx style, add a new openxlsx style matching a base
+style and/or existing `PivotStyle` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyles$findOrAddStyle(
+  action = "findOrAdd",
+  baseStyleName = NULL,
+  isBaseStyle = NULL,
+  style = NULL,
+  mapFromCss = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{action}}{Must be one of "find" (to search for an existing style), "add"
+(to add a new style) or "findOrAdd" (default, to first search for an existing
+style, and if no match is found then add a new style)}
+
+\item{\code{baseStyleName}}{The name of the base style to find.}
+
+\item{\code{isBaseStyle}}{`TRUE` if the style being sought is a base style.}
+
+\item{\code{style}}{An existing `PivotStyle` object.}
+
+\item{\code{mapFromCss}}{Default `TRUE`, to create a new `PivotOpenXlsxStyle` by
+mapping from CSS style declarations.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+This function is used in two different ways:
+(1) When adding base styles (i.e. named styles in the pivot table) to
+this `PivotOpenXlsxStyles` collection:
+In this case, `baseStyleName` is the name of the style and `isBaseStyle=TRUE`
+(so matching is by name only) and `style` is the `PivotStyle` object for the
+base style.
+(2) When finding styles that have been applied to individual cells using the
+`PivotStyle` object that is attached to each cell:
+In this case, `baseStyleName` may or may not be present, `isBaseStyle=FALSE`
+and `style` is the `PivotStyle` object from the cell.
+}
+
+\subsection{Returns}{
+A `PivotOpenXlsxStyle` object that has been found or added.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addNamedStyles"></a>}}
+\if{latex}{\out{\hypertarget{method-addNamedStyles}{}}}
+\subsection{Method \code{addNamedStyles()}}{
+Populate the OpenXlsx styles based on the styles defined in the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyles$addNamedStyles(mapFromCss = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{mapFromCss}}{Default `TRUE`, to create a new `PivotOpenXlsxStyle` by
+mapping from CSS style declarations.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyles$asList()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyles$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-asString}{}}}
+\subsection{Method \code{asString()}}{
+Return a representation of this object as a character value.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyles$asString(seperator = ", ")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{seperator}}{A character value used when concatenating
+multiple styles.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character summary of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyles$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

@@ -3,54 +3,249 @@
 \docType{class}
 \name{PivotBatch}
 \alias{PivotBatch}
-\title{A class that represents a batch calculation.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that help
-  to (do xyz).
+\title{R6 class the represents a Calculation Batch}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotBatch class represents one combination of variables and calculations
-that are needed when calculating the values of cells in a pivot table.
+The `PivotBatch` class represents one combination of data, variables and
+calculations that are needed when calculating the values of cells in a pivot table.
 }
-\section{Fields}{
-
+\details{
+The combination of data name and variable names defines a batch.
+When the batch is calculated, the calculations specified in the batch
+are evaluated against the specified data, with the data being grouped by the
+variables specified in the batch.  Individual result values can then be retrieved
+from the batch.  See the "Performance" vignette for details.
+}
+\examples{
+# This class should only be created by the pivot table.
+# It is not intended to be created outside of the pivot table.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{parentPivot}}{Owning pivot table.}
+\item{\code{batchId}}{The unique identifier for the batch.}
 
-\item{\code{batchId}}{A unique integer identifier for this batch.}
+\item{\code{batchName}}{The unique name of the batch.}
 
 \item{\code{compatibleCount}}{The number of pivot cell calculations that this batch supports.}
 
 \item{\code{evaluated}}{TRUE if this batch has been evaluated.}
 
-\item{\code{results}}{The results (a data frame) of the evaluation of this batch.}
+\item{\code{results}}{The results (a data frame) of the evaluation of the batch}
 
-\item{\code{asString}}{A text description of this batch.}
-}}
-
+\item{\code{asString}}{A text description of the batch.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotBatch$new()}}
+\item \href{#method-isCompatible}{\code{PivotBatch$isCompatible()}}
+\item \href{#method-addCompatible}{\code{PivotBatch$addCompatible()}}
+\item \href{#method-getCalculationInternalName}{\code{PivotBatch$getCalculationInternalName()}}
+\item \href{#method-evaluateBatch}{\code{PivotBatch$evaluateBatch()}}
+\item \href{#method-getSummaryValueFromBatch}{\code{PivotBatch$getSummaryValueFromBatch()}}
+\item \href{#method-clone}{\code{PivotBatch$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotBatch` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatch$new(
+  parentPivot = NULL,
+  batchId = 0,
+  dataName = NULL,
+  variableNames = NULL,
+  values = NULL,
+  calculationName = NULL,
+  calculationGroupName = NULL
+)}\if{html}{\out{</div>}}
+}
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new Pivot Batch.}
+\item{\code{parentPivot}}{The pivot table that this `PivotBatch`
+instance belongs to.}
 
-  \item{\code{isCompatible(dataName=NULL, variableNames=NULL)}}{Checks
-  whether the specified data name and combination of variable names are
-  compatible with this batch.}
-  \item{\code{addCompatible(values=NULL, calculationName=NULL,
-  calculationGroupName=NULL)}}{Adds another cell calculation to this batch.}
-  \item{\code{getCalculationInternalName(calculationName=NULL,
-  calculationGroupName=NULL)}}{Find the internal name for this calculation.}
-  \item{\code{evaluateBatch()}}{Evaluate this batch.}
-  \item{\code{getSummaryValueFromBatch(filters=NULL, calculationName=NULL,
-  calculationGroupName=NULL)}}{Retrieve a value from a batch that has already
-  been evaluated.}
+\item{\code{batchId}}{The unique identifier for the batch.}
+
+\item{\code{dataName}}{The name of the data frame (as specified in
+`pt$addData()`) that this batch relates to.}
+
+\item{\code{variableNames}}{Specifies the combination of variable names
+(i.e. dimensionality) of the batch.}
+
+\item{\code{values}}{A list specifying the distinct list of values for each
+variable, i.e. `list(varName1=values1, varName2=values2, ...)`.
+`values` is not currently used and does not affect the batch
+compatibility logic.}
+
+\item{\code{calculationName}}{The first calculation added to this batch.
+Does not affect the batch compatibility logic.}
+
+\item{\code{calculationGroupName}}{The calculation group of the first
+calculation added to this batch.  Does not affect the batch
+compatibility logic.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotBatch` object.
 }
 }
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-isCompatible"></a>}}
+\if{latex}{\out{\hypertarget{method-isCompatible}{}}}
+\subsection{Method \code{isCompatible()}}{
+Determine whether a combination of data and variables is compatible
+with this batch.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatch$isCompatible(dataName = NULL, variableNames = NULL)}\if{html}{\out{</div>}}
+}
 
-\examples{
-# This class should only be created by the pivot table.
-# It is not intended to be created outside of the pivot table.
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataName}}{The name of the data frame (as specified in
+`pt$addData()`).}
+
+\item{\code{variableNames}}{Specifies the combination of variable names
+(i.e. dimensionality)..}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+`TRUE` or `FALSE`.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addCompatible"></a>}}
+\if{latex}{\out{\hypertarget{method-addCompatible}{}}}
+\subsection{Method \code{addCompatible()}}{
+Add a new set of values or a new calculation to the batch.
+with this batch.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatch$addCompatible(
+  values = NULL,
+  calculationName = NULL,
+  calculationGroupName = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{values}}{A list specifying the distinct list of values for each
+variable, i.e. `list(varName1=values1, varName2=values2, ...)`.
+`values` is not currently used and does not affect the batch
+compatibility logic.}
+
+\item{\code{calculationName}}{The calculation to add to the batch.
+Does not affect the batch compatibility logic.}
+
+\item{\code{calculationGroupName}}{The calculation group of the
+calculation to add to the batch.  Does not affect the batch
+compatibility logic.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getCalculationInternalName"></a>}}
+\if{latex}{\out{\hypertarget{method-getCalculationInternalName}{}}}
+\subsection{Method \code{getCalculationInternalName()}}{
+Find the internal name of a calculation in the batch.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatch$getCalculationInternalName(
+  calculationName = NULL,
+  calculationGroupName = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{calculationName}}{The name of the calculation to find.}
+
+\item{\code{calculationGroupName}}{The calculation group of the
+calculation to find.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The internal name of the calculation in the batch.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-evaluateBatch"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluateBatch}{}}}
+\subsection{Method \code{evaluateBatch()}}{
+Carry out grouping and calculations to evaluate the batch.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatch$evaluateBatch()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getSummaryValueFromBatch"></a>}}
+\if{latex}{\out{\hypertarget{method-getSummaryValueFromBatch}{}}}
+\subsection{Method \code{getSummaryValueFromBatch()}}{
+Retrieve one calculation value from the batch, typically for the value
+ of one cell in a pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatch$getSummaryValueFromBatch(
+  filters = NULL,
+  calculationName = NULL,
+  calculationGroupName = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{filters}}{A `PivotFilters` instance that specifies which value to
+retrieve.  This filters object is a combination of the row, column
+and calculation filters.}
+
+\item{\code{calculationName}}{The name of the calculation value to retrieve.}
+
+\item{\code{calculationGroupName}}{The calculation group of the
+calculation to retrieve.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A single calculation value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotBatch$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

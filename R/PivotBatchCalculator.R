@@ -1,50 +1,32 @@
-#' A class that calculates the values for multiple cells.
+
+#' R6 class that calculates the values for multiple cells in batches.
 #'
-#' The PivotBatchCalculator class calculates the values for multiple cells in
-#' the pivot table in one evaluation step.
+#' @description
+#' The `PivotBatchCalculator` class calculates the values for multiple cells in
+#' the pivot table in one evaluation step (per batch), instead of evaluating
+#' every calculation once per pivot table cell.
+#'
+#' @details
+#' Evaluting a set of filters and calculations repetatively for each cell is
+#' inefficient and slow.  The Batch Calculator executes a much small number of
+#' calculations which greatly reduces the CPU time and elapsed time required.
+#' See the "Performance" vignette for details.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @return Object of \code{\link{R6Class}} with properties and methods that help
-#'   to perform calculations in batch.
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
-#' @field parentPivot Owning pivot table.
-#' @field batchCount The number of batches generated for the pivot table.
-#' @field calculationSummary A summary of the batch compatibility for each
-#'   calculation.
-#' @field batchSummary A summary of the batches in the pivot table.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new batch calculator.}
-#'
-#'   \item{\code{reset()}}{Clears any batches that currently exist in the batch
-#'   calculator.}
-#'   \item{\code{isFiltersBatchCompatible(filters=NULL)}}{Determines whether a
-#'   set of filters are compatible with batch calculations.}
-#'   \item{\code{generateBatchesForNamedCalculationEvaluation1(dataName=NULL,
-#'   calculationName=NULL, calculationGroupName=NULL,
-#'   workingFilters=NULL)}}{Generates one or more batches for a named
-#'   calculation and single working filters object.}
-#'   \item{\code{generateBatchesForNamedCalculationEvaluation2(calculationName=NULL,
-#'   calculationGroupName=NULL, workingData=NULL)}}{Generates one or more
-#'   batches for a named calculation and set of working working data
-#'   associated with a cell.}
-#'   \item{\code{generateBatchesForCellEvaluation()}}{Generates one or batches
-#'   for a pivot table cell.}
-#'   \item{\code{evaluateBatches()}}{Evaluates batch calculations.}
-#'   \item{\code{getSummaryValueFromBatch(batchName=NULL, calculationName=NULL,
-#'   calculationGroupName=NULL, workingFilters=NULL)}}{Retrieve a value from a
-#'   the results of a batch that has been evaluated.}
-#' }
 
 PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
   public = list(
+
+    #' @description
+    #' Create a new `PivotBatchCalculator` object.
+    #' @param parentPivot The pivot table that this `PivotBatchCalculator`
+    #' instance belongs to.
+    #' @return A new `PivotBatchCalculator` object.
     initialize = function(parentPivot=NULL) {
       if(parentPivot$argumentCheckMode > 0) {
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -55,6 +37,10 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       private$p_statistics <- PivotBatchStatistics$new(parentPivot)
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$new", "Created new Pivot Batch Calculator.")
     },
+
+    #' @description
+    #' Reset the batch calculator, clearing all existing batches.
+    #' @return No return value.
     reset = function() {
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$reset", "Resetting batches...")
       private$p_batches <- list()
@@ -62,6 +48,12 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       private$p_statistics$reset()
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$reset", "Reset batches.")
     },
+
+    #' @description
+    #' Run some additional checks to see whether the working data is valid.
+    #' Typically only used in development builds of the package.
+    #' @param workingData The working data to check.
+    #' @return No return value.
     checkValidWorkingData = function(workingData=NULL) {
       if(private$p_parentPivot$argumentCheckMode != 4) return()
       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "checkValidWorkingData", workingData, missing(workingData), allowMissing=FALSE, allowNull=TRUE, allowedClasses="list")
@@ -72,6 +64,22 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       batchNames <- unlist(batchNames[!sapply(batchNames, is.null)])
       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "checkValidWorkingData", batchNames, missing(workingData), allowMissing=FALSE, allowNull=TRUE, allowedClasses="character")
     },
+
+    #' @description
+    #' Examines a set of filters to see whether they are compatible with batch
+    #' evaluation mode. Only filters that specify zero or one value for each
+    #' variable are compatible with batch evaluation.
+    #' @details It is not practical to make batch evaluation work where a filter
+    #' matches more than one value for a variable.  One approach might be to add
+    #' a derived column where a single value represents the multiple values, however
+    #' the combination of values could partially overlap with combinations of values
+    #' in other data groups.  Also the value that represents the "combined"
+    #' value could collide with other existing values in the column.
+    #' In summary:  Sequential mode is slower and more flexible.  Batch is faster
+    #' but stricter.  Batch mode works for regular pivot tables (i.e. most cases).
+    #' @param filters A `PivotFilters` object that represents a set of filters
+    #' to examine.
+    #' @return `TRUE` if the filters are batch compatible, `FALSE` otherwise.
     isFiltersBatchCompatible = function(filters=NULL) {
       # only filters that specify zero or one value for each variable are compatible with batch evaluation
       # (A filter that matches more than one value (a) would need a derived column calculating, (b) the specified values
@@ -94,6 +102,19 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$isFiltersBatchCompatible", "Checked if filter is batch compatible.")
       return(isCompatible)
     },
+
+    #' @description
+    #' Generates a new batch or finds a relevant existing batch for
+    #' a named calculation and single working filters object.
+    #' @param dataName The name of the data frame (as specified in
+    #' `pt$addData()`).
+    #' @param calculationName The name of the calculation.
+    #' @param calculationGroupName The calculation group of the
+    #' calculation.
+    #' @param workingFilters A `PivotFilters` object that represents the
+    #' working filters to generate the batch for.
+    #' @return The name of either the batch that was created or the
+    #' relevant existing batch.
     generateBatchesForNamedCalculationEvaluation1 = function(dataName=NULL, calculationName=NULL,
                                                             calculationGroupName=NULL, workingFilters=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
@@ -162,7 +183,20 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1", "Generated batches for named calculation evaluation.")
       return(invisible(batchName))
     },
-    # this function looks at the different types of calculation (type="calculation" will have basedOn calcs that each need examining)
+
+    #' @description
+    #' Generates one or more batches for the named calculations and set of
+    #' working working data associated with a cell.
+    #' @details
+    #' A wrapper around `generateBatchesForNamedCalculationEvaluation1()`, which
+    #' invokes this function as appropriate, depending on whether a calculation
+    #' if either of type "summary" or type "calculation".
+    #' @param calculationName The name of the calculation.
+    #' @param calculationGroupName The calculation group of the
+    #' calculation.
+    #' @param workingData A list containing filter and/or filter overrides.
+    #' @return One or more batch names of either the batches that were created or
+    #' the relevant existing batches.
     generateBatchesForNamedCalculationEvaluation2 = function(calculationName=NULL, calculationGroupName=NULL, workingData=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "generateBatchesForNamedCalculationEvaluation2", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -196,6 +230,11 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation2", "Generated batches for named calculation evaluation.")
       return(invisible(batchNames))
     },
+
+    #' @description
+    #' Generates the batches for batch evaluation mode.
+    #' @return One or more batch names of either the batches that were created or
+    #' the relevant existing batches.
     generateBatchesForCellEvaluation = function() {
       # generates batches for:
       # 1) type=summary and visible=TRUE
@@ -210,6 +249,8 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       self$reset()
       # statistics for use when generating batches
       private$p_statistics$reset()
+      # track the names
+      allNames <- vector("character", 0)
       # iterate the cells
       rowCount <- private$p_parentPivot$cells$rowCount
       columnCount <- private$p_parentPivot$cells$columnCount
@@ -234,10 +275,18 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
               }
             }
           }
+
+          # capture the names
+          allNames <- unique(c(allNames, batchNames))
         }
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$new", "Generated batches for cell evaluation.")
+      return(invisible(allNames))
     },
+
+    #' @description
+    #' Evaluate each of the batches defined in the batch calculator.
+    #' @return The number of batches that were evaluated.
     evaluateBatches = function() {
       if(private$p_parentPivot$evaluationMode=="sequential") {
         if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$evaluateBatches", "Pivot table is using sequential evaluation mode, so not executing batches.")
@@ -258,6 +307,17 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatchCalculator$evaluateBatches", "Evaluated batches.")
       return(invisible(batchEvalCount))
     },
+
+    #' @description
+    #' Retrieve one calculation value from one batch, typically for the value
+    #'  of one cell in a pivot table.
+    #' @param batchName The name of the batch containing the calculation result.
+    #' @param calculationName The name of the calculation.
+    #' @param calculationGroupName The calculation group of the
+    #' calculation.
+    #' @param workingFilters A `PivotFilters` object that represents the
+    #' working filters to retrieve the value for.
+    #' @return A single calculation value.
     getSummaryValueFromBatch = function(batchName=NULL, calculationName=NULL, calculationGroupName=NULL, workingFilters=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatchCalculator", "getSummaryValueFromBatch", batchName, missing(batchName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -284,10 +344,17 @@ PivotBatchCalculator <- R6::R6Class("PivotBatchCalculator",
     }
   ),
   active = list(
+
+    #' @field batchCount The number of batches generated for the pivot table.
     batchCount = function(value) { return(invisible(length(private$p_batches))) },
+
+    #' @field calculationSummary A summary of the batch compatibility for each
+    #' calculation.
     calculationSummary = function(value) {
       return(private$p_statistics$asString)
     },
+
+    #' @field batchSummary A summary of the batches in the pivot table.
     batchSummary = function(value) {
       str <- ""
       if(!is.null(private$p_batches)) {

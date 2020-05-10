@@ -35,5 +35,4 @@ LazyData: true
 URL: http://www.pivottabler.org.uk/, https://github.com/cbailiss/pivottabler
 BugReports: https://github.com/cbailiss/pivottabler/issues
 VignetteBuilder: knitr
-Roxygen: list(r6 = FALSE)
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0

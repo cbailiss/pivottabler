@@ -1,49 +1,49 @@
-#' A class that represents a batch calculation.
+
+#' R6 class the represents a Calculation Batch
 #'
-#' The PivotBatch class represents one combination of variables and calculations
-#' that are needed when calculating the values of cells in a pivot table.
+#' @description
+#' The `PivotBatch` class represents one combination of data, variables and
+#' calculations that are needed when calculating the values of cells in a pivot table.
+#'
+#' @details
+#' The combination of data name and variable names defines a batch.
+#' When the batch is calculated, the calculations specified in the batch
+#' are evaluated against the specified data, with the data being grouped by the
+#' variables specified in the batch.  Individual result values can then be retrieved
+#' from the batch.  See the "Performance" vignette for details.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
 #' @importFrom data.table data.table is.data.table
-#' @return Object of \code{\link{R6Class}} with properties and methods that help
-#'   to (do xyz).
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
-#' @field parentPivot Owning pivot table.
-#' @field batchId A unique integer identifier for this batch.
-#' @field compatibleCount The number of pivot cell calculations that this batch supports.
-#' @field evaluated TRUE if this batch has been evaluated.
-#' @field results The results (a data frame) of the evaluation of this batch.
-#' @field asString A text description of this batch.
-#'
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new Pivot Batch.}
-#'
-#'   \item{\code{isCompatible(dataName=NULL, variableNames=NULL)}}{Checks
-#'   whether the specified data name and combination of variable names are
-#'   compatible with this batch.}
-#'   \item{\code{addCompatible(values=NULL, calculationName=NULL,
-#'   calculationGroupName=NULL)}}{Adds another cell calculation to this batch.}
-#'   \item{\code{getCalculationInternalName(calculationName=NULL,
-#'   calculationGroupName=NULL)}}{Find the internal name for this calculation.}
-#'   \item{\code{evaluateBatch()}}{Evaluate this batch.}
-#'   \item{\code{getSummaryValueFromBatch(filters=NULL, calculationName=NULL,
-#'   calculationGroupName=NULL)}}{Retrieve a value from a batch that has already
-#'   been evaluated.}
-#' }
 
 PivotBatch <- R6::R6Class("PivotBatch",
   public = list(
-    # the values and calculation don't affect compatibility.
-    # values isn't used for now, just keeps track of all of the distinct values to be calculated for each variable
+
+    #' @description
+    #' Create a new `PivotBatch` object.
+    #' @param parentPivot The pivot table that this `PivotBatch`
+    #' instance belongs to.
+    #' @param batchId The unique identifier for the batch.
+    #' @param dataName The name of the data frame (as specified in
+    #' `pt$addData()`) that this batch relates to.
+    #' @param variableNames Specifies the combination of variable names
+    #' (i.e. dimensionality) of the batch.
+    #' @param values A list specifying the distinct list of values for each
+    #' variable, i.e. `list(varName1=values1, varName2=values2, ...)`.
+    #' `values` is not currently used and does not affect the batch
+    #' compatibility logic.
+    #' @param calculationName The first calculation added to this batch.
+    #' Does not affect the batch compatibility logic.
+    #' @param calculationGroupName The calculation group of the first
+    #' calculation added to this batch.  Does not affect the batch
+    #' compatibility logic.
+    #' @return A new `PivotBatch` object.
     initialize = function(parentPivot=NULL, batchId=0, dataName=NULL,
-                          variableNames=NULL, values=NULL, # values(varName1=values1, varName2=values2, ...)
+                          variableNames=NULL, values=NULL,
                           calculationName=NULL, calculationGroupName=NULL) {
       if(parentPivot$argumentCheckMode > 0) {
         checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotBatch", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -68,6 +68,15 @@ PivotBatch <- R6::R6Class("PivotBatch",
       private$p_compatibleCount <- 1
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$new", "Created new Pivot Batch.")
     },
+
+    #' @description
+    #' Determine whether a combination of data and variables is compatible
+    #' with this batch.
+    #' @param dataName The name of the data frame (as specified in
+    #' `pt$addData()`).
+    #' @param variableNames Specifies the combination of variable names
+    #' (i.e. dimensionality)..
+    #' @return `TRUE` or `FALSE`.
     isCompatible = function(dataName=NULL, variableNames=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "isCompatible", dataName, missing(dataName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -91,6 +100,20 @@ PivotBatch <- R6::R6Class("PivotBatch",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$isCompatible", "Checked batch compatibility.")
       return(bIsCompatible)
     },
+
+    #' @description
+    #' Add a new set of values or a new calculation to the batch.
+    #' with this batch.
+    #' @param values A list specifying the distinct list of values for each
+    #' variable, i.e. `list(varName1=values1, varName2=values2, ...)`.
+    #' `values` is not currently used and does not affect the batch
+    #' compatibility logic.
+    #' @param calculationName The calculation to add to the batch.
+    #' Does not affect the batch compatibility logic.
+    #' @param calculationGroupName The calculation group of the
+    #' calculation to add to the batch.  Does not affect the batch
+    #' compatibility logic.
+    #' @return No return value.
     addCompatible = function(values=NULL, calculationName=NULL, calculationGroupName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "addCompatible", values, missing(values), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
@@ -129,6 +152,13 @@ PivotBatch <- R6::R6Class("PivotBatch",
       private$p_compatibleCount <- private$p_compatibleCount+1
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$addCompatible", "Added compatibile calculation.")
     },
+
+    #' @description
+    #' Find the internal name of a calculation in the batch.
+    #' @param calculationName The name of the calculation to find.
+    #' @param calculationGroupName The calculation group of the
+    #' calculation to find.
+    #' @return The internal name of the calculation in the batch.
     getCalculationInternalName = function(calculationName=NULL, calculationGroupName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "getCalculationInternalName", calculationName, missing(calculationName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -153,6 +183,10 @@ PivotBatch <- R6::R6Class("PivotBatch",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$getCalculationInternalName", "Got calculation internal name.")
       return(calcInternalName)
     },
+
+    #' @description
+    #' Carry out grouping and calculations to evaluate the batch.
+    #' @return No return value.
     evaluateBatch = function() {
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$evaluateBatch", "Executing batch...")
       # get the data frame
@@ -226,6 +260,17 @@ PivotBatch <- R6::R6Class("PivotBatch",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotBatch$evaluateBatch", "Executed batch.")
       return(invisible())
     },
+
+    #' @description
+    #' Retrieve one calculation value from the batch, typically for the value
+    #'  of one cell in a pivot table.
+    #' @param filters A `PivotFilters` instance that specifies which value to
+    #'  retrieve.  This filters object is a combination of the row, column
+    #'  and calculation filters.
+    #' @param calculationName The name of the calculation value to retrieve.
+    #' @param calculationGroupName The calculation group of the
+    #' calculation to retrieve.
+    #' @return A single calculation value.
     getSummaryValueFromBatch = function(filters=NULL, calculationName=NULL, calculationGroupName=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotBatch", "getSummaryValueFromBatch", filters, missing(filters), allowMissing=FALSE, allowNull=TRUE, allowedClasses="PivotFilters")
@@ -288,11 +333,22 @@ PivotBatch <- R6::R6Class("PivotBatch",
     }
   ),
   active = list(
+    #' @field batchId The unique identifier for the batch.
     batchId = function(value) { return(invisible(private$p_batchId)) },
+
+    #' @field batchName The unique name of the batch.
     batchName = function(value) { return(invisible(private$p_batchName)) },
+
+    #' @field compatibleCount The number of pivot cell calculations that this batch supports.
     compatibleCount = function(value) { return(invisible(private$p_compatibleCount)) },
+
+    #' @field evaluated TRUE if this batch has been evaluated.
     evaluated = function(value) { return(invisible(private$p_evaluated)) },
+
+    #' @field results The results (a data frame) of the evaluation of the batch
     results = function(value) { return(invisible(private$p_results)) },
+
+    #' @field asString A text description of the batch.
     asString = function(value) {
       vstr <- ""
       if(length(private$p_variableNames)==0) {

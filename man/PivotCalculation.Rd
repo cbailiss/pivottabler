@@ -3,44 +3,44 @@
 \docType{class}
 \name{PivotCalculation}
 \alias{PivotCalculation}
-\title{A class that defines a calculation.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that
-  define a single pivot table calculation.
+\title{R6 class that defines a calculation.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotCalculation class defines one calculation in a pivot table.
+The `PivotCalculation` class defines one calculation in a pivot table.
 }
-\section{Fields}{
-
+\examples{
+# This class should only be created by the pivot table.
+# It is not intended to be created outside of the pivot table.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-
 \item{\code{calculationName}}{Calculation unique name.}
 
-\item{\code{caption}}{Calculation display name - i.e. the name shown in the pivot
-table.}
+\item{\code{caption}}{Calculation display name}
 
-\item{\code{visible}}{Show or hide the calculation.  Hidden calculations are
-typically used as base values for other calculations.}
+\item{\code{visible}}{`TRUE` to show the calculation in the pivot table or `FALSE`
+to hide it.  Hidden calculations are typically used as base values for
+other calculations.}
 
-\item{\code{displayOrder}}{The order the calculations are displayed in the pivot
-table.}
+\item{\code{displayOrder}}{The order the calculations are displayed in the
+pivot table.}
 
 \item{\code{filters}}{Any additional data filters specific to this calculation.
-This can be a PivotFilters object that further restrict the data for the
-calculation of a list of individual PivotFilter objects that provide more
+This can be a `PivotFilters`` object that further restricts the data for the
+calculation or a list of individual `PivotFilter`` objects that provide more
 flexibility (and/or/replace).  See the Calculations vignette for details.}
 
 \item{\code{format}}{A character, list or custom function to format the calculation
 result.}
 
-\item{\code{fmtFuncArgs}}{A list that specifies any additional arguments to pass to a
+\item{\code{fmtFuncArgs}}{A list that specifies any additional arguments to pass to
 a custom format function.}
 
 \item{\code{dataName}}{Specifies which data frame in the pivot table is used for
-this calculation.}
+this calculation (as specified in `pt$addData()`).}
 
 \item{\code{type}}{The calculation type:  "summary", "calculation", "function" or
 "value".}
@@ -57,6 +57,9 @@ aggregate values.}
 \item{\code{calculationFunction}}{For type="function", a reference to a custom R
 function that will carry out the calculation.}
 
+\item{\code{calcFuncArgs}}{For type="function", a list that specifies additional
+arguments to pass to calculationFunction.}
+
 \item{\code{basedOn}}{A character vector specifying the names of one or more
 calculations that this calculation depends on.}
 
@@ -65,23 +68,193 @@ no data exists for a particular cell.}
 
 \item{\code{noDataCaption}}{A character value that will be displayed by the pivot
 table if no  data exists for a particular cell.}
-}}
 
+\item{\code{headingBaseStyleName}}{The name of a style defined in the pivot table
+to use as the base styling for the data group heading.}
+
+\item{\code{headingStyleDeclarations}}{A list of CSS style declarations (e.g.
+`list("font-weight"="bold")`) to override the base style.}
+
+\item{\code{cellBaseStyleName}}{The name of a style defined in the pivot table to
+use as the base styling for the cells related to this calculation.}
+
+\item{\code{cellStyleDeclarations}}{A list of CSS style declarations (e.g.
+`list("font-weight"="bold")`) to override the base style.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotCalculation$new()}}
+\item \href{#method-asList}{\code{PivotCalculation$asList()}}
+\item \href{#method-asJSON}{\code{PivotCalculation$asJSON()}}
+\item \href{#method-asString}{\code{PivotCalculation$asString()}}
+\item \href{#method-clone}{\code{PivotCalculation$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotCalculation` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculation$new(
+  parentPivot,
+  calculationName = NULL,
+  caption = NULL,
+  visible = TRUE,
+  displayOrder = NULL,
+  filters = NULL,
+  format = NULL,
+  fmtFuncArgs = NULL,
+  dataName = NULL,
+  type = "summary",
+  valueName = NULL,
+  summariseExpression = NULL,
+  calculationExpression = NULL,
+  calculationFunction = NULL,
+  calcFuncArgs = NULL,
+  basedOn = NULL,
+  noDataValue = NULL,
+  noDataCaption = NULL,
+  headingBaseStyleName = NULL,
+  headingStyleDeclarations = NULL,
+  cellBaseStyleName = NULL,
+  cellStyleDeclarations = NULL
+)}\if{html}{\out{</div>}}
+}
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
 \describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot calculation, specifying the field
-  values documented above.}
+\item{\code{parentPivot}}{The pivot table that this `PivotCalculation`
+instance belongs to.}
 
-  \item{\code{asList()}}{Get a list representation of this calculation.}
-  \item{\code{asJSON()}}{Get a JSON representation of this calculation.}
-  \item{\code{asString()}}{Get a text representation of this calculation.}
+\item{\code{calculationName}}{Calculation unique name.}
+
+\item{\code{caption}}{Calculation display name}
+
+\item{\code{visible}}{`TRUE` to show the calculation in the pivot table or `FALSE`
+to hide it.  Hidden calculations are typically used as base values for
+other calculations.}
+
+\item{\code{displayOrder}}{The order the calculations are displayed in the
+pivot table.}
+
+\item{\code{filters}}{Any additional data filters specific to this calculation.
+This can be a `PivotFilters`` object that further restricts the data for the
+calculation or a list of individual `PivotFilter`` objects that provide more
+flexibility (and/or/replace).  See the Calculations vignette for details.}
+
+\item{\code{format}}{A character, list or custom function to format the calculation
+result.}
+
+\item{\code{fmtFuncArgs}}{A list that specifies any additional arguments to pass to
+a custom format function.}
+
+\item{\code{dataName}}{Specifies which data frame in the pivot table is used for
+this calculation (as specified in `pt$addData()`).}
+
+\item{\code{type}}{The calculation type:  "summary", "calculation", "function" or
+"value".}
+
+\item{\code{valueName}}{For type="value", the name of the column containing the
+value to display in the pivot table.}
+
+\item{\code{summariseExpression}}{For type="summary", either the dplyr expression to
+use with dplyr::summarise() or a data.table calculation expression.}
+
+\item{\code{calculationExpression}}{For type="calculation", an expression to combine
+aggregate values.}
+
+\item{\code{calculationFunction}}{For type="function", a reference to a custom R
+function that will carry out the calculation.}
+
+\item{\code{calcFuncArgs}}{For type="function", a list that specifies additional
+arguments to pass to calculationFunction.}
+
+\item{\code{basedOn}}{A character vector specifying the names of one or more
+calculations that this calculation depends on.}
+
+\item{\code{noDataValue}}{An integer or numeric value specifying the value to use if
+no data exists for a particular cell.}
+
+\item{\code{noDataCaption}}{A character value that will be displayed by the pivot
+table if no  data exists for a particular cell.}
+
+\item{\code{headingBaseStyleName}}{The name of a style defined in the pivot table
+to use as the base styling for the data group heading.}
+
+\item{\code{headingStyleDeclarations}}{A list of CSS style declarations (e.g.
+`list("font-weight"="bold")`) to override the base style.}
+
+\item{\code{cellBaseStyleName}}{The name of a style defined in the pivot table to
+use as the base styling for the cells related to this calculation.}
+
+\item{\code{cellStyleDeclarations}}{A list of CSS style declarations (e.g.
+`list("font-weight"="bold")`) to override the base style.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotCalculation` object.
 }
 }
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-asList}{}}}
+\subsection{Method \code{asList()}}{
+Return the contents of this object as a list for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculation$asList()}\if{html}{\out{</div>}}
+}
 
-\examples{
-# This class should only be created by the pivot table.
-# It is not intended to be created outside of the pivot table.
+\subsection{Returns}{
+A list of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\subsection{Method \code{asJSON()}}{
+Return the contents of this object as JSON for debugging.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculation$asJSON()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A JSON representation of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-asString}{}}}
+\subsection{Method \code{asString()}}{
+Return a representation of this object as a character value.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculation$asString()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A character summary of various object properties.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotCalculation$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

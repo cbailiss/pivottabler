@@ -1,55 +1,45 @@
-#' A class that defines a filter condition.
+
+#' R6 class that defines a filter condition.
 #'
-#' The PivotFilter class represents a single filter condition.  The condition
-#' relates to one column and is of the form [ColumnName] IN c(Value1, Value2,
-#' Value3, ...).  Often in a pivot table, each filter specifies only one data
+#' @description
+#' The `PivotFilter` class represents a single filter condition.
+#'
+#' @details
+#' The filter condition represented by a `PivotFilter` instance relates to
+#' one data frame variable/column and is of the form
+#' [ColumnName] IN c(Value1, Value2, Value3, ...).
+#' Often in a pivot table, each filter specifies only one data
 #' value, as typically each distinct data value exists in a separate row or
 #' column.
+#' The `PivotFilter` class contains methods to perform set based operations
+#' on filter values when combining filters.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
 #' @import jsonlite
 #' @export
-#' @return Object of \code{\link{R6Class}} with properties and methods that
-#'   define a single pivot table filter.
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' pt <- PivotTable$new()
 #' # ...
 #' PivotFilter$new(pt, variableName="Country", values="England")
-#' @field parentPivot Owning pivot table.
-#' @field variableName The name of the column in the data frame that this filter
-#'   will apply to.
-#' @field safeVariableName The name of the column, surrounded by back-ticks, if
-#'   the name is not legal.
-#' @field values A single data value or a vector of data values that could/can
-#'   be found in the data frame column.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new pivot filter, specifying the field
-#'   values documented above.}
-#'
-#'   \item{\code{intersect(filter)}}{Update this PivotFilter by intersecting
-#'   the allowed values in this filter with the allowed values in the specified
-#'   filter.}
-#'   \item{\code{union(filter)}}{Update this PivotFilter by unioning
-#'   the allowed values in this filter with the allowed values in the specified
-#'   filter.}
-#'   \item{\code{replace(filter)}}{Update this PivotFilter by replacing the
-#'   allowed values in this filter with the allowed values from the specified
-#'   filter.}
-#'   \item{\code{getCopy()}}{Get a copy of this PivotFilter.}
-#'   \item{\code{asList()}}{Get a list representation of this PivotFilter.}
-#'   \item{\code{asJSON()}}{Get a list representation of this PivotFilter.}
-#'   \item{\code{asString(includeVariableName=TRUE, seperator=" ")}}{Get a text
-#'   representation of this PivotFilter.}
-#' }
 
 PivotFilter <- R6::R6Class("PivotFilter",
   public = list(
+
+    #' @description
+    #' Create a new `PivotFilter` object.
+    #' @param parentPivot The pivot table that this `PivotFilter`
+    #' instance belongs to.
+    #' @param variableName The name of the column in the data frame that this filter
+    #' applies to.
+    #' @param type Must be either "ALL", "VALUES" or "NONE".  "VALUES" is the most
+    #' common type and means the data is filtered to a subset of values.  "ALL" means
+    #' there is no filtering, i.e. all values match.  "NONE" means there can be no
+    #' matching values/data.
+    #' @param values A single data value or a vector of multiple data values that
+    #' this filter will match on.
+    #' @return A new `PivotFilter` object.
    initialize = function(parentPivot, variableName=NULL, type="ALL", values=NULL) {
      if(parentPivot$argumentCheckMode > 0) {
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotFilter", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -78,6 +68,12 @@ PivotFilter <- R6::R6Class("PivotFilter",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$new", "Created new Pivot Filter.")
    },
+
+   #' @description
+   #' Updates this filter by intersecting the values in this filter with the
+   #' values from another `PivotFilter` object.
+   #' @param filter A `PivotFilter` object.
+   #' @return No return value.
    intersect = function(filter) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "intersect", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
@@ -135,6 +131,12 @@ PivotFilter <- R6::R6Class("PivotFilter",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$intersect", "Intersected filter.")
      return(invisible())
    },
+
+   #' @description
+   #' Updates this filter by unioning the values in this filter with the
+   #' values from another `PivotFilter` object.
+   #' @param filter A `PivotFilter` object.
+   #' @return No return value.
    union = function(filter) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "union", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
@@ -185,6 +187,12 @@ PivotFilter <- R6::R6Class("PivotFilter",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "Unioned filter.")
      return(invisible())
    },
+
+   #' @description
+   #' Updates this filter by replacing the values in this filter with the
+   #' values from another `PivotFilter` object.
+   #' @param filter A `PivotFilter` object.
+   #' @return No return value.
    replace = function(filter) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "replace", filter, missing(filter), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilter")
@@ -199,11 +207,19 @@ PivotFilter <- R6::R6Class("PivotFilter",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotFilter$union", "Replaced filter.")
      return(invisible())
    },
+
+   #' @description
+   #' Create a copy of this `PivotFilter` object.
+   #' @return A copy of this `PivotFilter` object.
    getCopy = function() {
      copy <- PivotFilter$new(private$p_parentPivot, variableName=rep(private$p_variableName),
                              type=rep(private$p_type), values=rep(private$p_values))
      return(invisible(copy))
    },
+
+   #' @description
+   #' Return the contents of this object as a list for debugging.
+   #' @return A list of various object properties.
    asList = function() {
      lst <- list(
        variableName = private$p_variableName,
@@ -212,7 +228,19 @@ PivotFilter <- R6::R6Class("PivotFilter",
      )
      return(invisible(lst))
    },
+
+   #' @description
+   #' Return the contents of this object as JSON for debugging.
+   #' @return A JSON representation of various object properties.
    asJSON = function() { return(jsonlite::toJSON(self$asList())) },
+
+   #' @description
+   #' Return a representation of this object as a character value.
+   #' @param includeVariableName `TRUE` (default) to include the variable name in
+   #'  the string.
+   #' @param seperator A character value used when concatenating
+   #' multiple filter values.
+   #' @return A character summary of various object properties.
    asString = function(includeVariableName=TRUE, seperator=" ") {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotFilter", "asString", includeVariableName, missing(includeVariableName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -230,9 +258,22 @@ PivotFilter <- R6::R6Class("PivotFilter",
    }
   ),
   active = list(
+
+    #' @field variableName The name of the column in the data frame that this filter
+    #' applies to.
     variableName = function(value) { return(invisible(private$p_variableName)) },
+
+    #' @field safeVariableName The name of the column in the data frame that this filter
+    #' applies to,  surrounded by back-ticks if the name is not legal.
     safeVariableName = function(value) { return(invisible(private$p_safeVariableName)) },
+
+    #' @field type Either "ALL", "VALUES" or "NONE".  "VALUES" is the most
+    #' common type and means the data is filtered to a subset of values.  "ALL" means
+    #' there is no filtering, i.e. all values match.  "NONE" means there can be no
+    #' matching values/data.
     type = function(value) { return(invisible(private$p_type)) },
+
+    #' @field values The subset of values that this filter matches.
     values = function(newValues) {
       if(missing(newValues)) return(invisible(private$p_values))
       else {

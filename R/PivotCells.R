@@ -1,65 +1,26 @@
-#' A class that contains the cells from a pivot table.
+
+#' R6 class that contains the cells in a pivot table.
 #'
-#' The PivotCells class contains all of the PivotCell objects that comprise the
-#' body of a pivot table.
+#' @description
+#' The `PivotCells` class contains all of the `PivotCell` instances that
+#' comprise the body of a pivot table.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
 #' @import jsonlite
-#' @return Object of \code{\link{R6Class}} with properties and methods relating
-#'   to the cells of a pivot table.
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
-#' @field parentPivot Owning pivot table.
-#' @field rowGroups The row data groups that represent the row headings in the
-#'   pivot table.
-#' @field columnGroups The column data groups that represent the column headings
-#'   in the pivot table.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new set of pivot table cells, specifying
-#'   the field values documented above.}
-#'
-#'   \item{\code{getCell(r, c))}}{Get the PivotCell at the specified row and
-#'   column coordinates in the pivot table.}
-#'   \item{\code{setCell(r, c, cell))}}{Set the PivotCell at the specified row
-#'   and column coordinates in the pivot table.}
-#'   \item{\code{getCells(specifyCellsAsList=FALSE, rowNumbers=NULL,
-#'   columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE)}}{
-#'   Retrieve cells by a combination of row and/or column numbers.}
-#'   \item{\code{findCells(variableNames=NULL, variableValues=NULL,
-#'   totals="include", calculationNames=NULL, minValue=NULL, maxValue=NULL,
-#'   exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
-#'   emptyCells="exclude", outlineCells="exclude")}}{Find cells
-#'   matching the specified criteria.}
-#'   \item{\code{findGroupColumnNumbers(group))}}{Find the column numbers
-#'   associated with a specific group.}
-#'   \item{\code{findGroupRowNumbers(group))}}{Find the row numbers
-#'   associated with a specific group.}
-#'   \item{\code{getColumnWidths())}}{Retrieve the width of the longest value
-#'   (in characters) in each column.}
-#'   \item{\code{removeColumn(c))}}{Remove a single column from the pivot
-#'   table.}
-#'   \item{\code{removeColumns(columnNumbers))}}{Remove multiple columns from
-#'   the pivot table.}
-#'   \item{\code{removeRow(r))}}{Remove a single row from the pivot table.}
-#'   \item{\code{removeRows(rowNumbers))}}{Remove multiple rows from the pivot
-#'   table.}
-#'   \item{\code{asMatrix(rawValue=TRUE))}}{Get a matrix containing all of the
-#'   numerical values from the body of the pivot table (for rawValue=TRUE) or
-#'   all of the formatted (i.e. character) values (for rawValue=FALSE).}
-#'   \item{\code{asList())}}{Get a list representation of the pivot table
-#'   cells.}
-#'   \item{\code{asJSON()}}{Get a JSON representation of the pivot table cells.}
-#' }
 
 PivotCells <- R6::R6Class("PivotCells",
   public = list(
+
+   #' @description
+   #' Create a new `PivotCells` object.
+   #' @param parentPivot The pivot table that this `PivotCells`
+   #' instance belongs to.
+   #' @return A new `PivotCells` object.
    initialize = function(parentPivot=NULL) {
      if(parentPivot$argumentCheckMode > 0) {
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotCells", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -68,6 +29,11 @@ PivotCells <- R6::R6Class("PivotCells",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$new", "Creating new PivotCells...")
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$new", "Created new PivotCells.")
    },
+
+   #' @description
+   #' Remove all cells from the pivot table and reset row and column
+   #' counts back to zero.
+   #' @return No return value.
    reset = function() {
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$resetCells", "Resetting cells...")
      private$p_rowGroups <- NULL
@@ -75,6 +41,13 @@ PivotCells <- R6::R6Class("PivotCells",
      private$p_rows <- NULL
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$resetCells", "Reset cells.")
    },
+
+   #' @description
+   #' Get the leaf-level data group that is associated with a specific column
+   #' in the pivot table.
+   #' @param c The column number.  The first column is column 1, excluding the
+   #' column(s) associated with row-headings.
+   #' @return A `PivotDataGroup` that is associated with the specified column.
    getColumnGroup = function(c=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getColumnGroup", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_columnGroups))
@@ -86,6 +59,13 @@ PivotCells <- R6::R6Class("PivotCells",
       if(length(private$p_columnGroups) < c) return(invisible(NULL))
       return(invisible(private$p_columnGroups[[c]]))
    },
+
+   #' @description
+   #' Get the leaf-level data group that is associated with a specific row
+   #' in the pivot table.
+   #' @param r The row number.  The first row is row 1, excluding the
+   #' row(s) associated with column-headings.
+   #' @return A `PivotDataGroup` that is associated with the specified row
    getRowGroup = function(r=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getRowGroup", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_rowGroups))
@@ -97,6 +77,13 @@ PivotCells <- R6::R6Class("PivotCells",
       if(length(private$p_rowGroups) < r) return(invisible(NULL))
       return(invisible(private$p_rowGroups[[r]]))
    },
+
+   #' @description
+   #' An internal method used when building the cell structure
+   #' of the pivot table.
+   #' @param rowGroups A list of `PivotDataGroup` objects to be set as the leaf-level row groups in the pivot table.
+   #' @param columnGroups A list of `PivotDataGroup` objects to be set as the leaf-level column groups in the pivot table.
+   #' @return No return value.
    setGroups = function(rowGroups=NULL, columnGroups=NULL) {
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$setGroups", "Creating new PivotCells...",
                                    list(rowCount=length(rowGroups), columnCount=length(columnGroups)))
@@ -112,6 +99,16 @@ PivotCells <- R6::R6Class("PivotCells",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$setGroups", "Created new PivotCells.")
    },
+
+   #' @description
+   #' Get the cell at the specified row and column coordinates in the pivot table.
+   #' @details
+   #' The row and column numbers refer only to the cells in the body of the pivot
+   #' table, i.e. row and column headings are excluded, e.g. row 1 is the first
+   #' row of cells underneath the column headings.
+   #' @param r Row number of the cell to retrieve.
+   #' @param c Column number of the cell to retrieve.
+   #' @return A `PivotCell` object representing the cell.
    getCell = function(r=NULL, c=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCell", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_rowGroups))
@@ -128,6 +125,19 @@ PivotCells <- R6::R6Class("PivotCells",
      if(length(private$p_rows[[r]]) < c) return(invisible(NULL))
      return(invisible(private$p_rows[[r]][[c]]))
    },
+
+   #' @description
+   #' Set the cell at the specified row and column coordinates in the pivot table.
+   #' @details
+   #' This method is intended for internal package use only, used when building #
+   #' the cell structure.
+   #' The row and column numbers refer only to the cells in the body of the pivot
+   #' table, i.e. row and column headings are excluded, e.g. row 1 is the first
+   #' row of cells underneath the column headings.
+   #' @param r Row number of the cell to retrieve.
+   #' @param c Column number of the cell to retrieve.
+   #' @param cell A `PivotCell` object to set into the pivot table cells.
+   #' @return No return value.
    setCell = function(r, c, cell) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "setCell", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_rowGroups))
@@ -145,6 +155,46 @@ PivotCells <- R6::R6Class("PivotCells",
      private$p_rows[[r]][[c]] <- cell
      return(invisible())
    },
+
+   #' @description
+   #' Retrieve cells by a combination of row and/or column numbers.
+   #' See the "Finding and Formatting" vignette for graphical examples.
+   #' @details
+   #' when `specifyCellsAsList=TRUE` (the default):
+   #' Get one or more rows by specifying the row numbers as a vector as
+   #' the rowNumbers argument and leaving the columnNumbers argument set
+   #' to the default value of `NULL`, or
+   #' Get one or more columns by specifying the column numbers as a vector
+   #' as the columnNumbers argument and leaving the rowNumbers argument
+   #' set to the default value of `NULL`, or
+   #' Get one or more individual cells by specifying the cellCoordinates
+   #' argument as a list of vectors of length 2, where each element in the
+   #' list is the row and column number of one cell,
+   #' e.g. `list(c(1, 2), c(3, 4))` specifies two cells, the first located
+   #' at row 1, column 2 and the second located at row 3, column 4.
+   #' When `specifyCellsAsList=FALSE`:
+   #' Get one or more rows by specifying the row numbers as a vector as the
+   #' rowNumbers argument and leaving the columnNumbers argument set to the
+   #' default value of `NULL`, or
+   #' Get one or more columns by specifying the column numbers as a vector
+   #' as the columnNumbers argument and leaving the rowNumbers argument set
+   #' to the default value of `NULL`, or
+   #' Get one or more cells by specifying the row and column numbers as vectors
+   #' for the rowNumbers and columnNumbers arguments, or
+   #' a mixture of the above, where for entire rows/columns the element in the
+   #' other vector is set to `NA`, e.g. to retrieve whole rows, specify the row
+   #' numbers as the rowNumbers but set the corresponding elements in the
+   #' columnNumbers vector to `NA`.
+   #' @param specifyCellsAsList `TRUE` to specify how cells are retrieved.
+   #' Default `TRUE`. More information is provided in the details section.
+   #' @param rowNumbers A vector of row numbers that specify the rows or
+   #' cells to retrieve.
+   #' @param columnNumbers A vector of row numbers that specify the columns
+   #' or cells to retrieve.
+   #' @param cellCoordinates A list of two-element vectors that specify the
+   #' coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.
+   #' @param excludeEmptyCells `TRUE` (default) to also search empty cells.
+   #' @return A list of `PivotCell` objects.
    getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", specifyCellsAsList, missing(specifyCellsAsList), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
@@ -257,6 +307,35 @@ PivotCells <- R6::R6Class("PivotCells",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Got cells.")
      return(invisible(cells))
    },
+
+   #' @description
+   #' Find cells matching specified criteria.
+   #' See the "Finding and Formatting" vignette for graphical examples.
+   #' @param variableNames A character vector specifying the name/names of the
+   #' variables to find.  This is useful generally only in pivot tables with
+   #' irregular layouts, since in regular pivot tables every cell is related
+   #' to every variable.
+   #' @param variableValues A list specifying the variable names and values to find,
+   #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
+   #' Specify "**" as the variable value to match totals for the specified variable.
+   #' Specify "!*" as the variable value to match non-totals for the specified variable.
+   #' NB: The totals/non-totals criteria above won’t work when visual totals are used.
+   #' @param totals A word that specifies how totals are matched (overrides the finer
+   #' settings above) - must be one of "include" (default), "exclude" or "only".
+   #' @param calculationNames A character vector specifying the name/names of the
+   #' calculations to find.
+   #' @param minValue A numerical value specifying a minimum value threshold.
+   #' @param maxValue A numerical value specifying a maximum value threshold.
+   #' @param exactValues A vector or list specifying a set of allowed values.
+   #' @param includeNull specify TRUE to include `NULL` in the matched cells,
+   #' FALSE to exclude `NULL` values.
+   #' @param includeNA specify TRUE to include `NA` in the matched cells,
+   #' FALSE to exclude `NA` values.
+   #' @param emptyCells A word that specifies how empty cells are matched -
+   #' must be one of "include", "exclude" (default) or "only".
+   #' @param outlineCells A word that specifies how outline cells are matched -
+   #' must be one of "include", "exclude" (default) or "only".
+   #' @return A list of `PivotCell` objects.
    findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
                         minValue=NULL, maxValue=NULL, exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
                         emptyCells="exclude", outlineCells="exclude") {
@@ -340,6 +419,12 @@ PivotCells <- R6::R6Class("PivotCells",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findCells", "Found cells.")
      return(invisible(matches))
    },
+
+   #' @description
+   #' Find the column numbers associated with a specific data group.
+   #' @param group A `PivotDataGroup` in the column data groups (i.e. a
+   #' column heading).
+   #' @return A vector of column numbers related to the specified group.
    findGroupColumnNumbers = function(group=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findGroupColumnNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
@@ -363,6 +448,12 @@ PivotCells <- R6::R6Class("PivotCells",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findGroupColumnNumbers", "Found group column numbers.")
       return(invisible(matchingColumnNumbers))
    },
+
+   #' @description
+   #' Find the row numbers associated with a specific data group.
+   #' @param group A `PivotDataGroup` in the row data groups (i.e. a
+   #' row heading).
+   #' @return A vector of row numbers related to the specified group.
    findGroupRowNumbers = function(group=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findGroupRowNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
@@ -386,6 +477,10 @@ PivotCells <- R6::R6Class("PivotCells",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findGroupRowNumbers", "Found group row numbers.")
       return(invisible(matchingRowNumbers))
    },
+
+   #' @description
+   #' Retrieve the width (in characters) of the longest value in each column.
+   #' @return A vector containing the length of the longest value in each column.
    getColumnWidths = function() {
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getColumnWidths", "Getting column widths...")
      widths <- integer(0)
@@ -403,6 +498,14 @@ PivotCells <- R6::R6Class("PivotCells",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getColumnWidths", "Got column widths.")
      return(invisible(widths))
    },
+
+   #' @description
+   #' Remove a column from the pivot table.
+   #' @details
+   #' This method removes both the related column group and cells.
+   #' @param c The column number.  The first column is column 1, excluding the
+   #' column(s) associated with row-headings.
+   #' @return No return value.
    removeColumn = function(c=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeColumn", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -422,6 +525,14 @@ PivotCells <- R6::R6Class("PivotCells",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeColumn", "Removed column.")
       return(invisible())
    },
+
+   #' @description
+   #' Remove multiple column from the pivot table.
+   #' @details
+   #' This method removes both the related column groups and cells.
+   #' @param columnNumbers The column numbers.  The first column is column 1, excluding the
+   #' column(s) associated with row-headings.
+   #' @return No return value.
    removeColumns = function(columnNumbers=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeColumn", columnNumbers, missing(columnNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -434,6 +545,14 @@ PivotCells <- R6::R6Class("PivotCells",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeColumns", "Removed columns.")
       return(invisible())
    },
+
+   #' @description
+   #' Remove a row from the pivot table.
+   #' @details
+   #' This method removes both the related row group and cells.
+   #' @param r The row number.  The first row is row 1, excluding the
+   #' row(s) associated with column-headings.
+   #' @return No return value.
    removeRow = function(r=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeRow", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -451,6 +570,14 @@ PivotCells <- R6::R6Class("PivotCells",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeRow", "Removed row.")
       return(invisible())
    },
+
+   #' @description
+   #' Remove multiple rows from the pivot table.
+   #' @details
+   #' This method removes both the related row groups and cells.
+   #' @param rowNumbers The row numbers.  The first row is row 1, excluding the
+   #' rows(s) associated with column-headings.
+   #' @return No return value.
    removeRows = function(rowNumbers=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeRow", rowNumbers, missing(rowNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -463,6 +590,12 @@ PivotCells <- R6::R6Class("PivotCells",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeRows", "Removed rows.")
       return(invisible())
    },
+
+   #' @description
+   #' Get a matrix containing all of the values from the body of the pivot table.
+   #' @param rawValue `TRUE` (default) to populate the matrix with the numerical
+   #' raw values, `FALSE` to populate the matrix with the character formatted values.
+   #' @return A `matrix` containing the values from the body of the pivot table.
    asMatrix = function(rawValue=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "asMatrix", rawValue, missing(rawValue), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -485,6 +618,10 @@ PivotCells <- R6::R6Class("PivotCells",
      }
      return(m)
    },
+
+   #' @description
+   #' Return the contents of this object as a list for debugging.
+   #' @return A list of various object properties.
    asList = function() {
      lst <- list()
      if(length(private$p_rows) > 0) {
@@ -500,13 +637,28 @@ PivotCells <- R6::R6Class("PivotCells",
      }
      return(invisible(lst))
    },
+
+   #' @description
+   #' Return the contents of this object as JSON for debugging.
+   #' @return A JSON representation of various object properties.
    asJSON = function() { return(jsonlite::toJSON(asList())) }
   ),
   active = list(
+
+   #' @field rowCount The number of rows in the pivot table (excluding column headings).
    rowCount = function(value) { return(invisible(length(private$p_rowGroups))) },
+
+   #' @field columnCount The number of columns in the pivot table (excluding column headings).
    columnCount = function(value) { return(invisible(length(private$p_columnGroups))) },
+
+   #' @field rowGroups A list of the leaf-level data groups on the rows axis.
    rowGroups = function(value) { return(invisible(private$p_rowGroups)) },
+
+   #' @field columnGroups A list of the leaf-level data groups on the columns axis.
    columnGroups = function(value) { return(invisible(private$p_columnGroups)) },
+
+   #' @field rows A list of the rows in the pivot table.  Each element in this list is
+   #' a list of `PivotCell` objects comprising the row.
    rows = function(value) { return(invisible(private$p_rows)) }
   ),
   private = list(

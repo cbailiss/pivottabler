@@ -1,6 +1,8 @@
-#' A class that specifies styling.
+
+#' R6 class that specifies styling.
 #'
-#' The PivotStyle class specifies the styling for headers and cells in a pivot
+#' @description
+#' The `PivotStyle` class specifies the styling for headers and cells in a pivot
 #' table.  Styles are specified in the form of Cascading Style Sheet (CSS)
 #' name-value pairs.
 #'
@@ -8,42 +10,22 @@
 #' @importFrom R6 R6Class
 #' @import jsonlite
 #' @export
-#' @return Object of \code{\link{R6Class}} with properties and methods that help
-#'   define styles.
 #' @format \code{\link{R6Class}} object.
 #' @examples
-#' # PivotStyle objects are normally created indirectly via one of the helper
-#' # methods.
-#' # For an example, see the PivotStyles class.
-#' @field parentPivot Owning pivot table.
-#' @field styleName Style unique name.
-#' @field declarations CSS style declarations.
-
-#' @section Methods:
-#' \describe{
-#'   \item{Documentation}{For more complete explanations and examples please see
-#'   the extensive vignettes supplied with this package.}
-#'   \item{\code{new(...)}}{Create a new style declaration, specifying the field
-#'   values documented above.}
-#'
-#'   \item{\code{setPropertyValue(property, value)}}{Set a single style
-#'   property.}
-#'   \item{\code{setPropertyValues(declarations)}}{Set multiple style
-#'   properties, where declarations is a list similar to the code example
-#'   below.}
-#'   \item{\code{getPropertyValue(property)}}{Get the style declarations for a
-#'   single property.}
-#'   \item{\code{asCSSRule(selector)}}{Get this style definition in the form of
-#'   a CSS rule.}
-#'   \item{\code{asNamedCSSStyle(styleNamePrefix)}}{Get this style definition in
-#'   the form of a named CSS style.}
-#'   \item{\code{getCopy(newStyleName)}}{Get a copy of this style.}
-#'   \item{\code{asList()}}{Get a list representation of this style.}
-#'   \item{\code{asJSON()}}{Get a JSON representation of this style.}
-#' }
+#' # This class should only be created by the pivot table.
+#' # It is not intended to be created outside of the pivot table.
 
 PivotStyle <- R6::R6Class("PivotStyle",
   public = list(
+
+   #' @description
+   #' Create a new `PivotStyle` object.
+   #' @param parentPivot The pivot table that this `PivotStyle`
+   #' instance belongs to.
+   #' @param styleName The name of the style (for a named style).
+   #' @param declarations CSS style declarations in the form of a list, e.g.
+   #' `list("font-weight"="bold", "color"="#0000FF")`
+   #' @return A new `PivotStyle` object.
    initialize = function(parentPivot, styleName=NULL, declarations= NULL) { # declarations = list(font="...", color="...")
      if(parentPivot$argumentCheckMode > 0) {
        checkArgument(parentPivot$argumentCheckMode, FALSE, "PivotStyle", "initialize", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
@@ -70,6 +52,12 @@ PivotStyle <- R6::R6Class("PivotStyle",
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$new", "Created new Pivot Style")
    },
+
+   #' @description
+   #' Set a single style property.
+   #' @param property The name of the style property to set, e.g. "font-weight".
+   #' @param value The value of the style property to set, e.g. "bold".
+   #' @return No return value.
    setPropertyValue = function(property=NULL, value=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "setPropertyValue", property, missing(property), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -80,6 +68,12 @@ PivotStyle <- R6::R6Class("PivotStyle",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$setPropertyValue", "Set property value.")
      return(invisible())
    },
+
+   #' @description
+   #' Set multiple style properties.
+   #' @param declarations CSS style declarations in the form of a list, e.g.
+   #' `list("font-weight"="bold", "color"="#0000FF")`
+   #' @return No return value.
    setPropertyValues = function(declarations=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "setPropertyValues", declarations, missing(declarations), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
@@ -96,6 +90,11 @@ PivotStyle <- R6::R6Class("PivotStyle",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$setPropertyValues", "Set property values.")
      return(invisible())
    },
+
+   #' @description
+   #' Get the value of a single style property.
+   #' @param property The name of the style property to set, e.g. "font-weight".
+   #' @return The value of the style property.
    getPropertyValue = function(property=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "getPropertyValue", property, missing(property), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -105,6 +104,14 @@ PivotStyle <- R6::R6Class("PivotStyle",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$getPropertyValue", "Got property value.")
      return(invisible(val))
    },
+
+   #' @description
+   #' Get the style definition in the form of a CSS rule.
+   #' @param selector A CSS selector, used to select the element(s) to be styled.
+   #' @return The style declarations in the form of a CSS rule,
+   #' i.e. selector { property-name1: property-value1,
+   #' property-name2: property-value2, ... }
+   #' e.g. div { font-weight: bold, color: #0000FF }
    asCSSRule = function(selector=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "asCSSRule", selector, missing(selector), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -123,6 +130,14 @@ PivotStyle <- R6::R6Class("PivotStyle",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$asCSSRule", "Got CSS rule.")
      return(invisible(cssRule))
    },
+
+   #' @description
+   #' Get the style definition in the form of a named CSS style.
+   #' @param styleNamePrefix A prefix to prepend to the style name.
+   #' @return The style declarations in the form of named CSS style,
+   #' i.e. .prefix-stylename { property-name1: property-value1,
+   #' property-name2: property-value2, ... }
+   #' e.g. .pvt1Cell { font-weight: bold, color: #0000FF }
    asNamedCSSStyle = function(styleNamePrefix=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "asNamedCSSStyle", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -134,6 +149,11 @@ PivotStyle <- R6::R6Class("PivotStyle",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotStyle$asNamedCSSStyle", "Got named CSS rule.")
      return(invisible(cssRule))
    },
+
+   #' @description
+   #' Create a copy of this `PivotStyle` object.
+   #' @param newStyleName The name of the new style.
+   #' @return A `PivotStyle` object.
    getCopy = function(newStyleName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "getCopy", newStyleName, missing(newStyleName), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
@@ -141,6 +161,10 @@ PivotStyle <- R6::R6Class("PivotStyle",
      copy <- PivotStyle$new(parentPivot=private$p_parentPivot, styleName=newStyleName, declarations=private$p_declarations)
      return(invisible(copy))
    },
+
+   #' @description
+   #' Return the contents of this object as a list for debugging.
+   #' @return A list of various object properties.
    asList = function() {
      lst <- list(
        name = private$p_name,
@@ -148,10 +172,18 @@ PivotStyle <- R6::R6Class("PivotStyle",
      )
      return(invisible(lst))
    },
+
+   #' @description
+   #' Return the contents of this object as JSON for debugging.
+   #' @return A JSON representation of various object properties.
    asJSON = function() { return(jsonlite::toJSON(asList())) }
   ),
   active = list(
+
+    #' @field name The name of the style (for a named style).
     name = function(value) { return(invisible(private$p_name)) },
+
+    #' @field declarations A list containing the style declarations.
     declarations = function(value) { return(invisible(private$p_declarations)) }
   ),
   private = list(

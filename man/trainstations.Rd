@@ -4,7 +4,8 @@
 \name{trainstations}
 \alias{trainstations}
 \title{Train Stations}
-\format{A data frame with 2568 rows and  7 variables:
+\format{
+A data frame with 2568 rows and  7 variables:
 \describe{
   \item{CrsCode}{3-letter code for the station}
   \item{StationName}{The name of the station}
@@ -14,7 +15,8 @@
   \item{GridReference}{Grid reference for the station}
   \item{Latitude}{Latitude of the station location}
   \item{Longitude}{Longitude of the station location}
-}}
+}
+}
 \source{
 \url{http://www.recenttraintimes.co.uk/}
 }

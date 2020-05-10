@@ -3,46 +3,163 @@
 \docType{class}
 \name{PivotLatexRenderer}
 \alias{PivotLatexRenderer}
-\title{A class that renders a pivot table in Latex.}
-\format{\code{\link{R6Class}} object.}
-\value{
-Object of \code{\link{R6Class}} with properties and methods that
-  render to Latex.
+\title{R6 class that renders a pivot table in Latex.}
+\format{
+\code{\link{R6Class}} object.
 }
 \description{
-The PivotLatexRenderer class creates a Latex representation of a pivot table.
+The `PivotLatexRenderer` class creates a Latex representation of a pivot table.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{parentPivot}}{Owning pivot table.}
-}}
-
-\section{Methods}{
-
-\describe{
-  \item{Documentation}{For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.}
-  \item{\code{new(...)}}{Create a new pivot table renderer, specifying the
-  field value documented above.}
-
-  \item{\code{clearIsRenderedFlags()}}{Clear the IsRendered flags that exist
-  on the PivotDataGroup class.}
-  \item{\code{resetVisibleRange()}}{Clears the visible range that has been
-  set, so the next call to getTableLatex() will render the whole table.}
-  \item{\code{setVisibleRange(fromRow=NULL, toRow=NULL, fromColumn=NULL,
-  toColumn=NULL)}}{Specifies a subset of the pivot table to be rendered, e.g.
-  for use when a pivot table will not fit into a single A4 page.}
-  \item{\code{clearIsRenderedFlags()}}{}
-  \item{\code{getTableLatex = function(caption=NULL, label=NULL,
-  boldHeadings=FALSE, italicHeadings=FALSE, exportOptions=NULL))}}{Get
-  a Latex representation of the pivot table, specifying the caption to
-  appear above the table, the label to use when referring to the table
-  elsewhere in the document and how headings should be styled.}
-}
-}
-
 \examples{
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{PivotLatexRenderer$new()}}
+\item \href{#method-clearIsRenderedFlags}{\code{PivotLatexRenderer$clearIsRenderedFlags()}}
+\item \href{#method-resetVisibleRange}{\code{PivotLatexRenderer$resetVisibleRange()}}
+\item \href{#method-setVisibleRange}{\code{PivotLatexRenderer$setVisibleRange()}}
+\item \href{#method-getTableLatex}{\code{PivotLatexRenderer$getTableLatex()}}
+\item \href{#method-clone}{\code{PivotLatexRenderer$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new `PivotLatexRenderer` object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotLatexRenderer$new(parentPivot = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parentPivot}}{The pivot table that this `PivotLatexRenderer`
+instance belongs to.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new `PivotLatexRenderer` object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clearIsRenderedFlags"></a>}}
+\if{latex}{\out{\hypertarget{method-clearIsRenderedFlags}{}}}
+\subsection{Method \code{clearIsRenderedFlags()}}{
+An internal method used when rendering a pivot table to Latex
+Clear the IsRendered flags that exist on the `PivotDataGroup` class.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotLatexRenderer$clearIsRenderedFlags()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-resetVisibleRange"></a>}}
+\if{latex}{\out{\hypertarget{method-resetVisibleRange}{}}}
+\subsection{Method \code{resetVisibleRange()}}{
+Clears the visible range that has been set, so the next call to
+`getTableLatex()` will render the whole table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotLatexRenderer$resetVisibleRange()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setVisibleRange"></a>}}
+\if{latex}{\out{\hypertarget{method-setVisibleRange}{}}}
+\subsection{Method \code{setVisibleRange()}}{
+Specifies a subset of the pivot table to be rendered, e.g.
+for use when a pivot table will not fit into a single A4 page.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotLatexRenderer$setVisibleRange(
+  fromRow = NULL,
+  toRow = NULL,
+  fromColumn = NULL,
+  toColumn = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{fromRow}}{The row number to render from.}
+
+\item{\code{toRow}}{The row number to render to.}
+
+\item{\code{fromColumn}}{The column number to render from.}
+
+\item{\code{toColumn}}{The column number to render to.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getTableLatex"></a>}}
+\if{latex}{\out{\hypertarget{method-getTableLatex}{}}}
+\subsection{Method \code{getTableLatex()}}{
+Generate a Latex representation of the pivot table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotLatexRenderer$getTableLatex(
+  caption = NULL,
+  label = NULL,
+  boldHeadings = FALSE,
+  italicHeadings = FALSE,
+  exportOptions = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{caption}}{The caption to appear above the table.}
+
+\item{\code{label}}{The label to use when referring to the table elsewhere in
+the document}
+
+\item{\code{boldHeadings}}{Default `FALSE`, specify `TRUE` to render headings
+in bold.}
+
+\item{\code{italicHeadings}}{Default `FALSE`, specify `TRUE` to render headings
+in italic.}
+
+\item{\code{exportOptions}}{A list of additional export options - see the
+"A1. Appendix" for details.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character variable containing the Latex representation of
+the pivot table.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotLatexRenderer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }
