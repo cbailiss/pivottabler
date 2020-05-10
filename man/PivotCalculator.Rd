@@ -726,7 +726,7 @@ formattedValue (typically a character value).
 \subsection{Method \code{evaluateCalculateFunction()}}{
 Invokes a user-provided custom R function to aggregate data and
 perform calculations, as part of evaluating a calculation
-where the calculation is of type `calc$type="functon"`.
+where the calculation is of type `calc$type="function"`.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$evaluateCalculateFunction(
   workingFilters = NULL,
@@ -862,7 +862,7 @@ formattedValue (typically a character value).
 \if{html}{\out{<a id="method-evaluateCell"></a>}}
 \if{latex}{\out{\hypertarget{method-evaluateCell}{}}}
 \subsection{Method \code{evaluateCell()}}{
-Evalue calculations to compute the value of a cell in a pivot table.
+Evaluate calculations to compute the value of a cell in a pivot table.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotCalculator$evaluateCell(cell = NULL)}\if{html}{\out{</div>}}
 }

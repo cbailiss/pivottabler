@@ -298,7 +298,7 @@ Specify default values for some function arguments.
 \if{html}{\out{</div>}}
 }
 \subsection{Details}{
-Defaults can be set for the following agruments of
+Defaults can be set for the following arguments of
 `pt$addRowDataGroups()` and `pt$addColumnDataGroups()`:
 `logical` values: `addTotal`, `expandExistingTotals`, `visualTotals`.
 `character` values:  `totalPosition`, `totalCaption`.
@@ -2415,7 +2415,7 @@ a character matrix.
 \item{\code{includeHeaders}}{`TRUE` (default) to include the headings in the
 body of the matrix.  Specifying `FALSE` omits the headings.}
 
-\item{\code{repeatHeaders}}{`FALSE` (default) only outputs the first occurance of each
+\item{\code{repeatHeaders}}{`FALSE` (default) only outputs the first occurrence of each
 header. Specify `TRUE` to repeat the headings.}
 
 \item{\code{rawValue}}{`FALSE` (default) outputs the formatted (character) values.
@@ -2540,7 +2540,7 @@ captions as columns in the data frame.}
 \item{\code{includeGroupValues}}{`TRUE` (default) to include the data group
 values as columns in the data frame.}
 
-\item{\code{separator}}{Specifies the character value used to concatendate
+\item{\code{separator}}{Specifies the character value used to concatenate
 filter values where multiple values exist in a filter.}
 
 \item{\code{stringsAsFactors}}{Specify `TRUE`to convert strings to factors,

@@ -101,7 +101,7 @@ cell to write to.}
 
 \item{\code{applyStyles}}{Default `TRUE` to write styling information to the cell.}
 
-\item{\code{baseStyleName}}{A character value specifying a named style definted
+\item{\code{baseStyleName}}{A character value specifying a named style defined
 in the pivot table.}
 
 \item{\code{style}}{A `PivotStyle` object containing CSS style declarations to

@@ -13,7 +13,7 @@ the pivot table in one evaluation step (per batch), instead of evaluating
 every calculation once per pivot table cell.
 }
 \details{
-Evaluting a set of filters and calculations repetatively for each cell is
+Evaluating a set of filters and calculations repetitively for each cell is
 inefficient and slow.  The Batch Calculator executes a much small number of
 calculations which greatly reduces the CPU time and elapsed time required.
 See the "Performance" vignette for details.
