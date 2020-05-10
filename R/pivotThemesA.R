@@ -127,7 +127,8 @@ getDefaultTheme <- function(parentPivot, themeName="default") {
   return(invisible(pivotStyles))
 }
 
-#' Get the a theme for styling to a pivot table that looks more like a standard table (i.e. no row column headings).
+#' Get the a theme for styling to a pivot table that looks
+#' more like a standard table (i.e. no row column headings).
 #'
 #' @export
 #' @param parentPivot Owning pivot table.
@@ -340,7 +341,8 @@ getCompactTheme <- function(parentPivot, themeName="compact") {
 
 #' Get a simple coloured theme.
 #'
-#' Get a simple coloured theme that can be used to style a pivot table into a custom colour scheme.
+#' Get a simple coloured theme that can be used to style a
+#' pivot table into a custom colour scheme.
 #'
 #' @export
 #' @param parentPivot Owning pivot table.
