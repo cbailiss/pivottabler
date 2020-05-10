@@ -29,8 +29,8 @@ other calculations.}
 pivot table.}
 
 \item{\code{filters}}{Any additional data filters specific to this calculation.
-This can be a `PivotFilters`` object that further restricts the data for the
-calculation or a list of individual `PivotFilter`` objects that provide more
+This can be a `PivotFilters` object that further restricts the data for the
+calculation or a list of individual `PivotFilter` objects that provide more
 flexibility (and/or/replace).  See the Calculations vignette for details.}
 
 \item{\code{format}}{A character, list or custom function to format the calculation
@@ -143,8 +143,8 @@ other calculations.}
 pivot table.}
 
 \item{\code{filters}}{Any additional data filters specific to this calculation.
-This can be a `PivotFilters`` object that further restricts the data for the
-calculation or a list of individual `PivotFilter`` objects that provide more
+This can be a `PivotFilters` object that further restricts the data for the
+calculation or a list of individual `PivotFilter` objects that provide more
 flexibility (and/or/replace).  See the Calculations vignette for details.}
 
 \item{\code{format}}{A character, list or custom function to format the calculation

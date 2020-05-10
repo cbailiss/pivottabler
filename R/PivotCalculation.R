@@ -27,8 +27,8 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
     #' @param displayOrder The order the calculations are displayed in the
     #' pivot table.
     #' @param filters Any additional data filters specific to this calculation.
-    #' This can be a `PivotFilters`` object that further restricts the data for the
-    #' calculation or a list of individual `PivotFilter`` objects that provide more
+    #' This can be a `PivotFilters` object that further restricts the data for the
+    #' calculation or a list of individual `PivotFilter` objects that provide more
     #' flexibility (and/or/replace).  See the Calculations vignette for details.
     #' @param format A character, list or custom function to format the calculation
     #' result.
@@ -228,8 +228,8 @@ PivotCalculation <- R6::R6Class("PivotCalculation",
     displayOrder = function(value) { return(invisible(private$p_displayOrder)) },
 
     #' @field filters Any additional data filters specific to this calculation.
-    #' This can be a `PivotFilters`` object that further restricts the data for the
-    #' calculation or a list of individual `PivotFilter`` objects that provide more
+    #' This can be a `PivotFilters` object that further restricts the data for the
+    #' calculation or a list of individual `PivotFilter` objects that provide more
     #' flexibility (and/or/replace).  See the Calculations vignette for details.
     filters = function(value) { return(invisible(private$p_filters)) },
 
