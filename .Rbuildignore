@@ -18,10 +18,11 @@
 ^vignettes/v07-styling\.Rmd$
 ^vignettes/v08-findingandformatting\.Rmd$
 ^vignettes/v09-cellcontext\.Rmd$
-^vignettes/v10-irregularlayout\.Rmd$
-^vignettes/v11-performance\.Rmd$
-^vignettes/v12-excelexport\.Rmd$
-^vignettes/v13-shiny\.Rmd$
+^vignettes/v10-navigatingapivottable\.Rmd$
+^vignettes/v11-irregularlayout\.Rmd$
+^vignettes/v12-performance\.Rmd$
+^vignettes/v13-excelexport\.Rmd$
+^vignettes/v14-shiny\.Rmd$
 ^vignettes/vA1-appendix\.Rmd$
 ^vignettes/vA2-appendix\.Rmd$
 ^vignettes/vA3-appendix\.Rmd$
