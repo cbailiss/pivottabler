@@ -12,7 +12,7 @@ oneToNULL(value, convertOneToNULL)
 \item{convertOneToNULL}{TRUE to convert 1 to NULL.}
 }
 \value{
-NULL if value==1, otherwise value.
+NULL if value is 0 or 1, otherwise value.
 }
 \description{
 \code{oneToNull} is a utility function that returns NULL when a value of

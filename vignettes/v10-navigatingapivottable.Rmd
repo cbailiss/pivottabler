@@ -414,7 +414,17 @@ pt$renderPivot()
 
 ### From data groups to rows / columns / cells
 
-The row numbers related to a particular group can be found using `pt$findGroupRowNumbers()`, e.g. finding the row numbers of all row groups:
+For a data group at the leaf-level of the hierarchy, the related row or column number can be found using the `rowColumnNumber` property, e.g.
+
+```{r, message=FALSE, warning=FALSE}
+grps <- pt$leafRowGroups
+grp <- grps[[3]]
+grp$rowColumnNumber
+```
+
+In the above example, since `grp` is a row group, the `rowColumnNumber` value is a row number.
+
+More generally, the row numbers related to a particular group at any level of the hierarchy can be found using `pt$findGroupRowNumbers()`, e.g. finding the row numbers of all row groups:
 
 ```{r, message=FALSE, warning=FALSE}
 grps <- pt$leafRowGroups

@@ -6,8 +6,8 @@ Overview
 
 This release includes one potential breaking change and many small enhancements across various parts of the package.
 
-Reminder:  The package only contains one introductory vignette.
-The full set of package vignettes can be found at:  http://www.pivottabler.org.uk/articles/ 
+Reminder:  The package now only contains one introductory vignette (due to the constraints on CRAN).
+The full set of 15+ vignettes can be found at:  http://www.pivottabler.org.uk/articles/ 
 
 Breaking Changes
 ----------------

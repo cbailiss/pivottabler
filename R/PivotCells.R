@@ -505,10 +505,13 @@ PivotCells <- R6::R6Class("PivotCells",
    #' This method removes both the related column group and cells.
    #' @param c The column number.  The first column is column 1, excluding the
    #' column(s) associated with row-headings.
+   #' @param renumberGroups `TRUE` (default) to renumber the `rowColumnNumber`
+   #' property of the data groups after removing the row.
    #' @return No return value.
-   removeColumn = function(c=NULL) {
+   removeColumn = function(c=NULL, renumberGroups=TRUE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeColumn", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeColumn", renumberGroups, missing(renumberGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeColumn", "Removing column...")
       # checks
@@ -522,6 +525,9 @@ PivotCells <- R6::R6Class("PivotCells",
       for(r in 1:self$rowCount) {
          private$p_rows[[r]][[c]] <- NULL
       }
+      if(renumberGroups==TRUE) {
+         private$renumberColumnGroups()
+      }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeColumn", "Removed column.")
       return(invisible())
    },
@@ -532,16 +538,22 @@ PivotCells <- R6::R6Class("PivotCells",
    #' This method removes both the related column groups and cells.
    #' @param columnNumbers The column numbers.  The first column is column 1, excluding the
    #' column(s) associated with row-headings.
+   #' @param renumberGroups `TRUE` (default) to renumber the `rowColumnNumber`
+   #' property of the data groups after removing the row.
    #' @return No return value.
-   removeColumns = function(columnNumbers=NULL) {
+   removeColumns = function(columnNumbers=NULL, renumberGroups=TRUE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
-         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeColumn", columnNumbers, missing(columnNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeColumns", columnNumbers, missing(columnNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeColumns", renumberGroups, missing(renumberGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeColumns", "Removing columns...")
       # sort the column numbers into descending order (because otherwise removing a column at the top shifts the column numbers of those to the right)
       descColumnNumbers <- columnNumbers[order(-columnNumbers)]
       # iterate and remove
-      invisible(lapply(descColumnNumbers, self$removeColumn))
+      invisible(lapply(descColumnNumbers, self$removeColumn, renumberGroups=FALSE))
+      if(renumberGroups==TRUE) {
+         private$renumberColumnGroups()
+      }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeColumns", "Removed columns.")
       return(invisible())
    },
@@ -552,10 +564,13 @@ PivotCells <- R6::R6Class("PivotCells",
    #' This method removes both the related row group and cells.
    #' @param r The row number.  The first row is row 1, excluding the
    #' row(s) associated with column-headings.
+   #' @param renumberGroups `TRUE` (default) to renumber the `rowColumnNumber`
+   #' property of the data groups after removing the row.
    #' @return No return value.
-   removeRow = function(r=NULL) {
+   removeRow = function(r=NULL, renumberGroups=TRUE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeRow", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeRow", renumberGroups, missing(renumberGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeRow", "Removing row...")
       # checks
@@ -567,6 +582,9 @@ PivotCells <- R6::R6Class("PivotCells",
       private$p_rowGroups[[r]]$removeGroup(removeAncestorsIfNoRemainingChildren=TRUE, resetCells=FALSE)
       private$p_rowGroups[[r]] <- NULL
       private$p_rows[[r]] <- NULL
+      if(renumberGroups==TRUE) {
+         private$renumberRowGroups()
+      }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeRow", "Removed row.")
       return(invisible())
    },
@@ -577,16 +595,22 @@ PivotCells <- R6::R6Class("PivotCells",
    #' This method removes both the related row groups and cells.
    #' @param rowNumbers The row numbers.  The first row is row 1, excluding the
    #' rows(s) associated with column-headings.
+   #' @param renumberGroups `TRUE` (default) to renumber the `rowColumnNumber`
+   #' property of the data groups after removing the row.
    #' @return No return value.
-   removeRows = function(rowNumbers=NULL) {
+   removeRows = function(rowNumbers=NULL, renumberGroups=TRUE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
-         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeRow", rowNumbers, missing(rowNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeRows", rowNumbers, missing(rowNumbers), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "removeRows", renumberGroups, missing(renumberGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeRows", "Removing rows...")
       # sort the row numbers into descending order (because otherwise removing a row at the top shifts the row numbers of those below)
       descRowNumbers <- rowNumbers[order(-rowNumbers)]
       # iterate and remove
-      invisible(lapply(descRowNumbers, self$removeRow))
+      invisible(lapply(descRowNumbers, self$removeRow, renumberGroups=FALSE))
+      if(renumberGroups==TRUE) {
+         private$renumberRowGroups()
+      }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$removeRows", "Removed rows.")
       return(invisible())
    },
@@ -665,6 +689,22 @@ PivotCells <- R6::R6Class("PivotCells",
     p_parentPivot = NULL,
     p_rowGroups = NULL,
     p_columnGroups = NULL,
-    p_rows = NULL
+    p_rows = NULL,
+    # after rows or columns have been removed, the rowColumnNumber property on the data groups will be wrong
+    # these two functions can reset them
+    renumberColumnGroups = function() {
+       if((!is.null(private$p_columnGroups))&&(length(private$p_columnGroups)>0)) {
+          for(c in 1:length(private$p_columnGroups)) {
+             private$p_columnGroups[[c]]$rowColumnNumber <- c
+          }
+       }
+    },
+    renumberRowGroups = function() {
+       if((!is.null(private$p_rowGroups))&&(length(private$p_rowGroups)>0)) {
+          for(r in 1:length(private$p_rowGroups)) {
+             private$p_rowGroups[[r]]$rowColumnNumber <- r
+          }
+       }
+    }
   )
 )

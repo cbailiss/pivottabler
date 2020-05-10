@@ -412,7 +412,7 @@ A vector containing the length of the longest value in each column.
 \subsection{Method \code{removeColumn()}}{
 Remove a column from the pivot table.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeColumn(c = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeColumn(c = NULL, renumberGroups = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -420,6 +420,9 @@ Remove a column from the pivot table.
 \describe{
 \item{\code{c}}{The column number.  The first column is column 1, excluding the
 column(s) associated with row-headings.}
+
+\item{\code{renumberGroups}}{`TRUE` (default) to renumber the `rowColumnNumber`
+property of the data groups after removing the row.}
 }
 \if{html}{\out{</div>}}
 }
@@ -437,7 +440,7 @@ No return value.
 \subsection{Method \code{removeColumns()}}{
 Remove multiple column from the pivot table.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeColumns(columnNumbers = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeColumns(columnNumbers = NULL, renumberGroups = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -445,6 +448,9 @@ Remove multiple column from the pivot table.
 \describe{
 \item{\code{columnNumbers}}{The column numbers.  The first column is column 1, excluding the
 column(s) associated with row-headings.}
+
+\item{\code{renumberGroups}}{`TRUE` (default) to renumber the `rowColumnNumber`
+property of the data groups after removing the row.}
 }
 \if{html}{\out{</div>}}
 }
@@ -462,7 +468,7 @@ No return value.
 \subsection{Method \code{removeRow()}}{
 Remove a row from the pivot table.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeRow(r = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeRow(r = NULL, renumberGroups = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -470,6 +476,9 @@ Remove a row from the pivot table.
 \describe{
 \item{\code{r}}{The row number.  The first row is row 1, excluding the
 row(s) associated with column-headings.}
+
+\item{\code{renumberGroups}}{`TRUE` (default) to renumber the `rowColumnNumber`
+property of the data groups after removing the row.}
 }
 \if{html}{\out{</div>}}
 }
@@ -487,7 +496,7 @@ No return value.
 \subsection{Method \code{removeRows()}}{
 Remove multiple rows from the pivot table.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeRows(rowNumbers = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$removeRows(rowNumbers = NULL, renumberGroups = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -495,6 +504,9 @@ Remove multiple rows from the pivot table.
 \describe{
 \item{\code{rowNumbers}}{The row numbers.  The first row is row 1, excluding the
 rows(s) associated with column-headings.}
+
+\item{\code{renumberGroups}}{`TRUE` (default) to renumber the `rowColumnNumber`
+property of the data groups after removing the row.}
 }
 \if{html}{\out{</div>}}
 }
