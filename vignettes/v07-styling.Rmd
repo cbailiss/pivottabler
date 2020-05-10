@@ -277,7 +277,7 @@ The quick pivot functions specify the same styling/formatting for all headers an
 
 ## Styling Data Groups
 
-The appearance of sets of data groups can be specified when adding the data groups to the pivot table either by specifying a `baseStyleName` or by specifying `styleDeclarations`.  If specifying a `baseStyleName`, the full style must be defined.  Alternatively specifying a set of style declarations allows just the style settings of interest to be overriden which tends to be simpler, e.g.
+The appearance of sets of data groups can be specified when adding the data groups to the pivot table either by specifying a `baseStyleName` or by specifying `styleDeclarations`.  If specifying a `baseStyleName`, the full style must be defined.  Alternatively specifying a set of style declarations allows just the style settings of interest to be overridden which tends to be simpler, e.g.
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)
@@ -294,7 +294,7 @@ pt$renderPivot(styleNamePrefix="tdg")
 
 ## Styling Calculations
 
-The appearance of calculation headings or cell values can be specified when defining the calculations by specifying any combination of `headingBaseStyleName`, `headingStyleDeclarations`, `cellBaseStyleName` and/or `cellStyleDeclarations`. If specifying a base style name, the full style must be defined.  Alternatively specifying a set of style declarations allows just the style settings of interest to be overriden which tends to be simpler.  The example below shows both approaches.
+The appearance of calculation headings or cell values can be specified when defining the calculations by specifying any combination of `headingBaseStyleName`, `headingStyleDeclarations`, `cellBaseStyleName` and/or `cellStyleDeclarations`. If specifying a base style name, the full style must be defined.  Alternatively specifying a set of style declarations allows just the style settings of interest to be overridden which tends to be simpler.  The example below shows both approaches.
 
 ```{r, message=FALSE, warning=FALSE}
 library(pivottabler)

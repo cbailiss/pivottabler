@@ -32,7 +32,7 @@ You can install:
 install.packages("pivottabler")
 ```
 
--   the latest development version from github with
+-   the latest development version from GitHub with
 
 ``` r
 devtools::install_github("cbailiss/pivottabler", build_vignettes = TRUE)

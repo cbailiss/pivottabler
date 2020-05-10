@@ -20,10 +20,11 @@ articles:
   - v07-styling
   - v08-findingandformatting
   - v09-cellcontext
-  - v10-irregularlayout
-  - v11-performance
-  - v12-excelexport
-  - v13-shiny
+  - v10-navigatingapivottable
+  - v11-irregularlayout
+  - v12-performance
+  - v13-excelexport
+  - v14-shiny
   - vA1-appendix
   - vA2-appendix
   - vA3-appendix

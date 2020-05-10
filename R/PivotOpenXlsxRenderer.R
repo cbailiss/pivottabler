@@ -64,7 +64,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
     #' cell to write to.
     #' @param value The value to write into the cell.
     #' @param applyStyles Default `TRUE` to write styling information to the cell.
-    #' @param baseStyleName A character value specifying a named style definted
+    #' @param baseStyleName A character value specifying a named style defined
     #' in the pivot table.
     #' @param style A `PivotStyle` object containing CSS style declarations to
     #' override the base style.

@@ -18,7 +18,7 @@ vignette: >
 
 ## High Level Methods vs. Low Level Methods
 
-Most of the previous vignettes have utilised "high-level" methods to relatively quickly build a pivot table with a minmum of code and without having to worry about low-level structures and layout.  Such high-level methods include:
+Most of the previous vignettes have utilised "high-level" methods to relatively quickly build a pivot table with a minimum of code and without having to worry about low-level structures and layout.  Such high-level methods include:
 
 - `qpvt()`, `qhpvt()` and `qlpvt()` to build and output an entire pivot table in a single function call.
 - `pt$addColumnDataGroups()` and `pt$addRowDataGroups()` - to add multiple column/row data groups in a single method call.

@@ -235,7 +235,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' Specify default values for some function arguments.
     #' @param ... Default values to specify.  See details.
     #' @details
-    #' Defaults can be set for the following agruments of
+    #' Defaults can be set for the following arguments of
     #' `pt$addRowDataGroups()` and `pt$addColumnDataGroups()`:
     #' `logical` values: `addTotal`, `expandExistingTotals`, `visualTotals`.
     #' `character` values:  `totalPosition`, `totalCaption`.
@@ -2893,7 +2893,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' captions as columns in the data frame.
     #' @param includeGroupValues `TRUE` (default) to include the data group
     #' values as columns in the data frame.
-    #' @param separator Specifies the character value used to concatendate
+    #' @param separator Specifies the character value used to concatenate
     #' filter values where multiple values exist in a filter.
     #' @param stringsAsFactors Specify `TRUE`to convert strings to factors,
     #' default `default.stringsAsFactors()`.

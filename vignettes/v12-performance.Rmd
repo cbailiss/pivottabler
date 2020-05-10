@@ -277,7 +277,7 @@ The internal code of the `pivottabler` package checks the values of the argument
 * `balanced` - also checks whether the data types of argument values specified by users of the `pivottabler` package (i.e. roughly speaking for all functions/methods of the PivotTable class),
 * `full` - also checks data types for argument values for all internal functions throughout the `pivottabler` package (=highest performance overhead).
 
-The default argument check mode is `balanced` for release versions of the `pivottabler` package (i.e. all versions obtained from CRAN and installed with `install.packages("pivottabler"")`) and `full` for development versions (e.g. versions obtained from Github and installed with `devtools::install_github("cbailiss/pivottabler")`).
+The default argument check mode is `balanced` for release versions of the `pivottabler` package (i.e. all versions obtained from CRAN and installed with `install.packages("pivottabler")`) and `full` for development versions (e.g. versions obtained from GitHub and installed with `devtools::install_github("cbailiss/pivottabler")`).
 
 The argument check mode can be explicitly specified in the pivot table initialiser, e.g.:
 

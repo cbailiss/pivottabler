@@ -868,7 +868,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
    #' @description
    #' Invokes a user-provided custom R function to aggregate data and
    #' perform calculations, as part of evaluating a calculation
-   #' where the calculation is of type `calc$type="functon"`.
+   #' where the calculation is of type `calc$type="function"`.
    #' @details
    #' A calculation, where `calc$type="function"`, invokes a user provided
    #' R function on a cell-by-cell basis.
@@ -1099,7 +1099,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
    },
 
    #' @description
-   #' Evalue calculations to compute the value of a cell in a pivot table.
+   #' Evaluate calculations to compute the value of a cell in a pivot table.
    #' @param cell A `PivotCell` object representing the cell to calculate.
    #' @return A list containing two elements: rawValue (typically numeric) and
    #' formattedValue (typically a character value).

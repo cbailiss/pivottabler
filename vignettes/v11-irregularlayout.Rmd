@@ -189,7 +189,7 @@ pt$topRowGroups[[1]]
 
 Some data group properties are read-only (i.e. the R6 active bindings do not support changing the private values), though they will not error if an attempt is made - rather the internal value simply won't be updated.
 
-It is nonethless possible to change many properties of the data groups, however, doing so should be done with caution as this may invalidate the state of the pivot table and such code could be broken by future changes to the package.
+It is nonetheless possible to change many properties of the data groups, however, doing so should be done with caution as this may invalidate the state of the pivot table and such code could be broken by future changes to the package.
 
 If you find that modifying data group properties is necessary for your requirements, please log an issue in the package GitHub site/repository to inform the package author of the use-case.  
 
