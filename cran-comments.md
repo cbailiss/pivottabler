@@ -7,8 +7,8 @@ http://r-pkgs.had.co.nz/
 
 ## Test environments
 
-* local OS (windows) install, R 3.6.2
-* Ubuntu 16.04.6 LTS (on travis-ci), R 3.6.2.
+* local OS (windows) install, R 4.0.0
+* Ubuntu 16.04.6 LTS (on travis-ci), R 4.0.0.
 * win-builder, R-devel
 * R-hub, three tests:
   * Windows Server 2008 R2 SP1, R-devel 32/64 bit
