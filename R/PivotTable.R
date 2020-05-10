@@ -2604,7 +2604,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' See the "Outputs" vignette for a comparison of outputs.
     #' @param includeHeaders `TRUE` (default) to include the headings in the
     #' body of the matrix.  Specifying `FALSE` omits the headings.
-    #' @param repeatHeaders `FALSE` (default) only outputs the first occurance of each
+    #' @param repeatHeaders `FALSE` (default) only outputs the first occurrence of each
     #' header. Specify `TRUE` to repeat the headings.
     #' @param rawValue `FALSE` (default) outputs the formatted (character) values.
     #' Specify `TRUE` to output the raw cell values.
