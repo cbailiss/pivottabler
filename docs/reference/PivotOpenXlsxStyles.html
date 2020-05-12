@@ -6,28 +6,32 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A class that defines a collection of Excel styles as used by the openxlsx
+<title>R6 class that defines a collection of Excel styles as used by the openxlsx
 package. — PivotOpenXlsxStyles • pivottabler</title>
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -36,17 +40,16 @@ package. — PivotOpenXlsxStyles • pivottabler</title>
 
 <!-- docsearch -->
 <script src="../docsearch.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
 
 
-<meta property="og:title" content="A class that defines a collection of Excel styles as used by the openxlsx
+<meta property="og:title" content="R6 class that defines a collection of Excel styles as used by the openxlsx
 package. — PivotOpenXlsxStyles" />
-<meta property="og:description" content="The PivotOpenXlsxStyles class stores a collection of PivotTableOpenXlsx style
-objects." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:description" content="The `PivotOpenXlsxStyles` class stores a collection of `PivotOpenXlsxStyle`
+style objects." />
 
 
 
@@ -74,7 +77,7 @@ objects." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -88,7 +91,7 @@ objects." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -103,65 +106,8 @@ objects." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/v00-vignettes.html">pivottabler Vignettes</a>
-    </li>
-    <li>
-      <a href="../articles/v01-introduction.html">01. Introduction</a>
-    </li>
-    <li>
-      <a href="../articles/v02-datagroups.html">02. Data Groups</a>
-    </li>
-    <li>
-      <a href="../articles/v03-calculations.html">03. Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/v04-regularlayout.html">04. Regular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v05-outputs.html">04. Outputs</a>
-    </li>
-    <li>
-      <a href="../articles/v06-latexoutput.html">05. Latex Output</a>
-    </li>
-    <li>
-      <a href="../articles/v07-styling.html">06. Styling</a>
-    </li>
-    <li>
-      <a href="../articles/v08-findingandformatting.html">07. Finding and Formatting</a>
-    </li>
-    <li>
-      <a href="../articles/v09-cellcontext.html">08. Cell Context</a>
-    </li>
-    <li>
-      <a href="../articles/v10-irregularlayout.html">09. Irregular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v11-performance.html">10. Performance</a>
-    </li>
-    <li>
-      <a href="../articles/v12-excelexport.html">12. Excel Export</a>
-    </li>
-    <li>
-      <a href="../articles/v13-shiny.html">11. Shiny</a>
-    </li>
-    <li>
-      <a href="../articles/vA1-appendix.html">A1. Appendix:  Details</a>
-    </li>
-    <li>
-      <a href="../articles/vA2-appendix.html">A2. Appendix:  Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/vA3-appendix.html">A3. Appendix:  Class Overview</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -169,7 +115,7 @@ objects." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/cbailiss/pivottabler">
+  <a href="https://github.com/cbailiss/pivottabler/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -193,15 +139,15 @@ objects." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A class that defines a collection of Excel styles as used by the openxlsx
+    <h1>R6 class that defines a collection of Excel styles as used by the openxlsx
 package.</h1>
     <small class="dont-index">Source: <a href='https://github.com/cbailiss/pivottabler/blob/master/R/PivotOpenXlsxStyles.R'><code>R/PivotOpenXlsxStyles.R</code></a></small>
     <div class="hidden name"><code>PivotOpenXlsxStyles.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The PivotOpenXlsxStyles class stores a collection of PivotTableOpenXlsx style
-objects.</p>
+    <p>The `PivotOpenXlsxStyles` class stores a collection of `PivotOpenXlsxStyle`
+style objects.</p>
     </div>
 
 
@@ -209,57 +155,168 @@ objects.</p>
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p><code>R6Class</code> object.</p>
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
-    <p>Object of <code>R6Class</code> with properties and methods that
-  define styles/a theme for a pivot table.</p>
-    <h2 class="hasAnchor" id="fields"><a class="anchor" href="#fields"></a>Fields</h2>
+    <p><div class="r6-active-bindings"></p><dl'>
+<dt><code>count</code></dt><dd><p>The number of `PivotOpenXlsxStyle` objects in this
+`PivotOpenXlsxStyles` collection.</p></dd>
 
-    
+<dt><code>styles</code></dt><dd><p>A list containing the `PivotOpenXlsxStyle` objects in this
+`PivotOpenXlsxStyles` collection.</p></dd>
 
-<dl class='dl-horizontal'>
-<dt><code>parentPivot</code></dt><dd><p>Owning pivot table.</p></dd>
-
-</dl>
+</dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     
+<h3>Public methods</h3>
 
-<dl class='dl-horizontal'>
-  <dt>Documentation</dt><dd><p>For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.</p></dd>
-  <dt><code>new(...)</code></dt><dd><p>Create a new set of styles, specifying the field
-  values documented above.</p></dd>
+<ul>
+<li><p><a href='#method-new'><code>PivotOpenXlsxStyles$new()</code></a></p></li>
+<li><p><a href='#method-clearStyles'><code>PivotOpenXlsxStyles$clearStyles()</code></a></p></li>
+<li><p><a href='#method-findNamedStyle'><code>PivotOpenXlsxStyles$findNamedStyle()</code></a></p></li>
+<li><p><a href='#method-findOrAddStyle'><code>PivotOpenXlsxStyles$findOrAddStyle()</code></a></p></li>
+<li><p><a href='#method-addNamedStyles'><code>PivotOpenXlsxStyles$addNamedStyles()</code></a></p></li>
+<li><p><a href='#method-asList'><code>PivotOpenXlsxStyles$asList()</code></a></p></li>
+<li><p><a href='#method-asJSON'><code>PivotOpenXlsxStyles$asJSON()</code></a></p></li>
+<li><p><a href='#method-asString'><code>PivotOpenXlsxStyles$asString()</code></a></p></li>
+<li><p><a href='#method-clone'><code>PivotOpenXlsxStyles$clone()</code></a></p></li>
+</ul>
+<p><hr>
+<a id="method-new"></a></p><h3>Method <code>new()</code></h3>
+<p>Create a new `PivotOpenXlsxStyles` object.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotOpenXlsxStyles</span>$<span class='fu'>new</span>(<span class='no'>parentPivot</span>)</pre><p></div></p>
 
-  <dt><code>findNamedStyle(baseStyleName)</code></dt><dd><p>Find an existing openxlsx style
-  matching the name of a base style.</p></dd>
-  <dt><code>findOrAddStyle(action="findOrAdd", baseStyleName=NULL,
-  isBaseStyle=NULL, style=NULL, mapFromCss=TRUE)</code></dt><dd><p>Find an existing openxlsx
-  style and/or add a new openxlsx style matching a base style and/or
-  PivotStyle object.</p></dd>
-  <dt><code>addNamedStyles(mapFromCss=TRUE)</code></dt><dd><p>Populate the OpenXlsx styles
-  based on the styles defined in the pivot table.</p></dd>
-  <dt><code>asList()</code></dt><dd><p>Get a list representation of the styles.</p></dd>
-  <dt><code>asJSON()</code></dt><dd><p>Get a JSON representation of the styles.</p></dd>
-  <dt><code>asString()</code></dt><dd><p>Get a text representation of the styles.</p></dd>
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>parentPivot</code></dt><dd><p>The pivot table that this `PivotOpenXlsxStyles`
+instance belongs to.</p></dd>
 
-</dl>
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A new `PivotOpenXlsxStyles` object.</p>
+<p><hr>
+<a id="method-clearStyles"></a></p><h3>Method <code>clearStyles()</code></h3>
+<p>Clear the internal list of styles.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotOpenXlsxStyles</span>$<span class='fu'>clearStyles</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-findNamedStyle"></a></p><h3>Method <code>findNamedStyle()</code></h3>
+<p>Find an existing openxlsx style matching the name of a base style.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotOpenXlsxStyles</span>$<span class='fu'>findNamedStyle</span>(<span class='no'>baseStyleName</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>baseStyleName</code></dt><dd><p>The name of the base style to find.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A `PivotOpenXlsxStyle` object with the specified name.</p>
+<p><hr>
+<a id="method-findOrAddStyle"></a></p><h3>Method <code>findOrAddStyle()</code></h3>
+<p>Find an existing openxlsx style, add a new openxlsx style matching a base
+style and/or existing `PivotStyle` object.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotOpenXlsxStyles</span>$<span class='fu'>findOrAddStyle</span>(
+  <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"findOrAdd"</span>,
+  <span class='kw'>baseStyleName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>isBaseStyle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>style</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mapFromCss</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>action</code></dt><dd><p>Must be one of "find" (to search for an existing style), "add"
+(to add a new style) or "findOrAdd" (default, to first search for an existing
+style, and if no match is found then add a new style)</p></dd>
+
+<dt><code>baseStyleName</code></dt><dd><p>The name of the base style to find.</p></dd>
+
+<dt><code>isBaseStyle</code></dt><dd><p>`TRUE` if the style being sought is a base style.</p></dd>
+
+<dt><code>style</code></dt><dd><p>An existing `PivotStyle` object.</p></dd>
+
+<dt><code>mapFromCss</code></dt><dd><p>Default `TRUE`, to create a new `PivotOpenXlsxStyle` by
+mapping from CSS style declarations.</p></dd>
+
+</dl><p></div></p>
+<h3>Details</h3>
+<p>This function is used in two different ways:
+(1) When adding base styles (i.e. named styles in the pivot table) to
+this `PivotOpenXlsxStyles` collection:
+In this case, `baseStyleName` is the name of the style and `isBaseStyle=TRUE`
+(so matching is by name only) and `style` is the `PivotStyle` object for the
+base style.
+(2) When finding styles that have been applied to individual cells using the
+`PivotStyle` object that is attached to each cell:
+In this case, `baseStyleName` may or may not be present, `isBaseStyle=FALSE`
+and `style` is the `PivotStyle` object from the cell.</p>
+
+<h3>Returns</h3>
+<p>A `PivotOpenXlsxStyle` object that has been found or added.</p>
+<p><hr>
+<a id="method-addNamedStyles"></a></p><h3>Method <code>addNamedStyles()</code></h3>
+<p>Populate the OpenXlsx styles based on the styles defined in the pivot table.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotOpenXlsxStyles</span>$<span class='fu'>addNamedStyles</span>(<span class='kw'>mapFromCss</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>mapFromCss</code></dt><dd><p>Default `TRUE`, to create a new `PivotOpenXlsxStyle` by
+mapping from CSS style declarations.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-asList"></a></p><h3>Method <code>asList()</code></h3>
+<p>Return the contents of this object as a list for debugging.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotOpenXlsxStyles</span>$<span class='fu'>asList</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>A list of various object properties.</p>
+<p><hr>
+<a id="method-asJSON"></a></p><h3>Method <code>asJSON()</code></h3>
+<p>Return the contents of this object as JSON for debugging.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotOpenXlsxStyles</span>$<span class='fu'>asJSON</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>A JSON representation of various object properties.</p>
+<p><hr>
+<a id="method-asString"></a></p><h3>Method <code>asString()</code></h3>
+<p>Return a representation of this object as a character value.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotOpenXlsxStyles</span>$<span class='fu'>asString</span>(<span class='kw'>seperator</span> <span class='kw'>=</span> <span class='st'>", "</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>seperator</code></dt><dd><p>A character value used when concatenating
+multiple styles.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A character summary of various object properties.</p>
+<p><hr>
+<a id="method-clone"></a></p><h3>Method <code>clone()</code></h3>
+<p>The objects of this class are cloneable with this method.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotOpenXlsxStyles</span>$<span class='fu'>clone</span>(<span class='kw'>deep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
+
+</dl><p></div></p>
+
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'># This class is used internally by the Pivot Table.
+    <pre class="examples"><div class='input'># This class should only be created by the pivot table.
+# It is not intended to be created outside of the pivot table.
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#format">Format</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#fields">Fields</a></li>
-      <li><a href="#methods">Methods</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -270,7 +327,7 @@ objects.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

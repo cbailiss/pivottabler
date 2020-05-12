@@ -6,27 +6,31 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A class that defines a calculation. — PivotCalculation • pivottabler</title>
+<title>R6 class that defines a calculation. — PivotCalculation • pivottabler</title>
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -35,15 +39,14 @@
 
 <!-- docsearch -->
 <script src="../docsearch.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
 
 
-<meta property="og:title" content="A class that defines a calculation. — PivotCalculation" />
-<meta property="og:description" content="The PivotCalculation class defines one calculation in a pivot table." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="R6 class that defines a calculation. — PivotCalculation" />
+<meta property="og:description" content="The `PivotCalculation` class defines one calculation in a pivot table." />
 
 
 
@@ -71,7 +74,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -85,7 +88,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -100,65 +103,8 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/v00-vignettes.html">pivottabler Vignettes</a>
-    </li>
-    <li>
-      <a href="../articles/v01-introduction.html">01. Introduction</a>
-    </li>
-    <li>
-      <a href="../articles/v02-datagroups.html">02. Data Groups</a>
-    </li>
-    <li>
-      <a href="../articles/v03-calculations.html">03. Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/v04-regularlayout.html">04. Regular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v05-outputs.html">04. Outputs</a>
-    </li>
-    <li>
-      <a href="../articles/v06-latexoutput.html">05. Latex Output</a>
-    </li>
-    <li>
-      <a href="../articles/v07-styling.html">06. Styling</a>
-    </li>
-    <li>
-      <a href="../articles/v08-findingandformatting.html">07. Finding and Formatting</a>
-    </li>
-    <li>
-      <a href="../articles/v09-cellcontext.html">08. Cell Context</a>
-    </li>
-    <li>
-      <a href="../articles/v10-irregularlayout.html">09. Irregular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v11-performance.html">10. Performance</a>
-    </li>
-    <li>
-      <a href="../articles/v12-excelexport.html">12. Excel Export</a>
-    </li>
-    <li>
-      <a href="../articles/v13-shiny.html">11. Shiny</a>
-    </li>
-    <li>
-      <a href="../articles/vA1-appendix.html">A1. Appendix:  Details</a>
-    </li>
-    <li>
-      <a href="../articles/vA2-appendix.html">A2. Appendix:  Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/vA3-appendix.html">A3. Appendix:  Class Overview</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -166,7 +112,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/cbailiss/pivottabler">
+  <a href="https://github.com/cbailiss/pivottabler/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -190,13 +136,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A class that defines a calculation.</h1>
+    <h1>R6 class that defines a calculation.</h1>
     <small class="dont-index">Source: <a href='https://github.com/cbailiss/pivottabler/blob/master/R/PivotCalculation.R'><code>R/PivotCalculation.R</code></a></small>
     <div class="hidden name"><code>PivotCalculation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The PivotCalculation class defines one calculation in a pivot table.</p>
+    <p>The `PivotCalculation` class defines one calculation in a pivot table.</p>
     </div>
 
 
@@ -204,41 +150,33 @@
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p><code>R6Class</code> object.</p>
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
-    <p>Object of <code>R6Class</code> with properties and methods that
-  define a single pivot table calculation.</p>
-    <h2 class="hasAnchor" id="fields"><a class="anchor" href="#fields"></a>Fields</h2>
-
-    
-
-<dl class='dl-horizontal'>
-<dt><code>parentPivot</code></dt><dd><p>Owning pivot table.</p></dd>
-
+    <p><div class="r6-active-bindings"></p><dl'>
 <dt><code>calculationName</code></dt><dd><p>Calculation unique name.</p></dd>
 
-<dt><code>caption</code></dt><dd><p>Calculation display name - i.e. the name shown in the pivot
-table.</p></dd>
+<dt><code>caption</code></dt><dd><p>Calculation display name</p></dd>
 
-<dt><code>visible</code></dt><dd><p>Show or hide the calculation.  Hidden calculations are
-typically used as base values for other calculations.</p></dd>
+<dt><code>visible</code></dt><dd><p>`TRUE` to show the calculation in the pivot table or `FALSE`
+to hide it.  Hidden calculations are typically used as base values for
+other calculations.</p></dd>
 
-<dt><code>displayOrder</code></dt><dd><p>The order the calculations are displayed in the pivot
-table.</p></dd>
+<dt><code>displayOrder</code></dt><dd><p>The order the calculations are displayed in the
+pivot table.</p></dd>
 
 <dt><code>filters</code></dt><dd><p>Any additional data filters specific to this calculation.
-This can be a PivotFilters object that further restrict the data for the
-calculation of a list of individual PivotFilter objects that provide more
+This can be a `PivotFilters` object that further restricts the data for the
+calculation or a list of individual `PivotFilter` objects that provide more
 flexibility (and/or/replace).  See the Calculations vignette for details.</p></dd>
 
 <dt><code>format</code></dt><dd><p>A character, list or custom function to format the calculation
 result.</p></dd>
 
-<dt><code>fmtFuncArgs</code></dt><dd><p>A list that specifies any additional arguments to pass to a
+<dt><code>fmtFuncArgs</code></dt><dd><p>A list that specifies any additional arguments to pass to
 a custom format function.</p></dd>
 
 <dt><code>dataName</code></dt><dd><p>Specifies which data frame in the pivot table is used for
-this calculation.</p></dd>
+this calculation (as specified in `pt$addData()`).</p></dd>
 
 <dt><code>type</code></dt><dd><p>The calculation type:  "summary", "calculation", "function" or
 "value".</p></dd>
@@ -255,6 +193,9 @@ aggregate values.</p></dd>
 <dt><code>calculationFunction</code></dt><dd><p>For type="function", a reference to a custom R
 function that will carry out the calculation.</p></dd>
 
+<dt><code>calcFuncArgs</code></dt><dd><p>For type="function", a list that specifies additional
+arguments to pass to calculationFunction.</p></dd>
+
 <dt><code>basedOn</code></dt><dd><p>A character vector specifying the names of one or more
 calculations that this calculation depends on.</p></dd>
 
@@ -264,22 +205,163 @@ no data exists for a particular cell.</p></dd>
 <dt><code>noDataCaption</code></dt><dd><p>A character value that will be displayed by the pivot
 table if no  data exists for a particular cell.</p></dd>
 
-</dl>
+<dt><code>headingBaseStyleName</code></dt><dd><p>The name of a style defined in the pivot table
+to use as the base styling for the data group heading.</p></dd>
+
+<dt><code>headingStyleDeclarations</code></dt><dd><p>A list of CSS style declarations (e.g.
+`list("font-weight"="bold")`) to override the base style.</p></dd>
+
+<dt><code>cellBaseStyleName</code></dt><dd><p>The name of a style defined in the pivot table to
+use as the base styling for the cells related to this calculation.</p></dd>
+
+<dt><code>cellStyleDeclarations</code></dt><dd><p>A list of CSS style declarations (e.g.
+`list("font-weight"="bold")`) to override the base style.</p></dd>
+
+</dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     
+<h3>Public methods</h3>
 
-<dl class='dl-horizontal'>
-  <dt>Documentation</dt><dd><p>For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.</p></dd>
-  <dt><code>new(...)</code></dt><dd><p>Create a new pivot calculation, specifying the field
-  values documented above.</p></dd>
+<ul>
+<li><p><a href='#method-new'><code>PivotCalculation$new()</code></a></p></li>
+<li><p><a href='#method-asList'><code>PivotCalculation$asList()</code></a></p></li>
+<li><p><a href='#method-asJSON'><code>PivotCalculation$asJSON()</code></a></p></li>
+<li><p><a href='#method-asString'><code>PivotCalculation$asString()</code></a></p></li>
+<li><p><a href='#method-clone'><code>PivotCalculation$clone()</code></a></p></li>
+</ul>
+<p><hr>
+<a id="method-new"></a></p><h3>Method <code>new()</code></h3>
+<p>Create a new `PivotCalculation` object.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotCalculation</span>$<span class='fu'>new</span>(
+  <span class='no'>parentPivot</span>,
+  <span class='kw'>calculationName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>visible</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>displayOrder</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>filters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>format</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fmtFuncArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>dataName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"summary"</span>,
+  <span class='kw'>valueName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>summariseExpression</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>calculationExpression</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>calculationFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>calcFuncArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>basedOn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>noDataValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>noDataCaption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>headingBaseStyleName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>headingStyleDeclarations</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>cellBaseStyleName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>cellStyleDeclarations</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre><p></div></p>
 
-  <dt><code>asList()</code></dt><dd><p>Get a list representation of this calculation.</p></dd>
-  <dt><code>asJSON()</code></dt><dd><p>Get a JSON representation of this calculation.</p></dd>
-  <dt><code>asString()</code></dt><dd><p>Get a text representation of this calculation.</p></dd>
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>parentPivot</code></dt><dd><p>The pivot table that this `PivotCalculation`
+instance belongs to.</p></dd>
 
-</dl>
+<dt><code>calculationName</code></dt><dd><p>Calculation unique name.</p></dd>
+
+<dt><code>caption</code></dt><dd><p>Calculation display name</p></dd>
+
+<dt><code>visible</code></dt><dd><p>`TRUE` to show the calculation in the pivot table or `FALSE`
+to hide it.  Hidden calculations are typically used as base values for
+other calculations.</p></dd>
+
+<dt><code>displayOrder</code></dt><dd><p>The order the calculations are displayed in the
+pivot table.</p></dd>
+
+<dt><code>filters</code></dt><dd><p>Any additional data filters specific to this calculation.
+This can be a `PivotFilters` object that further restricts the data for the
+calculation or a list of individual `PivotFilter` objects that provide more
+flexibility (and/or/replace).  See the Calculations vignette for details.</p></dd>
+
+<dt><code>format</code></dt><dd><p>A character, list or custom function to format the calculation
+result.</p></dd>
+
+<dt><code>fmtFuncArgs</code></dt><dd><p>A list that specifies any additional arguments to pass to
+a custom format function.</p></dd>
+
+<dt><code>dataName</code></dt><dd><p>Specifies which data frame in the pivot table is used for
+this calculation (as specified in `pt$addData()`).</p></dd>
+
+<dt><code>type</code></dt><dd><p>The calculation type:  "summary", "calculation", "function" or
+"value".</p></dd>
+
+<dt><code>valueName</code></dt><dd><p>For type="value", the name of the column containing the
+value to display in the pivot table.</p></dd>
+
+<dt><code>summariseExpression</code></dt><dd><p>For type="summary", either the dplyr expression to
+use with dplyr::summarise() or a data.table calculation expression.</p></dd>
+
+<dt><code>calculationExpression</code></dt><dd><p>For type="calculation", an expression to combine
+aggregate values.</p></dd>
+
+<dt><code>calculationFunction</code></dt><dd><p>For type="function", a reference to a custom R
+function that will carry out the calculation.</p></dd>
+
+<dt><code>calcFuncArgs</code></dt><dd><p>For type="function", a list that specifies additional
+arguments to pass to calculationFunction.</p></dd>
+
+<dt><code>basedOn</code></dt><dd><p>A character vector specifying the names of one or more
+calculations that this calculation depends on.</p></dd>
+
+<dt><code>noDataValue</code></dt><dd><p>An integer or numeric value specifying the value to use if
+no data exists for a particular cell.</p></dd>
+
+<dt><code>noDataCaption</code></dt><dd><p>A character value that will be displayed by the pivot
+table if no  data exists for a particular cell.</p></dd>
+
+<dt><code>headingBaseStyleName</code></dt><dd><p>The name of a style defined in the pivot table
+to use as the base styling for the data group heading.</p></dd>
+
+<dt><code>headingStyleDeclarations</code></dt><dd><p>A list of CSS style declarations (e.g.
+`list("font-weight"="bold")`) to override the base style.</p></dd>
+
+<dt><code>cellBaseStyleName</code></dt><dd><p>The name of a style defined in the pivot table to
+use as the base styling for the cells related to this calculation.</p></dd>
+
+<dt><code>cellStyleDeclarations</code></dt><dd><p>A list of CSS style declarations (e.g.
+`list("font-weight"="bold")`) to override the base style.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A new `PivotCalculation` object.</p>
+<p><hr>
+<a id="method-asList"></a></p><h3>Method <code>asList()</code></h3>
+<p>Return the contents of this object as a list for debugging.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotCalculation</span>$<span class='fu'>asList</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>A list of various object properties.</p>
+<p><hr>
+<a id="method-asJSON"></a></p><h3>Method <code>asJSON()</code></h3>
+<p>Return the contents of this object as JSON for debugging.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotCalculation</span>$<span class='fu'>asJSON</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>A JSON representation of various object properties.</p>
+<p><hr>
+<a id="method-asString"></a></p><h3>Method <code>asString()</code></h3>
+<p>Return a representation of this object as a character value.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotCalculation</span>$<span class='fu'>asString</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>A character summary of various object properties.</p>
+<p><hr>
+<a id="method-clone"></a></p><h3>Method <code>clone()</code></h3>
+<p>The objects of this class are cloneable with this method.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotCalculation</span>$<span class='fu'>clone</span>(<span class='kw'>deep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
+
+</dl><p></div></p>
+
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -287,16 +369,10 @@ table if no  data exists for a particular cell.</p></dd>
 # It is not intended to be created outside of the pivot table.
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#format">Format</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#fields">Fields</a></li>
-      <li><a href="#methods">Methods</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -307,7 +383,7 @@ table if no  data exists for a particular cell.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

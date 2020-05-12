@@ -16,6 +16,9 @@
     <loc>http://www.pivottabler.org.uk/reference/cleanCssValue.html</loc>
   </url>
   <url>
+    <loc>http://www.pivottabler.org.uk/reference/cleanOutlineArg.html</loc>
+  </url>
+  <url>
     <loc>http://www.pivottabler.org.uk/reference/containsText.html</loc>
   </url>
   <url>
@@ -223,16 +226,19 @@
     <loc>http://www.pivottabler.org.uk/articles/v09-cellcontext.html</loc>
   </url>
   <url>
-    <loc>http://www.pivottabler.org.uk/articles/v10-irregularlayout.html</loc>
+    <loc>http://www.pivottabler.org.uk/articles/v10-navigatingapivottable.html</loc>
   </url>
   <url>
-    <loc>http://www.pivottabler.org.uk/articles/v11-performance.html</loc>
+    <loc>http://www.pivottabler.org.uk/articles/v11-irregularlayout.html</loc>
   </url>
   <url>
-    <loc>http://www.pivottabler.org.uk/articles/v12-excelexport.html</loc>
+    <loc>http://www.pivottabler.org.uk/articles/v12-performance.html</loc>
   </url>
   <url>
-    <loc>http://www.pivottabler.org.uk/articles/v13-shiny.html</loc>
+    <loc>http://www.pivottabler.org.uk/articles/v13-excelexport.html</loc>
+  </url>
+  <url>
+    <loc>http://www.pivottabler.org.uk/articles/v14-shiny.html</loc>
   </url>
   <url>
     <loc>http://www.pivottabler.org.uk/articles/vA1-appendix.html</loc>

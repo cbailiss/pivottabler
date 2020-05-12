@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -35,7 +39,7 @@
 
 <!-- docsearch -->
 <script src="../docsearch.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
@@ -69,7 +73,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-index">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -83,7 +87,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -98,65 +102,8 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/v00-vignettes.html">pivottabler Vignettes</a>
-    </li>
-    <li>
-      <a href="../articles/v01-introduction.html">01. Introduction</a>
-    </li>
-    <li>
-      <a href="../articles/v02-datagroups.html">02. Data Groups</a>
-    </li>
-    <li>
-      <a href="../articles/v03-calculations.html">03. Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/v04-regularlayout.html">04. Regular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v05-outputs.html">04. Outputs</a>
-    </li>
-    <li>
-      <a href="../articles/v06-latexoutput.html">05. Latex Output</a>
-    </li>
-    <li>
-      <a href="../articles/v07-styling.html">06. Styling</a>
-    </li>
-    <li>
-      <a href="../articles/v08-findingandformatting.html">07. Finding and Formatting</a>
-    </li>
-    <li>
-      <a href="../articles/v09-cellcontext.html">08. Cell Context</a>
-    </li>
-    <li>
-      <a href="../articles/v10-irregularlayout.html">09. Irregular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v11-performance.html">10. Performance</a>
-    </li>
-    <li>
-      <a href="../articles/v12-excelexport.html">12. Excel Export</a>
-    </li>
-    <li>
-      <a href="../articles/v13-shiny.html">11. Shiny</a>
-    </li>
-    <li>
-      <a href="../articles/vA1-appendix.html">A1. Appendix:  Details</a>
-    </li>
-    <li>
-      <a href="../articles/vA2-appendix.html">A2. Appendix:  Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/vA3-appendix.html">A3. Appendix:  Class Overview</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -164,7 +111,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/cbailiss/pivottabler">
+  <a href="https://github.com/cbailiss/pivottabler/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -206,6 +153,11 @@
           <p class="section-desc"></p>
         </th>
       </tr>
+      
+      
+    </tbody><tbody>
+      
+      
       <tr>
         
         <td>
@@ -230,6 +182,12 @@
           <p><code><a href="cleanCssValue.html">cleanCssValue()</a></code> </p>
         </td>
         <td><p>Cleans up a CSS attribute value.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cleanOutlineArg.html">cleanOutlineArg()</a></code> </p>
+        </td>
+        <td><p>Clean the arguments specified for an outline group</p></td>
       </tr><tr>
         
         <td>
@@ -301,7 +259,8 @@
         <td>
           <p><code><a href="getStandardTableTheme.html">getStandardTableTheme()</a></code> </p>
         </td>
-        <td><p>Get the a theme for styling to a pivot table that looks more like a standard table (i.e. no row column headings).</p></td>
+        <td><p>Get the a theme for styling to a pivot table that looks
+more like a standard table (i.e. no row column headings).</p></td>
       </tr><tr>
         
         <td>
@@ -379,134 +338,134 @@
         <td>
           <p><code><a href="PivotBatch.html">PivotBatch</a></code> </p>
         </td>
-        <td><p>A class that represents a batch calculation.</p></td>
+        <td><p>R6 class the represents a Calculation Batch</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotBatchCalculator.html">PivotBatchCalculator</a></code> </p>
         </td>
-        <td><p>A class that calculates the values for multiple cells.</p></td>
+        <td><p>R6 class that calculates the values for multiple cells in batches.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotBatchStatistics.html">PivotBatchStatistics</a></code> </p>
         </td>
-        <td><p>A class that provides summary statistics for batch calculations.</p></td>
+        <td><p>R6 class that provides summary statistics for batch calculations.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotCalculation.html">PivotCalculation</a></code> </p>
         </td>
-        <td><p>A class that defines a calculation.</p></td>
+        <td><p>R6 class that defines a calculation.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotCalculationGroup.html">PivotCalculationGroup</a></code> </p>
         </td>
-        <td><p>A class that defines a group of calculations.</p></td>
+        <td><p>R6 class that defines a group of calculations.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotCalculationGroups.html">PivotCalculationGroups</a></code> </p>
         </td>
-        <td><p>A class that contains multiple calculation groups.</p></td>
+        <td><p>R6 class that contains multiple calculation groups.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotCalculator.html">PivotCalculator</a></code> </p>
         </td>
-        <td><p>A class that computes the value of a cell.</p></td>
+        <td><p>R6 class that computes the value of a cell or cells.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotCell.html">PivotCell</a></code> </p>
         </td>
-        <td><p>A class that represents a cell in a pivot table</p></td>
+        <td><p>R6 class that represents a cell in a pivot table.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotCells.html">PivotCells</a></code> </p>
         </td>
-        <td><p>A class that contains the cells from a pivot table.</p></td>
+        <td><p>R6 class that contains the cells in a pivot table.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotData.html">PivotData</a></code> </p>
         </td>
-        <td><p>A class that contains named data frames.</p></td>
+        <td><p>R6 class that contains named data frames and associated totals.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotDataGroup.html">PivotDataGroup</a></code> </p>
         </td>
-        <td><p>A class that defines a row or column heading.</p></td>
+        <td><p>R6 class that defines a row or column data group.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotFilter.html">PivotFilter</a></code> </p>
         </td>
-        <td><p>A class that defines a filter condition.</p></td>
+        <td><p>R6 class that defines a filter condition.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotFilterOverrides.html">PivotFilterOverrides</a></code> </p>
         </td>
-        <td><p>A class that defines a set of filter overrides</p></td>
+        <td><p>R6 class that defines a set of filter overrides.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotFilters.html">PivotFilters</a></code> </p>
         </td>
-        <td><p>A class that defines a set of filter conditions</p></td>
+        <td><p>R6 class that defines a set of filter conditions.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotHtmlRenderer.html">PivotHtmlRenderer</a></code> </p>
         </td>
-        <td><p>A class that renders a pivot table in HTML.</p></td>
+        <td><p>R6 class that renders a pivot table in HTML.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotLatexRenderer.html">PivotLatexRenderer</a></code> </p>
         </td>
-        <td><p>A class that renders a pivot table in Latex.</p></td>
+        <td><p>R6 class that renders a pivot table in Latex.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotOpenXlsxRenderer.html">PivotOpenXlsxRenderer</a></code> </p>
         </td>
-        <td><p>A class that renders a pivot table into an Excel worksheet.</p></td>
+        <td><p>R6 class that renders a pivot table into an Excel worksheet.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotOpenXlsxStyle.html">PivotOpenXlsxStyle</a></code> </p>
         </td>
-        <td><p>A class that specifies Excel styling as used by the openxlsx package.</p></td>
+        <td><p>R6 class that specifies Excel styling as used by the openxlsx package.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotOpenXlsxStyles.html">PivotOpenXlsxStyles</a></code> </p>
         </td>
-        <td><p>A class that defines a collection of Excel styles as used by the openxlsx
+        <td><p>R6 class that defines a collection of Excel styles as used by the openxlsx
 package.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotStyle.html">PivotStyle</a></code> </p>
         </td>
-        <td><p>A class that specifies styling.</p></td>
+        <td><p>R6 class that specifies styling.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotStyles.html">PivotStyles</a></code> </p>
         </td>
-        <td><p>A class that defines a collection of styles.</p></td>
+        <td><p>R6 class that defines a collection of styles.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="PivotTable.html">PivotTable</a></code> </p>
         </td>
-        <td><p>A class that defines a pivot table.</p></td>
+        <td><p>R6 class that represents a pivot table.</p></td>
       </tr><tr>
         
         <td>
@@ -590,11 +549,10 @@ package.</p></td>
     </table>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
-    </ul>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -605,7 +563,7 @@ package.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

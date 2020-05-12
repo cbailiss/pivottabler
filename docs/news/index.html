@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -35,7 +39,7 @@
 
 <!-- docsearch -->
 <script src="../docsearch.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
@@ -69,7 +73,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -83,7 +87,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -98,65 +102,8 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/v00-vignettes.html">pivottabler Vignettes</a>
-    </li>
-    <li>
-      <a href="../articles/v01-introduction.html">01. Introduction</a>
-    </li>
-    <li>
-      <a href="../articles/v02-datagroups.html">02. Data Groups</a>
-    </li>
-    <li>
-      <a href="../articles/v03-calculations.html">03. Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/v04-regularlayout.html">04. Regular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v05-outputs.html">04. Outputs</a>
-    </li>
-    <li>
-      <a href="../articles/v06-latexoutput.html">05. Latex Output</a>
-    </li>
-    <li>
-      <a href="../articles/v07-styling.html">06. Styling</a>
-    </li>
-    <li>
-      <a href="../articles/v08-findingandformatting.html">07. Finding and Formatting</a>
-    </li>
-    <li>
-      <a href="../articles/v09-cellcontext.html">08. Cell Context</a>
-    </li>
-    <li>
-      <a href="../articles/v10-irregularlayout.html">09. Irregular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v11-performance.html">10. Performance</a>
-    </li>
-    <li>
-      <a href="../articles/v12-excelexport.html">12. Excel Export</a>
-    </li>
-    <li>
-      <a href="../articles/v13-shiny.html">11. Shiny</a>
-    </li>
-    <li>
-      <a href="../articles/vA1-appendix.html">A1. Appendix:  Details</a>
-    </li>
-    <li>
-      <a href="../articles/vA2-appendix.html">A2. Appendix:  Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/vA3-appendix.html">A3. Appendix:  Class Overview</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -164,7 +111,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/cbailiss/pivottabler">
+  <a href="https://github.com/cbailiss/pivottabler/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -188,24 +135,91 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
+      <h1 data-toc-skip>Changelog <small></small></h1>
       <small>Source: <a href='https://github.com/cbailiss/pivottabler/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="pivottabler-130" class="section level1">
-<h1 class="page-header">
-<a href="#pivottabler-130" class="anchor"></a>pivottabler 1.3.0<small> 2020-02-03 </small>
+    <div id="pivottabler-140" class="section level1">
+<h1 class="page-header" data-toc-text="1.4.0">
+<a href="#pivottabler-140" class="anchor"></a>pivottabler 1.4.0<small> 2020-05-11 </small>
 </h1>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>This release introduces a new layout type - outline layout - that can make larger pivot tables with multiple levels of row groups more readable and more visually appealing.</p>
-<p>Several small improvements mean that irregular pivot tables (e.g. two pivot tables in one) are now easier to construct.</p>
-<p>The package vignettes have grown too large be hosted on CRAN. They have moved to: <a href="http://www.pivottabler.org.uk/articles/" class="uri">http://www.pivottabler.org.uk/articles/</a></p>
+<p>This release includes one potential breaking change and many small enhancements across various parts of the package.</p>
+<p>Reminder: The package now only contains one introductory vignette (due to the constraints on CRAN). The full set of 15+ vignettes can be found at: <a href="http://www.pivottabler.org.uk/articles/" class="uri">http://www.pivottabler.org.uk/articles/</a></p>
+</div>
+<div id="breaking-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking Changes</h2>
+<p><strong>Row group and column group captions for blank values</strong></p>
+<p>When generating HTML, previous versions of the package would not output any caption for data groups with a blank null (e.g. NULL). This could lead to rows collapsing to a few pixels in height (if all of the cells on the row also had no value). Starting with v1.4.0, a non-breaking space character is emitted instead (HTML &amp;nbsp;), in the same way that other parts of the pivot table sometimes also emit a non-breaking space character. This should make minimal difference to the visual appearance of the table, however it may cause issues for users who require the previous behaviour. The previous behaviour is still available by specifying <code>compatibility=list(noDataGroupNBSP=TRUE)</code> as an argument when creating the pivot table, either in <code>PivotTable$new()</code> or one of the quick pivot functions such as <code><a href="../reference/qpvt.html">qpvt()</a></code>.</p>
+<p>A future version of the package will likely include an option to prevent all non-breaking space characters from being emitted and more correctly use CSS style rules instead to control minimum data group heights/widths.</p>
+</div>
+<div id="documentation-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#documentation-changes" class="anchor"></a>Documentation Changes</h2>
+<ul>
+<li>The code documentation for <code>pivottabler</code> has been re-written to use the new R6 documentation capabilities in <code>roxygen2</code>. As a result the documentation is now more detailed than in previous versions, e.g. arguments in object method calls are now properly documented. Nonetheless, the easiest way to learn the package is using the vignettes.<br>
+</li>
+<li>The new “Navigating a Pivot Table” vignette provides more detailed information about low-level methods for navigating in code over the different parts of a pivot table. Several new methods have also been added that are described in this vignette: <code>pt$getLeafColumnGroup()</code>, <code>pt$getLeafRowGroup()</code>, <code>pt$getCell()</code>, <code>pt$getColumnGroupsByLevel()</code>, <code>pt$getRowGroupsByLevel()</code>, <code>pt$columnGroupLevelCount</code> and <code>pt$rowGroupLevelCount</code>.</li>
+<li>The “Irregular Layout” vignette has been expanded to provide additional information to help with building custom pivot tables.</li>
+</ul>
 </div>
 <div id="improvements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#improvements" class="anchor"></a>Improvements</h2>
+<ul>
+<li>Defaults can now be set using <code>pt$setDefault()</code> for the following parameters of <code>pt$addColumnDataGroups()</code> and <code>pt$addRowDataGroups()</code>: <code>addTotal</code>, <code>expandExistingTotals</code>, <code>visualTotals</code>, <code>totalPosition</code>, <code>totalCaption</code>, <code>outlineBefore</code>, <code>outlineAfter</code> and <code>outlineTotal</code>.<br>
+</li>
+<li>The captions of data groups added to pivot tables using <code>pt$addColumnDataGroups()</code> and <code>pt$addRowDataGroups()</code>can now be specified using the new <code>caption</code> argument. See the “Data Groups” vignette for details.</li>
+<li>Custom sort orders can be specified for data groups. See the “Data Groups” vignette for details.</li>
+<li>Empty rows/columns can be found using the new functions <code>pt$getEmptyRows()</code> and <code>pt$getEmptyColumns()</code>. See the “Custom Layout Changes” section of the “Irregular Layout” vignette for details.</li>
+<li>The <code>pt$findRowDataGroups()</code> and <code>pt$findColumnDataGroups()</code> functions gain additional parameters: <code>atLevels</code>, <code>minChildCount</code>, <code>maxChildCount</code> and <code>outlineLinkedGroupExists</code>. See the “Finding and Formatting” vignette for details.</li>
+<li>When deleting data groups using <code>group$removeGroup()</code>, it is now possible to also remove the related groups such as the outline group header row (aka. outline before) and outline group footer row (aka. outline after) using the new argument <code>removedRelatedOutlineGroups=TRUE</code>.</li>
+<li>Specific rows and/or columns can be removed from pivot tables using new functions such as <code>pt$removeRow(3)</code> and <code>pt$removeRows(c(2, 4))</code>. See the “Custom Layout Changes” section of the “Irregular Layout” vignette for details.</li>
+<li>
+<code>pt$addRowDataGroups()</code> gains two new arguments <code>onlyAddGroupIf</code> and <code>onlyAddOutlineChildGroupIf</code> which enable hierarchies with a variable number of levels to be used on rows in a pivot table in outline layout. See the “Regular Layout” vignette for details. Thanks to <a href='https://github.com/MarcoPortmann'>@MarcoPortmann</a> for the usage scenario.</li>
+<li>When exporting to a data frame, it is now possible to also export the row groups as columns (instead of only row names) using <code>pt$asDataFrame(rowGroupsAsColumns=TRUE)</code>. Thanks to <a href='https://github.com/ismailmuller'>@ismailmuller</a> for the suggestion (<a href='https://github.com/cbailiss/pivottabler/issues/29'>#29</a>).</li>
+<li>When exporting to a data frame, the handling of cell values that are not integer/numeric can be specified using the <code>forceNumeric</code> argument. <code>TRUE</code> will convert any values that are not integer/numeric to NA.</li>
+<li>Row group headers, visible when specifying <code>pt$renderPivot(showRowGroupHeaders=TRUE)</code>, are now set automatically to the variable name when calling <code>pt$addRowDataGroups(...)</code>. The name can be overridden using <code>pt$addRowDataGroups(..., header="...")</code>.</li>
+<li>Additional arguments can now be passed to custom calculation functions using the <code>calcFuncArgs</code> argument. See the “Calculations” vignette for details. Thanks to <a href='https://github.com/MarcoPortmann'>@MarcoPortmann</a> for the suggestion (<a href='https://github.com/cbailiss/pivottabler/issues/31'>#31</a> and <a href='https://github.com/cbailiss/pivottabler/issues/32'>#32</a>).</li>
+<li>It is now possible to pre-calculate totals/aggregate data cells when using calculation method 4 (“Showing a value”). See the “Calculations” vignette for details. This closes a long-standing gap with this calculation method. (<a href='https://github.com/cbailiss/pivottabler/issues/2'>#2</a>).</li>
+</ul>
+</div>
+<div id="deprecated" class="section level2">
+<h2 class="hasAnchor">
+<a href="#deprecated" class="anchor"></a>Deprecated</h2>
+<p>The following can still be used but now emits a deprecation warning:</p>
+<ul>
+<li>The <code>getLevelNumber()</code> method on data groups has been replaced with the <code>levelNumber</code> property.</li>
+</ul>
+</div>
+</div>
+    <div id="pivottabler-131" class="section level1">
+<h1 class="page-header" data-toc-text="1.3.1">
+<a href="#pivottabler-131" class="anchor"></a>pivottabler 1.3.1<small> 2020-04-01 </small>
+</h1>
+<p>This release includes two small bug fixes only:</p>
+<ul>
+<li>Pivot tables with nothing on the rows axis fail to convert to a data frame using <code>pt$asDataFrame()</code> (issue <a href='https://github.com/cbailiss/pivottabler/issues/30'>#30</a>).</li>
+<li>Pivot tables with nothing on rows and/or columns sometimes fail to convert to a matrix using <code>pt$asMatrix()</code> or <code>pt$asDataMatrix()</code>.</li>
+</ul>
+</div>
+    <div id="pivottabler-130" class="section level1">
+<h1 class="page-header" data-toc-text="1.3.0">
+<a href="#pivottabler-130" class="anchor"></a>pivottabler 1.3.0<small> 2020-02-03 </small>
+</h1>
+<div id="overview-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#overview-1" class="anchor"></a>Overview</h2>
+<p>This release introduces a new layout type - outline layout - that can make larger pivot tables with multiple levels of row groups more readable and more visually appealing.</p>
+<p>Several small improvements mean that irregular pivot tables (e.g. two pivot tables in one) are now easier to construct.</p>
+<p>The package vignettes have grown too large be hosted on CRAN. They have been moved to: <a href="http://www.pivottabler.org.uk/articles/" class="uri">http://www.pivottabler.org.uk/articles/</a></p>
+</div>
+<div id="improvements-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#improvements-1" class="anchor"></a>Improvements</h2>
 <ul>
 <li>A new “outlined” layout is now supported (in “beta” in this release). This generates additional rows for row data groups which appear as headings within the pivot table. See the new “Regular Layout” vignette for details.</li>
 <li>Several small improvements make building irregular layouts much easier, including:
@@ -218,7 +232,7 @@
 </li>
 <li>Headings for the row data groups (i.e. headings for the first column / first few columns) in a pivot table can now be specified. See the “Pivot tables as standard tables (row group headings)” section in the “Data Groups” vignette for details. The new <code>showRowGroupHeaders</code> argument can be used with <code>pt$renderPivot()</code>, <code>pt$getHtml()</code>, <code>pt$saveHtml()</code>, <code>pt$writeToExcelWorksheet()</code> and <code>pt$asBasicTable()</code>.</li>
 <li>New function <code>pt$asDataMatrix()</code> provides a cleaner way to convert a pivot table to a matrix, where the row/column headings in the pivot table become the row/column headings in the matrix. See the “Outputs” vignette for details.</li>
-<li>New function <code>setStyling()</code> provides an alternative method to set style declarations on data group headers and cells. See the “Irregular Layout” vignette for an example.</li>
+<li>New function <code>setStyling()</code> provides an alternative method to set style declarations on data group headers and cells. See the “Finding and Formatting” or “Irregular Layout” vignettes for examples.</li>
 <li>Additional arguments can now be passed to custom functions used to format calculation values. See the <code>fmtFuncArgs</code> parameter in the “Calculations” vignette for details.</li>
 <li>Additional arguments can now be passed to custom functions used to format data group values. See the <code>fmtFuncArgs</code> parameter in the “Data Groups” vignette for details.</li>
 </ul>
@@ -228,9 +242,9 @@
 <a href="#bug-fixes" class="anchor"></a>Bug Fixes</h2>
 <p>The <code>atLevel</code> argument of <code>pt$addColumnDataGroups()</code> and <code>pt$addRowDataGroups()</code> now behaves correctly / more intuitively. Previously it would often add the data groups at the level below the level expected.</p>
 </div>
-<div id="deprecated" class="section level2">
+<div id="deprecated-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#deprecated" class="anchor"></a>Deprecated</h2>
+<a href="#deprecated-1" class="anchor"></a>Deprecated</h2>
 <p>The following can still be used but now emit a deprecation warning:</p>
 <ul>
 <li>
@@ -245,41 +259,41 @@
 </div>
 </div>
     <div id="pivottabler-123" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.2.3">
 <a href="#pivottabler-123" class="anchor"></a>pivottabler 1.2.3<small> 2019-11-01 </small>
 </h1>
 <p>This release includes one small bug fix only: Adding more than nine calculations causes the calculation columns to appear in the wrong order (issue <a href='https://github.com/cbailiss/pivottabler/issues/25'>#25</a>).</p>
 </div>
     <div id="pivottabler-122" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.2.2">
 <a href="#pivottabler-122" class="anchor"></a>pivottabler 1.2.2<small> 2019-09-20 </small>
 </h1>
 <p>This release includes one small bug fix only: Calling pt$setStyling(cells=…) on an empty list of cells now succeeds without an error (issue <a href='https://github.com/cbailiss/pivottabler/issues/23'>#23</a>).</p>
 </div>
     <div id="pivottabler-121" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.2.1">
 <a href="#pivottabler-121" class="anchor"></a>pivottabler 1.2.1<small> 2019-08-05 </small>
 </h1>
 <p>This release includes one small bug fix only: Calling pt$asDataFrame() on a pivot table containing blank/NA cells now succeeds without an error (issue <a href='https://github.com/cbailiss/pivottabler/issues/20'>#20</a>).</p>
 </div>
     <div id="pivottabler-120" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.2.0">
 <a href="#pivottabler-120" class="anchor"></a>pivottabler 1.2.0<small> 2019-03-20 </small>
 </h1>
-<div id="overview-1" class="section level2">
+<div id="overview-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#overview-1" class="anchor"></a>Overview</h2>
+<a href="#overview-2" class="anchor"></a>Overview</h2>
 <p>This release includes one small potentially breaking change and one bug fix.</p>
 </div>
-<div id="breaking-changes" class="section level2">
+<div id="breaking-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes" class="anchor"></a>Breaking Changes</h2>
+<a href="#breaking-changes-1" class="anchor"></a>Breaking Changes</h2>
 <p><strong>Changes to rowspan and colspan attributes in HTML</strong></p>
 <p>When generating HTML, previous versions of the package would always generate rowspan and colspan attributes for merged table cells, even if the number of rows or columns being spanned was only one. Starting with v1.2.0, rowspan and colspan attributes are only generated where the number of rows or columns being spanned is greater than one. This should make no difference to the visual appearance of the table, however it may cause issues for users who require the previous behaviour. The previous behaviour is still available by specifying <code>compatibility=list(explicitHeaderSpansOfOne=TRUE)</code> as an argument when creating the pivot table, either in <code>PivotTable$new()</code> or one of the quick pivot functions such as <code><a href="../reference/qpvt.html">qpvt()</a></code>.</p>
 </div>
-<div id="improvements-1" class="section level2">
+<div id="improvements-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-1" class="anchor"></a>Improvements</h2>
+<a href="#improvements-2" class="anchor"></a>Improvements</h2>
 <p>Small improvements have been made to the conversion of pivot tables to basic tables (in the <code>basictabler</code> package). Starting from this version of <code>pivottabler</code> and v0.3.0 of <code>basictabler</code> the HTML that is generated from the two packages should be more consistent. Previously, <code>basictabler</code> would render row/column header cells using the HTML <strong>td</strong> element instead of the more correct <strong>th</strong> element. Thanks to <a href='https://github.com/rickwargo'>@rickwargo</a> for reporting this difference in HTML output between the two packages.</p>
 </div>
 <div id="bug-fixes-1" class="section level2">
@@ -289,12 +303,12 @@
 </div>
 </div>
     <div id="pivottabler-110" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.1.0">
 <a href="#pivottabler-110" class="anchor"></a>pivottabler 1.1.0<small> 2019-02-17 </small>
 </h1>
-<div id="overview-2" class="section level2">
+<div id="overview-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#overview-2" class="anchor"></a>Overview</h2>
+<a href="#overview-3" class="anchor"></a>Overview</h2>
 <p>This release includes:</p>
 <ul>
 <li>Ability to convert a pivot table to a basic table (from the basictabler package)</li>
@@ -302,18 +316,18 @@
 <li>More styling information and examples in the vignettes</li>
 </ul>
 </div>
-<div id="breaking-changes-1" class="section level2">
+<div id="breaking-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-1" class="anchor"></a>Breaking Changes</h2>
+<a href="#breaking-changes-2" class="anchor"></a>Breaking Changes</h2>
 <p>This version of <code>pivottabler</code> generates slightly different CSS/HTML for the built-in themes/styling compared to previous versions. The visual appearance is unchanged. This may be a breaking change for users who require the generated CSS/HTML code to be identical to previous versions.</p>
 <p>More details:</p>
 <p>In version 1.0.0 and earlier versions of <code>pivottabler</code>, the built-in themes used a shared set of style declarations for both calculation value cells and total cells. From <code>pivottabler</code> version 1.1.0 onwards, total cells use a separate set of style declarations. The visual appearance of pivot tables using the built-in themes has not changed, only the HTML/CSS that is generated is slightly different - so the great majority of users will not be affected.</p>
 <p>This change reduces the risk of styling changes to totals accidentally affecting all calculation value cells and vice-versa.</p>
 <p>The output of earlier versions, where total cells and calculation value cells use a shared set of style declarations, can be generated by specifying <code>compatibility=list(totalStyleIsCellStyle=TRUE)</code> as an argument when creating the pivot table, either in <code>PivotTable$new()</code> or one of the quick pivot functions such as <code><a href="../reference/qpvt.html">qpvt()</a></code>.</p>
 </div>
-<div id="improvements-2" class="section level2">
+<div id="improvements-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-2" class="anchor"></a>Improvements</h2>
+<a href="#improvements-3" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Convert a pivot table to a <code>basictabler</code> table - enabling flexible/arbitrary changes to be made to pivot tables after they have been created, e.g. inserting or deleting rows/columns/cells. See the “Outputs” vignette for more details.</li>
 <li>New function <code>pt$setStyling()</code> simplifies the setting of formatting and styling on data groups and table cells. See the “Styling” vignette for details.</li>
@@ -324,20 +338,20 @@
 </div>
 </div>
     <div id="pivottabler-100" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.0.0">
 <a href="#pivottabler-100" class="anchor"></a>pivottabler 1.0.0<small> 2018-10-17 </small>
 </h1>
-<div id="breaking-changes-2" class="section level2">
+<div id="breaking-changes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-2" class="anchor"></a>Breaking Changes</h2>
+<a href="#breaking-changes-3" class="anchor"></a>Breaking Changes</h2>
 <ul>
 <li>The default value of the <code>specifyCellsAsList</code> argument in the <code>pt$getCells()</code> function has been changed to <code>TRUE</code>. The previous usage of the <code>pt$getCells()</code> function is still supported (now you must explicitly specify <code>specifyCellsAsList=FALSE</code>). This change has been planned since v0.3.0 (June 2017) and a warning message has been displayed since then. See the Finding and Formatting vignette for more details on the <code>specifyCellsAsList</code> argument.</li>
 <li>Additional checks are now made to prevent calculations being moved/added after the calculation row/column groups have been generated. There is a small chance this will cause errors in existing user code - though this will only occur where user code is trying to move/add calculations after the calculations have already been set in the pivot table by a call to <code>pt$addColumnCalculationGroups()</code> or <code>pt$addRowCalculationGroups()</code> (previously this would silently fail).</li>
 </ul>
 </div>
-<div id="improvements-3" class="section level2">
+<div id="improvements-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-3" class="anchor"></a>Improvements</h2>
+<a href="#improvements-4" class="anchor"></a>Improvements</h2>
 <ul>
 <li>pivottabler now supports using any of the following data types in both row/column headings and cell values: integer, numeric, character, logical, Date, and POSIXct.</li>
 <li>Improved support for illegal data frame column names and illegal calculation names (e.g. including spaces or symbols such as dash, plus, dollar, etc). See the Details Appendix (A1) vignette for details.</li>
@@ -365,19 +379,19 @@
 </div>
 </div>
     <div id="pivottabler-040" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.4.0">
 <a href="#pivottabler-040" class="anchor"></a>pivottabler 0.4.0<small> 2017-10-02 </small>
 </h1>
-<div id="breaking-changes-3" class="section level2">
+<div id="breaking-changes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-3" class="anchor"></a>Breaking Changes</h2>
+<a href="#breaking-changes-4" class="anchor"></a>Breaking Changes</h2>
 <ul>
 <li>Removed support for R 3.2.x. Minimum supported version of base R now R 3.3.0.</li>
 </ul>
 </div>
-<div id="improvements-4" class="section level2">
+<div id="improvements-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-4" class="anchor"></a>Improvements</h2>
+<a href="#improvements-5" class="anchor"></a>Improvements</h2>
 <ul>
 <li>It is now possible to output a pivot table to an Excel file with one line of R, including with styling that closely matches the HTML output. See the Excel Export vignette for more details.</li>
 <li>Quick-pivot functions now support showing/hiding totals and renaming the captions of totals, which was previously only possible using the verbose syntax. See the Introduction vignette for more details.</li>
@@ -400,19 +414,19 @@
 </div>
 </div>
     <div id="pivottabler-030-performance-improvements-and-quick-pivot-functions" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.3.0">
 <a href="#pivottabler-030-performance-improvements-and-quick-pivot-functions" class="anchor"></a>pivottabler 0.3.0: Performance Improvements and Quick-Pivot Functions<small> 2017-06-01 </small>
 </h1>
-<div id="breaking-changes-4" class="section level2">
+<div id="breaking-changes-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-4" class="anchor"></a>Breaking Changes</h2>
+<a href="#breaking-changes-5" class="anchor"></a>Breaking Changes</h2>
 <ul>
 <li>Pivot table initialiser parameters renamed from messages and messageFile to traceEnabled and traceFile respectively.</li>
 </ul>
 </div>
-<div id="improvements-5" class="section level2">
+<div id="improvements-6" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-5" class="anchor"></a>Improvements</h2>
+<a href="#improvements-6" class="anchor"></a>Improvements</h2>
 <ul>
 <li>pivottabler now calculates cell values in batches in order to reduce the calculation time required for larger data frames. For large pivot tables based on large data frames this typically results in a big performance improvement, e.g. for a pivot table of 1000 cells based on a data frame with 10 million rows the rendering time is around 7 seconds in version 0.3.0 compared to over 480 seconds in version 0.2.0. See the new Performance vignette for more details.</li>
 <li>pivottabler now also supports the data.table package for performing pivot table summary/aggregation calculations. dplyr remains the default however data.table offers a moderate performance improvement for large data frames (10 million rows and above). See the Calculations vignette for more details.</li>
@@ -441,17 +455,17 @@
 </div>
 </div>
     <div id="pivottabler-020-new-outputconversion-options-new-find-options" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.2.0">
 <a href="#pivottabler-020-new-outputconversion-options-new-find-options" class="anchor"></a>pivottabler 0.2.0: New Output/Conversion Options, New Find Options<small> 2017-04-28 </small>
 </h1>
-<div id="breaking-changes-5" class="section level2">
+<div id="breaking-changes-6" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-5" class="anchor"></a>Breaking Changes</h2>
+<a href="#breaking-changes-6" class="anchor"></a>Breaking Changes</h2>
 <p>(none)</p>
 </div>
-<div id="improvements-6" class="section level2">
+<div id="improvements-7" class="section level2">
 <h2 class="hasAnchor">
-<a href="#improvements-6" class="anchor"></a>Improvements</h2>
+<a href="#improvements-7" class="anchor"></a>Improvements</h2>
 <ul>
 <li>Added the ability to output a pivot table in Latex.</li>
 <li>Added the asMatrix() function to allow the pivot table contents to be retrieved as a matrix.</li>
@@ -475,30 +489,17 @@
 </div>
 </div>
     <div id="pivottabler-010" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.0">
 <a href="#pivottabler-010" class="anchor"></a>pivottabler 0.1.0<small> 2017-03-27 </small>
 </h1>
 <p>Initial version.</p>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#pivottabler-130">1.3.0</a></li>
-        <li><a href="#pivottabler-123">1.2.3</a></li>
-        <li><a href="#pivottabler-122">1.2.2</a></li>
-        <li><a href="#pivottabler-121">1.2.1</a></li>
-        <li><a href="#pivottabler-120">1.2.0</a></li>
-        <li><a href="#pivottabler-110">1.1.0</a></li>
-        <li><a href="#pivottabler-100">1.0.0</a></li>
-        <li><a href="#pivottabler-040">0.4.0</a></li>
-        <li><a href="#pivottabler-030-performance-improvements-and-quick-pivot-functions">0.3.0</a></li>
-        <li><a href="#pivottabler-020-new-outputconversion-options-new-find-options">0.2.0</a></li>
-        <li><a href="#pivottabler-010">0.1.0</a></li>
-      </ul>
-    </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 
 </div>
@@ -510,7 +511,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

@@ -6,27 +6,31 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A class that defines a set of filter conditions — PivotFilters • pivottabler</title>
+<title>R6 class that defines a set of filter conditions. — PivotFilters • pivottabler</title>
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -35,17 +39,16 @@
 
 <!-- docsearch -->
 <script src="../docsearch.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
 
 
-<meta property="og:title" content="A class that defines a set of filter conditions — PivotFilters" />
-<meta property="og:description" content="The PivotFilters class allows multiple filter conditions relating to
-different data frame columns to be combined, i.e. a PivotFilters object can
-contain multiple PivotFilter objects." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="R6 class that defines a set of filter conditions. — PivotFilters" />
+<meta property="og:description" content="The `PivotFilters` class allows multiple filter conditions relating to
+different data frame columns to be combined, i.e. a `PivotFilters` object
+typically contains multiple PivotFilter objects." />
 
 
 
@@ -73,7 +76,7 @@ contain multiple PivotFilter objects." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -87,7 +90,7 @@ contain multiple PivotFilter objects." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -102,65 +105,8 @@ contain multiple PivotFilter objects." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/v00-vignettes.html">pivottabler Vignettes</a>
-    </li>
-    <li>
-      <a href="../articles/v01-introduction.html">01. Introduction</a>
-    </li>
-    <li>
-      <a href="../articles/v02-datagroups.html">02. Data Groups</a>
-    </li>
-    <li>
-      <a href="../articles/v03-calculations.html">03. Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/v04-regularlayout.html">04. Regular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v05-outputs.html">04. Outputs</a>
-    </li>
-    <li>
-      <a href="../articles/v06-latexoutput.html">05. Latex Output</a>
-    </li>
-    <li>
-      <a href="../articles/v07-styling.html">06. Styling</a>
-    </li>
-    <li>
-      <a href="../articles/v08-findingandformatting.html">07. Finding and Formatting</a>
-    </li>
-    <li>
-      <a href="../articles/v09-cellcontext.html">08. Cell Context</a>
-    </li>
-    <li>
-      <a href="../articles/v10-irregularlayout.html">09. Irregular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v11-performance.html">10. Performance</a>
-    </li>
-    <li>
-      <a href="../articles/v12-excelexport.html">12. Excel Export</a>
-    </li>
-    <li>
-      <a href="../articles/v13-shiny.html">11. Shiny</a>
-    </li>
-    <li>
-      <a href="../articles/vA1-appendix.html">A1. Appendix:  Details</a>
-    </li>
-    <li>
-      <a href="../articles/vA2-appendix.html">A2. Appendix:  Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/vA3-appendix.html">A3. Appendix:  Class Overview</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -168,7 +114,7 @@ contain multiple PivotFilter objects." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/cbailiss/pivottabler">
+  <a href="https://github.com/cbailiss/pivottabler/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -192,15 +138,15 @@ contain multiple PivotFilter objects." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A class that defines a set of filter conditions</h1>
+    <h1>R6 class that defines a set of filter conditions.</h1>
     <small class="dont-index">Source: <a href='https://github.com/cbailiss/pivottabler/blob/master/R/PivotFilters.R'><code>R/PivotFilters.R</code></a></small>
     <div class="hidden name"><code>PivotFilters.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The PivotFilters class allows multiple filter conditions relating to
-different data frame columns to be combined, i.e. a PivotFilters object can
-contain multiple <code><a href='PivotFilter.html'>PivotFilter</a></code> objects.</p>
+    <p>The `PivotFilters` class allows multiple filter conditions relating to
+different data frame columns to be combined, i.e. a `PivotFilters` object
+typically contains multiple <code><a href='PivotFilter.html'>PivotFilter</a></code> objects.</p>
     </div>
 
 
@@ -208,70 +154,300 @@ contain multiple <code><a href='PivotFilter.html'>PivotFilter</a></code> objects
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p><code>R6Class</code> object.</p>
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Object of <code>R6Class</code> with properties and methods that
-  define a set of filter conditions.</p>
-    <h2 class="hasAnchor" id="fields"><a class="anchor" href="#fields"></a>Fields</h2>
+    <p>As well as acting as a container for multiple filter conditions, the
+`PivotFilters` class also contains logic for combining filter.
+The `action` parameter in many of the methods controls how two filters
+are combined.</p>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
-    
+    <p><div class="r6-active-bindings"></p><dl'>
+<dt><code>count</code></dt><dd><p>The number of `PivotFilter` objects in this `PivotFilters` object.</p></dd>
 
-<dl class='dl-horizontal'>
-<dt><code>parentPivot</code></dt><dd><p>Owning pivot table.</p></dd>
+<dt><code>filters</code></dt><dd><p>A list of `PivotFilter` objects in this `PivotFilters` object.</p></dd>
 
-<dt><code>count</code></dt><dd><p>The number of PivotFilter objects in this PivotFilters object.</p></dd>
+<dt><code>isALL</code></dt><dd><p>If TRUE, this `PivotFilters` object matches all data.</p></dd>
 
-<dt><code>filters</code></dt><dd><p>The PivotFilter objects in this PivotFilters object.</p></dd>
+<dt><code>isNONE</code></dt><dd><p>If TRUE, this `PivotFilters` object matches no data.</p></dd>
 
-<dt><code>isALL</code></dt><dd><p>If TRUE, this PivotFilters object matches all data.</p></dd>
-
-<dt><code>isNONE</code></dt><dd><p>If TRUE, this PivotFilters object matches no data.</p></dd>
-
-<dt><code>filteredVariables</code></dt><dd><p>A list of the variables that are filtered by this
-PivotFilters object.</p></dd>
+<dt><code>filteredVariables</code></dt><dd><p>The names of the variables that are filtered by this
+`PivotFilters` object.</p></dd>
 
 <dt><code>filteredValues</code></dt><dd><p>A list of the criteria values for each of the variables
-filtered by this PivotFilters object.</p></dd>
+filtered by this `PivotFilters` object, where the list element names are the
+variable names.</p></dd>
 
-</dl>
+</dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     
+<h3>Public methods</h3>
 
-<dl class='dl-horizontal'>
-  <dt>Documentation</dt><dd><p>For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.</p></dd>
-  <dt><code>new(...)</code></dt><dd><p>Create a new pivot filters object, specifying the field
-  values documented above.</p></dd>
+<ul>
+<li><p><a href='#method-new'><code>PivotFilters$new()</code></a></p></li>
+<li><p><a href='#method-clearFilters'><code>PivotFilters$clearFilters()</code></a></p></li>
+<li><p><a href='#method-keepOnlyFiltersFor'><code>PivotFilters$keepOnlyFiltersFor()</code></a></p></li>
+<li><p><a href='#method-removeFiltersFor'><code>PivotFilters$removeFiltersFor()</code></a></p></li>
+<li><p><a href='#method-getFilter'><code>PivotFilters$getFilter()</code></a></p></li>
+<li><p><a href='#method-isFilterMatch'><code>PivotFilters$isFilterMatch()</code></a></p></li>
+<li><p><a href='#method-setFilters'><code>PivotFilters$setFilters()</code></a></p></li>
+<li><p><a href='#method-setFilter'><code>PivotFilters$setFilter()</code></a></p></li>
+<li><p><a href='#method-setFilterValues'><code>PivotFilters$setFilterValues()</code></a></p></li>
+<li><p><a href='#method-addFilter'><code>PivotFilters$addFilter()</code></a></p></li>
+<li><p><a href='#method-getFilteredDataFrame'><code>PivotFilters$getFilteredDataFrame()</code></a></p></li>
+<li><p><a href='#method-getCopy'><code>PivotFilters$getCopy()</code></a></p></li>
+<li><p><a href='#method-asList'><code>PivotFilters$asList()</code></a></p></li>
+<li><p><a href='#method-asJSON'><code>PivotFilters$asJSON()</code></a></p></li>
+<li><p><a href='#method-asString'><code>PivotFilters$asString()</code></a></p></li>
+<li><p><a href='#method-clone'><code>PivotFilters$clone()</code></a></p></li>
+</ul>
+<p><hr>
+<a id="method-new"></a></p><h3>Method <code>new()</code></h3>
+<p>Create a new `PivotFilters` object, optionally adding a filter.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>new</span>(
+  <span class='kw'>parentPivot</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variableName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"ALL"</span>,
+  <span class='kw'>values</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre><p></div></p>
 
-  <dt><code>clearFilters()</code></dt><dd><p>Remove all filters.</p></dd>
-  <dt><code>getFilter(variableName=NULL)</code></dt><dd><p>Find a filter with the specified
-  variable name.</p></dd>
-  <dt><code>isFilterMatch(variableNames=NULL, variableValues=NULL)</code></dt><dd><p>Test
-  whether these filters match the specified criteria.</p></dd>
-  <dt><code>setFilters(filters=NULL, action="replace")</code></dt><dd><p>Update the value of this
-  PivotFilters object with the filters from the specified PivotFilters
-  object, either unioning, intersecting or replacing the filter criteria.</p></dd>
-  <dt><code>setFilter(filter=NULL, action="replace")</code></dt><dd><p>Update the value of this
-  PivotFilters object with the specified PivotFilter object, either unioning,
-  intersecting or replacing the filter criteria.</p></dd>
-  <dt><code>setFilterValues(variableName=NULL, type=NULL, values=NULL,
-  action="replace")</code></dt><dd><p>Update the value of this PivotFilters object with the
-  specified criteria, either unioning, intersecting or replacing the filter
-  criteria.</p></dd>
-  <dt><code>addFilter()</code></dt><dd><p>Directly add a PivotFilter object to this
-  PivotFilters object.</p></dd>
-  <dt><code>getFilteredDataFrame(dataFrame=NULL)</code></dt><dd><p>Filters the specified
-  data frame and returns the results as another data frame.</p></dd>
-  <dt><code>getCopy()</code></dt><dd><p>Get a copy of this set of filters.</p></dd>
-  <dt><code>asList()</code></dt><dd><p>Get a list representation of this PivotFilters
-  object.</p></dd>
-  <dt><code>asJSON()</code></dt><dd><p>Get a JSON representation of this PivotFilters
-  object.</p></dd>
-  <dt><code>asString(includeVariableName=TRUE, seperator=", ")</code></dt><dd><p>Get a text
-  representation of this PivotFilters object.</p></dd>
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>parentPivot</code></dt><dd><p>The pivot table that this `PivotFilters`
+instance belongs to.</p></dd>
 
-</dl>
+<dt><code>variableName</code></dt><dd><p>The name of the column in the data frame that this filter
+applies to.  Specify `NULL` to skip adding a filter.</p></dd>
+
+<dt><code>type</code></dt><dd><p>Must be either "ALL", "VALUES" or "NONE".  "VALUES" is the most
+common type and means the data is filtered to a subset of values.  "ALL" means
+there is no filtering, i.e. all values match.  "NONE" means there can be no
+matching values/data.</p></dd>
+
+<dt><code>values</code></dt><dd><p>A single data value or a vector of multiple data values that
+the filter will match on.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A new `PivotFilters` object.</p>
+<p><hr>
+<a id="method-clearFilters"></a></p><h3>Method <code>clearFilters()</code></h3>
+<p>Remove all filters from this `PivotFilters` object.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>clearFilters</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-keepOnlyFiltersFor"></a></p><h3>Method <code>keepOnlyFiltersFor()</code></h3>
+<p>Remove the filters for all variables except those specified.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>keepOnlyFiltersFor</span>(<span class='kw'>variableNames</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>variableNames</code></dt><dd><p>A character vector specifying the variable names
+to retain the filter criteria for. Filter criteria for all other variables
+will be cleared.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-removeFiltersFor"></a></p><h3>Method <code>removeFiltersFor()</code></h3>
+<p>Remove the filters for the specified variables.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>removeFiltersFor</span>(<span class='kw'>variableNames</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>variableNames</code></dt><dd><p>A character vector specifying the variable names
+for which the filter criteria will be cleared.  Filter criteria for all
+other variables will be retained.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-getFilter"></a></p><h3>Method <code>getFilter()</code></h3>
+<p>Find a filter with the specified variable name.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>getFilter</span>(<span class='kw'>variableName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>variableName</code></dt><dd><p>The variable name to find a filter for.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A `PivotFilter` object that filters on the specified variable.</p>
+<p><hr>
+<a id="method-isFilterMatch"></a></p><h3>Method <code>isFilterMatch()</code></h3>
+<p>Tests whether this `PivotFilters` object matches specified criteria.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>isFilterMatch</span>(
+  <span class='kw'>matchMode</span> <span class='kw'>=</span> <span class='st'>"simple"</span>,
+  <span class='kw'>variableNames</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variableValues</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations".
+"simple" is used when matching only one variable-value, multiple
+variable-value combinations are effectively logical "OR", i.e.
+any one single `PivotFilter` match means the `PivotFilters` object
+is a match.
+"combinations" is used when matching for combinations of variable
+values, multiple variable-value combinations are effectively
+logical "AND", i.e. there must be a matching `PivotFilter` for
+every variable name / variable values criteria specified.
+See the "Finding and Formatting" vignette for graphical examples.</p></dd>
+
+<dt><code>variableNames</code></dt><dd><p>The variable name(s) to find a filter for.  This
+can be a vector containing more than one variable name.</p></dd>
+
+<dt><code>variableValues</code></dt><dd><p>A list specifying the variable names and values
+to find, e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>`TRUE` if this filters object matches the specified criteria,
+`FALSE` otherwise.</p>
+<p><hr>
+<a id="method-setFilters"></a></p><h3>Method <code>setFilters()</code></h3>
+<p>Update the value of this `PivotFilters` object with the filters from the
+specified `PivotFilters` object, either intersecting, replacing or unioning
+the filter criteria.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>setFilters</span>(<span class='kw'>filters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"replace"</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>filters</code></dt><dd><p>A `PivotFilters` object.</p></dd>
+
+<dt><code>action</code></dt><dd><p>Specifies how the criteria defined in `filters` should be
+combined with the existing filter criteria.
+Must be one of "intersect", "replace" or "union".</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-setFilter"></a></p><h3>Method <code>setFilter()</code></h3>
+<p>Update the value of this `PivotFilters` object with the filters from the
+specified `PivotFilter` object, either intersecting, replacing or unioning
+the filter criteria.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>setFilter</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"replace"</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>filter</code></dt><dd><p>A `PivotFilter` object.</p></dd>
+
+<dt><code>action</code></dt><dd><p>Specifies how the criteria defined in `filter` should be
+combined with the existing filter criteria.
+Must be one of "intersect", "replace" or "union".</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-setFilterValues"></a></p><h3>Method <code>setFilterValues()</code></h3>
+<p>Update the value of this `PivotFilters` object with additional filter criteria,
+either intersecting, replacing or unioning the filter criteria.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>setFilterValues</span>(
+  <span class='kw'>variableName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"ALL"</span>,
+  <span class='kw'>values</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"replace"</span>
+)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>variableName</code></dt><dd><p>The name of the column in the data frame that this criteria
+applies to.</p></dd>
+
+<dt><code>type</code></dt><dd><p>Must be either "ALL", "VALUES" or "NONE".</p></dd>
+
+<dt><code>values</code></dt><dd><p>A single data value or a vector of multiple data values that
+comprise the additional filter criteria.</p></dd>
+
+<dt><code>action</code></dt><dd><p>Specifies how the criteria defined in `filter` should be
+combined with the existing filter criteria.
+Must be one of "intersect", "replace" or "union".</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-addFilter"></a></p><h3>Method <code>addFilter()</code></h3>
+<p>Add a new `PivotFilter` object to the filter list in this `PivotFilters`
+object.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>addFilter</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>filter</code></dt><dd><p>A `PivotFilter` object.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-getFilteredDataFrame"></a></p><h3>Method <code>getFilteredDataFrame()</code></h3>
+<p>Filters the specified data frame using the filters defined in this
+`PivotFilters` object and returns the results as another data frame.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>getFilteredDataFrame</span>(<span class='kw'>dataFrame</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>dataFrame</code></dt><dd><p>A data frame to filter.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A data frame filtered according to the criteria in this `PivotFilters` object.</p>
+<p><hr>
+<a id="method-getCopy"></a></p><h3>Method <code>getCopy()</code></h3>
+<p>Create a copy of this `PivotFilters` object.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>getCopy</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>A copy of this `PivotFilters` object.</p>
+<p><hr>
+<a id="method-asList"></a></p><h3>Method <code>asList()</code></h3>
+<p>Return the contents of this object as a list for debugging.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>asList</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>A list of various object properties.</p>
+<p><hr>
+<a id="method-asJSON"></a></p><h3>Method <code>asJSON()</code></h3>
+<p>Return the contents of this object as JSON for debugging.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>asJSON</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>A JSON representation of various object properties.</p>
+<p><hr>
+<a id="method-asString"></a></p><h3>Method <code>asString()</code></h3>
+<p>Return a representation of this object as a character value.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>asString</span>(<span class='kw'>includeVariableName</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>seperator</span> <span class='kw'>=</span> <span class='st'>", "</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>includeVariableName</code></dt><dd><p>`TRUE` (default) to include the variable name in
+the string.</p></dd>
+
+<dt><code>seperator</code></dt><dd><p>A character value used when concatenating
+multiple filters.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A character summary of various object properties.</p>
+<p><hr>
+<a id="method-clone"></a></p><h3>Method <code>clone()</code></h3>
+<p>The objects of this class are cloneable with this method.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilters</span>$<span class='fu'>clone</span>(<span class='kw'>deep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
+
+</dl><p></div></p>
+
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -289,16 +465,10 @@ filtered by this PivotFilters object.</p></dd>
 Chocolate 100g"</span>)
 <span class='co'># filters now contains criteria for Year, Country and Product</span></div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#format">Format</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#fields">Fields</a></li>
-      <li><a href="#methods">Methods</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -309,7 +479,7 @@ Chocolate 100g"</span>)
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

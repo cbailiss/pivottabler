@@ -5,16 +5,16 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>04. Outputs • pivottabler</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><!-- docsearch --><script src="../docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
+<title>05. Outputs • pivottabler</title>
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><!-- docsearch --><script src="../docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
 <link href="../docsearch.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="04. Outputs">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="05. Outputs">
+<meta property="og:description" content="pivottabler">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -26,7 +26,7 @@
   gtag('config', 'UA-64707587-2');
 </script>
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -54,65 +54,8 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/v00-vignettes.html">pivottabler Vignettes</a>
-    </li>
-    <li>
-      <a href="../articles/v01-introduction.html">01. Introduction</a>
-    </li>
-    <li>
-      <a href="../articles/v02-datagroups.html">02. Data Groups</a>
-    </li>
-    <li>
-      <a href="../articles/v03-calculations.html">03. Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/v04-regularlayout.html">04. Regular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v05-outputs.html">04. Outputs</a>
-    </li>
-    <li>
-      <a href="../articles/v06-latexoutput.html">05. Latex Output</a>
-    </li>
-    <li>
-      <a href="../articles/v07-styling.html">06. Styling</a>
-    </li>
-    <li>
-      <a href="../articles/v08-findingandformatting.html">07. Finding and Formatting</a>
-    </li>
-    <li>
-      <a href="../articles/v09-cellcontext.html">08. Cell Context</a>
-    </li>
-    <li>
-      <a href="../articles/v10-irregularlayout.html">09. Irregular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v11-performance.html">10. Performance</a>
-    </li>
-    <li>
-      <a href="../articles/v12-excelexport.html">12. Excel Export</a>
-    </li>
-    <li>
-      <a href="../articles/v13-shiny.html">11. Shiny</a>
-    </li>
-    <li>
-      <a href="../articles/vA1-appendix.html">A1. Appendix:  Details</a>
-    </li>
-    <li>
-      <a href="../articles/vA2-appendix.html">A2. Appendix:  Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/vA3-appendix.html">A3. Appendix:  Class Overview</a>
-    </li>
-  </ul>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -120,7 +63,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/cbailiss/pivottabler">
+  <a href="https://github.com/cbailiss/pivottabler/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -141,13 +84,13 @@
 
       
 
-      </header><script src="v05-outputs_files/htmlwidgets-1.5.1/htmlwidgets.js"></script><script src="v05-outputs_files/pivottabler-binding-1.3.0/pivottabler.js"></script><script src="v05-outputs_files/basictabler-binding-0.3.0/basictabler.js"></script><div class="row">
+      </header><script src="v05-outputs_files/htmlwidgets-1.5.1/htmlwidgets.js"></script><script src="v05-outputs_files/pivottabler-binding-1.4.0/pivottabler.js"></script><script src="v05-outputs_files/basictabler-binding-0.3.1/basictabler.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>04. Outputs</h1>
+      <h1 data-toc-skip>05. Outputs</h1>
                         <h4 class="author">Chris Bailiss</h4>
             
-            <h4 class="date">2020-02-15</h4>
+            <h4 class="date">2020-05-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cbailiss/pivottabler/blob/master/vignettes/v05-outputs.Rmd"><code>vignettes/v05-outputs.Rmd</code></a></small>
       <div class="hidden name"><code>v05-outputs.Rmd</code></div>
@@ -198,28 +141,28 @@
 <h2 class="hasAnchor">
 <a href="#example-pivot-table" class="anchor"></a>Example Pivot Table</h2>
 <p>The following pivot table is used as the basis of the examples in the rest of this vignette:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb1-2" title="2">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb1-3" title="3">pt<span class="op">$</span><span class="kw">addData</span>(bhmtrains)</a>
-<a class="sourceLine" id="cb1-4" title="4">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb1-5" title="5">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb1-6" title="6">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb1-7" title="7">pt<span class="op">$</span><span class="kw">renderPivot</span>()</a></code></pre></div>
-<div id="htmlwidget-89c9b1ba5215903e0d16" style="width:auto;height:auto;" class="pivottabler html-widget"></div>
-<script type="application/json" data-for="htmlwidget-89c9b1ba5215903e0d16">{"x":{"tableCss":".Table {display: table; border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.OutlineColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.OutlineRowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.OutlineCell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; background-color: #F8F8F8; font-weight: bold; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n","tableHtml":"<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\">&nbsp;<\/th>\n    <th class=\"ColumnHeader\">DMU<\/th>\n    <th class=\"ColumnHeader\">EMU<\/th>\n    <th class=\"ColumnHeader\">HST<\/th>\n    <th class=\"ColumnHeader\">Total<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales<\/th>\n    <td class=\"Cell\">3909<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">3909<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry<\/th>\n    <td class=\"Cell\">22196<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">732<\/td>\n    <td class=\"Total\">22928<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland<\/th>\n    <td class=\"Cell\">11229<\/td>\n    <td class=\"Cell\">37050<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">48279<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains<\/th>\n    <td class=\"Cell\">2137<\/td>\n    <td class=\"Cell\">6457<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">8594<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Total<\/th>\n    <td class=\"Total\">39471<\/td>\n    <td class=\"Total\">43507<\/td>\n    <td class=\"Total\">732<\/td>\n    <td class=\"Total\">83710<\/td>\n  <\/tr>\n<\/table>","settings":[]},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">renderPivot</span>()</pre></body></html></div>
+<div id="htmlwidget-7d380285dc30eca57693" style="width:auto;height:auto;" class="pivottabler html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7d380285dc30eca57693">{"x":{"tableCss":".Table {display: table; border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.OutlineColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.OutlineRowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.OutlineCell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; background-color: #F8F8F8; font-weight: bold; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n","tableHtml":"<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\">&nbsp;<\/th>\n    <th class=\"ColumnHeader\">DMU<\/th>\n    <th class=\"ColumnHeader\">EMU<\/th>\n    <th class=\"ColumnHeader\">HST<\/th>\n    <th class=\"ColumnHeader\">Total<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales<\/th>\n    <td class=\"Cell\">3909<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">3909<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry<\/th>\n    <td class=\"Cell\">22196<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">732<\/td>\n    <td class=\"Total\">22928<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland<\/th>\n    <td class=\"Cell\">11229<\/td>\n    <td class=\"Cell\">37050<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">48279<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains<\/th>\n    <td class=\"Cell\">2137<\/td>\n    <td class=\"Cell\">6457<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">8594<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Total<\/th>\n    <td class=\"Total\">39471<\/td>\n    <td class=\"Total\">43507<\/td>\n    <td class=\"Total\">732<\/td>\n    <td class=\"Total\">83710<\/td>\n  <\/tr>\n<\/table>","settings":[]},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="results-as-plain-text" class="section level2">
 <h2 class="hasAnchor">
 <a href="#results-as-plain-text" class="anchor"></a>Results as Plain Text</h2>
 <p>A pivot table is outputted to the console as plain text simply by using <code>pt</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb2-2" title="2">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb2-3" title="3">pt<span class="op">$</span><span class="kw">addData</span>(bhmtrains)</a>
-<a class="sourceLine" id="cb2-4" title="4">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb2-5" title="5">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb2-6" title="6">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb2-7" title="7">pt<span class="op">$</span><span class="kw">evaluatePivot</span>()</a>
-<a class="sourceLine" id="cb2-8" title="8">pt</a></code></pre></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">evaluatePivot</span>()
+<span class="no">pt</span></pre></body></html></div>
 <pre><code>                     DMU    EMU    HST  Total  
 Arriva Trains Wales   3909               3909  
 CrossCountry         22196         732  22928  
@@ -228,13 +171,13 @@ Virgin Trains         2137   6457        8594
 Total                39471  43507  732  83710  </code></pre>
 <p>Alternatively, the plain text representation of the pivot table can be retrieved as a character value using <code>pt$asCharacter</code>.</p>
 <p><code>pt</code> and <code>pt$asString</code> show the current state of the pivot table. If the pivot table has not been evaluated (either by using <code>pt$evaluatePivot()</code> or <code>pt$renderPivot()</code>) then <code>pt</code> and <code>pt$asCharacter</code> will return the headings only:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb4-2" title="2">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb4-3" title="3">pt<span class="op">$</span><span class="kw">addData</span>(bhmtrains)</a>
-<a class="sourceLine" id="cb4-4" title="4">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb4-5" title="5">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb4-6" title="6">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb4-7" title="7">pt</a></code></pre></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span></pre></body></html></div>
 <pre><code>                     DMU  EMU  HST  Total  
 Arriva Trains Wales  
 CrossCountry         
@@ -255,15 +198,15 @@ Total                </code></pre>
 <h3 class="hasAnchor">
 <a href="#retrieving-html" class="anchor"></a>Retrieving HTML</h3>
 <p>To retrieve the HTML of a pivot table, use <code>pt$getHtml()</code>. This returns a list of html tag objects built using the htmltools package. This object can be converted to a simple character variable using <code><a href="https://rdrr.io/r/base/character.html">as.character()</a></code> or as illustrated below. The CSS declarations for a pivot table can be retrieved using <code>pt$getCss()</code> - also illustrated below.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(htmltools)</a>
-<a class="sourceLine" id="cb6-3" title="3">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb6-4" title="4">pt<span class="op">$</span><span class="kw">addData</span>(bhmtrains)</a>
-<a class="sourceLine" id="cb6-5" title="5">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb6-6" title="6">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb6-7" title="7">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb6-8" title="8">pt<span class="op">$</span><span class="kw">evaluatePivot</span>()</a>
-<a class="sourceLine" id="cb6-9" title="9"><span class="kw"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(pt<span class="op">$</span><span class="kw">getHtml</span>(), <span class="dt">sep=</span><span class="st">""</span>, <span class="dt">collapse=</span><span class="st">"</span><span class="ch">\n</span><span class="st">"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">htmltools</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">evaluatePivot</span>()
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="no">pt</span>$<span class="fu">getHtml</span>(), <span class="kw">sep</span><span class="kw">=</span><span class="st">""</span>, <span class="kw">collapse</span><span class="kw">=</span><span class="st">"\n"</span>))</pre></body></html></div>
 <pre><code>&lt;table class="Table"&gt;
   &lt;tr&gt;
     &lt;th class="RowHeader"&gt;&amp;nbsp;&lt;/th&gt;
@@ -308,7 +251,7 @@ Total                </code></pre>
     &lt;td class="Total"&gt;83710&lt;/td&gt;
   &lt;/tr&gt;
 &lt;/table&gt;</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(pt<span class="op">$</span><span class="kw">getCss</span>())</a></code></pre></div>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="no">pt</span>$<span class="fu">getCss</span>())</pre></body></html></div>
 <pre><code>.Table {display: table; border-collapse: collapse; }
 .ColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }
 .RowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }
@@ -327,7 +270,7 @@ Total                </code></pre>
 <div id="results-in-excel" class="section level2">
 <h2 class="hasAnchor">
 <a href="#results-in-excel" class="anchor"></a>Results in Excel</h2>
-<p>Please see the <a href="v12-excelexport.html">Excel Export</a> vignette.</p>
+<p>Please see the <a href="v13-excelexport.html">Excel Export</a> vignette.</p>
 </div>
 <div id="results-as-an-r-matrix" class="section level2">
 <h2 class="hasAnchor">
@@ -336,14 +279,14 @@ Total                </code></pre>
 <h3 class="hasAnchor">
 <a href="#as-a-data-matrix" class="anchor"></a>As a Data Matrix</h3>
 <p>Converting a pivot table to a matrix is possible. The row/column headers become the row/column names in the matrix:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb10-2" title="2">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb10-3" title="3">pt<span class="op">$</span><span class="kw">addData</span>(bhmtrains)</a>
-<a class="sourceLine" id="cb10-4" title="4">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb10-5" title="5">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb10-6" title="6">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb10-7" title="7">pt<span class="op">$</span><span class="kw">evaluatePivot</span>()</a>
-<a class="sourceLine" id="cb10-8" title="8">pt<span class="op">$</span><span class="kw">asDataMatrix</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">evaluatePivot</span>()
+<span class="no">pt</span>$<span class="fu">asDataMatrix</span>()</pre></body></html></div>
 <pre><code>                      DMU   EMU HST Total
 Arriva Trains Wales  3909    NA  NA  3909
 CrossCountry        22196    NA 732 22928
@@ -352,14 +295,14 @@ Virgin Trains        2137  6457  NA  8594
 Total               39471 43507 732 83710</code></pre>
 <p>If only the cell values are required, the headings can be removed from the matrix by setting the <code>includeHeaders</code> parameter to <code>FALSE</code>.</p>
 <p>By default, <code>asDataMatrix()</code> populates the matrix with the raw cell values. Setting the <code>rawValue</code> parameter to <code>FALSE</code> specifies that the matrix should contain the formatted <code>character</code> values instead of the raw values.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb12-2" title="2">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb12-3" title="3">pt<span class="op">$</span><span class="kw">addData</span>(bhmtrains)</a>
-<a class="sourceLine" id="cb12-4" title="4">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb12-5" title="5">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb12-6" title="6">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb12-7" title="7">pt<span class="op">$</span><span class="kw">evaluatePivot</span>()</a>
-<a class="sourceLine" id="cb12-8" title="8">pt<span class="op">$</span><span class="kw">asDataMatrix</span>(<span class="dt">rawValue=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">evaluatePivot</span>()
+<span class="no">pt</span>$<span class="fu">asDataMatrix</span>(<span class="kw">rawValue</span><span class="kw">=</span><span class="fl">FALSE</span>)</pre></body></html></div>
 <pre><code>                    DMU     EMU     HST   Total  
 Arriva Trains Wales "3909"  NA      NA    "3909" 
 CrossCountry        "22196" NA      "732" "22928"
@@ -367,18 +310,18 @@ London Midland      "11229" "37050" NA    "48279"
 Virgin Trains       "2137"  "6457"  NA    "8594" 
 Total               "39471" "43507" "732" "83710"</code></pre>
 <p>When there are multiple levels of headers, headers are concatenated. A separator can be specified:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
-<a class="sourceLine" id="cb14-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb14-3" title="3">data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(bhmtrains, (Status<span class="op">==</span><span class="st">"A"</span>)<span class="op">|</span>(Status<span class="op">==</span><span class="st">"C"</span>))</a>
-<a class="sourceLine" id="cb14-4" title="4">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb14-5" title="5">pt<span class="op">$</span><span class="kw">addData</span>(data)</a>
-<a class="sourceLine" id="cb14-6" title="6">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>, <span class="dt">addTotal=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb14-7" title="7">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"Status"</span>, <span class="dt">addTotal=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb14-8" title="8">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb14-9" title="9">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb14-10" title="10">pt<span class="op">$</span><span class="kw">renderPivot</span>()</a></code></pre></div>
-<div id="htmlwidget-584dec6c0cb8ab6a65f5" style="width:auto;height:auto;" class="pivottabler html-widget"></div>
-<script type="application/json" data-for="htmlwidget-584dec6c0cb8ab6a65f5">{"x":{"tableCss":".Table {display: table; border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.OutlineColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.OutlineRowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.OutlineCell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; background-color: #F8F8F8; font-weight: bold; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n","tableHtml":"<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">&nbsp;<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">DMU<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">EMU<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">HST<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales<\/th>\n    <td class=\"Cell\">3833<\/td>\n    <td class=\"Cell\">74<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry<\/th>\n    <td class=\"Cell\">21621<\/td>\n    <td class=\"Cell\">548<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">709<\/td>\n    <td class=\"Cell\">23<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland<\/th>\n    <td class=\"Cell\">11054<\/td>\n    <td class=\"Cell\">168<\/td>\n    <td class=\"Cell\">35930<\/td>\n    <td class=\"Cell\">1082<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains<\/th>\n    <td class=\"Cell\">2028<\/td>\n    <td class=\"Cell\">107<\/td>\n    <td class=\"Cell\">6331<\/td>\n    <td class=\"Cell\">119<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Total<\/th>\n    <td class=\"Total\">38536<\/td>\n    <td class=\"Total\">897<\/td>\n    <td class=\"Total\">42261<\/td>\n    <td class=\"Total\">1201<\/td>\n    <td class=\"Total\">709<\/td>\n    <td class=\"Total\">23<\/td>\n  <\/tr>\n<\/table>","settings":[]},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">pt<span class="op">$</span><span class="kw">asDataMatrix</span>(<span class="dt">separator=</span><span class="st">"|"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">bhmtrains</span>, (<span class="no">Status</span><span class="kw">==</span><span class="st">"A"</span>)<span class="kw">|</span>(<span class="no">Status</span><span class="kw">==</span><span class="st">"C"</span>))
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">data</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>, <span class="kw">addTotal</span><span class="kw">=</span><span class="fl">FALSE</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"Status"</span>, <span class="kw">addTotal</span><span class="kw">=</span><span class="fl">FALSE</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">renderPivot</span>()</pre></body></html></div>
+<div id="htmlwidget-f039fdddcbbea7cba00e" style="width:auto;height:auto;" class="pivottabler html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f039fdddcbbea7cba00e">{"x":{"tableCss":".Table {display: table; border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.OutlineColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.OutlineRowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.OutlineCell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; background-color: #F8F8F8; font-weight: bold; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n","tableHtml":"<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">&nbsp;<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">DMU<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">EMU<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">HST<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales<\/th>\n    <td class=\"Cell\">3833<\/td>\n    <td class=\"Cell\">74<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry<\/th>\n    <td class=\"Cell\">21621<\/td>\n    <td class=\"Cell\">548<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">709<\/td>\n    <td class=\"Cell\">23<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland<\/th>\n    <td class=\"Cell\">11054<\/td>\n    <td class=\"Cell\">168<\/td>\n    <td class=\"Cell\">35930<\/td>\n    <td class=\"Cell\">1082<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains<\/th>\n    <td class=\"Cell\">2028<\/td>\n    <td class=\"Cell\">107<\/td>\n    <td class=\"Cell\">6331<\/td>\n    <td class=\"Cell\">119<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Total<\/th>\n    <td class=\"Total\">38536<\/td>\n    <td class=\"Total\">897<\/td>\n    <td class=\"Total\">42261<\/td>\n    <td class=\"Total\">1201<\/td>\n    <td class=\"Total\">709<\/td>\n    <td class=\"Total\">23<\/td>\n  <\/tr>\n<\/table>","settings":[]},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">pt</span>$<span class="fu">asDataMatrix</span>(<span class="kw">separator</span><span class="kw">=</span><span class="st">"|"</span>)</pre></body></html></div>
 <pre><code>                    DMU|A DMU|C EMU|A EMU|C HST|A HST|C
 Arriva Trains Wales  3833    74    NA    NA    NA    NA
 CrossCountry        21621   548    NA    NA   709    23
@@ -390,14 +333,14 @@ Total               38536   897 42261  1201   709    23</code></pre>
 <h3 class="hasAnchor">
 <a href="#as-a-character-matrix" class="anchor"></a>As a <code>character</code> matrix</h3>
 <p>It is also possible to convert a pivot table to a <code>character</code> matrix, where the row/column names are within the body of the matrix:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb17-2" title="2">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb17-3" title="3">pt<span class="op">$</span><span class="kw">addData</span>(bhmtrains)</a>
-<a class="sourceLine" id="cb17-4" title="4">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb17-5" title="5">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb17-6" title="6">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb17-7" title="7">pt<span class="op">$</span><span class="kw">evaluatePivot</span>()</a>
-<a class="sourceLine" id="cb17-8" title="8">pt<span class="op">$</span><span class="kw">asMatrix</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">evaluatePivot</span>()
+<span class="no">pt</span>$<span class="fu">asMatrix</span>()</pre></body></html></div>
 <pre><code>     [,1]                  [,2]    [,3]    [,4]  [,5]   
 [1,] ""                    "DMU"   "EMU"   "HST" "Total"
 [2,] "Arriva Trains Wales" "3909"  ""      ""    "3909" 
@@ -407,18 +350,18 @@ Total               38536   897 42261  1201   709    23</code></pre>
 [6,] "Total"               "39471" "43507" "732" "83710"</code></pre>
 <p>If only the cell values are required, the headings can be removed from the matrix by setting the <code>includeHeaders</code> parameter to <code>FALSE</code>.</p>
 <p>When there are multiple levels of headers, by default the column headers are not repeated:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
-<a class="sourceLine" id="cb19-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb19-3" title="3">data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(bhmtrains, (Status<span class="op">==</span><span class="st">"A"</span>)<span class="op">|</span>(Status<span class="op">==</span><span class="st">"C"</span>))</a>
-<a class="sourceLine" id="cb19-4" title="4">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb19-5" title="5">pt<span class="op">$</span><span class="kw">addData</span>(data)</a>
-<a class="sourceLine" id="cb19-6" title="6">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>, <span class="dt">addTotal=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb19-7" title="7">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"Status"</span>, <span class="dt">addTotal=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb19-8" title="8">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb19-9" title="9">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb19-10" title="10">pt<span class="op">$</span><span class="kw">renderPivot</span>()</a></code></pre></div>
-<div id="htmlwidget-84c0b742609f2e27ea74" style="width:auto;height:auto;" class="pivottabler html-widget"></div>
-<script type="application/json" data-for="htmlwidget-84c0b742609f2e27ea74">{"x":{"tableCss":".Table {display: table; border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.OutlineColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.OutlineRowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.OutlineCell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; background-color: #F8F8F8; font-weight: bold; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n","tableHtml":"<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">&nbsp;<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">DMU<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">EMU<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">HST<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales<\/th>\n    <td class=\"Cell\">3833<\/td>\n    <td class=\"Cell\">74<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry<\/th>\n    <td class=\"Cell\">21621<\/td>\n    <td class=\"Cell\">548<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">709<\/td>\n    <td class=\"Cell\">23<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland<\/th>\n    <td class=\"Cell\">11054<\/td>\n    <td class=\"Cell\">168<\/td>\n    <td class=\"Cell\">35930<\/td>\n    <td class=\"Cell\">1082<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains<\/th>\n    <td class=\"Cell\">2028<\/td>\n    <td class=\"Cell\">107<\/td>\n    <td class=\"Cell\">6331<\/td>\n    <td class=\"Cell\">119<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Total<\/th>\n    <td class=\"Total\">38536<\/td>\n    <td class=\"Total\">897<\/td>\n    <td class=\"Total\">42261<\/td>\n    <td class=\"Total\">1201<\/td>\n    <td class=\"Total\">709<\/td>\n    <td class=\"Total\">23<\/td>\n  <\/tr>\n<\/table>","settings":[]},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">pt<span class="op">$</span><span class="kw">asMatrix</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">bhmtrains</span>, (<span class="no">Status</span><span class="kw">==</span><span class="st">"A"</span>)<span class="kw">|</span>(<span class="no">Status</span><span class="kw">==</span><span class="st">"C"</span>))
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">data</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>, <span class="kw">addTotal</span><span class="kw">=</span><span class="fl">FALSE</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"Status"</span>, <span class="kw">addTotal</span><span class="kw">=</span><span class="fl">FALSE</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">renderPivot</span>()</pre></body></html></div>
+<div id="htmlwidget-c387368183e6f322f5f0" style="width:auto;height:auto;" class="pivottabler html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c387368183e6f322f5f0">{"x":{"tableCss":".Table {display: table; border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.OutlineColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.OutlineRowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.OutlineCell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; background-color: #F8F8F8; font-weight: bold; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n","tableHtml":"<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">&nbsp;<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">DMU<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">EMU<\/th>\n    <th class=\"ColumnHeader\" colspan=\"2\">HST<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n    <th class=\"ColumnHeader\">A<\/th>\n    <th class=\"ColumnHeader\">C<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales<\/th>\n    <td class=\"Cell\">3833<\/td>\n    <td class=\"Cell\">74<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry<\/th>\n    <td class=\"Cell\">21621<\/td>\n    <td class=\"Cell\">548<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">709<\/td>\n    <td class=\"Cell\">23<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland<\/th>\n    <td class=\"Cell\">11054<\/td>\n    <td class=\"Cell\">168<\/td>\n    <td class=\"Cell\">35930<\/td>\n    <td class=\"Cell\">1082<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains<\/th>\n    <td class=\"Cell\">2028<\/td>\n    <td class=\"Cell\">107<\/td>\n    <td class=\"Cell\">6331<\/td>\n    <td class=\"Cell\">119<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Total<\/th>\n    <td class=\"Total\">38536<\/td>\n    <td class=\"Total\">897<\/td>\n    <td class=\"Total\">42261<\/td>\n    <td class=\"Total\">1201<\/td>\n    <td class=\"Total\">709<\/td>\n    <td class=\"Total\">23<\/td>\n  <\/tr>\n<\/table>","settings":[]},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">pt</span>$<span class="fu">asMatrix</span>()</pre></body></html></div>
 <pre><code>     [,1]                  [,2]    [,3]  [,4]    [,5]   [,6]  [,7]
 [1,] ""                    "DMU"   ""    "EMU"   ""     "HST" ""  
 [2,] ""                    "A"     "C"   "A"     "C"    "A"   "C" 
@@ -428,7 +371,7 @@ Total               38536   897 42261  1201   709    23</code></pre>
 [6,] "Virgin Trains"       "2028"  "107" "6331"  "119"  ""    ""  
 [7,] "Total"               "38536" "897" "42261" "1201" "709" "23"</code></pre>
 <p>However, the <code>repeatHeaders</code> parameter can be used to specify repeating headings:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1">pt<span class="op">$</span><span class="kw">asMatrix</span>(<span class="dt">repeatHeaders=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="no">pt</span>$<span class="fu">asMatrix</span>(<span class="kw">repeatHeaders</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
 <pre><code>     [,1]                  [,2]    [,3]  [,4]    [,5]   [,6]  [,7] 
 [1,] ""                    "DMU"   "DMU" "EMU"   "EMU"  "HST" "HST"
 [2,] ""                    "A"     "C"   "A"     "C"    "A"   "C"  
@@ -448,37 +391,37 @@ Total               38536   897 42261  1201   709    23</code></pre>
 <h3 class="hasAnchor">
 <a href="#the-asdataframe-function" class="anchor"></a>The <code>asDataFrame()</code> function</h3>
 <p>The example pivot table converts as follows:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb24-2" title="2">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb24-3" title="3">pt<span class="op">$</span><span class="kw">addData</span>(bhmtrains)</a>
-<a class="sourceLine" id="cb24-4" title="4">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb24-5" title="5">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb24-6" title="6">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb24-7" title="7">pt<span class="op">$</span><span class="kw">evaluatePivot</span>()</a>
-<a class="sourceLine" id="cb24-8" title="8">df &lt;-<span class="st"> </span>pt<span class="op">$</span><span class="kw">asDataFrame</span>()</a>
-<a class="sourceLine" id="cb24-9" title="9">df</a></code></pre></div>
+<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">evaluatePivot</span>()
+<span class="no">df</span> <span class="kw">&lt;-</span> <span class="no">pt</span>$<span class="fu">asDataFrame</span>()
+<span class="no">df</span></pre></body></html></div>
 <pre><code>                      DMU   EMU HST Total
 Arriva Trains Wales  3909    NA  NA  3909
 CrossCountry        22196    NA 732 22928
 London Midland      11229 37050  NA 48279
 Virgin Trains        2137  6457  NA  8594
 Total               39471 43507 732 83710</code></pre>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(df)</a></code></pre></div>
+<div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">df</span>)</pre></body></html></div>
 <pre><code>'data.frame':   5 obs. of  4 variables:
  $ DMU  : int  3909 22196 11229 2137 39471
  $ EMU  : int  NA NA 37050 6457 43507
  $ HST  : int  NA 732 NA NA 732
  $ Total: int  3909 22928 48279 8594 83710</code></pre>
 <p>Data frames can have at most one name for each row and column. Therefore, when there are multiple levels of headers in the pivot table, the captions are concatenated into a single value for each row and column:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb28-2" title="2">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb28-3" title="3">pt<span class="op">$</span><span class="kw">addData</span>(bhmtrains)</a>
-<a class="sourceLine" id="cb28-4" title="4">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"TrainCategory"</span>)</a>
-<a class="sourceLine" id="cb28-5" title="5">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb28-6" title="6">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb28-7" title="7">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb28-8" title="8">pt<span class="op">$</span><span class="kw">evaluatePivot</span>()</a>
-<a class="sourceLine" id="cb28-9" title="9">pt<span class="op">$</span><span class="kw">asDataFrame</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"TrainCategory"</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">evaluatePivot</span>()
+<span class="no">pt</span>$<span class="fu">asDataFrame</span>()</pre></body></html></div>
 <pre><code>                    Express Passenger DMU Express Passenger EMU
 Arriva Trains Wales                  3079                    NA
 CrossCountry                        22133                    NA
@@ -504,15 +447,15 @@ London Midland                         33792  48279
 Virgin Trains                             NA   8594
 Total                                  34685  83710</code></pre>
 <p>The space character is the default character used to combine headers as seen above. This can easily be changed, e.g. to a pipe character:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb30-2" title="2">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb30-3" title="3">pt<span class="op">$</span><span class="kw">addData</span>(bhmtrains)</a>
-<a class="sourceLine" id="cb30-4" title="4">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"TrainCategory"</span>)</a>
-<a class="sourceLine" id="cb30-5" title="5">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb30-6" title="6">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb30-7" title="7">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb30-8" title="8">pt<span class="op">$</span><span class="kw">evaluatePivot</span>()</a>
-<a class="sourceLine" id="cb30-9" title="9">pt<span class="op">$</span><span class="kw">asDataFrame</span>(<span class="dt">separator=</span><span class="st">"|"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"TrainCategory"</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">evaluatePivot</span>()
+<span class="no">pt</span>$<span class="fu">asDataFrame</span>(<span class="kw">separator</span><span class="kw">=</span><span class="st">"|"</span>)</pre></body></html></div>
 <pre><code>                    Express Passenger|DMU Express Passenger|EMU
 Arriva Trains Wales                  3079                    NA
 CrossCountry                        22133                    NA
@@ -537,40 +480,76 @@ CrossCountry                              63  22928
 London Midland                         33792  48279
 Virgin Trains                             NA   8594
 Total                                  34685  83710</code></pre>
+<p>In addition, the row group headings can be exported as separate columns:</p>
+<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"TrainCategory"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">evaluatePivot</span>()
+<span class="no">pt</span>$<span class="fu">asDataFrame</span>(<span class="kw">rowGroupsAsColumns</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
+<pre><code>                                          TOC PowerType Express Passenger
+Arriva Trains Wales DMU   Arriva Trains Wales       DMU              3079
+Arriva Trains Wales Total Arriva Trains Wales     Total              3079
+CrossCountry DMU                 CrossCountry       DMU             22133
+CrossCountry HST                 CrossCountry       HST               732
+CrossCountry Total               CrossCountry     Total             22865
+London Midland DMU             London Midland       DMU              5638
+London Midland EMU             London Midland       EMU              8849
+London Midland Total           London Midland     Total             14487
+Virgin Trains DMU               Virgin Trains       DMU              2137
+Virgin Trains EMU               Virgin Trains       EMU              6457
+Virgin Trains Total             Virgin Trains     Total              8594
+Total                                   Total                       49025
+                          Ordinary Passenger Total
+Arriva Trains Wales DMU                  830  3909
+Arriva Trains Wales Total                830  3909
+CrossCountry DMU                          63 22196
+CrossCountry HST                          NA   732
+CrossCountry Total                        63 22928
+London Midland DMU                      5591 11229
+London Midland EMU                     28201 37050
+London Midland Total                   33792 48279
+Virgin Trains DMU                         NA  2137
+Virgin Trains EMU                         NA  6457
+Virgin Trains Total                       NA  8594
+Total                                  34685 83710</code></pre>
 </div>
 <div id="the-astidydataframe-function" class="section level3">
 <h3 class="hasAnchor">
 <a href="#the-astidydataframe-function" class="anchor"></a>The <code>asTidyDataFrame()</code> function</h3>
 <p>The example pivot table converts as follows:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb32-2" title="2">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb32-3" title="3">pt<span class="op">$</span><span class="kw">addData</span>(bhmtrains)</a>
-<a class="sourceLine" id="cb32-4" title="4">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb32-5" title="5">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb32-6" title="6">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb32-7" title="7">pt<span class="op">$</span><span class="kw">evaluatePivot</span>()</a>
-<a class="sourceLine" id="cb32-8" title="8">pt<span class="op">$</span><span class="kw">asDataFrame</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">bhmtrains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">evaluatePivot</span>()
+<span class="no">pt</span>$<span class="fu">asDataFrame</span>()</pre></body></html></div>
 <pre><code>                      DMU   EMU HST Total
 Arriva Trains Wales  3909    NA  NA  3909
 CrossCountry        22196    NA 732 22928
 London Midland      11229 37050  NA 48279
 Virgin Trains        2137  6457  NA  8594
 Total               39471 43507 732 83710</code></pre>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1">df &lt;-<span class="st"> </span>pt<span class="op">$</span><span class="kw">asTidyDataFrame</span>()</a>
-<a class="sourceLine" id="cb34-2" title="2"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(df)</a></code></pre></div>
+<div class="sourceCode" id="cb36"><html><body><pre class="r"><span class="no">df</span> <span class="kw">&lt;-</span> <span class="no">pt</span>$<span class="fu">asTidyDataFrame</span>()
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">df</span>)</pre></body></html></div>
 <pre><code>'data.frame':   20 obs. of  11 variables:
  $ rowNumber           : int  1 1 1 1 2 2 2 2 3 3 ...
  $ columnNumber        : int  1 2 3 4 1 2 3 4 1 2 ...
  $ isTotal             : logi  FALSE FALSE FALSE TRUE FALSE FALSE ...
- $ RowLevel01          : Factor w/ 5 levels "Arriva Trains Wales",..: 1 1 1 1 2 2 2 2 3 3 ...
- $ ColumnLevel01       : Factor w/ 4 levels "DMU","EMU","HST",..: 1 2 3 4 1 2 3 4 1 2 ...
- $ TOC                 : Factor w/ 5 levels "Arriva Trains Wales",..: 1 1 1 1 2 2 2 2 3 3 ...
- $ PowerType           : Factor w/ 4 levels "DMU","EMU","HST",..: 1 2 3 4 1 2 3 4 1 2 ...
- $ calculationName     : Factor w/ 1 level "TotalTrains": 1 1 1 1 1 1 1 1 1 1 ...
- $ calculationGroupName: Factor w/ 1 level "default": 1 1 1 1 1 1 1 1 1 1 ...
+ $ RowLevel01          : chr  "Arriva Trains Wales" "Arriva Trains Wales" "Arriva Trains Wales" "Arriva Trains Wales" ...
+ $ ColumnLevel01       : chr  "DMU" "EMU" "HST" "Total" ...
+ $ TOC                 : chr  "Arriva Trains Wales" "Arriva Trains Wales" "Arriva Trains Wales" "Arriva Trains Wales" ...
+ $ PowerType           : chr  "DMU" "EMU" "HST" "NA" ...
+ $ calculationName     : chr  "TotalTrains" "TotalTrains" "TotalTrains" "TotalTrains" ...
+ $ calculationGroupName: chr  "default" "default" "default" "default" ...
  $ rawValue            : int  3909 NA NA 3909 22196 NA 732 22928 11229 37050 ...
- $ formattedValue      : Factor w/ 13 levels "11229","2137",..: 6 NA NA 6 3 NA 11 4 1 5 ...</code></pre>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(df)</a></code></pre></div>
+ $ formattedValue      : chr  "3909" NA NA "3909" ...</code></pre>
+<div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">df</span>)</pre></body></html></div>
 <pre><code>  rowNumber columnNumber isTotal          RowLevel01 ColumnLevel01
 1         1            1   FALSE Arriva Trains Wales           DMU
 2         1            2   FALSE Arriva Trains Wales           EMU
@@ -602,33 +581,33 @@ Total               39471 43507 732 83710</code></pre>
 <p>The <code>asBasicTable()</code> function allows a pivot table to be converted to a basic table - from the <code>basictabler</code> package.</p>
 <p>The <code>basictabler</code> package allows free-form tables to be constructed, in contrast to <code>pivottabler</code> which creates pivot tables with relatively fixed structures. <code>pivottabler</code> contains calculation logic - to calculate the values of cells within the pivot table. <code>basictabler</code> contains no calculation logic - cell values must be provided either from a data frame, row-by-row, column-by-column or cell-by-cell.</p>
 <p>Converting a pivot table to a basic table allows the structure of pivot tables to be altered after they have been created, e.g.</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(pivottabler)</a>
-<a class="sourceLine" id="cb38-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
-<a class="sourceLine" id="cb38-3" title="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(lubridate)</a>
-<a class="sourceLine" id="cb38-4" title="4">trains &lt;-<span class="st"> </span><span class="kw">mutate</span>(bhmtrains, </a>
-<a class="sourceLine" id="cb38-5" title="5">                 <span class="dt">GbttDate=</span><span class="kw">if_else</span>(<span class="kw"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(GbttArrival), GbttDeparture, GbttArrival),</a>
-<a class="sourceLine" id="cb38-6" title="6">                 <span class="dt">GbttMonth=</span><span class="kw">make_date</span>(<span class="dt">year=</span><span class="kw">year</span>(GbttDate), <span class="dt">month=</span><span class="kw">month</span>(GbttDate), <span class="dt">day=</span><span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb38-7" title="7"></a>
-<a class="sourceLine" id="cb38-8" title="8">pt &lt;-<span class="st"> </span>PivotTable<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb38-9" title="9">pt<span class="op">$</span><span class="kw">addData</span>(trains)</a>
-<a class="sourceLine" id="cb38-10" title="10">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"GbttMonth"</span>, <span class="dt">dataFormat=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">format=</span><span class="st">"%B %Y"</span>))</a>
-<a class="sourceLine" id="cb38-11" title="11">pt<span class="op">$</span><span class="kw">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)</a>
-<a class="sourceLine" id="cb38-12" title="12">pt<span class="op">$</span><span class="kw">addRowDataGroups</span>(<span class="st">"TOC"</span>)</a>
-<a class="sourceLine" id="cb38-13" title="13">pt<span class="op">$</span><span class="kw">defineCalculation</span>(<span class="dt">calculationName=</span><span class="st">"TotalTrains"</span>, <span class="dt">summariseExpression=</span><span class="st">"n()"</span>)</a>
-<a class="sourceLine" id="cb38-14" title="14">pt<span class="op">$</span><span class="kw">evaluatePivot</span>()</a>
-<a class="sourceLine" id="cb38-15" title="15"></a>
-<a class="sourceLine" id="cb38-16" title="16"><span class="co"># convert the pivot table to a basic table, insert a new row, merge cells and highlight</span></a>
-<a class="sourceLine" id="cb38-17" title="17">bt &lt;-<span class="st"> </span>pt<span class="op">$</span><span class="kw">asBasicTable</span>()</a>
-<a class="sourceLine" id="cb38-18" title="18">bt<span class="op">$</span>cells<span class="op">$</span><span class="kw">insertRow</span>(<span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb38-19" title="19">bt<span class="op">$</span>cells<span class="op">$</span><span class="kw">setCell</span>(<span class="dv">5</span>, <span class="dv">2</span>, <span class="dt">rawValue=</span><span class="st">"The values below are significantly higher than expected."</span>, </a>
-<a class="sourceLine" id="cb38-20" title="20">                 <span class="dt">styleDeclarations=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"text-align"</span>=<span class="st">"left"</span>, <span class="st">"background-color"</span>=<span class="st">"yellow"</span>,</a>
-<a class="sourceLine" id="cb38-21" title="21">                                        <span class="st">"font-weight"</span>=<span class="st">"bold"</span>, <span class="st">"font-style"</span>=<span class="st">"italic"</span>))</a>
-<a class="sourceLine" id="cb38-22" title="22">bt<span class="op">$</span><span class="kw">mergeCells</span>(<span class="dt">rFrom=</span><span class="dv">5</span>, <span class="dt">cFrom=</span><span class="dv">2</span>, <span class="dt">rSpan=</span><span class="dv">1</span>, <span class="dt">cSpan=</span><span class="dv">13</span>)</a>
-<a class="sourceLine" id="cb38-23" title="23">bt<span class="op">$</span><span class="kw">setStyling</span>(<span class="dt">rFrom=</span><span class="dv">6</span>, <span class="dt">cFrom=</span><span class="dv">2</span>, <span class="dt">rTo=</span><span class="dv">6</span>, <span class="dt">cTo=</span><span class="dv">14</span>, </a>
-<a class="sourceLine" id="cb38-24" title="24">              <span class="dt">declarations=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"text-align"</span>=<span class="st">"left"</span>, <span class="st">"background-color"</span>=<span class="st">"yellow"</span>))</a>
-<a class="sourceLine" id="cb38-25" title="25">bt<span class="op">$</span><span class="kw">renderTable</span>()</a></code></pre></div>
-<div id="htmlwidget-ad84361a9b835ca08254" style="width:auto;height:auto;" class="basictabler html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ad84361a9b835ca08254">{"x":{"tableCss":".Table {display: table; border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.OutlineColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.OutlineRowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.OutlineCell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; background-color: #F8F8F8; font-weight: bold; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n","tableHtml":"<table class=\"Table\">\n  <tr>\n    <th rowspan=\"2\" class=\"RowHeader\">&nbsp;<\/th>\n    <th colspan=\"4\" class=\"ColumnHeader\">December 2016<\/th>\n    <th colspan=\"4\" class=\"ColumnHeader\">January 2017<\/th>\n    <th colspan=\"4\" class=\"ColumnHeader\">February 2017<\/th>\n    <th class=\"ColumnHeader\">Total<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"ColumnHeader\">DMU<\/th>\n    <th class=\"ColumnHeader\">EMU<\/th>\n    <th class=\"ColumnHeader\">HST<\/th>\n    <th class=\"ColumnHeader\">Total<\/th>\n    <th class=\"ColumnHeader\">DMU<\/th>\n    <th class=\"ColumnHeader\">EMU<\/th>\n    <th class=\"ColumnHeader\">HST<\/th>\n    <th class=\"ColumnHeader\">Total<\/th>\n    <th class=\"ColumnHeader\">DMU<\/th>\n    <th class=\"ColumnHeader\">EMU<\/th>\n    <th class=\"ColumnHeader\">HST<\/th>\n    <th class=\"ColumnHeader\">Total<\/th>\n    <th class=\"ColumnHeader\"><\/th>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales<\/th>\n    <td class=\"Cell\">1291<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">1291<\/td>\n    <td class=\"Cell\">1402<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">1402<\/td>\n    <td class=\"Cell\">1216<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">1216<\/td>\n    <td class=\"Total\">3909<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry<\/th>\n    <td class=\"Cell\">7314<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">236<\/td>\n    <td class=\"Total\">7550<\/td>\n    <td class=\"Cell\">7777<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">256<\/td>\n    <td class=\"Total\">8033<\/td>\n    <td class=\"Cell\">7105<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">240<\/td>\n    <td class=\"Total\">7345<\/td>\n    <td class=\"Total\">22928<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\"><\/th>\n    <td colspan=\"13\" class=\"Cell\" style=\"text-align: left; background-color: yellow; font-weight: bold; font-style: italic; \">The values below are significantly higher than expected.<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland<\/th>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">3635<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">11967<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \"><\/td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">15602<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">3967<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">13062<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \"><\/td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">17029<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">3627<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">12021<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \"><\/td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">15648<\/td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">48279<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains<\/th>\n    <td class=\"Cell\">740<\/td>\n    <td class=\"Cell\">2137<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">2877<\/td>\n    <td class=\"Cell\">728<\/td>\n    <td class=\"Cell\">2276<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">3004<\/td>\n    <td class=\"Cell\">669<\/td>\n    <td class=\"Cell\">2044<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">2713<\/td>\n    <td class=\"Total\">8594<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Total<\/th>\n    <td class=\"Total\">12980<\/td>\n    <td class=\"Total\">14104<\/td>\n    <td class=\"Total\">236<\/td>\n    <td class=\"Total\">27320<\/td>\n    <td class=\"Total\">13874<\/td>\n    <td class=\"Total\">15338<\/td>\n    <td class=\"Total\">256<\/td>\n    <td class=\"Total\">29468<\/td>\n    <td class=\"Total\">12617<\/td>\n    <td class=\"Total\">14065<\/td>\n    <td class=\"Total\">240<\/td>\n    <td class=\"Total\">26922<\/td>\n    <td class=\"Total\">83710<\/td>\n  <\/tr>\n<\/table>","settings":[]},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">pivottabler</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">lubridate</span>)
+<span class="no">trains</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="no">bhmtrains</span>,
+                 <span class="kw">GbttDate</span><span class="kw">=</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">GbttArrival</span>), <span class="no">GbttDeparture</span>, <span class="no">GbttArrival</span>),
+                 <span class="kw">GbttMonth</span><span class="kw">=</span><span class="fu"><a href="http://lubridate.tidyverse.org/reference/make_datetime.html">make_date</a></span>(<span class="kw">year</span><span class="kw">=</span><span class="fu"><a href="http://lubridate.tidyverse.org/reference/year.html">year</a></span>(<span class="no">GbttDate</span>), <span class="kw">month</span><span class="kw">=</span><span class="fu"><a href="http://lubridate.tidyverse.org/reference/month.html">month</a></span>(<span class="no">GbttDate</span>), <span class="kw">day</span><span class="kw">=</span><span class="fl">1</span>))
+
+<span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
+<span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">trains</span>)
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"GbttMonth"</span>, <span class="kw">dataFormat</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">format</span><span class="kw">=</span><span class="st">"%B %Y"</span>))
+<span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="st">"PowerType"</span>)
+<span class="no">pt</span>$<span class="fu">addRowDataGroups</span>(<span class="st">"TOC"</span>)
+<span class="no">pt</span>$<span class="fu">defineCalculation</span>(<span class="kw">calculationName</span><span class="kw">=</span><span class="st">"TotalTrains"</span>, <span class="kw">summariseExpression</span><span class="kw">=</span><span class="st">"n()"</span>)
+<span class="no">pt</span>$<span class="fu">evaluatePivot</span>()
+
+<span class="co"># convert the pivot table to a basic table, insert a new row, merge cells and highlight</span>
+<span class="no">bt</span> <span class="kw">&lt;-</span> <span class="no">pt</span>$<span class="fu">asBasicTable</span>()
+<span class="no">bt</span>$<span class="no">cells</span>$<span class="fu">insertRow</span>(<span class="fl">5</span>)
+<span class="no">bt</span>$<span class="no">cells</span>$<span class="fu">setCell</span>(<span class="fl">5</span>, <span class="fl">2</span>, <span class="kw">rawValue</span><span class="kw">=</span><span class="st">"The values below are significantly higher than expected."</span>,
+                 <span class="kw">styleDeclarations</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"text-align"</span><span class="kw">=</span><span class="st">"left"</span>, <span class="st">"background-color"</span><span class="kw">=</span><span class="st">"yellow"</span>,
+                                        <span class="st">"font-weight"</span><span class="kw">=</span><span class="st">"bold"</span>, <span class="st">"font-style"</span><span class="kw">=</span><span class="st">"italic"</span>))
+<span class="no">bt</span>$<span class="fu">mergeCells</span>(<span class="kw">rFrom</span><span class="kw">=</span><span class="fl">5</span>, <span class="kw">cFrom</span><span class="kw">=</span><span class="fl">2</span>, <span class="kw">rSpan</span><span class="kw">=</span><span class="fl">1</span>, <span class="kw">cSpan</span><span class="kw">=</span><span class="fl">13</span>)
+<span class="no">bt</span>$<span class="fu">setStyling</span>(<span class="kw">rFrom</span><span class="kw">=</span><span class="fl">6</span>, <span class="kw">cFrom</span><span class="kw">=</span><span class="fl">2</span>, <span class="kw">rTo</span><span class="kw">=</span><span class="fl">6</span>, <span class="kw">cTo</span><span class="kw">=</span><span class="fl">14</span>,
+              <span class="kw">declarations</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"text-align"</span><span class="kw">=</span><span class="st">"left"</span>, <span class="st">"background-color"</span><span class="kw">=</span><span class="st">"yellow"</span>))
+<span class="no">bt</span>$<span class="fu">renderTable</span>()</pre></body></html></div>
+<div id="htmlwidget-daceca55f13f1cdc27d9" style="width:auto;height:auto;" class="basictabler html-widget"></div>
+<script type="application/json" data-for="htmlwidget-daceca55f13f1cdc27d9">{"x":{"tableCss":".Table {display: table; border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.OutlineColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.OutlineRowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.OutlineCell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; background-color: #F8F8F8; font-weight: bold; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n","tableHtml":"<table class=\"Table\">\n  <tr>\n    <th rowspan=\"2\" class=\"RowHeader\">&nbsp;<\/th>\n    <th colspan=\"4\" class=\"ColumnHeader\">December 2016<\/th>\n    <th colspan=\"4\" class=\"ColumnHeader\">January 2017<\/th>\n    <th colspan=\"4\" class=\"ColumnHeader\">February 2017<\/th>\n    <th class=\"ColumnHeader\">Total<\/th>\n  <\/tr>\n  <tr>\n    <th class=\"ColumnHeader\">DMU<\/th>\n    <th class=\"ColumnHeader\">EMU<\/th>\n    <th class=\"ColumnHeader\">HST<\/th>\n    <th class=\"ColumnHeader\">Total<\/th>\n    <th class=\"ColumnHeader\">DMU<\/th>\n    <th class=\"ColumnHeader\">EMU<\/th>\n    <th class=\"ColumnHeader\">HST<\/th>\n    <th class=\"ColumnHeader\">Total<\/th>\n    <th class=\"ColumnHeader\">DMU<\/th>\n    <th class=\"ColumnHeader\">EMU<\/th>\n    <th class=\"ColumnHeader\">HST<\/th>\n    <th class=\"ColumnHeader\">Total<\/th>\n    <th class=\"ColumnHeader\"><\/th>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales<\/th>\n    <td class=\"Cell\">1291<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">1291<\/td>\n    <td class=\"Cell\">1402<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">1402<\/td>\n    <td class=\"Cell\">1216<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">1216<\/td>\n    <td class=\"Total\">3909<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry<\/th>\n    <td class=\"Cell\">7314<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">236<\/td>\n    <td class=\"Total\">7550<\/td>\n    <td class=\"Cell\">7777<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">256<\/td>\n    <td class=\"Total\">8033<\/td>\n    <td class=\"Cell\">7105<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Cell\">240<\/td>\n    <td class=\"Total\">7345<\/td>\n    <td class=\"Total\">22928<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\"><\/th>\n    <td colspan=\"13\" class=\"Cell\" style=\"text-align: left; background-color: yellow; font-weight: bold; font-style: italic; \">The values below are significantly higher than expected.<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland<\/th>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">3635<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">11967<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \"><\/td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">15602<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">3967<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">13062<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \"><\/td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">17029<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">3627<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \">12021<\/td>\n    <td class=\"Cell\" style=\"text-align: left; background-color: yellow; \"><\/td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">15648<\/td>\n    <td class=\"Total\" style=\"text-align: left; background-color: yellow; \">48279<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains<\/th>\n    <td class=\"Cell\">740<\/td>\n    <td class=\"Cell\">2137<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">2877<\/td>\n    <td class=\"Cell\">728<\/td>\n    <td class=\"Cell\">2276<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">3004<\/td>\n    <td class=\"Cell\">669<\/td>\n    <td class=\"Cell\">2044<\/td>\n    <td class=\"Cell\"><\/td>\n    <td class=\"Total\">2713<\/td>\n    <td class=\"Total\">8594<\/td>\n  <\/tr>\n  <tr>\n    <th class=\"RowHeader\">Total<\/th>\n    <td class=\"Total\">12980<\/td>\n    <td class=\"Total\">14104<\/td>\n    <td class=\"Total\">236<\/td>\n    <td class=\"Total\">27320<\/td>\n    <td class=\"Total\">13874<\/td>\n    <td class=\"Total\">15338<\/td>\n    <td class=\"Total\">256<\/td>\n    <td class=\"Total\">29468<\/td>\n    <td class=\"Total\">12617<\/td>\n    <td class=\"Total\">14065<\/td>\n    <td class=\"Total\">240<\/td>\n    <td class=\"Total\">26922<\/td>\n    <td class=\"Total\">83710<\/td>\n  <\/tr>\n<\/table>","settings":[]},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="further-reading" class="section level2">
 <h2 class="hasAnchor">
@@ -644,10 +623,11 @@ Total               39471 43507 732 83710</code></pre>
 <li><a href="v07-styling.html">Styling</a></li>
 <li><a href="v08-findingandformatting.html">Finding and Formatting</a></li>
 <li><a href="v09-cellcontext.html">Cell Context</a></li>
-<li><a href="v10-irregularlayout.html">Irregular Layout</a></li>
-<li><a href="v11-performance.html">Performance</a></li>
-<li><a href="v12-excelexport.html">Excel Export</a></li>
-<li><a href="v13-shiny.html">Shiny</a></li>
+<li><a href="v10-navigatingapivottable.html">Navigating a Pivot Table</a></li>
+<li><a href="v11-irregularlayout.html">Irregular Layout</a></li>
+<li><a href="v12-performance.html">Performance</a></li>
+<li><a href="v13-excelexport.html">Excel Export</a></li>
+<li><a href="v14-shiny.html">Shiny</a></li>
 <li><a href="vA1-appendix.html">Appendix: Details</a></li>
 <li><a href="vA2-appendix.html">Appendix: Calculations</a></li>
 <li><a href="vA3-appendix.html">Appendix: Class Overview</a></li>
@@ -655,26 +635,11 @@ Total               39471 43507 732 83710</code></pre>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#in-this-vignette">In This Vignette</a></li>
-      <li><a href="#results-of-pivot-calculations">Results of Pivot Calculations</a></li>
-      <li><a href="#example-pivot-table">Example Pivot Table</a></li>
-      <li><a href="#results-as-plain-text">Results as Plain Text</a></li>
-      <li><a href="#results-as-html">Results as HTML</a></li>
-      <li><a href="#results-as-latex">Results as Latex</a></li>
-      <li><a href="#results-in-excel">Results in Excel</a></li>
-      <li><a href="#results-as-an-r-matrix">Results as an R Matrix</a></li>
-      <li><a href="#results-as-an-r-data-frame">Results as an R Data Frame</a></li>
-      <li><a href="#results-as-a-basictabler-table">Results as a basictabler Table</a></li>
-      <li><a href="#further-reading">Further Reading</a></li>
-      </ul>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
@@ -685,7 +650,7 @@ Total               39471 43507 732 83710</code></pre>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

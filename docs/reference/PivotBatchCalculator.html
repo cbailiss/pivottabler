@@ -6,27 +6,31 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A class that calculates the values for multiple cells. — PivotBatchCalculator • pivottabler</title>
+<title>R6 class that calculates the values for multiple cells in batches. — PivotBatchCalculator • pivottabler</title>
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -35,16 +39,16 @@
 
 <!-- docsearch -->
 <script src="../docsearch.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
 
 
-<meta property="og:title" content="A class that calculates the values for multiple cells. — PivotBatchCalculator" />
-<meta property="og:description" content="The PivotBatchCalculator class calculates the values for multiple cells in
-the pivot table in one evaluation step." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="R6 class that calculates the values for multiple cells in batches. — PivotBatchCalculator" />
+<meta property="og:description" content="The `PivotBatchCalculator` class calculates the values for multiple cells in
+the pivot table in one evaluation step (per batch), instead of evaluating
+every calculation once per pivot table cell." />
 
 
 
@@ -72,7 +76,7 @@ the pivot table in one evaluation step." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -86,7 +90,7 @@ the pivot table in one evaluation step." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -101,65 +105,8 @@ the pivot table in one evaluation step." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/v00-vignettes.html">pivottabler Vignettes</a>
-    </li>
-    <li>
-      <a href="../articles/v01-introduction.html">01. Introduction</a>
-    </li>
-    <li>
-      <a href="../articles/v02-datagroups.html">02. Data Groups</a>
-    </li>
-    <li>
-      <a href="../articles/v03-calculations.html">03. Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/v04-regularlayout.html">04. Regular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v05-outputs.html">04. Outputs</a>
-    </li>
-    <li>
-      <a href="../articles/v06-latexoutput.html">05. Latex Output</a>
-    </li>
-    <li>
-      <a href="../articles/v07-styling.html">06. Styling</a>
-    </li>
-    <li>
-      <a href="../articles/v08-findingandformatting.html">07. Finding and Formatting</a>
-    </li>
-    <li>
-      <a href="../articles/v09-cellcontext.html">08. Cell Context</a>
-    </li>
-    <li>
-      <a href="../articles/v10-irregularlayout.html">09. Irregular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v11-performance.html">10. Performance</a>
-    </li>
-    <li>
-      <a href="../articles/v12-excelexport.html">12. Excel Export</a>
-    </li>
-    <li>
-      <a href="../articles/v13-shiny.html">11. Shiny</a>
-    </li>
-    <li>
-      <a href="../articles/vA1-appendix.html">A1. Appendix:  Details</a>
-    </li>
-    <li>
-      <a href="../articles/vA2-appendix.html">A2. Appendix:  Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/vA3-appendix.html">A3. Appendix:  Class Overview</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -167,7 +114,7 @@ the pivot table in one evaluation step." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/cbailiss/pivottabler">
+  <a href="https://github.com/cbailiss/pivottabler/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -191,14 +138,15 @@ the pivot table in one evaluation step." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A class that calculates the values for multiple cells.</h1>
+    <h1>R6 class that calculates the values for multiple cells in batches.</h1>
     <small class="dont-index">Source: <a href='https://github.com/cbailiss/pivottabler/blob/master/R/PivotBatchCalculator.R'><code>R/PivotBatchCalculator.R</code></a></small>
     <div class="hidden name"><code>PivotBatchCalculator.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The PivotBatchCalculator class calculates the values for multiple cells in
-the pivot table in one evaluation step.</p>
+    <p>The `PivotBatchCalculator` class calculates the values for multiple cells in
+the pivot table in one evaluation step (per batch), instead of evaluating
+every calculation once per pivot table cell.</p>
     </div>
 
 
@@ -206,17 +154,15 @@ the pivot table in one evaluation step.</p>
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p><code>R6Class</code> object.</p>
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Object of <code>R6Class</code> with properties and methods that help
-  to perform calculations in batch.</p>
-    <h2 class="hasAnchor" id="fields"><a class="anchor" href="#fields"></a>Fields</h2>
+    <p>Evaluating a set of filters and calculations repetitively for each cell is
+inefficient and slow.  The Batch Calculator executes a much small number of
+calculations which greatly reduces the CPU time and elapsed time required.
+See the "Performance" vignette for details.</p>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
-    
-
-<dl class='dl-horizontal'>
-<dt><code>parentPivot</code></dt><dd><p>Owning pivot table.</p></dd>
-
+    <p><div class="r6-active-bindings"></p><dl'>
 <dt><code>batchCount</code></dt><dd><p>The number of batches generated for the pivot table.</p></dd>
 
 <dt><code>calculationSummary</code></dt><dd><p>A summary of the batch compatibility for each
@@ -224,36 +170,190 @@ calculation.</p></dd>
 
 <dt><code>batchSummary</code></dt><dd><p>A summary of the batches in the pivot table.</p></dd>
 
-</dl>
+</dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     
+<h3>Public methods</h3>
 
-<dl class='dl-horizontal'>
-  <dt>Documentation</dt><dd><p>For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.</p></dd>
-  <dt><code>new(...)</code></dt><dd><p>Create a new batch calculator.</p></dd>
+<ul>
+<li><p><a href='#method-new'><code>PivotBatchCalculator$new()</code></a></p></li>
+<li><p><a href='#method-reset'><code>PivotBatchCalculator$reset()</code></a></p></li>
+<li><p><a href='#method-checkValidWorkingData'><code>PivotBatchCalculator$checkValidWorkingData()</code></a></p></li>
+<li><p><a href='#method-isFiltersBatchCompatible'><code>PivotBatchCalculator$isFiltersBatchCompatible()</code></a></p></li>
+<li><p><a href='#method-generateBatchesForNamedCalculationEvaluation1'><code>PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1()</code></a></p></li>
+<li><p><a href='#method-generateBatchesForNamedCalculationEvaluation2'><code>PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation2()</code></a></p></li>
+<li><p><a href='#method-generateBatchesForCellEvaluation'><code>PivotBatchCalculator$generateBatchesForCellEvaluation()</code></a></p></li>
+<li><p><a href='#method-evaluateBatches'><code>PivotBatchCalculator$evaluateBatches()</code></a></p></li>
+<li><p><a href='#method-getSummaryValueFromBatch'><code>PivotBatchCalculator$getSummaryValueFromBatch()</code></a></p></li>
+<li><p><a href='#method-clone'><code>PivotBatchCalculator$clone()</code></a></p></li>
+</ul>
+<p><hr>
+<a id="method-new"></a></p><h3>Method <code>new()</code></h3>
+<p>Create a new `PivotBatchCalculator` object.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotBatchCalculator</span>$<span class='fu'>new</span>(<span class='kw'>parentPivot</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
 
-  <dt><code>reset()</code></dt><dd><p>Clears any batches that currently exist in the batch
-  calculator.</p></dd>
-  <dt><code>isFiltersBatchCompatible(filters=NULL)</code></dt><dd><p>Determines whether a
-  set of filters are compatible with batch calculations.</p></dd>
-  <dt><code>generateBatchesForNamedCalculationEvaluation1(dataName=NULL,
-  calculationName=NULL, calculationGroupName=NULL,
-  workingFilters=NULL)</code></dt><dd><p>Generates one or more batches for a named
-  calculation and single working filters object.</p></dd>
-  <dt><code>generateBatchesForNamedCalculationEvaluation2(calculationName=NULL,
-  calculationGroupName=NULL, workingData=NULL)</code></dt><dd><p>Generates one or more
-  batches for a named calculation and set of working working data
-  associated with a cell.</p></dd>
-  <dt><code>generateBatchesForCellEvaluation()</code></dt><dd><p>Generates one or batches
-  for a pivot table cell.</p></dd>
-  <dt><code>evaluateBatches()</code></dt><dd><p>Evaluates batch calculations.</p></dd>
-  <dt><code>getSummaryValueFromBatch(batchName=NULL, calculationName=NULL,
-  calculationGroupName=NULL, workingFilters=NULL)</code></dt><dd><p>Retrieve a value from a
-  the results of a batch that has been evaluated.</p></dd>
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>parentPivot</code></dt><dd><p>The pivot table that this `PivotBatchCalculator`
+instance belongs to.</p></dd>
 
-</dl>
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A new `PivotBatchCalculator` object.</p>
+<p><hr>
+<a id="method-reset"></a></p><h3>Method <code>reset()</code></h3>
+<p>Reset the batch calculator, clearing all existing batches.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotBatchCalculator</span>$<span class='fu'>reset</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-checkValidWorkingData"></a></p><h3>Method <code>checkValidWorkingData()</code></h3>
+<p>Run some additional checks to see whether the working data is valid.
+Typically only used in development builds of the package.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotBatchCalculator</span>$<span class='fu'>checkValidWorkingData</span>(<span class='kw'>workingData</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>workingData</code></dt><dd><p>The working data to check.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-isFiltersBatchCompatible"></a></p><h3>Method <code>isFiltersBatchCompatible()</code></h3>
+<p>Examines a set of filters to see whether they are compatible with batch
+evaluation mode. Only filters that specify zero or one value for each
+variable are compatible with batch evaluation.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotBatchCalculator</span>$<span class='fu'>isFiltersBatchCompatible</span>(<span class='kw'>filters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>filters</code></dt><dd><p>A `PivotFilters` object that represents a set of filters
+to examine.</p></dd>
+
+</dl><p></div></p>
+<h3>Details</h3>
+<p>It is not practical to make batch evaluation work where a filter
+matches more than one value for a variable.  One approach might be to add
+a derived column where a single value represents the multiple values, however
+the combination of values could partially overlap with combinations of values
+in other data groups.  Also the value that represents the "combined"
+value could collide with other existing values in the column.
+In summary:  Sequential mode is slower and more flexible.  Batch is faster
+but stricter.  Batch mode works for regular pivot tables (i.e. most cases).</p>
+
+<h3>Returns</h3>
+<p>`TRUE` if the filters are batch compatible, `FALSE` otherwise.</p>
+<p><hr>
+<a id="method-generateBatchesForNamedCalculationEvaluation1"></a></p><h3>Method <code>generateBatchesForNamedCalculationEvaluation1()</code></h3>
+<p>Generates a new batch or finds a relevant existing batch for
+a named calculation and single working filters object.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotBatchCalculator</span>$<span class='fu'>generateBatchesForNamedCalculationEvaluation1</span>(
+  <span class='kw'>dataName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>calculationName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>calculationGroupName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>workingFilters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>dataName</code></dt><dd><p>The name of the data frame (as specified in
+`pt$addData()`).</p></dd>
+
+<dt><code>calculationName</code></dt><dd><p>The name of the calculation.</p></dd>
+
+<dt><code>calculationGroupName</code></dt><dd><p>The calculation group of the
+calculation.</p></dd>
+
+<dt><code>workingFilters</code></dt><dd><p>A `PivotFilters` object that represents the
+working filters to generate the batch for.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>The name of either the batch that was created or the
+relevant existing batch.</p>
+<p><hr>
+<a id="method-generateBatchesForNamedCalculationEvaluation2"></a></p><h3>Method <code>generateBatchesForNamedCalculationEvaluation2()</code></h3>
+<p>Generates one or more batches for the named calculations and set of
+working working data associated with a cell.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotBatchCalculator</span>$<span class='fu'>generateBatchesForNamedCalculationEvaluation2</span>(
+  <span class='kw'>calculationName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>calculationGroupName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>workingData</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>calculationName</code></dt><dd><p>The name of the calculation.</p></dd>
+
+<dt><code>calculationGroupName</code></dt><dd><p>The calculation group of the
+calculation.</p></dd>
+
+<dt><code>workingData</code></dt><dd><p>A list containing filter and/or filter overrides.</p></dd>
+
+</dl><p></div></p>
+<h3>Details</h3>
+<p>A wrapper around `generateBatchesForNamedCalculationEvaluation1()`, which
+invokes this function as appropriate, depending on whether a calculation
+if either of type "summary" or type "calculation".</p>
+
+<h3>Returns</h3>
+<p>One or more batch names of either the batches that were created or
+the relevant existing batches.</p>
+<p><hr>
+<a id="method-generateBatchesForCellEvaluation"></a></p><h3>Method <code>generateBatchesForCellEvaluation()</code></h3>
+<p>Generates the batches for batch evaluation mode.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotBatchCalculator</span>$<span class='fu'>generateBatchesForCellEvaluation</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>One or more batch names of either the batches that were created or
+the relevant existing batches.</p>
+<p><hr>
+<a id="method-evaluateBatches"></a></p><h3>Method <code>evaluateBatches()</code></h3>
+<p>Evaluate each of the batches defined in the batch calculator.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotBatchCalculator</span>$<span class='fu'>evaluateBatches</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>The number of batches that were evaluated.</p>
+<p><hr>
+<a id="method-getSummaryValueFromBatch"></a></p><h3>Method <code>getSummaryValueFromBatch()</code></h3>
+<p>Retrieve one calculation value from one batch, typically for the value
+ of one cell in a pivot table.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotBatchCalculator</span>$<span class='fu'>getSummaryValueFromBatch</span>(
+  <span class='kw'>batchName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>calculationName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>calculationGroupName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>workingFilters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>batchName</code></dt><dd><p>The name of the batch containing the calculation result.</p></dd>
+
+<dt><code>calculationName</code></dt><dd><p>The name of the calculation.</p></dd>
+
+<dt><code>calculationGroupName</code></dt><dd><p>The calculation group of the
+calculation.</p></dd>
+
+<dt><code>workingFilters</code></dt><dd><p>A `PivotFilters` object that represents the
+working filters to retrieve the value for.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A single calculation value.</p>
+<p><hr>
+<a id="method-clone"></a></p><h3>Method <code>clone()</code></h3>
+<p>The objects of this class are cloneable with this method.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotBatchCalculator</span>$<span class='fu'>clone</span>(<span class='kw'>deep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
+
+</dl><p></div></p>
+
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -261,16 +361,10 @@ calculation.</p></dd>
 # It is not intended to be created outside of the pivot table.
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#format">Format</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#fields">Fields</a></li>
-      <li><a href="#methods">Methods</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -281,7 +375,7 @@ calculation.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

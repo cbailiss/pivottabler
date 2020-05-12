@@ -6,27 +6,31 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A class that defines a set of filter overrides — PivotFilterOverrides • pivottabler</title>
+<title>R6 class that defines a set of filter overrides. — PivotFilterOverrides • pivottabler</title>
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -35,17 +39,16 @@
 
 <!-- docsearch -->
 <script src="../docsearch.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
 
 
-<meta property="og:title" content="A class that defines a set of filter overrides — PivotFilterOverrides" />
-<meta property="og:description" content="The PivotFilterOverrides class contains multiple  PivotFilter
+<meta property="og:title" content="R6 class that defines a set of filter overrides. — PivotFilterOverrides" />
+<meta property="og:description" content="The `PivotFilterOverrides` class contains multiple  PivotFilter
 objects that can be used later to override a set of filters, e.g. in a
 pivot table calculation." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -73,7 +76,7 @@ pivot table calculation." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -87,7 +90,7 @@ pivot table calculation." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -102,65 +105,8 @@ pivot table calculation." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/v00-vignettes.html">pivottabler Vignettes</a>
-    </li>
-    <li>
-      <a href="../articles/v01-introduction.html">01. Introduction</a>
-    </li>
-    <li>
-      <a href="../articles/v02-datagroups.html">02. Data Groups</a>
-    </li>
-    <li>
-      <a href="../articles/v03-calculations.html">03. Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/v04-regularlayout.html">04. Regular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v05-outputs.html">04. Outputs</a>
-    </li>
-    <li>
-      <a href="../articles/v06-latexoutput.html">05. Latex Output</a>
-    </li>
-    <li>
-      <a href="../articles/v07-styling.html">06. Styling</a>
-    </li>
-    <li>
-      <a href="../articles/v08-findingandformatting.html">07. Finding and Formatting</a>
-    </li>
-    <li>
-      <a href="../articles/v09-cellcontext.html">08. Cell Context</a>
-    </li>
-    <li>
-      <a href="../articles/v10-irregularlayout.html">09. Irregular Layout</a>
-    </li>
-    <li>
-      <a href="../articles/v11-performance.html">10. Performance</a>
-    </li>
-    <li>
-      <a href="../articles/v12-excelexport.html">12. Excel Export</a>
-    </li>
-    <li>
-      <a href="../articles/v13-shiny.html">11. Shiny</a>
-    </li>
-    <li>
-      <a href="../articles/vA1-appendix.html">A1. Appendix:  Details</a>
-    </li>
-    <li>
-      <a href="../articles/vA2-appendix.html">A2. Appendix:  Calculations</a>
-    </li>
-    <li>
-      <a href="../articles/vA3-appendix.html">A3. Appendix:  Class Overview</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -168,7 +114,7 @@ pivot table calculation." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/cbailiss/pivottabler">
+  <a href="https://github.com/cbailiss/pivottabler/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -192,13 +138,13 @@ pivot table calculation." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A class that defines a set of filter overrides</h1>
+    <h1>R6 class that defines a set of filter overrides.</h1>
     <small class="dont-index">Source: <a href='https://github.com/cbailiss/pivottabler/blob/master/R/PivotFilterOverrides.R'><code>R/PivotFilterOverrides.R</code></a></small>
     <div class="hidden name"><code>PivotFilterOverrides.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The PivotFilterOverrides class contains multiple  <code><a href='PivotFilter.html'>PivotFilter</a></code>
+    <p>The `PivotFilterOverrides` class contains multiple  <code><a href='PivotFilter.html'>PivotFilter</a></code>
 objects that can be used later to override a set of filters, e.g. in a
 pivot table calculation.</p>
     </div>
@@ -208,17 +154,16 @@ pivot table calculation.</p>
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p><code>R6Class</code> object.</p>
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Object of <code>R6Class</code> with properties and methods that
-  define a set of filters and associated override actions</p>
-    <h2 class="hasAnchor" id="fields"><a class="anchor" href="#fields"></a>Fields</h2>
+    <p>Each cell in a pivot table has context (i.e. filters) coming from the row
+and column groups that are applicable to the cell.
+The `PivotFilterOverrides` class contains several different ways of changing
+this filter criteria as part of a calculation.  In most use cases, only
+one of the available approaches will be used.</p>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
-    
-
-<dl class='dl-horizontal'>
-<dt><code>parentPivot</code></dt><dd><p>Owning pivot table.</p></dd>
-
+    <p><div class="r6-active-bindings"></p><dl'>
 <dt><code>removeAllFilters</code></dt><dd><p>TRUE to remove all existing filters before applying
 any other and/replace/or filters.</p></dd>
 
@@ -227,56 +172,187 @@ the filters for.  All other filters will be removed.</p></dd>
 
 <dt><code>removeFiltersFor</code></dt><dd><p>Specify the names of variables to remove filters for.</p></dd>
 
-<dt><code>overrideFunction</code></dt><dd><p>A custom function to amend the filters in each cell.</p></dd>
+<dt><code>overrideFunction</code></dt><dd><p>A custom R function to amend the filters in each cell.</p></dd>
 
-<dt><code>countIntersect</code></dt><dd><p>The number of PivotFilters that will be combined with other
+<dt><code>countAnd</code></dt><dd><p>The number of `PivotFilters` that will be combined with other
 pivot filters by intersecting their lists of allowed values.</p></dd>
 
-<dt><code>countReplace</code></dt><dd><p>The number of PivotFilters that will be combined with other
+<dt><code>countReplace</code></dt><dd><p>The number of `PivotFilters` that will be combined with other
 pivot filters by entirely replacing existing PivotFilter objects.</p></dd>
 
-<dt><code>countUnion</code></dt><dd><p>The number of PivotFilters that will be combined with other
+<dt><code>countOr</code></dt><dd><p>The number of `PivotFilters` that will be combined with other
 pivot filters by unioning their lists of allowed values.</p></dd>
 
-<dt><code>countTotal</code></dt><dd><p>The total number of PivotFilters that will be combined with
+<dt><code>countTotal</code></dt><dd><p>The total number of `PivotFilters` that will be combined with
 other pivot filters.</p></dd>
 
-<dt><code>intersectFilters</code></dt><dd><p>The PivotFilters that will be combined with other
+<dt><code>andFilters</code></dt><dd><p>The `PivotFilters` that will be combined with other
 pivot filters by intersecting their lists of allowed values.</p></dd>
 
-<dt><code>replaceFilters</code></dt><dd><p>The PivotFilters that will be combined with other
+<dt><code>replaceFilters</code></dt><dd><p>The `PivotFilters` that will be combined with other
 pivot filters by entirely replacing existing PivotFilter objects.</p></dd>
 
-<dt><code>unionFilters</code></dt><dd><p>The PivotFilters that will be combined with other
+<dt><code>orFilters</code></dt><dd><p>The `PivotFilters` that will be combined with other
 pivot filters by unioning their lists of allowed values.</p></dd>
 
-<dt><code>allFilters</code></dt><dd><p>The complete set of PivotFilters that will be combined with
+<dt><code>allFilters</code></dt><dd><p>The complete set of `PivotFilters` that will be combined with
 other pivot filters.</p></dd>
 
-</dl>
+</dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     
+<h3>Public methods</h3>
 
-<dl class='dl-horizontal'>
-  <dt>Documentation</dt><dd><p>For more complete explanations and examples please see
-  the extensive vignettes supplied with this package.</p></dd>
-  <dt><code>new(...)</code></dt><dd><p>Create a new pivot filter overrides object, specifying
-  the field values documented above.</p></dd>
+<ul>
+<li><p><a href='#method-new'><code>PivotFilterOverrides$new()</code></a></p></li>
+<li><p><a href='#method-add'><code>PivotFilterOverrides$add()</code></a></p></li>
+<li><p><a href='#method-apply'><code>PivotFilterOverrides$apply()</code></a></p></li>
+<li><p><a href='#method-asList'><code>PivotFilterOverrides$asList()</code></a></p></li>
+<li><p><a href='#method-asJSON'><code>PivotFilterOverrides$asJSON()</code></a></p></li>
+<li><p><a href='#method-asString'><code>PivotFilterOverrides$asString()</code></a></p></li>
+<li><p><a href='#method-clone'><code>PivotFilterOverrides$clone()</code></a></p></li>
+</ul>
+<p><hr>
+<a id="method-new"></a></p><h3>Method <code>new()</code></h3>
+<p>Create a new `PivotFilterOverrides` object.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilterOverrides</span>$<span class='fu'>new</span>(
+  <span class='kw'>parentPivot</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>removeAllFilters</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>keepOnlyFiltersFor</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>removeFiltersFor</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>overrideFunction</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variableName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"ALL"</span>,
+  <span class='kw'>values</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"replace"</span>
+)</pre><p></div></p>
 
-  <dt><code>add(filter=NULL, variableName=NULL, type="ALL", values=NULL,
-  action="intersect")</code></dt><dd><p>Add a pivot filter override, either from an existing
-  PivotFilter object or by specifying a variableName and values.</p></dd>
-  <dt><code><a href='https://rdrr.io/r/base/apply.html'>apply(filters)</a></code></dt><dd><p>Apply the filter overrides to a PivotFilters
-  object.</p></dd>
-  <dt><code>asList()</code></dt><dd><p>Get a list representation of this PivotFilterOverrides
-  object.</p></dd>
-  <dt><code>asJSON()</code></dt><dd><p>Get a JSON representation of this PivotFilterOverrides
-  object.</p></dd>
-  <dt><code>asString(includeVariableName=TRUE, seperator=", ")</code></dt><dd><p>Get a text
-  representation of this PivotFilterOverrides object.</p></dd>
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>parentPivot</code></dt><dd><p>The pivot table that this `PivotFilterOverrides`
+instance belongs to.</p></dd>
 
-</dl>
+<dt><code>removeAllFilters</code></dt><dd><p>Specifies whether to clear all existing filters,
+before applying the filter overrides.  Default value `FALSE`</p></dd>
+
+<dt><code>keepOnlyFiltersFor</code></dt><dd><p>A character vector specifying the variable names
+to retain the filter criteria for. Filter criteria for all other variables
+will be cleared.</p></dd>
+
+<dt><code>removeFiltersFor</code></dt><dd><p>A character vector specifying the variable names
+for which the filter criteria will be cleared.  Filter criteria for all
+other variables will be retained.</p></dd>
+
+<dt><code>overrideFunction</code></dt><dd><p>A custom R function which will be invoked for each
+cell to modify the filters before the calculation is carried out.</p></dd>
+
+<dt><code>filter</code></dt><dd><p>A PivotFilter object containing filter criteria which will
+be combined with the current set of filters using the specified combine method.</p></dd>
+
+<dt><code>variableName</code></dt><dd><p>The variable name for a new filter to apply to.  Specified
+in conjunction with the `type` and `values` parameters.</p></dd>
+
+<dt><code>type</code></dt><dd><p>The type of a new filter to apply, must be either "ALL", "VALUES"
+or "NONE".</p></dd>
+
+<dt><code>values</code></dt><dd><p>A single data value or a vector of multiple data values that
+a new filter will match on.</p></dd>
+
+<dt><code>action</code></dt><dd><p>Specifies how the new filter defined in `filter` (or
+`variableName`, `type` and `values`) should be combined with the existing filter
+criteria for the cell.  Must be one of "intersect", "replace" or "union".</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A new `PivotFilterOverrides` object.</p>
+<p><hr>
+<a id="method-add"></a></p><h3>Method <code>add()</code></h3>
+<p>Add additional filter criteria into this `PivotFilterOverrides` object.
+Either `filter` is specified, or `variableName`, `type` and `values` are specified.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilterOverrides</span>$<span class='fu'>add</span>(
+  <span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variableName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"ALL"</span>,
+  <span class='kw'>values</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"replace"</span>
+)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>filter</code></dt><dd><p>A `PivotFilter` to take criteria from.</p></dd>
+
+<dt><code>variableName</code></dt><dd><p>The variable name the additional criteria applies to.</p></dd>
+
+<dt><code>type</code></dt><dd><p>The type of the additional filter criteria, must be either
+"ALL", "VALUES" or "NONE".</p></dd>
+
+<dt><code>values</code></dt><dd><p>A single data value or a vector of multiple data values that
+compromise the additional filter criteria.</p></dd>
+
+<dt><code>action</code></dt><dd><p>Specifies how the additional filter should be combined with
+the existing filter criteria for the cell.  Must be one of "intersect",
+"replace" or "union".</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-apply"></a></p><h3>Method <code><a href='https://rdrr.io/r/base/apply.html'>apply()</a></code></h3>
+<p>Apply the filter overrides to an existing `PivotFilters` object.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilterOverrides</span>$<span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span>(<span class='kw'>filters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>cell</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>filters</code></dt><dd><p>A `PivotFilters` object to apply the filter overrides to.</p></dd>
+
+<dt><code>cell</code></dt><dd><p>A `PivotCell` object representing the cell that the `filters` relate to.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-asList"></a></p><h3>Method <code>asList()</code></h3>
+<p>Return the contents of this object as a list for debugging.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilterOverrides</span>$<span class='fu'>asList</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>A list of various object properties.</p>
+<p><hr>
+<a id="method-asJSON"></a></p><h3>Method <code>asJSON()</code></h3>
+<p>Return the contents of this object as JSON for debugging.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilterOverrides</span>$<span class='fu'>asJSON</span>()</pre><p></div></p>
+
+<h3>Returns</h3>
+<p>A JSON representation of various object properties.</p>
+<p><hr>
+<a id="method-asString"></a></p><h3>Method <code>asString()</code></h3>
+<p>Return a representation of this object as a character value.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilterOverrides</span>$<span class='fu'>asString</span>(<span class='kw'>includeVariableName</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>seperator</span> <span class='kw'>=</span> <span class='st'>", "</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>includeVariableName</code></dt><dd><p>`TRUE` (default) to include the variable name in
+the string.</p></dd>
+
+<dt><code>seperator</code></dt><dd><p>A character value used when concatenating
+multiple filter overrides.</p></dd>
+
+</dl><p></div></p>
+<h3>Returns</h3>
+<p>A character summary of various object properties.</p>
+<p><hr>
+<a id="method-clone"></a></p><h3>Method <code>clone()</code></h3>
+<p>The objects of this class are cloneable with this method.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotFilterOverrides</span>$<span class='fu'>clone</span>(<span class='kw'>deep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
+
+</dl><p></div></p>
+
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -290,16 +366,10 @@ other pivot filters.</p></dd>
 <span class='co'># Add the filter to the set of overrides</span>
 <span class='no'>filterOverrides</span>$<span class='fu'>add</span>(<span class='kw'>filter</span><span class='kw'>=</span><span class='no'>filter</span>, <span class='kw'>action</span><span class='kw'>=</span><span class='st'>"replace"</span>)</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#format">Format</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#fields">Fields</a></li>
-      <li><a href="#methods">Methods</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -310,7 +380,7 @@ other pivot filters.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
