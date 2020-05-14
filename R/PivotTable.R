@@ -1778,7 +1778,7 @@ PivotTable <- R6::R6Class("PivotTable",
                 if(!is.null(calcn)) {
                   if(!is.null(calcn$cellBaseStyleName)) cell$baseStyleName <- calcn$cellBaseStyleName
                   if(!is.null(calcn$cellStyleDeclarations))
-                    cell$style <- pt$createInlineStyle(baseStyleName=calcn$cellBaseStyleName, declarations=calcn$cellStyleDeclarations)
+                    cell$style <- self$createInlineStyle(baseStyleName=calcn$cellBaseStyleName, declarations=calcn$cellStyleDeclarations)
                 }
               }
               # add the cell to the pivot table
