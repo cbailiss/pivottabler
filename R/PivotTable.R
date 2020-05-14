@@ -1773,6 +1773,8 @@ PivotTable <- R6::R6Class("PivotTable",
                                     rowColFilters=rowColFilters, rowFilters=rowFilters[[r]], columnFilters=columnFilters[[c]],
                                     rowLeafGroup=rowGrps[[r]], columnLeafGroup=columnGrps[[c]])
               # set the style for the cell
+              # note:  the logic for inherited styles from the data groups is taken care of in the renderers
+              #        i.e. the cell only stores the additional/overriding styles for the cell (not all of the inherited styles)
               if((!is.null(calcGrpNme))&&(!is.null(calcNme))) {
                 calcn <- calcGrpsLookup[[calcGrpNme]][[calcNme]]
                 if(!is.null(calcn)) {
@@ -2154,7 +2156,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' Default `TRUE`. More information is provided in the details section.
     #' @param rowNumbers A vector of row numbers that specify the rows or
     #' cells to retrieve.
-    #' @param columnNumbers A vector of row numbers that specify the columns
+    #' @param columnNumbers A vector of column numbers that specify the columns
     #' or cells to retrieve.
     #' @param cellCoordinates A list of two-element vectors that specify the
     #' coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.

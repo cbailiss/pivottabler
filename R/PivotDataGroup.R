@@ -938,8 +938,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if(grp$doNotExpand || grp$isEmpty) {
           # add a single group that is also empty
           newGrp <- grp$addChildGroup(doNotExpand=grp$doNotExpand, isEmpty=grp$isEmpty, isOutline=grp$isOutline,
-                                      mergeEmptySpace=grp$mergeEmptySpace, cellBaseStyleName=grp$cellBaseStyleName,
-                                      cellStyleDeclarations=grp$cellStyle$declarations, resetCells=FALSE)
+                                      mergeEmptySpace=grp$mergeEmptySpace,
+                                      baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
+                                      cellBaseStyleName=grp$cellBaseStyleName, cellStyleDeclarations=grp$cellStyle$declarations,
+                                      resetCells=FALSE)
           index <- length(newGroups) + 1
           newGroups[[index]] <- newGrp
           next
@@ -951,7 +953,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            newGrp <- grp$addChildGroup(variableName=variableName, values=NULL, # so that the totals have a reference to the variable
                                        calculationGroupName=calculationGroupName, isOutline=grp$isOutline,
                                        isTotal=TRUE, isLevelSubTotal=grp$isLevelSubTotal, isLevelTotal=grp$isLevelTotal,
-                                       baseStyleName=baseStyleName, styleDeclarations=styleDeclarations, sortAnchor="fixed", resetCells=FALSE)
+                                       baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
+                                       sortAnchor="fixed", resetCells=FALSE)
            index <- length(newGroups) + 1
            newGroups[[index]] <- newGrp
          }
@@ -2092,16 +2095,36 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
 
    #' @field cellStyle A `PivotStyle` object that contains additional CSS style
    #' declarations that override the base style for cells related to this data
-   #' group.
+   #' group.  If setting this property, a list can also be specified.
    cellStyle = function(value) {
       if(missing(value)) { return(invisible(private$p_cellStyle)) }
       else {
          if(private$p_parentPivot$argumentCheckMode > 0) {
-            checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "cellStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotStyle")
+            checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "cellStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("PivotStyle", "list"), allowedListElementClasses=c("character", "integer", "numeric"))
          }
-         private$p_cellStyle <- value
+         if("PivotStyle" %in% class(value)) { private$p_cellStyle <- value }
+         else { private$p_cellStyle <- PivotStyle$new(private$p_parentPivot, "", declarations=value) }
          return(invisible())
       }
+   },
+
+   #' @field cellStyle A `PivotStyle` object that contains additional CSS style
+   #' declarations that override the base style for cells related to this data
+   #' group - both from this group and all ancestors.
+   netCellStyle = function(value) {
+      style <- NULL
+      if((!is.null(private$p_parentGroup))&&(!is.null(private$p_parentGroup$cellStyle))) {
+         style <- private$p_parentGroup$cellStyle$getCopy("")
+      }
+      if(!is.null(private$p_cellStyle)) {
+         if(is.null(style)) {
+            style <- private$p_cellStyle$getCopy("")
+         }
+         else {
+            style$setPropertyValues(private$p_cellStyle$declarations)
+         }
+      }
+      return(invisible(style))
    },
 
    #' @field fixedWidthSize The width (in characters) needed for

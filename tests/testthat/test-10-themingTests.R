@@ -133,7 +133,7 @@ for(i in 1:nrow(scenarios)) {
     pt$setStyling(cells=cells, declarations=list("color"="green"))
     pt$setStyling(2, 1, declarations=list("color"="red"))
     pt$setStyling(2, 1, declarations=list("font-weight"="bold"))
-    pt$renderPivot()
+    # pt$renderPivot()
     # prepStr(as.character(pt$getHtml()))
     html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">CrossCountry</th>\n    <td class=\"Cell\" style=\"color: red; font-weight: bold; \">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">London Midland</th>\n    <td class=\"Cell\">14487</td>\n    <td class=\"Cell\">33792</td>\n    <td class=\"Cell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">Virgin Trains</th>\n    <td class=\"Cell\" style=\"font-weight: bold; color: green; \">8594</td>\n    <td class=\"Cell\" style=\"font-weight: bold; color: green; \"></td>\n    <td class=\"Cell\" style=\"font-weight: bold; color: green; \">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">Total</th>\n    <td class=\"Cell\">49025</td>\n    <td class=\"Cell\">34685</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n</table>"
 
@@ -142,91 +142,136 @@ for(i in 1:nrow(scenarios)) {
 }
 
 
-# The code for the following tests runs OK in R-Studio
-# But errors when used with testthat on my PC:
-#   Error PivotDataGroup.R:294:  object of type 'closure' is not subsettable
-# The error is something to do with:
-#   styleDeclarations=list("color"="red", "font-weight"="bold", "background-color"="yellow")
 
-# scenarios <- testScenarios("theming tests:  styling data groups")
-# for(i in 1:nrow(scenarios)) {
-#   evaluationMode <- scenarios$evaluationMode[i]
-#   processingLibrary <- scenarios$processingLibrary[i]
-#   description <- scenarios$description[i]
-#   countFunction <- scenarios$countFunction[i]
-#
-#   test_that(description, {
-#
-#     library(pivottabler)
-#     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
-#     pt$addData(bhmtrains)
-#     pt$addColumnDataGroups("TrainCategory", styleDeclarations=list("color"="red", "font-weight"="bold", "background-color"="yellow"))
-#     pt$addRowDataGroups("TOC")
-#     pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
-#     pt$evaluatePivot()
-#     # pt$renderPivot()
-#     # sum(pt$cells$asMatrix(), na.rm=TRUE)
-#     # prepStr(as.character(pt$getHtml()))
-#     # prepStr(as.character(pt$getCss()))
-#     html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; background-color: yellow; \" colspan=\"1\">Express Passenger</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; background-color: yellow; \" colspan=\"1\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; background-color: yellow; \" colspan=\"1\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"Cell\">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"Cell\">14487</td>\n    <td class=\"Cell\">33792</td>\n    <td class=\"Cell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\">49025</td>\n    <td class=\"Cell\">34685</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n</table>"
-#     css <- ".Table {border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; padding: 2px; border: 1px solid lightgray; vertical-align: middle; text-align: center; font-weight: bold; background-color: #F2F2F2; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; padding: 2px 8px 2px 2px; border: 1px solid lightgray; vertical-align: middle; text-align: left; font-weight: bold; background-color: #F2F2F2; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n"
-#
-#     expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
-#     expect_identical(as.character(pt$getHtml()), html)
-#     expect_identical(pt$getCss(), css)
-#   })
-# }
-#
-#
-# scenarios <- testScenarios("theming tests:  styling cells")
-# for(i in 1:nrow(scenarios)) {
-#   evaluationMode <- scenarios$evaluationMode[i]
-#   processingLibrary <- scenarios$processingLibrary[i]
-#   description <- scenarios$description[i]
-#   countFunction <- scenarios$countFunction[i]
-#
-#   test_that(description, {
-#
-#     library(pivottabler)
-#     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
-#     pt$styles$addStyle(styleName="NewHeadingStyle1", list(
-#       "font-family"="Arial",
-#       "font-size"="0.75em",
-#       padding="2px",
-#       border="1px solid lightgray",
-#       "vertical-align"="middle",
-#       "text-align"="center",
-#       "font-weight"="bold",
-#       "background-color"="Gold",
-#       "xl-wrap-text"="wrap"
-#     ))
-#     pt$styles$addStyle(styleName="CellStyle1", list(
-#       "font-family"="Arial",
-#       "font-size"="0.75em",
-#       padding="2px 2px 2px 8px",
-#       border="1px solid lightgray",
-#       "vertical-align"="middle",
-#       "background-color"="Yellow",
-#       "text-align"="right"
-#     ))
-#     pt$addData(bhmtrains)
-#     pt$addColumnDataGroups("TrainCategory")
-#     pt$addRowDataGroups("TOC")
-#     pt$defineCalculation(calculationName="TotalTrains1", summariseExpression=countFunction,
-#                          headingBaseStyleName="NewHeadingStyle1", cellBaseStyleName="CellStyle1")
-#     pt$defineCalculation(calculationName="TotalTrains2", summariseExpression=countFunction,
-#                          headingStyleDeclarations=list("color"="red", "font-weight"="bold"),
-#                          cellStyleDeclarations=list("color"="blue"))
-#     pt$evaluatePivot()
-#     # pt$renderPivot()
-#     # sum(pt$cells$asMatrix(), na.rm=TRUE)
-#     # prepStr(as.character(pt$getHtml()))
-#     # prepStr(as.character(pt$getCss()))
-#     html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\" colspan=\"1\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"2\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"2\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"2\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"NewHeadingStyle1\" colspan=\"1\">TotalTrains1</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; \" colspan=\"1\">TotalTrains2</th>\n    <th class=\"NewHeadingStyle1\" colspan=\"1\">TotalTrains1</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; \" colspan=\"1\">TotalTrains2</th>\n    <th class=\"NewHeadingStyle1\" colspan=\"1\">TotalTrains1</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; \" colspan=\"1\">TotalTrains2</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Arriva Trains Wales</th>\n    <td class=\"CellStyle1\">3079</td>\n    <td class=\"Cell\" style=\"color: blue; \">3079</td>\n    <td class=\"CellStyle1\">830</td>\n    <td class=\"Cell\" style=\"color: blue; \">830</td>\n    <td class=\"CellStyle1\">3909</td>\n    <td class=\"Cell\" style=\"color: blue; \">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">CrossCountry</th>\n    <td class=\"CellStyle1\">22865</td>\n    <td class=\"Cell\" style=\"color: blue; \">22865</td>\n    <td class=\"CellStyle1\">63</td>\n    <td class=\"Cell\" style=\"color: blue; \">63</td>\n    <td class=\"CellStyle1\">22928</td>\n    <td class=\"Cell\" style=\"color: blue; \">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">London Midland</th>\n    <td class=\"CellStyle1\">14487</td>\n    <td class=\"Cell\" style=\"color: blue; \">14487</td>\n    <td class=\"CellStyle1\">33792</td>\n    <td class=\"Cell\" style=\"color: blue; \">33792</td>\n    <td class=\"CellStyle1\">48279</td>\n    <td class=\"Cell\" style=\"color: blue; \">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Virgin Trains</th>\n    <td class=\"CellStyle1\">8594</td>\n    <td class=\"Cell\" style=\"color: blue; \">8594</td>\n    <td class=\"CellStyle1\"></td>\n    <td class=\"Cell\" style=\"color: blue; \"></td>\n    <td class=\"CellStyle1\">8594</td>\n    <td class=\"Cell\" style=\"color: blue; \">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"CellStyle1\">49025</td>\n    <td class=\"Cell\" style=\"color: blue; \">49025</td>\n    <td class=\"CellStyle1\">34685</td>\n    <td class=\"Cell\" style=\"color: blue; \">34685</td>\n    <td class=\"CellStyle1\">83710</td>\n    <td class=\"Cell\" style=\"color: blue; \">83710</td>\n  </tr>\n</table>"
-#     css <- ".Table {border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; padding: 2px; border: 1px solid lightgray; vertical-align: middle; text-align: center; font-weight: bold; background-color: #F2F2F2; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; padding: 2px 8px 2px 2px; border: 1px solid lightgray; vertical-align: middle; text-align: left; font-weight: bold; background-color: #F2F2F2; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.NewHeadingStyle1 {font-family: Arial; font-size: 0.75em; padding: 2px; border: 1px solid lightgray; vertical-align: middle; text-align: center; font-weight: bold; background-color: Gold; }\r\n.CellStyle1 {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; background-color: Yellow; text-align: right; }\r\n"
-#
-#     expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 669680)
-#     expect_identical(as.character(pt$getHtml()), html)
-#     expect_identical(pt$getCss(), css)
-#   })
-# }
+scenarios <- testScenarios("theming tests:  intersecting styles from rows, columns, calcs and cells")
+for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    cgrps <- pt$addColumnDataGroups("PowerType")
+    colorText <- function(grp) {
+      if(isTRUE(grp$values=="DMU")) grp$cellStyle <- list(color="blue")
+      else if(isTRUE(grp$values=="EMU")) grp$cellStyle <- list(color="green")
+      else if(isTRUE(grp$values=="HST")) grp$cellStyle <- list(color="red")
+    }
+    invisible(lapply(cgrps, colorText))
+    rgrps <- pt$addRowDataGroups("TOC", atLevel=1, addTotal=FALSE)
+    colorText <- function(grp) {
+      if(isTRUE(grp$values=="Arriva Trains Wales")) grp$cellStyle <- list("background-color"="aliceblue")
+      else if(isTRUE(grp$values=="CrossCountry")) grp$cellStyle <- list("background-color"="cornsilk")
+      else if(isTRUE(grp$values=="London Midland")) grp$cellStyle <- list("background-color"="lightgreen")
+      else if(isTRUE(grp$values=="Virgin Trains")) grp$cellStyle <- list("background-color"="lavenderblush")
+    }
+    invisible(lapply(rgrps, colorText))
+    pt$addRowGroup(caption="Total", isOutline=TRUE, isTotal=TRUE, isLevelTotal=TRUE,
+                   styleDeclarations=list(color="blue"), cellStyleDeclarations=list("background-color"="plum"))
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction, caption="Train Count",
+                         format = "%.0f", cellStyleDeclarations=list("font-family"="serif", "font-style"="italic"))
+    pt$defineCalculation(calculationName="AvgSchSpeed", summariseExpression="mean(SchedSpeedMPH, na.rm=TRUE)",
+                         caption="Avg Speed", format = "%.0f",
+                         cellStyleDeclarations=list("font-family"="Lucida Console", "xl-value-format"="#,##0"))
+    pt$addRowCalculationGroups()
+    pt$evaluatePivot()
+    pt$setStyling(rFrom=4, rTo=5, cFrom=6, cTo=8, declarations=list("background-color"="yellow", "font-weight"="bold"))
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\" colspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"4\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"3\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"ColumnHeader\">DMU</th>\n    <th class=\"ColumnHeader\">EMU</th>\n    <th class=\"ColumnHeader\">HST</th>\n    <th class=\"ColumnHeader\">Total</th>\n    <th class=\"ColumnHeader\">DMU</th>\n    <th class=\"ColumnHeader\">EMU</th>\n    <th class=\"ColumnHeader\">Total</th>\n    <th class=\"ColumnHeader\">&nbsp;</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">Arriva Trains Wales</th>\n    <th class=\"RowHeader\">Train Count</th>\n    <td class=\"Cell\" style=\"background-color: aliceblue; color: blue; font-family: serif; font-style: italic; \">3079</td>\n    <td class=\"Cell\" style=\"background-color: aliceblue; color: green; font-family: serif; font-style: italic; \"></td>\n    <td class=\"Cell\" style=\"background-color: aliceblue; color: red; font-family: serif; font-style: italic; \"></td>\n    <td class=\"Total\" style=\"background-color: aliceblue; font-family: serif; font-style: italic; \">3079</td>\n    <td class=\"Cell\" style=\"background-color: aliceblue; color: blue; font-family: serif; font-style: italic; \">830</td>\n    <td class=\"Cell\" style=\"background-color: aliceblue; color: green; font-family: serif; font-style: italic; \"></td>\n    <td class=\"Total\" style=\"background-color: aliceblue; font-family: serif; font-style: italic; \">830</td>\n    <td class=\"Total\" style=\"background-color: aliceblue; font-family: serif; font-style: italic; \">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Avg Speed</th>\n    <td class=\"Cell\" style=\"background-color: aliceblue; color: blue; font-family: Lucida Console; \">90</td>\n    <td class=\"Cell\" style=\"background-color: aliceblue; color: green; font-family: Lucida Console; \"></td>\n    <td class=\"Cell\" style=\"background-color: aliceblue; color: red; font-family: Lucida Console; \"></td>\n    <td class=\"Total\" style=\"background-color: aliceblue; font-family: Lucida Console; \">90</td>\n    <td class=\"Cell\" style=\"background-color: aliceblue; color: blue; font-family: Lucida Console; \">89</td>\n    <td class=\"Cell\" style=\"background-color: aliceblue; color: green; font-family: Lucida Console; \"></td>\n    <td class=\"Total\" style=\"background-color: aliceblue; font-family: Lucida Console; \">89</td>\n    <td class=\"Total\" style=\"background-color: aliceblue; font-family: Lucida Console; \">90</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">CrossCountry</th>\n    <th class=\"RowHeader\">Train Count</th>\n    <td class=\"Cell\" style=\"background-color: cornsilk; color: blue; font-family: serif; font-style: italic; \">22133</td>\n    <td class=\"Cell\" style=\"background-color: cornsilk; color: green; font-family: serif; font-style: italic; \"></td>\n    <td class=\"Cell\" style=\"background-color: cornsilk; color: red; font-family: serif; font-style: italic; \">732</td>\n    <td class=\"Total\" style=\"background-color: cornsilk; font-family: serif; font-style: italic; \">22865</td>\n    <td class=\"Cell\" style=\"background-color: cornsilk; color: blue; font-family: serif; font-style: italic; \">63</td>\n    <td class=\"Cell\" style=\"background-color: cornsilk; color: green; font-family: serif; font-style: italic; \"></td>\n    <td class=\"Total\" style=\"background-color: cornsilk; font-family: serif; font-style: italic; \">63</td>\n    <td class=\"Total\" style=\"background-color: cornsilk; font-family: serif; font-style: italic; \">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Avg Speed</th>\n    <td class=\"Cell\" style=\"background-color: cornsilk; color: blue; font-family: Lucida Console; \">113</td>\n    <td class=\"Cell\" style=\"background-color: cornsilk; color: green; font-family: Lucida Console; \"></td>\n    <td class=\"Cell\" style=\"background-color: cornsilk; color: red; font-family: Lucida Console; \">125</td>\n    <td class=\"Total\" style=\"background-color: cornsilk; font-family: Lucida Console; \">113</td>\n    <td class=\"Cell\" style=\"background-color: cornsilk; color: blue; font-family: Lucida Console; \">100</td>\n    <td class=\"Cell\" style=\"background-color: yellow; color: green; font-family: Lucida Console; font-weight: bold; \"></td>\n    <td class=\"Total\" style=\"background-color: yellow; font-family: Lucida Console; font-weight: bold; \">100</td>\n    <td class=\"Total\" style=\"background-color: yellow; font-family: Lucida Console; font-weight: bold; \">113</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">London Midland</th>\n    <th class=\"RowHeader\">Train Count</th>\n    <td class=\"Cell\" style=\"background-color: lightgreen; color: blue; font-family: serif; font-style: italic; \">5638</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; color: green; font-family: serif; font-style: italic; \">8849</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; color: red; font-family: serif; font-style: italic; \"></td>\n    <td class=\"Total\" style=\"background-color: lightgreen; font-family: serif; font-style: italic; \">14487</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; color: blue; font-family: serif; font-style: italic; \">5591</td>\n    <td class=\"Cell\" style=\"background-color: yellow; color: green; font-family: serif; font-style: italic; font-weight: bold; \">28201</td>\n    <td class=\"Total\" style=\"background-color: yellow; font-family: serif; font-style: italic; font-weight: bold; \">33792</td>\n    <td class=\"Total\" style=\"background-color: yellow; font-family: serif; font-style: italic; font-weight: bold; \">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Avg Speed</th>\n    <td class=\"Cell\" style=\"background-color: lightgreen; color: blue; font-family: Lucida Console; \">92</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; color: green; font-family: Lucida Console; \">101</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; color: red; font-family: Lucida Console; \"></td>\n    <td class=\"Total\" style=\"background-color: lightgreen; font-family: Lucida Console; \">98</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; color: blue; font-family: Lucida Console; \">76</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; color: green; font-family: Lucida Console; \">94</td>\n    <td class=\"Total\" style=\"background-color: lightgreen; font-family: Lucida Console; \">91</td>\n    <td class=\"Total\" style=\"background-color: lightgreen; font-family: Lucida Console; \">93</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">Virgin Trains</th>\n    <th class=\"RowHeader\">Train Count</th>\n    <td class=\"Cell\" style=\"background-color: lavenderblush; color: blue; font-family: serif; font-style: italic; \">2137</td>\n    <td class=\"Cell\" style=\"background-color: lavenderblush; color: green; font-family: serif; font-style: italic; \">6457</td>\n    <td class=\"Cell\" style=\"background-color: lavenderblush; color: red; font-family: serif; font-style: italic; \"></td>\n    <td class=\"Total\" style=\"background-color: lavenderblush; font-family: serif; font-style: italic; \">8594</td>\n    <td class=\"Cell\" style=\"background-color: lavenderblush; color: blue; font-family: serif; font-style: italic; \"></td>\n    <td class=\"Cell\" style=\"background-color: lavenderblush; color: green; font-family: serif; font-style: italic; \"></td>\n    <td class=\"Total\" style=\"background-color: lavenderblush; font-family: serif; font-style: italic; \"></td>\n    <td class=\"Total\" style=\"background-color: lavenderblush; font-family: serif; font-style: italic; \">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Avg Speed</th>\n    <td class=\"Cell\" style=\"background-color: lavenderblush; color: blue; font-family: Lucida Console; \">125</td>\n    <td class=\"Cell\" style=\"background-color: lavenderblush; color: green; font-family: Lucida Console; \">125</td>\n    <td class=\"Cell\" style=\"background-color: lavenderblush; color: red; font-family: Lucida Console; \"></td>\n    <td class=\"Total\" style=\"background-color: lavenderblush; font-family: Lucida Console; \">125</td>\n    <td class=\"Cell\" style=\"background-color: lavenderblush; color: blue; font-family: Lucida Console; \"></td>\n    <td class=\"Cell\" style=\"background-color: lavenderblush; color: green; font-family: Lucida Console; \"></td>\n    <td class=\"Total\" style=\"background-color: lavenderblush; font-family: Lucida Console; \"></td>\n    <td class=\"Total\" style=\"background-color: lavenderblush; font-family: Lucida Console; \">125</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" style=\"color: blue; \" rowspan=\"2\">Total</th>\n    <th class=\"RowHeader\">Train Count</th>\n    <td class=\"Total\" style=\"background-color: plum; color: blue; font-family: serif; font-style: italic; \">32987</td>\n    <td class=\"Total\" style=\"background-color: plum; color: green; font-family: serif; font-style: italic; \">15306</td>\n    <td class=\"Total\" style=\"background-color: plum; color: red; font-family: serif; font-style: italic; \">732</td>\n    <td class=\"Total\" style=\"background-color: plum; font-family: serif; font-style: italic; \">49025</td>\n    <td class=\"Total\" style=\"background-color: plum; color: blue; font-family: serif; font-style: italic; \">6484</td>\n    <td class=\"Total\" style=\"background-color: plum; color: green; font-family: serif; font-style: italic; \">28201</td>\n    <td class=\"Total\" style=\"background-color: plum; font-family: serif; font-style: italic; \">34685</td>\n    <td class=\"Total\" style=\"background-color: plum; font-family: serif; font-style: italic; \">83710</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Avg Speed</th>\n    <td class=\"Total\" style=\"background-color: plum; color: blue; font-family: Lucida Console; \">108</td>\n    <td class=\"Total\" style=\"background-color: plum; color: green; font-family: Lucida Console; \">111</td>\n    <td class=\"Total\" style=\"background-color: plum; color: red; font-family: Lucida Console; \">125</td>\n    <td class=\"Total\" style=\"background-color: plum; font-family: Lucida Console; \">109</td>\n    <td class=\"Total\" style=\"background-color: plum; color: blue; font-family: Lucida Console; \">78</td>\n    <td class=\"Total\" style=\"background-color: plum; color: green; font-family: Lucida Console; \">94</td>\n    <td class=\"Total\" style=\"background-color: plum; font-family: Lucida Console; \">91</td>\n    <td class=\"Total\" style=\"background-color: plum; font-family: Lucida Console; \">101</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 505332.016147847)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}
+
+
+scenarios <- testScenarios("theming tests:  styling data groups")
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory", styleDeclarations=list("color"="red", "font-weight"="bold", "background-color"="yellow"))
+    pt$addRowDataGroups("TOC")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    # prepStr(as.character(pt$getCss()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\">&nbsp;</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; background-color: yellow; \">Express Passenger</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; background-color: yellow; \">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; background-color: yellow; \">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry</th>\n    <td class=\"Cell\">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Total\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland</th>\n    <td class=\"Cell\">14487</td>\n    <td class=\"Cell\">33792</td>\n    <td class=\"Total\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains</th>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">49025</td>\n    <td class=\"Total\">34685</td>\n    <td class=\"Total\">83710</td>\n  </tr>\n</table>"
+    css <- ".Table {display: table; border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.OutlineColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.OutlineRowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.OutlineCell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; background-color: #F8F8F8; font-weight: bold; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+    expect_identical(as.character(pt$getHtml()), html)
+    expect_identical(pt$getCss(), css)
+  })
+}
+
+
+scenarios <- testScenarios("theming tests:  styling cells")
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$styles$addStyle(styleName="NewHeadingStyle1", list(
+      "font-family"="Arial",
+      "font-size"="0.75em",
+      padding="2px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "text-align"="center",
+      "font-weight"="bold",
+      "background-color"="Gold",
+      "xl-wrap-text"="wrap"
+    ))
+    pt$styles$addStyle(styleName="CellStyle1", list(
+      "font-family"="Arial",
+      "font-size"="0.75em",
+      padding="2px 2px 2px 8px",
+      border="1px solid lightgray",
+      "vertical-align"="middle",
+      "background-color"="Yellow",
+      "text-align"="right"
+    ))
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    pt$addRowDataGroups("TOC")
+    pt$defineCalculation(calculationName="TotalTrains1", summariseExpression=countFunction,
+                         headingBaseStyleName="NewHeadingStyle1", cellBaseStyleName="CellStyle1")
+    pt$defineCalculation(calculationName="TotalTrains2", summariseExpression=countFunction,
+                         headingStyleDeclarations=list("color"="red", "font-weight"="bold"),
+                         cellStyleDeclarations=list("color"="blue"))
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    # prepStr(as.character(pt$getCss()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"2\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"2\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"2\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"NewHeadingStyle1\">TotalTrains1</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; \">TotalTrains2</th>\n    <th class=\"NewHeadingStyle1\">TotalTrains1</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; \">TotalTrains2</th>\n    <th class=\"NewHeadingStyle1\">TotalTrains1</th>\n    <th class=\"ColumnHeader\" style=\"color: red; font-weight: bold; \">TotalTrains2</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales</th>\n    <td class=\"CellStyle1\">3079</td>\n    <td class=\"Cell\" style=\"color: blue; \">3079</td>\n    <td class=\"CellStyle1\">830</td>\n    <td class=\"Cell\" style=\"color: blue; \">830</td>\n    <td class=\"CellStyle1\">3909</td>\n    <td class=\"Total\" style=\"color: blue; \">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry</th>\n    <td class=\"CellStyle1\">22865</td>\n    <td class=\"Cell\" style=\"color: blue; \">22865</td>\n    <td class=\"CellStyle1\">63</td>\n    <td class=\"Cell\" style=\"color: blue; \">63</td>\n    <td class=\"CellStyle1\">22928</td>\n    <td class=\"Total\" style=\"color: blue; \">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland</th>\n    <td class=\"CellStyle1\">14487</td>\n    <td class=\"Cell\" style=\"color: blue; \">14487</td>\n    <td class=\"CellStyle1\">33792</td>\n    <td class=\"Cell\" style=\"color: blue; \">33792</td>\n    <td class=\"CellStyle1\">48279</td>\n    <td class=\"Total\" style=\"color: blue; \">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains</th>\n    <td class=\"CellStyle1\">8594</td>\n    <td class=\"Cell\" style=\"color: blue; \">8594</td>\n    <td class=\"CellStyle1\"></td>\n    <td class=\"Cell\" style=\"color: blue; \"></td>\n    <td class=\"CellStyle1\">8594</td>\n    <td class=\"Total\" style=\"color: blue; \">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"CellStyle1\">49025</td>\n    <td class=\"Total\" style=\"color: blue; \">49025</td>\n    <td class=\"CellStyle1\">34685</td>\n    <td class=\"Total\" style=\"color: blue; \">34685</td>\n    <td class=\"CellStyle1\">83710</td>\n    <td class=\"Total\" style=\"color: blue; \">83710</td>\n  </tr>\n</table>"
+    css <- ".Table {display: table; border-collapse: collapse; }\r\n.ColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.RowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.Cell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.OutlineColumnHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px; text-align: center; }\r\n.OutlineRowHeader {font-family: Arial; font-size: 0.75em; border: 1px solid lightgray; vertical-align: middle; font-weight: bold; background-color: #F2F2F2; padding: 2px 8px 2px 2px; text-align: left; }\r\n.OutlineCell {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; background-color: #F8F8F8; font-weight: bold; }\r\n.Total {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; text-align: right; }\r\n.NewHeadingStyle1 {font-family: Arial; font-size: 0.75em; padding: 2px; border: 1px solid lightgray; vertical-align: middle; text-align: center; font-weight: bold; background-color: Gold; }\r\n.CellStyle1 {font-family: Arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid lightgray; vertical-align: middle; background-color: Yellow; text-align: right; }\r\n"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 669680)
+    expect_identical(as.character(pt$getHtml()), html)
+    expect_identical(pt$getCss(), css)
+  })
+}

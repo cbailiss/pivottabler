@@ -306,7 +306,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
          if(!is.null(rg)) {
            isOutlineCells <- rg$isOutline
            rgCellBaseStyleName <- rg$cellBaseStyleName
-           rgCellStyle <- rg$cellStyle
+           rgCellStyle <- rg$netCellStyle
          }
          trowcells <- private$getCellsInRowHtml(r=r, columnCount=columnCount, exportOptions=exportOptions,
                                                 styleNamePrefix=styleNamePrefix, cellStyle=cellStyle, totalStyle=totalStyle,
@@ -363,15 +363,37 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
        else {
          # normal case
          for(c in 1:columnCount) {
+            # get the cell
             cell <- private$p_parentPivot$cells$getCell(r, c)
+            # get the column group
+            columnGroup <- private$p_parentPivot$getLeafColumnGroup(c=c)
+            # base style name precedence:  from the cell, from the column group, from the row group,
+            #                              then default outline (if outline), default total (if total), default cell
             if(!is.null(cell$baseStyleName)) cssCell <- paste0(styleNamePrefix, cell$baseStyleName)
+            else if(!is.null(columnGroup$cellBaseStyleName)) cssCell <- paste0(styleNamePrefix, columnGroup$cellBaseStyleName)
             else if(!is.null(rowGroupCellBaseStyleName)) cssCell <- paste0(styleNamePrefix, rowGroupCellBaseStyleName)
             else if(isOutline && (!is.null(outlineCellStyle))) cssCell <- outlineCellStyle
             else if(cell$isTotal) cssCell <- totalStyle
             else cssCell <- cellStyle
+            # style overrides precedence:  from the cell, from the column group, from the row group
+            #                              given these styles are not single values, but lists of declarations, the styles
+            #                              aggregate via a set operation, i.e. intersect/union from row -> col -> cell
             cllstyl <- NULL
-            if(!is.null(cell$style)) cllstyl <- cell$style$asCSSRule()
-            else if (!is.null(rowGroupCellStyle)) cllstyl <- rowGroupCellStyle$asCSSRule()
+            if(!is.null(rowGroupCellStyle)) {
+               if(is.null(cllstyl)) { cllstyl <- rowGroupCellStyle$getCopy("") }
+               else { cllstyl$setPropertyValues(rowGroupCellStyle$declarations) }
+            }
+            colGroupStyle <- columnGroup$netCellStyle
+            if(!is.null(colGroupStyle)) {
+               if(is.null(cllstyl)) { cllstyl <- colGroupStyle$getCopy("") }
+               else { cllstyl$setPropertyValues(colGroupStyle$declarations) }
+            }
+            if(!is.null(cell$style)) {
+               if(is.null(cllstyl)) { cllstyl <- cell$style$getCopy("") }
+               else { cllstyl$setPropertyValues(cell$style$declarations) }
+            }
+            if(!is.null(cllstyl)) cllstyl <- cllstyl$asCSSRule()
+            # render the cell
             detail <- list()
             if(includeRCFilters|includeCalculationFilters|includeWorkingData|includeEvaluationFilters|includeCalculationNames|includeRawValue)
             {

@@ -21,6 +21,7 @@ vignette: >
 * Styling Data Groups
 * Styling Calculations
 * Changing styling/formatting after table creation using `pt$setStyling()`
+* Inheritance of Styles 
 * Creating a New Theme
 * Summary of Styling Rules
 * Styling Output
@@ -384,6 +385,83 @@ The `pt$setStyling()` function is used in the example above.  This function has 
 The `pt$createInlineStyle()` function is also used in the example above.  This function creates a new unnamed style (that is not part of the table theme) and takes two arguments:  `baseStyleName` specifies the name of the style that the new style will be based on (i.e. will have it's style properties copied from) and `declarations` which specifies new/overriding style properties for the new style. 
 
 For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v08-findingandformatting.html) vignette.
+
+## Inheritance of Styles 
+
+Both named styles and additional style declarations can be specified for:
+
+- Row data groups
+- Column data groups
+- Calculations
+- Cells
+
+Data groups have style properties for both the data group itself (`baseStyleName` and `style`) and the related cells (`cellBaseStyleName` and `cellStyle`).
+
+Calculations have style properties for the calculation headings (`headingBaseStyleName` and `headingStyleDeclarations`) and the related cells (`cellBaseStyleName` and `cellStyle`).
+
+This means there are several different ways styles can be specified for the cells within a pivot table.  A set of precedence rules are used to determine how cell styles are inherited.
+
+### Style Names
+
+Style names apply to a cell in the following precendence order:
+
+1. `baseStyleName` set on the cell.
+2. `cellBaseStyleName` set on the calculation.
+3. `baseStyleName` set on the column group related to the cell.
+4. `baseStyleName` set on the row group related to the cell.
+
+As soon as a cell style name is encountered, stop, e.g. if a cell style name is not set on the cell, but is set in a calculation, then the calculation style name will be used, irrespective of the style names that may be set on the row or column groups.
+
+### Style declarations
+
+Style declarations apply in the same precedence order as described above, with the additional note the the precedence rules apply for each style property individually, e.g. it is possible for the colour to be set directly on the cell, while the font is inherited from the column data group.
+
+The following example illustrates different cell style settings being set and inherited from row/column groups, calculations and cells:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+# column groups
+pt$addColumnDataGroups("TrainCategory")
+cgrps <- pt$addColumnDataGroups("PowerType")
+colorText <- function(grp) {
+  if(isTRUE(grp$values=="DMU")) grp$cellStyle <- list(color="blue")
+  else if(isTRUE(grp$values=="EMU")) grp$cellStyle <- list(color="green")
+  else if(isTRUE(grp$values=="HST")) grp$cellStyle <- list(color="red")
+}
+invisible(lapply(cgrps, colorText))
+# row groups
+rgrps <- pt$addRowDataGroups("TOC", atLevel=1, addTotal=FALSE)
+colorText <- function(grp) {
+  if(isTRUE(grp$values=="Arriva Trains Wales")) grp$cellStyle <- list("background-color"="aliceblue")
+  else if(isTRUE(grp$values=="CrossCountry")) grp$cellStyle <- list("background-color"="lavenderblush")
+  else if(isTRUE(grp$values=="London Midland")) grp$cellStyle <- list("background-color"="lightgreen")
+  else if(isTRUE(grp$values=="Virgin Trains")) grp$cellStyle <- list("background-color"="cornsilk")
+}
+invisible(lapply(rgrps, colorText))
+# manually added total (see "Irregular Layout" vignette for details)
+pt$addRowGroup(caption="Total", isOutline=TRUE, isTotal=TRUE, isLevelTotal=TRUE,
+               styleDeclarations=list(color="blue"), 
+               cellStyleDeclarations=list("background-color"="plum"))
+# calculations
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()",
+                     caption="Train Count", format = "%.0f", 
+                     cellStyleDeclarations=list("font-family"="serif", "font-style"="italic"))
+pt$defineCalculation(calculationName="AvgSchSpeed", 
+                     summariseExpression="mean(SchedSpeedMPH, na.rm=TRUE)",
+                     caption="Avg Speed", format = "%.0f", 
+                     cellStyleDeclarations=list("font-family"="Lucida Console", 
+                                                "xl-value-format"="#,##0"))
+pt$addRowCalculationGroups()
+# evaluate the pivot the generate the cells and cell values
+pt$evaluatePivot()
+# set styling on some specific cells
+pt$setStyling(rFrom=4, rTo=5, cFrom=6, cTo=8, 
+              declarations=list("background-color"="yellow", "font-weight"="bold"))
+# render pivot
+pt$renderPivot()
+```
 
 ## Creating a New Theme
 

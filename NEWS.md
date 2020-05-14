@@ -1,3 +1,12 @@
+pivottabler 1.4.1
+=================
+
+Bug Fixes
+---------
+
+* Cell styles are not inherited correctly from calculations and data groups (#46).  Thanks to @msgoussi for the bug report.  An explanation of the style inheritance rule has also been added to the "Styling" vignette.
+
+
 pivottabler 1.4.0
 =================
 
