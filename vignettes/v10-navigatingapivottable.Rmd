@@ -430,8 +430,7 @@ More generally, the row numbers related to a particular group at any level of th
 grps <- pt$leafRowGroups
 grp <- grps[[3]]
 (pt$findGroupRowNumbers(grp))
-fx <- function(x) { pt$findGroupRowNumbers(group=x) }
-sapply(grps, fx)
+(pt$findGroupRowNumbers(grps, collapse=TRUE))
 ```
 
 Similarly, the column numbers related to a particular group can be found using `pt$findGroupColumnNumbers()`, e.g. finding the column numbers related to the "Ordinary Passenger" column group: 
