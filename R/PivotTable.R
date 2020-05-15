@@ -1510,14 +1510,22 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @description
     #' Apply styling to part of a pivot table.
     #' @details
-    #' There are three ways to specify the part of a pivot table to apply styling
-    #' to:
+    #' There are five ways to specify the part(s) of a pivot table to apply
+    #' styling to:
     #' (1) By specifying a list of data groups using the `groups` argument.
     #' (2) By specifying a list of cells using the `cells` argument.
-    #' (3) By specifying a rectangular cell range using `rFrom`, `cFrom`, `rTo`
-    #' and `cTo`.
-    #' See the "Finding and Formatting" vignette for more information and many
-    #' examples.
+    #' (3) By specifying a single cell using the `rFrom` and `cFrom` arguments.
+    #' (4) By specifying a rectangular cell range using the `rFrom`, `cFrom`,
+    #' `rTo` and `cTo` arguments.
+    #' (5) By specifying a vector of rowNumbers and/or columnNumbers.  If both
+    #' rowNumbers and columnNumbers are specified, then the cells at the
+    #' intersection of the specified row numbers and column numbers are styled.
+    #' If both rFrom/rTo and rowNumbers are specified, then rFrom/rTo constrain
+    #' the row numbers specified in rowNumbers.
+    #' If both cFrom/cTo and columnNumbers are specified, then cFrom/cTo constrain
+    #' the column numbers specified in columnNumbers.
+    #' See the "Styling" and Finding and Formatting" vignettes for more
+    #' information and many examples.
     #' @param rFrom An integer row number that specifies the start row for the
     #' styling changes.
     #' @param cFrom An integer column number that specifies the start column for the
@@ -1526,6 +1534,10 @@ PivotTable <- R6::R6Class("PivotTable",
     #' changes.
     #' @param cTo An integer column number that specifies the end column for the
     #' styling changes.
+    #' @param rowNumbers An integer vector that specifies the row numbers for the
+    #' styling changes.
+    #' @param columnNumbers An integer vector that specifies the column numbers for
+    #' the styling changes.
     #' @param groups A list containing `PivotDataGroup` objects.
     #' @param cells A list containing `PivotCell` objects.
     #' @param baseStyleName The name of a style to apply.
@@ -1533,12 +1545,15 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param declarations CSS style declarations to apply in the form of a list,
     #' e.g. `list("font-weight"="bold", "color"="#0000FF")`
     #' @return No return value.
-    setStyling = function(rFrom=NULL, cFrom=NULL, rTo=NULL, cTo=NULL, groups=NULL, cells=NULL, baseStyleName=NULL, style=NULL, declarations=NULL) {
+    setStyling = function(rFrom=NULL, cFrom=NULL, rTo=NULL, cTo=NULL, rowNumbers=NULL, columnNumbers=NULL,
+                          groups=NULL, cells=NULL, baseStyleName=NULL, style=NULL, declarations=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", rFrom, missing(rFrom), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", cFrom, missing(cFrom), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", rTo, missing(rTo), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", cTo, missing(cTo), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", columnNumbers, missing(columnNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", groups, missing(groups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("list", "PivotDataGroup"), allowedListElementClasses="PivotDataGroup")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", cells, missing(cells), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("list", "PivotCell"), allowedListElementClasses="PivotCell")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -1547,6 +1562,7 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$setStyling", "Setting styling...")
       if(missing(baseStyleName)&&missing(style)&&missing(declarations)) { stop("PivotTable$setStyling():  Please specify at least one of baseStyleName, style or declarations.", call. = FALSE) }
+      # style a group or list of groups
       if(!is.null(groups)) {
         if("PivotDataGroup" %in% class(groups)) {
           groups <- list(groups)
@@ -1565,6 +1581,7 @@ PivotTable <- R6::R6Class("PivotTable",
           }
         }
       }
+      # style a cell or list of cells
       if(!is.null(cells)) {
         if("PivotCell" %in% class(cells)) {
           cells <- list(cells)
@@ -1583,13 +1600,59 @@ PivotTable <- R6::R6Class("PivotTable",
           }
         }
       }
-      if((!is.null(rFrom))&&(!is.null(cFrom))) {
-        if(is.null(rTo)) rTo <- rFrom
-        if(is.null(cTo)) cTo <- cFrom
-        if(rTo<rFrom) { stop("PivotTable$setStyling():  rTo must be greater than or equal to rFrom.", call. = FALSE) }
-        if(cTo<cFrom) { stop("PivotTable$setStyling():  cTo must be greater than or equal to cFrom.", call. = FALSE) }
-        for(r in rFrom:rTo) {
-          for(c in cFrom:cTo) {
+      # styling cells by coordinates...
+      styleCells <- FALSE
+      rowCount <- self$rowCount
+      columnCount <- self$columnCount
+      ## switch to use the option legacy coordinates (this ignores the rowNumbers and columnNumbers parameters)
+      if(isTRUE(private$p_compatibility$legacySetStylingRowColumnNumbers)) {
+        if((!is.null(rFrom))&&(!is.null(cFrom))) {
+          if(is.null(rTo)) rTo <- rFrom
+          if(is.null(cTo)) cTo <- cFrom
+          if(rTo<rFrom) { stop("PivotTable$setStyling():  rTo must be greater than or equal to rFrom.", call. = FALSE) }
+          if(cTo<cFrom) { stop("PivotTable$setStyling():  cTo must be greater than or equal to cFrom.", call. = FALSE) }
+          rowNumbers <- rFrom:rTo
+          columnNumbers <- cFrom:cTo
+          styleCells <- TRUE
+        }
+      }
+      else {
+        ## check if a single cell has been specified
+        if((length(rowNumbers)==0)&&(length(columnNumbers)==0)&&
+           (!is.null(rFrom))&&(!is.null(cFrom))&&(is.null(rTo))&&(is.null(cTo))) {
+          rowNumbers <- rFrom
+          columnNumbers <- cFrom
+        }
+        else
+        {
+          # specifying a range of cells
+          if((length(rowNumbers)>0)||(!is.null(rFrom))||(!is.null(rTo))) {
+            if(length(rowNumbers)==0) rowNumbers <- 1:max(rowCount, 1)
+            if(!is.null(rFrom)) rowNumbers <- rowNumbers[rowNumbers >= min(rFrom)]
+            if(!is.null(rTo)) rowNumbers <- rowNumbers[rowNumbers <= max(rTo)]
+          }
+          if((length(columnNumbers)>0)||(!is.null(cFrom))||(!is.null(cTo))) {
+            if(length(columnNumbers)==0) columnNumbers <- 1:max(columnCount, 1)
+            if(!is.null(cFrom)) columnNumbers <- columnNumbers[columnNumbers >= min(cFrom)]
+            if(!is.null(cTo)) columnNumbers <- columnNumbers[columnNumbers <= max(cTo)]
+          }
+        }
+        styleCells <- (length(rowNumbers)>0)||(length(columnNumbers)>0)
+      }
+      if(styleCells==TRUE) {
+        if(!private$p_evaluated) stop("PivotTable$setStyling():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+        if(is.null(private$p_cells)) stop("PivotTable$setStyling():  No cells exist in the pivot table.", call. = FALSE)
+        # set defaults for other axes
+        if((length(rowNumbers)==0)&&(length(columnNumbers)>0)) rowNumbers <- 1:rowCount
+        if((length(rowNumbers)>0)&&(length(columnNumbers)==0)) columnNumbers <- 1:columnCount
+        # silently remove invalid row/column numbers
+        if(min(rowNumbers)<1) rowNumbers <- rowNumbers[rowNumbers >= 1]
+        if(max(rowNumbers)>rowCount) rowNumbers <- rowNumbers[rowNumbers <= rowCount]
+        if(min(columnNumbers)<1) columnNumbers <- columnNumbers[columnNumbers >= 1]
+        if(max(columnNumbers)>columnCount) columnNumbers <- columnNumbers[columnNumbers <= columnCount]
+        # style cells
+        for(r in rowNumbers) {
+          for(c in columnNumbers) {
             cell <- self$cells$getCell(r, c)
             if(!is.null(cell)) {
               if(!missing(baseStyleName)) { cell$baseStyleName <- baseStyleName }

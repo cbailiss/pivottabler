@@ -26,6 +26,8 @@ This vignette explains how to find parts of a pivot table - either one or more d
 
 This is often useful to retrieve either a specific value/values, or to change the appearance of specific headings/cells - similar to the conditional formatting capabilities of many off-the-shelf tools.
 
+Many of the examples in this vignette use the `setStyling()` method to format data groups or cells.  This method is described in the [Styling](v07-styling.html) vignette.
+
 This is a long vignette.  Some readers may prefer to jump to the summary at the end for a more concise description of the functions and frequently used parameters.
 
 ## Example Pivot Table

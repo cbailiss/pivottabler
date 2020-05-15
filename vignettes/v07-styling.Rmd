@@ -360,9 +360,9 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$theme <- orangeTheme
 # evaluate the pivot to generate the cells
 pt$evaluatePivot()
-# applying a highlight - method 1 - 3rd row, 1st column
+# applying a highlight - method 1 (preferred) - 3rd row, 1st column
 pt$setStyling(3, 1, declarations=list("background-color"="#00FFFF"))
-# applying a highlight - method 2 - 3rd row, 2nd column
+# applying a highlight - method 2 (legacy) - 3rd row, 2nd column
 cellHighlight <- pt$createInlineStyle(declarations=list("background-color"="#FFFF00"))
 cells <- pt$getCells(specifyCellsAsList=TRUE, cellCoordinates=list(c(3, 2)))
 cells[[1]]$style <- cellHighlight
@@ -376,6 +376,7 @@ The `pt$setStyling()` function is used in the example above.  This function has 
 
 * `rFrom` and `cFrom` are the coordinates of the cell where the styling is to be applied, excluding the row and column headers, i.e. (1, 1) is the first data cell.  If the styling is being applied to multiple cells, this is the top-left cell in the rectangular cell range where the styling is to be applied.
 * `rTo` and `cTo`  are the coordinates of the bottom right cell when styling is being applied to a rectangular range of cells.  If styling is only being applied to a single cell, these arguments are not needed. 
+* `rowNumbers` and `columnNumbers` are integer vectors of row and/or column numbers specifying where the styling is to be applied.  If both `rowNumbers` and `columnNumbers` are specified, then the cells at the intersection of the specified row numbers and column numbers are styled.
 * `groups` is a list of data groups to apply styling to.  Either `rFrom`/`cFrom`, `groups` or `cells` is typically specified.
 * `cells` is a list of cells to apply styling to.  Either `rFrom`/`cFrom`, `groups` or `cells` is typically specified.
 * `baseStyleName` is the name of a style in the table theme to apply to the specified cells.  Set this explicitly to NULL to revert to the default style specified in the table theme.
@@ -383,6 +384,25 @@ The `pt$setStyling()` function is used in the example above.  This function has 
 * `declarations` is a list of style override declarations to apply to the specified cells. 
 
 The `pt$createInlineStyle()` function is also used in the example above.  This function creates a new unnamed style (that is not part of the table theme) and takes two arguments:  `baseStyleName` specifies the name of the style that the new style will be based on (i.e. will have it's style properties copied from) and `declarations` which specifies new/overriding style properties for the new style. 
+
+### `pt$setStyling()` Example
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("Status")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$setStyling(groups=pt$leafColumnGroups[[4]], declarations=list("background-color"="peachpuff"))
+pt$setStyling(columnNumbers=2:3, declarations=list("background-color"="yellow"))
+pt$setStyling(rowNumbers=c(2, 4), columnNumbers=c(5, 7), declarations=list("background-color"="pink"))
+pt$setStyling(rFrom=1, rTo=2, cFrom=8, cTo=9, declarations=list("background-color"="lightgreen"))
+pt$setStyling(cells=pt$getCell(5, 9), declarations=list("background-color"="lightblue"))
+pt$renderPivot()
+```
 
 For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v08-findingandformatting.html) vignette.
 

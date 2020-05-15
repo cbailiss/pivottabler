@@ -4,7 +4,12 @@ pivottabler 1.4.1
 Bug Fixes
 ---------
 
-* Cell styles are not inherited correctly from calculations and data groups (#46).  Thanks to @msgoussi for the bug report.  An explanation of the style inheritance rule has also been added to the "Styling" vignette.
+* Cell styles are now inherited correctly from calculations and data groups (#46).  Thanks to @msgoussi for the bug report.  An explanation of the style inheritance rules has also been added to the "Styling" vignette.
+
+Improvements
+----------------
+
+* `pt$setStyling()` now accepts new integer/numeric vector arguments `rowNumbers` and/or `columnNumbers`.  It is now also possible to specify only a set of row numbers and then all cells in those rows will be styled (and similarly for column numbers).  Previously, if only row numbers or only column numbers were specified, then no cells would be styled.  Users who require the old logic can specify the argument `compatibility=list(legacySetStylingRowColumnNumbers=TRUE)` when calling `PivotTable$new()`.
 
 
 pivottabler 1.4.0
