@@ -2048,7 +2048,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                                 atLevels=atLevels, minChildCount=minChildCount, maxChildCount=maxChildCount,
                                                 emptyGroups=emptyGroups,
                                                 outlineGroups=outlineGroups, outlineLinkedGroupExists=outlineLinkedGroupExists,
-                                                includeDescendantGroups=includeDescendantGroups)
+                                                includeDescendantGroups=includeDescendantGroups, includeCurrentGroup=FALSE)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findRowDataGroups", "Found row data groups.")
       return(invisible(grps))
     },
@@ -2108,7 +2108,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                                    calculationNames=calculationNames,
                                                    atLevels=atLevels, minChildCount=minChildCount, maxChildCount=maxChildCount,
                                                    emptyGroups=emptyGroups, outlineGroups="exclude",
-                                                   includeDescendantGroups=includeDescendantGroups)
+                                                   includeDescendantGroups=includeDescendantGroups, includeCurrentGroup=FALSE)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findColumnDataGroups", "Found column data groups.")
       return(invisible(grps))
     },

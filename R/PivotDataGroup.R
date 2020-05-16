@@ -1674,7 +1674,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
                              totals="include", calculationNames=NULL,
                              atLevels=NULL, minChildCount=NULL, maxChildCount=NULL, emptyGroups="exclude",
                              outlineGroups="exclude", outlineLinkedGroupExists=NULL,
-                             includeDescendantGroups=FALSE) {
+                             includeDescendantGroups=FALSE, includeCurrentGroup=TRUE) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -1688,13 +1688,14 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", outlineGroups, missing(outlineGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", outlineLinkedGroupExists, missing(outlineLinkedGroupExists), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotDataGroup", "findDataGroups", includeCurrentGroup, missing(includeCurrentGroup), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotDataGroup$findDataGroups", "Finding data groups...")
      # clear the isMatch flag across all descendants
      clearFlags <- function(dg) {
        dg$isMatch <- FALSE
      }
-     grps <- self$getDescendantGroups(includeCurrentGroup=TRUE)
+     grps <- self$getDescendantGroups(includeCurrentGroup=includeCurrentGroup)
      lapply(grps, clearFlags)
      if(length(grps)==0) return(invisible())
      # search approach changes depending on variable matching method
