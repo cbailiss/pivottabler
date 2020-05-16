@@ -471,7 +471,9 @@ PivotCells <- R6::R6Class("PivotCells",
      cellInstanceIds <- NULL
      if((length(rowNumbers)>0)||(length(columnNumbers)>0)|(length(cellCoordinates)>0)||
         (length(groups)>0)||(length(rowGroups)>0)||(length(columnGroups)>0)) {
-        constrainingCells <- self$getCells(specifyCellsAsList=TRUE,
+        exclEmptyCells <- FALSE
+        if(emptyCells=="exclude") exclEmptyCells <- TRUE
+        constrainingCells <- self$getCells(specifyCellsAsList=TRUE, excludeEmptyCells=emptyCells,
                                            rowNumbers=rowNumbers, columnNumbers=columnNumbers, cellCoordinates=cellCoordinates,
                                            groups=groups, rowGroups=rowGroups, columnGroups=columnGroups, matchMode=rowColumnMatchMode)
         cellInstanceIds <- as.integer(sapply(constrainingCells, function(x) { x$instanceId }))
