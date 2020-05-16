@@ -1669,6 +1669,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    #' outline child group no longer exists.
    #' @param includeDescendantGroups Default `FALSE`.  Specify true to also return
    #' all descendants of data groups that match the specified criteria.
+   #' @param includeCurrentGroup Default `TRUE`.  Specify `FALSE` to prevent the
+   #' current group being included in the returned results.
    #' @return A list of data groups matching the specified criteria.
    findDataGroups = function(matchMode="simple", variableNames=NULL, variableValues=NULL,
                              totals="include", calculationNames=NULL,

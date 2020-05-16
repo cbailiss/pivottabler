@@ -80,6 +80,9 @@ These functions also accept the following arguments:
     + `only` to match only outline data groups.
 - `outlineLinkedGroupExists` - a logical value specifying whether the group linked to the outline group either must exist (`TRUE`) or must not exist (`FALSE`).
 - `includeDescendantGroups` - a logical value specifying whether only the top-most matching data group for each row/column is returned, or whether the descendant groups are also included.
+- `rowNumbers` - an integer vector specifying row numbers to restrict the data groups that are matched (for `findRowDataGroups()`).
+- `columnNumbers` - an integer vector specifying column numbers to restrict the data groups that are matched (for `findColumnDataGroups()`).
+- `cells` - a `PivotCell` object or a list of `PivotCell` objects to restrict the data groups that are matched. 
 
 Several examples follow below.  In each of the examples the data groups that have been found are highlighted in yellow by specifying a different style.
 
@@ -290,6 +293,52 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 groups <- pt$findColumnDataGroups(matchMode="combinations", 
   variableValues=list("TrainCategory"="Express Passenger", "PowerType"="**"))
 pt$setStyling(groups=groups, declarations=list("background-color"="#00FFFF"))
+pt$renderPivot()
+```
+
+### Restricting the search for data groups
+
+The following example illustrates the use of the `rowNumbers`, `columnNumbers` and `cells` arguments to restrict the data group search:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$addRowDataGroups("Status")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+
+# find the data groups that are related to column 2
+grps <- pt$findColumnDataGroups(columnNumbers=2)
+pt$setStyling(groups=grps, declarations=list("background-color"="yellow"))
+
+# find the DMU data groups that are related to columns 5 to 8 
+grps <- pt$findColumnDataGroups(columnNumbers=5:8, variableValues=list("PowerType"="DMU"))
+pt$setStyling(groups=grps, declarations=list("background-color"="orange"))
+
+# find a totals data group that is related to the cell at (3, 7) 
+cells <- pt$getCell(3, 7)
+pt$setStyling(cells=cells, declarations=list("background-color"="pink"))
+grps <- pt$findColumnDataGroups(variableValues=list("PowerType"="**"), cells=cells)
+pt$setStyling(groups=grps, declarations=list("background-color"="pink"))
+
+# find the data groups at the second level in the hierarchy that are related to row 3
+grps <- pt$findRowDataGroups(atLevel=2, rowNumbers=3)
+pt$setStyling(groups=grps, declarations=list("background-color"="lightcyan"))
+
+# find the data groups related to rows 5 to 10 with Status "A" or "R"
+grps <- pt$findRowDataGroups(rowNumbers=5:10, variableValues=list("Status"=c("A", "R")))
+pt$setStyling(groups=grps, declarations=list("background-color"="plum"))
+
+# find the data groups related to row 11:13 or cells in the range (12, 4) to (15, 5)
+cells <- pt$getCells(rowNumbers=12:15, columnNumbers=4:5, matchMode="combinations")
+pt$setStyling(cells=cells, declarations=list("background-color"="palegreen"))
+grps <- pt$findRowDataGroups(rowNumbers=11:13, cells=cells)
+pt$setStyling(groups=grps, declarations=list("background-color"="palegreen"))
+
 pt$renderPivot()
 ```
 

@@ -458,30 +458,28 @@ Cells can be retrieved by specifying row/column numbers with the `pt$getCell()` 
 The `pt$getCells()` function can retrieve cells using row/column numbers and directly from data groups, e.g.
 
 ```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addColumnDataGroups("PowerType")
-pt$addRowDataGroups("TOC")
-pt$addRowDataGroups("Status")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt <- createPivot1()
 pt$evaluatePivot()
+# get the leaf groups on each axis
 rgrps <- pt$leafRowGroups
 cgrps <- pt$leafColumnGroups
-
+# get the cells associated with the first two columns
 cells <- pt$getCells(columnNumbers=1:2)
 pt$setStyling(cells=cells, declarations=list("background-color"="yellow"))
-
-cells <- pt$getCells(groups=list(rgrps[[6]], rgrps[[8]]))
-pt$setStyling(cells=cells, declarations=list("background-color"="lightgreen"))
-
-cells <- pt$getCells(rowGroups=list(rgrps[[11]], rgrps[[13]], rgrps[[15]]),
-                     columnGroups=list(cgrps[[4]], cgrps[[5]], cgrps[[7]]),
+# get the cells associated with the data groups a subset of row groups
+rowGroups <- rgrps[2:3]
+cells <- pt$getCells(groups=rowGroups)
+pt$setStyling(cells=cells, declarations=list("background-color"="cyan"))
+# get the cells associated with a subset of row groups and column groups
+rowGroups <- rgrps[[5]]
+colGroups <- list(cgrps[[4]], cgrps[[5]], cgrps[[7]])
+cells <- pt$getCells(rowGroups=rowGroups, columnGroups=colGroups,
                      matchMode="combinations")
-pt$setStyling(cells=cells, declarations=list("background-color"="orange"))
+pt$setStyling(cells=cells, declarations=list("background-color"="lawngreen"))
 pt$renderPivot()
 ```
+
+See the [Finding and Formatting](v08-findingandformatting.html) vignette for more examples.
 
 ### From rows or columns to data groups
 
@@ -523,6 +521,22 @@ sapply(grps, fx)
 pt$renderPivot()
 ```
 
+Multiple data groups can be retrieved using row and/or column numbers using the `pt$findRowDataGroups()` or `pt$findColumnDataGroups()`, e.g.
+
+```{r, message=FALSE, warning=FALSE}
+pt <- createPivot1()
+pt$evaluatePivot()
+# find data groups in columns 2 and 3
+grps <- pt$findColumnDataGroups(columnNumbers=2:3)
+pt$setStyling(groups=grps, declarations=list("background-color"="yellow"))
+# find data groups at level 2 in the hierarchy in columns 5 and 7
+grps <- pt$findColumnDataGroups(columnNumbers=c(5, 7), atLevel=2)
+pt$setStyling(groups=grps, declarations=list("background-color"="cyan"))
+pt$renderPivot()
+```
+
+See the [Finding and Formatting](v08-findingandformatting.html) vignette for more examples.
+
 ### From cells to rows / columns / data groups
 
 Each cell in the pivot table has the following properties:
@@ -546,6 +560,31 @@ cell$columnNumber
 cell$rowLeafGroup$caption
 cell$columnLeafGroup$caption
 ```
+
+The row and column numbers for multiple cells can be trivially found:
+
+```{r, message=FALSE, warning=FALSE}
+pt <- createPivot1()
+pt$evaluatePivot()
+cells <- pt$getCells(rowNumbers=2:3, columnNumbers=c(3, 5, 7), 
+                     matchMode="combinations")
+pt$setStyling(cells=cells, declarations=list("background-color"="yellow"))
+fx <- function(x) { x$rowNumber }
+sapply(cells, fx)
+unique(sapply(cells, fx))
+```
+
+Multiple data groups can be found directly using `pt$findRowDataGroups()` or `pt$findColumnDataGroups()`:
+
+```{r, message=FALSE, warning=FALSE}
+colGrps <- pt$findColumnDataGroups(cells=cells)
+pt$setStyling(groups=colGrps, declarations=list("background-color"="cyan"))
+rowGrps <- pt$findRowDataGroups(cells=cells)
+pt$setStyling(groups=rowGrps, declarations=list("background-color"="lawngreen"))
+pt$renderPivot()
+```
+
+See the [Finding and Formatting](v08-findingandformatting.html) vignette for more examples.
 
 ## Further Reading
 

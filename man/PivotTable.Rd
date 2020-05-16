@@ -1830,7 +1830,9 @@ Find row data groups that match specified criteria.
   emptyGroups = "exclude",
   outlineGroups = "exclude",
   outlineLinkedGroupExists = NULL,
-  includeDescendantGroups = FALSE
+  includeDescendantGroups = FALSE,
+  rowNumbers = NULL,
+  cells = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1884,6 +1886,12 @@ outline child group no longer exists.}
 
 \item{\code{includeDescendantGroups}}{Default `FALSE`.  Specify true to also return
 all descendants of data groups that match the specified criteria.}
+
+\item{\code{rowNumbers}}{An integer vector specifying row numbers that constrains
+the data groups to be found.}
+
+\item{\code{cells}}{A `PivotCell` object or a list of `PivotCell` objects to specify
+one or more cells that must intersect the data groups.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1907,7 +1915,9 @@ Find column data groups that match specified criteria.
   minChildCount = NULL,
   maxChildCount = NULL,
   emptyGroups = "exclude",
-  includeDescendantGroups = FALSE
+  includeDescendantGroups = FALSE,
+  columnNumbers = NULL,
+  cells = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1954,6 +1964,12 @@ must be one of "include", "exclude" (default) or "only".}
 
 \item{\code{includeDescendantGroups}}{Default `FALSE`.  Specify true to also return
 all descendants of data groups that match the specified criteria.}
+
+\item{\code{columnNumbers}}{An integer vector specifying column numbers that constrains
+the data groups to be found.}
+
+\item{\code{cells}}{A `PivotCell` object or a list of `PivotCell` objects to specify
+one or more cells that must intersect the data groups.}
 }
 \if{html}{\out{</div>}}
 }

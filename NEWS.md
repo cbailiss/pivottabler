@@ -13,11 +13,12 @@ Starting with this version, cells with NULL values (i.e. where `is.null(cell$raw
 Improvements
 ----------------
 
-* `pt$setStyling()` now accepts new integer/numeric vector arguments `rowNumbers` and/or `columnNumbers`.  It is now also possible to specify only a set of row numbers and then all cells in those rows will be styled (and similarly for column numbers).  Previously, if only row numbers or only column numbers were specified, then no cells would be styled.  Users who require the old logic can specify the argument `compatibility=list(legacySetStylingRowColumnNumbers=TRUE)` when calling `PivotTable$new()`.
+* `pt$findRowDataGroups()` and `pt$findColumnDataGroups()` gain new arguments `rowNumbers`, `columnNumbers` and `cells` to restrict the data group search based on combinations of row/column numbers and/or cells.  See the "Finding and Formatting" vignette for details.
+* `pt$getCells()` gain new arguments `groups`, `rowGroups` and `columnGroups` making it easier to retrieve cells related to specific data groups.  See the "Finding and Formatting" vignette for details.
+* `pt$getCells()` also gains a new `matchMode` argument making it easier to retrieve cells based on combinations of row and column criteria.  See the "Finding and Formatting" vignette for details.
+* `pt$findCells()` gain new arguments `rowNumbers`, `columnNumbers`, `cellCoordinates`, `groups`, `rowGroups`, `columnGroups`, `cells` and `rowColumnMatchMode` to restrict the cell search based on combinations of row and column criteria.  See the "Finding and Formatting" vignette for details.
+* `pt$setStyling()` gain new integer/numeric vector arguments `rowNumbers` and/or `columnNumbers`.  It is now also possible to specify only a set of row numbers and then all cells in those rows will be styled (and similarly for column numbers).  Previously, if only row numbers or only column numbers were specified, then no cells would be styled.  Users who require the old logic can specify the argument `compatibility=list(legacySetStylingRowColumnNumbers=TRUE)` when calling `PivotTable$new()`.
 * The following now accept vector/list arguments: `pt$getColumnGroupsByLevel()`, `pt$getRowGroupsByLevel()`, `pt$getLeafColumnGroup()`, `pt$getLeafRowGroup()`, `pt$findGroupColumnNumbers()` and `pt$findGroupRowNumbers()`.
-* `pt$getCells()` now accepts new arguments `groups`, `rowGroups` and `columnGroups` making it easier to retrieve cells related to specific data groups.  See the "Finding and Formatting" vignette for details.
-* `pt$getCells()` now also accepts a new `matchMode` argument making it easier to retrieve cells based on combinations of row and column criteria.  See the "Finding and Formatting" vignette for details.
-* `pt$findCells()` now accepts new arguments `rowNumbers`, `columnNumbers`, `cellCoordinates`, `groups`, `rowGroups`, `columnGroups`, `cells` and `rowColumnMatchMode` to restrict the cell search based on combinations of row and column criteria.  See the "Finding and Formatting" vignette for details.
 
 Bug Fixes
 ---------

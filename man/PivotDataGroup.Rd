@@ -1083,7 +1083,8 @@ Find data groups that match specified criteria.
   emptyGroups = "exclude",
   outlineGroups = "exclude",
   outlineLinkedGroupExists = NULL,
-  includeDescendantGroups = FALSE
+  includeDescendantGroups = FALSE,
+  includeCurrentGroup = TRUE
 )}\if{html}{\out{</div>}}
 }
 
@@ -1137,6 +1138,9 @@ outline child group no longer exists.}
 
 \item{\code{includeDescendantGroups}}{Default `FALSE`.  Specify true to also return
 all descendants of data groups that match the specified criteria.}
+
+\item{\code{includeCurrentGroup}}{Default `TRUE`.  Specify `FALSE` to prevent the
+current group being included in the returned results.}
 }
 \if{html}{\out{</div>}}
 }

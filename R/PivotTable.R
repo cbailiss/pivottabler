@@ -2021,13 +2021,18 @@ PivotTable <- R6::R6Class("PivotTable",
     #' outline child group no longer exists.
     #' @param includeDescendantGroups Default `FALSE`.  Specify true to also return
     #' all descendants of data groups that match the specified criteria.
+    #' @param rowNumbers An integer vector specifying row numbers that constrains
+    #' the data groups to be found.
+    #' @param cells A `PivotCell` object or a list of `PivotCell` objects to specify
+    #' one or more cells that must intersect the data groups.
     #' @return A list of data groups matching the specified criteria.
     findRowDataGroups = function(matchMode="simple", variableNames=NULL, variableValues=NULL,
                                  totals="include", calculationNames=NULL,
                                  atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
                                  emptyGroups="exclude",
                                  outlineGroups="exclude", outlineLinkedGroupExists=NULL,
-                                 includeDescendantGroups=FALSE) {
+                                 includeDescendantGroups=FALSE,
+                                 rowNumbers=NULL, cells=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -2041,16 +2046,42 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", outlineGroups, missing(outlineGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", outlineLinkedGroupExists, missing(outlineLinkedGroupExists), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findRowDataGroups", cells, missing(cells), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotCell", "list"), allowedListElementClasses="PivotCell")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findRowDataGroups", "Finding row data groups...")
-      grps <- private$p_rowGroup$findDataGroups(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues, totals=totals,
+      # find groups
+      grps1 <- private$p_rowGroup$findDataGroups(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues, totals=totals,
                                                 calculationNames=calculationNames,
                                                 atLevels=atLevels, minChildCount=minChildCount, maxChildCount=maxChildCount,
                                                 emptyGroups=emptyGroups,
                                                 outlineGroups=outlineGroups, outlineLinkedGroupExists=outlineLinkedGroupExists,
                                                 includeDescendantGroups=includeDescendantGroups, includeCurrentGroup=FALSE)
+      # additional constraints: this logic is not embedded in PivotDataGroup since it needs the row numbers
+      if("PivotCell" %in% class(cells)) cells <- list(cells)
+      grps2 <- list()
+      if((length(rowNumbers)>0)||(length(cells)>0)) {
+        if(!private$p_evaluated) stop("PivotTable$findRowDataGroups():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+        if(is.null(private$p_cells)) stop("PivotTable$findRowDataGroups():  No cells exist to examine.", call. = FALSE)
+        if(length(cells)>0) {
+          fx <- function(x) { return(x$rowNumber) }
+          cellRowNumbers <- unique(sapply(cells, fx))
+          rowNumbers <- union(rowNumbers, cellRowNumbers)
+        }
+        if(length(rowNumbers)>0) {
+          for(grp in grps1) {
+            grpRowNumbers <- self$findGroupRowNumbers(group=grp)
+            if(length(intersect(rowNumbers, grpRowNumbers))>0) {
+              grps2[[length(grps2)+1]] <- grp
+            }
+          }
+        }
+      }
+      else {
+        grps2 <- grps1
+      }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findRowDataGroups", "Found row data groups.")
-      return(invisible(grps))
+      return(invisible(grps2))
     },
 
     #' @description
@@ -2086,11 +2117,16 @@ PivotTable <- R6::R6Class("PivotTable",
     #' must be one of "include", "exclude" (default) or "only".
     #' @param includeDescendantGroups Default `FALSE`.  Specify true to also return
     #' all descendants of data groups that match the specified criteria.
+    #' @param columnNumbers An integer vector specifying column numbers that constrains
+    #' the data groups to be found.
+    #' @param cells A `PivotCell` object or a list of `PivotCell` objects to specify
+    #' one or more cells that must intersect the data groups.
     #' @return A list of data groups matching the specified criteria.
     findColumnDataGroups = function(matchMode="simple", variableNames=NULL, variableValues=NULL,
                                     totals="include", calculationNames=NULL,
                                     atLevels=NULL, minChildCount=NULL, maxChildCount=NULL,
-                                    emptyGroups="exclude", includeDescendantGroups=FALSE) {
+                                    emptyGroups="exclude", includeDescendantGroups=FALSE,
+                                    columnNumbers=NULL, cells=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -2102,15 +2138,41 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", maxChildCount, missing(maxChildCount), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", emptyGroups, missing(emptyGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", includeDescendantGroups, missing(includeDescendantGroups), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", columnNumbers, missing(columnNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findColumnDataGroups", cells, missing(cells), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotCell", "list"), allowedListElementClasses="PivotCell")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findColumnDataGroups", "Finding column data groups...")
-      grps <- private$p_columnGroup$findDataGroups(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues, totals=totals,
+      # find groups
+      grps1 <- private$p_columnGroup$findDataGroups(matchMode=matchMode, variableNames=variableNames, variableValues=variableValues, totals=totals,
                                                    calculationNames=calculationNames,
                                                    atLevels=atLevels, minChildCount=minChildCount, maxChildCount=maxChildCount,
                                                    emptyGroups=emptyGroups, outlineGroups="exclude",
                                                    includeDescendantGroups=includeDescendantGroups, includeCurrentGroup=FALSE)
+      # additional constraints: this logic is not embedded in PivotDataGroup since it needs the column numbers
+      if("PivotCell" %in% class(cells)) cells <- list(cells)
+      grps2 <- list()
+      if((length(columnNumbers)>0)||(length(cells)>0)) {
+        if(!private$p_evaluated) stop("PivotTable$findColumnDataGroups():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+        if(is.null(private$p_cells)) stop("PivotTable$findColumnDataGroups():  No cells exist to examine.", call. = FALSE)
+        if(length(cells)>0) {
+          fx <- function(x) { return(x$columnNumber) }
+          cellColNumbers <- unique(sapply(cells, fx))
+          columnNumbers <- union(columnNumbers, cellColNumbers)
+        }
+        if(length(columnNumbers)>0) {
+          for(grp in grps1) {
+            grpColNumbers <- self$findGroupColumnNumbers(group=grp)
+            if(length(intersect(columnNumbers, grpColNumbers))>0) {
+              grps2[[length(grps2)+1]] <- grp
+            }
+          }
+        }
+      }
+      else {
+        grps2 <- grps1
+      }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findColumnDataGroups", "Found column data groups.")
-      return(invisible(grps))
+      return(invisible(grps2))
     },
 
     #' @description
@@ -2132,7 +2194,7 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyRows", "Getting empty rows...")
       if(!private$p_evaluated) stop("PivotTable$getEmptyRows():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
-      if(is.null(private$p_cells)) stop("PivotTable$getEmptyRows():  No cells exist to examine", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$getEmptyRows():  No cells exist to examine.", call. = FALSE)
       emptyRowNumbers <- vector("integer", 0)
       rowCount <- private$p_cells$rowCount
       columnCount <- private$p_cells$columnCount
@@ -2177,7 +2239,7 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getEmptyColumns", "Getting empty columns...")
       if(!private$p_evaluated) stop("PivotTable$getEmptyColumns():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
-      if(is.null(private$p_cells)) stop("PivotTable$getEmptyColumns():  No cells exist to examine", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$getEmptyColumns():  No cells exist to examine.", call. = FALSE)
       emptyColumnNumbers <- vector("integer", 0)
       rowCount <- private$p_cells$rowCount
       columnCount <- private$p_cells$columnCount
