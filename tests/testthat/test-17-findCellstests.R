@@ -248,3 +248,60 @@ for(i in 1:nrow(scenarios)) {
     expect_identical(as.character(pt$getHtml()), html)
   })
 }
+
+
+scenarios <- testScenarios("find cells tests:  constrained with row/column numbers or groups")
+for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
+                         compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE, noDataGroupNBSP=TRUE))
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    pt$addColumnDataGroups("PowerType")
+    pt$addRowDataGroups("TOC")
+    pt$addRowDataGroups("Status")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$evaluatePivot()
+
+    rgrps <- pt$leafRowGroups
+    cgrps <- pt$leafColumnGroups
+
+    cells <- pt$findCells(groups=cgrps[1:2], emptyCells="exclude")
+    pt$setStyling(cells=cells, declarations=list("background-color"="yellow"))
+
+    cells <- pt$findCells(groups=list(rgrps[[6]], rgrps[[8]]), minValue=10)
+    pt$setStyling(cells=cells, declarations=list("background-color"="lightgreen"))
+
+    cells <- pt$findCells(rowNumbers=2:4, columnGroups=cgrps[7:8],
+                          emptyCells="exclude",
+                          rowColumnMatchMode="combinations")
+    pt$setStyling(cells=cells, declarations=list("background-color"="pink"))
+
+    rgrps <- rgrps[11:17]
+    cgrps <- list(cgrps[[4]], cgrps[[5]], cgrps[[7]])
+    cells <- pt$findCells(rowGroups=rgrps, columnGroups=cgrps,
+                          rowColumnMatchMode="combinations")
+    pt$setStyling(cells=cells, declarations=list("background-color"="blanchedalmond"))
+
+    cells <- pt$findCells(rowGroups=rgrps, columnGroups=cgrps,
+                          rowColumnMatchMode="combinations",
+                          minValue=10000, emptyCells="exclude")
+    pt$setStyling(cells=cells, declarations=list("background-color"="orange"))
+
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\" colspan=\"2\">&nbsp;</th>\n    <th class=\"ColumnHeader\" colspan=\"4\">Express Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"3\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"ColumnHeader\" colspan=\"1\">DMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">EMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">HST</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">DMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">EMU</th>\n    <th class=\"ColumnHeader\" colspan=\"1\">Total</th>\n    <th class=\"ColumnHeader\" colspan=\"1\"></th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"4\">Arriva Trains Wales</th>\n    <th class=\"RowHeader\" rowspan=\"1\">A</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">3018</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">3018</td>\n    <td class=\"Cell\">815</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">815</td>\n    <td class=\"Cell\">3833</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">C</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">59</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">59</td>\n    <td class=\"Cell\">15</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: pink; \">15</td>\n    <td class=\"Cell\" style=\"background-color: pink; \">74</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">R</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">2</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">2</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: pink; \">2</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">3079</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: pink; \">830</td>\n    <td class=\"Cell\" style=\"background-color: pink; \">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"4\">CrossCountry</th>\n    <th class=\"RowHeader\" rowspan=\"1\">A</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">21561</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">709</td>\n    <td class=\"Cell\">22270</td>\n    <td class=\"Cell\">60</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">60</td>\n    <td class=\"Cell\">22330</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">C</th>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \">546</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \"></td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \">23</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \">569</td>\n    <td class=\"Cell\">2</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \"></td>\n    <td class=\"Cell\">2</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \">571</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">R</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">26</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">26</td>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">1</td>\n    <td class=\"Cell\">27</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \">22133</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \"></td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \">732</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \">22865</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \">63</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \"></td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \">63</td>\n    <td class=\"Cell\" style=\"background-color: lightgreen; \">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"4\">London Midland</th>\n    <th class=\"RowHeader\" rowspan=\"1\">A</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">5534</td>\n    <td class=\"Cell\" style=\"background-color: yellow; \">8599</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">14133</td>\n    <td class=\"Cell\">5520</td>\n    <td class=\"Cell\">27331</td>\n    <td class=\"Cell\">32851</td>\n    <td class=\"Cell\">46984</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">C</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">101</td>\n    <td class=\"Cell\" style=\"background-color: yellow; \">235</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\">336</td>\n    <td class=\"Cell\">67</td>\n    <td class=\"Cell\">847</td>\n    <td class=\"Cell\">914</td>\n    <td class=\"Cell\">1250</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">R</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">3</td>\n    <td class=\"Cell\" style=\"background-color: yellow; \">15</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \">18</td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \">4</td>\n    <td class=\"Cell\">23</td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \">27</td>\n    <td class=\"Cell\">45</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">5638</td>\n    <td class=\"Cell\" style=\"background-color: yellow; \">8849</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: orange; \">14487</td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \">5591</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Cell\" style=\"background-color: orange; \">33792</td>\n    <td class=\"Cell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"4\">Virgin Trains</th>\n    <th class=\"RowHeader\" rowspan=\"1\">A</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">2028</td>\n    <td class=\"Cell\" style=\"background-color: yellow; \">6331</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \">8359</td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \"></td>\n    <td class=\"Cell\">8359</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">C</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">107</td>\n    <td class=\"Cell\" style=\"background-color: yellow; \">119</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \">226</td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \"></td>\n    <td class=\"Cell\">226</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">R</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">2</td>\n    <td class=\"Cell\" style=\"background-color: yellow; \">7</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \">9</td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \"></td>\n    <td class=\"Cell\">9</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">2137</td>\n    <td class=\"Cell\" style=\"background-color: yellow; \">6457</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \">8594</td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \"></td>\n    <td class=\"Cell\"></td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \"></td>\n    <td class=\"Cell\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"1\">Total</th>\n    <th class=\"RowHeader\" rowspan=\"1\"></th>\n    <td class=\"Cell\" style=\"background-color: yellow; \">32987</td>\n    <td class=\"Cell\" style=\"background-color: yellow; \">15306</td>\n    <td class=\"Cell\">732</td>\n    <td class=\"Cell\" style=\"background-color: orange; \">49025</td>\n    <td class=\"Cell\" style=\"background-color: blanchedalmond; \">6484</td>\n    <td class=\"Cell\">28201</td>\n    <td class=\"Cell\" style=\"background-color: orange; \">34685</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n</table>"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 753390)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}

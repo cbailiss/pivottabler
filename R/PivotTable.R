@@ -2262,7 +2262,8 @@ PivotTable <- R6::R6Class("PivotTable",
     #' or cells to retrieve.
     #' @param cellCoordinates A list of two-element vectors that specify the
     #' coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.
-    #' @param excludeEmptyCells `TRUE` (default) to exclude empty cells.
+    #' @param excludeEmptyCells Default `FALSE`.  Specify `TRUE` to exclude empty
+    #' cells.
     #' @param groups A `PivotDataGroup` object or a list of `PivotDataGroup`
     #' objects on either the rows or columns axes.  The cells to be retrieved
     #' must be related to at least one of these groups.
@@ -2276,9 +2277,18 @@ PivotTable <- R6::R6Class("PivotTable",
     #' at least one of these column groups.  If both `rowGroups` and `columnGroups`
     #' are specified, then the cells to be retrieved must be related to at least
     #' one of the specified row groups and one of the specified column groups.
+    #' @param matchMode Either "simple" (default) or "combinations"
+    #' "simple" specifies that row and column arguments are considered separately
+    #' (logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
+    #' row 1 and all cells in column 2.
+    #' "combinations" specifies that row and column arguments are considered together
+    #' (logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
+    #' cell single at location (1, 2).
+    #' Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
+    #' affected by the match mode.  All other arguments are not.
     #' @return A list of `PivotCell` objects.
-    getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE,
-                        groups=NULL, rowGroups=NULL, columnGroups=NULL) {
+    getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=FALSE,
+                        groups=NULL, rowGroups=NULL, columnGroups=NULL, matchMode="simple") {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", specifyCellsAsList, missing(specifyCellsAsList), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
@@ -2288,21 +2298,15 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", groups, missing(groups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", rowGroups, missing(rowGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", columnGroups, missing(columnGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", matchMode, missing(matchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getCells", "Getting cells...")
       if(!private$p_evaluated) stop("PivotTable$getCells():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$getCells():  No cells exist to retrieve.", call. = FALSE)
-      # need to miss the specifyCellsAsList argument out if it is missing here, so the warning message is generated
-      if(missing(specifyCellsAsList)) {
-        cells <- private$p_cells$getCells(rowNumbers=rowNumbers, columnNumber=columnNumbers, cellCoordinates=cellCoordinates,
-                                          excludeEmptyCells=excludeEmptyCells,
-                                          groups=groups, rowGroups=rowGroups, columnGroups=columnGroups)
-      }
-      else {
-        cells <- private$p_cells$getCells(specifyCellsAsList=specifyCellsAsList, rowNumbers=rowNumbers, columnNumber=columnNumbers,
-                                          cellCoordinates=cellCoordinates, excludeEmptyCells=excludeEmptyCells,
-                                          groups=groups, rowGroups=rowGroups, columnGroups=columnGroups)
-      }
+      cells <- private$p_cells$getCells(specifyCellsAsList=specifyCellsAsList, rowNumbers=rowNumbers, columnNumber=columnNumbers,
+                                        cellCoordinates=cellCoordinates, excludeEmptyCells=excludeEmptyCells,
+                                        groups=groups, rowGroups=rowGroups, columnGroups=columnGroups,
+                                        matchMode=matchMode)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getCells", "Got cells.")
       return(invisible(cells))
     },
@@ -2331,13 +2335,47 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param includeNA specify TRUE to include `NA` in the matched cells,
     #' FALSE to exclude `NA` values.
     #' @param emptyCells A word that specifies how empty cells are matched -
-    #' must be one of "include", "exclude" (default) or "only".
+    #' must be one of "include" (default), "exclude" or "only".
     #' @param outlineCells A word that specifies how outline cells are matched -
     #' must be one of "include", "exclude" (default) or "only".
+    #' @param rowNumbers A vector of row numbers that specify the rows or
+    #' cells to constrain the search.
+    #' @param columnNumbers A vector of column numbers that specify the columns
+    #' or cells to constrain the search.
+    #' @param cellCoordinates A list of two-element vectors that specify the
+    #' coordinates of cells to constrain the search.
+    #' @param groups A `PivotDataGroup` object or a list of `PivotDataGroup`
+    #' objects on either the rows or columns axes.  The cells to be searched
+    #' must be related to at least one of these groups.
+    #' @param rowGroups A `PivotDataGroup` object or a list of `PivotDataGroup`
+    #' objects on the rows axis.  The cells to be searched must be related to
+    #' at least one of these row groups.  If both `rowGroups` and `columnGroups`
+    #' are specified, then the cells to be searched must be related to at least
+    #' one of the specified row groups and one of the specified column groups.
+    #' @param columnGroups A `PivotDataGroup` object or a list of `PivotDataGroup`
+    #' objects on the columns axis.  The cells to be searched must be related to
+    #' at least one of these column groups.  If both `rowGroups` and `columnGroups`
+    #' are specified, then the cells to be searched must be related to at least
+    #' one of the specified row groups and one of the specified column groups.
+    #' @param cells A `PivotCell` object or a list of `PivotCell`
+    #' objects to constrain the scope of the search.
+    #' @param rowColumnMatchMode Either "simple" (default) or "combinations":
+    #' "simple" specifies that row and column arguments are considered separately
+    #' (logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
+    #' row 1 and all cells in column 2.
+    #' "combinations" specifies that row and column arguments are considered together
+    #' (logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
+    #' cell single at location (1, 2).
+    #' Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
+    #' affected by the match mode.  All other arguments are not.
     #' @return A list of `PivotCell` objects.
     findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
                          minValue=NULL, maxValue=NULL, exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
-                         emptyCells="exclude", outlineCells="exclude") {
+                         emptyCells="include", outlineCells="exclude",
+                         # additional arguments to constrain cells matched
+                         rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL,
+                         groups=NULL, rowGroups=NULL, columnGroups=NULL,
+                         rowColumnMatchMode="simple", cells=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
@@ -2350,13 +2388,26 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", includeNA, missing(includeNA), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", emptyCells, missing(emptyCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", outlineCells, missing(outlineCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
+        # additional arguments to constrain cells matched
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", columnNumbers, missing(columnNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", cellCoordinates, missing(cellCoordinates), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", groups, missing(groups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", rowGroups, missing(rowGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", columnGroups, missing(columnGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", cells, missing(cells), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotCell", "list"), allowedListElementClasses="PivotCell")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", rowColumnMatchMode, missing(rowColumnMatchMode), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("simple", "combinations"))
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findCells", "Finding cells...")
       if(!private$p_evaluated) stop("PivotTable$findCells():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$findCells():  No cells exist to retrieve.", call. = FALSE)
       cells <- private$p_cells$findCells(variableNames=variableNames, variableValues=variableValues, totals=totals, calculationNames=calculationNames,
                                          minValue=minValue, maxValue=maxValue, exactValues=exactValues, includeNull=includeNull, includeNA=includeNA,
-                                         emptyCells=emptyCells, outlineCells=outlineCells)
+                                         emptyCells=emptyCells, outlineCells=outlineCells,
+                                         # additional arguments to constrain cells matched
+                                         rowNumbers=rowNumbers, columnNumbers=columnNumbers, cellCoordinates=cellCoordinates,
+                                         groups=groups, rowGroups=rowGroups, columnGroups=columnGroups,
+                                         rowColumnMatchMode=rowColumnMatchMode, cells=cells)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findCells", "Found cells.")
       return(invisible(cells))
     },

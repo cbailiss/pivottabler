@@ -24,6 +24,8 @@ NB:  This number is guaranteed to be unique within the pivot table,
 but the method of generation of the values may change in future, so
 you are advised not to base any logic on specific values.}
 
+\item{\code{rowOrColumn}}{Either "row" or "column"}
+
 \item{\code{parentGroup}}{The parent `PivotDataGroup` instance that this
 `PivotDataGroup` instance belongs to.}
 
@@ -101,7 +103,11 @@ group.}
 
 \item{\code{cellStyle}}{A `PivotStyle` object that contains additional CSS style
 declarations that override the base style for cells related to this data
-group.}
+group.  If setting this property, a list can also be specified.}
+
+\item{\code{netCellStyle}}{A `PivotStyle` object that contains additional CSS style
+declarations that override the base style for cells related to this data
+group - both from this group and all ancestors.}
 
 \item{\code{fixedWidthSize}}{The width (in characters) needed for
 this data group when rendering to plain text.}

@@ -2111,7 +2111,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       }
    },
 
-   #' @field cellStyle A `PivotStyle` object that contains additional CSS style
+   #' @field netCellStyle A `PivotStyle` object that contains additional CSS style
    #' declarations that override the base style for cells related to this data
    #' group - both from this group and all ancestors.
    netCellStyle = function(value) {

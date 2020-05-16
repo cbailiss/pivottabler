@@ -1,10 +1,14 @@
-pivottabler 1.4.1
+pivottabler 1.5.0
 =================
 
-Bug Fixes
----------
+Breaking Changes
+----------------
 
-* Cell styles are now inherited correctly from calculations and data groups (#46).  Thanks to @msgoussi for the bug report.  An explanation of the style inheritance rules has also been added to the "Styling" vignette.
+**Stricter definition of empty cells**
+
+When retrieving cells using `pt$getCells()` with the `excludeEmptyCells` parameter, or when  searching cells using `pt$findCells()` with the `emptyCells` parameter, previous versions of the package would only treat cells as empty if they were related to a data group marked as empty.  Cells with NULL values were not considered as empty.
+
+Starting with this version, cells with NULL values (i.e. where `is.null(cell$rawValue)==TRUE`) are also regarded as empty.  This may result in more cells being regarded as empty.  The previous behaviour is still available by specifying `compatibility=list(legacyEmptyCellMatching=TRUE)` as an argument when creating the pivot table, either in `PivotTable$new()` or one of the quick pivot functions such as `qpvt()`.
 
 Improvements
 ----------------
@@ -12,6 +16,13 @@ Improvements
 * `pt$setStyling()` now accepts new integer/numeric vector arguments `rowNumbers` and/or `columnNumbers`.  It is now also possible to specify only a set of row numbers and then all cells in those rows will be styled (and similarly for column numbers).  Previously, if only row numbers or only column numbers were specified, then no cells would be styled.  Users who require the old logic can specify the argument `compatibility=list(legacySetStylingRowColumnNumbers=TRUE)` when calling `PivotTable$new()`.
 * The following now accept vector/list arguments: `pt$getColumnGroupsByLevel()`, `pt$getRowGroupsByLevel()`, `pt$getLeafColumnGroup()`, `pt$getLeafRowGroup()`, `pt$findGroupColumnNumbers()` and `pt$findGroupRowNumbers()`.
 * `pt$getCells()` now accepts new arguments `groups`, `rowGroups` and `columnGroups` making it easier to retrieve cells related to specific data groups.  See the "Finding and Formatting" vignette for details.
+* `pt$getCells()` now also accepts a new `matchMode` argument making it easier to retrieve cells based on combinations of row and column criteria.  See the "Finding and Formatting" vignette for details.
+* `pt$findCells()` now accepts new arguments `rowNumbers`, `columnNumbers`, `cellCoordinates`, `groups`, `rowGroups`, `columnGroups`, `cells` and `rowColumnMatchMode` to restrict the cell search based on combinations of row and column criteria.  See the "Finding and Formatting" vignette for details.
+
+Bug Fixes
+---------
+
+* Cell styles are now inherited correctly from calculations and data groups (#46).  Thanks to @msgoussi for the bug report.  An explanation of the style inheritance rules has also been added to the "Styling" vignette.
 
 
 pivottabler 1.4.0

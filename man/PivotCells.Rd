@@ -96,7 +96,7 @@ No return value.
 \if{latex}{\out{\hypertarget{method-getColumnGroup}{}}}
 \subsection{Method \code{getColumnGroup()}}{
 Get the leaf-level data group that is associated with a specific column
-in the pivot table.
+or columns in the pivot table.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotCells$getColumnGroup(c = NULL)}\if{html}{\out{</div>}}
 }
@@ -104,8 +104,8 @@ in the pivot table.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{c}}{The column number.  The first column is column 1, excluding the
-column(s) associated with row-headings.}
+\item{\code{c}}{The column number or numbers.  The first column is column 1,
+excluding the column(s) associated with row-headings.}
 }
 \if{html}{\out{</div>}}
 }
@@ -118,7 +118,7 @@ A `PivotDataGroup` that is associated with the specified column.
 \if{latex}{\out{\hypertarget{method-getRowGroup}{}}}
 \subsection{Method \code{getRowGroup()}}{
 Get the leaf-level data group that is associated with a specific row
-in the pivot table.
+or rows in the pivot table.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotCells$getRowGroup(r = NULL)}\if{html}{\out{</div>}}
 }
@@ -126,8 +126,8 @@ in the pivot table.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{r}}{The row number.  The first row is row 1, excluding the
-row(s) associated with column-headings.}
+\item{\code{r}}{The row number or numbers.  The first row is row 1, excluding
+the row(s) associated with column-headings.}
 }
 \if{html}{\out{</div>}}
 }
@@ -230,7 +230,11 @@ See the "Finding and Formatting" vignette for graphical examples.
   rowNumbers = NULL,
   columnNumbers = NULL,
   cellCoordinates = NULL,
-  excludeEmptyCells = TRUE
+  excludeEmptyCells = FALSE,
+  groups = NULL,
+  rowGroups = NULL,
+  columnGroups = NULL,
+  matchMode = "simple"
 )}\if{html}{\out{</div>}}
 }
 
@@ -249,7 +253,34 @@ or cells to retrieve.}
 \item{\code{cellCoordinates}}{A list of two-element vectors that specify the
 coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.}
 
-\item{\code{excludeEmptyCells}}{`TRUE` (default) to also search empty cells.}
+\item{\code{excludeEmptyCells}}{Default `FALSE`.  Specify `TRUE` to exclude empty
+cells.}
+
+\item{\code{groups}}{A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on either the rows or columns axes.  The cells to be retrieved
+must be related to at least one of these groups.}
+
+\item{\code{rowGroups}}{A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the rows axis.  The cells to be retrieved must be related to
+at least one of these row groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be retrieved must be related to at least
+one of the specified row groups and one of the specified column groups.}
+
+\item{\code{columnGroups}}{A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the columns axis.  The cells to be retrieved must be related to
+at least one of these column groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be retrieved must be related to at least
+one of the specified row groups and one of the specified column groups.}
+
+\item{\code{matchMode}}{Either "simple" (default) or "combinations"
+"simple" specifies that row and column arguments are considered separately
+(logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
+row 1 and all cells in column 2.
+"combinations" specifies that row and column arguments are considered together
+(logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
+cell single at location (1, 2).
+Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
+affected by the match mode.  All other arguments are not.}
 }
 \if{html}{\out{</div>}}
 }
@@ -302,8 +333,16 @@ See the "Finding and Formatting" vignette for graphical examples.
   exactValues = NULL,
   includeNull = TRUE,
   includeNA = TRUE,
-  emptyCells = "exclude",
-  outlineCells = "exclude"
+  emptyCells = "include",
+  outlineCells = "exclude",
+  rowNumbers = NULL,
+  columnNumbers = NULL,
+  cellCoordinates = NULL,
+  groups = NULL,
+  rowGroups = NULL,
+  columnGroups = NULL,
+  rowColumnMatchMode = "simple",
+  cells = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -340,10 +379,48 @@ FALSE to exclude `NULL` values.}
 FALSE to exclude `NA` values.}
 
 \item{\code{emptyCells}}{A word that specifies how empty cells are matched -
-must be one of "include", "exclude" (default) or "only".}
+must be one of "include" (default), "exclude" or "only".}
 
 \item{\code{outlineCells}}{A word that specifies how outline cells are matched -
 must be one of "include", "exclude" (default) or "only".}
+
+\item{\code{rowNumbers}}{A vector of row numbers that specify the rows or
+cells to constrain the search.}
+
+\item{\code{columnNumbers}}{A vector of column numbers that specify the columns
+or cells to constrain the search.}
+
+\item{\code{cellCoordinates}}{A list of two-element vectors that specify the
+coordinates of cells to constrain the search.}
+
+\item{\code{groups}}{A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on either the rows or columns axes.  The cells to be searched
+must be related to at least one of these groups.}
+
+\item{\code{rowGroups}}{A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the rows axis.  The cells to be searched must be related to
+at least one of these row groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be searched must be related to at least
+one of the specified row groups and one of the specified column groups.}
+
+\item{\code{columnGroups}}{A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the columns axis.  The cells to be searched must be related to
+at least one of these column groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be searched must be related to at least
+one of the specified row groups and one of the specified column groups.}
+
+\item{\code{rowColumnMatchMode}}{Either "simple" (default) or "combinations":
+"simple" specifies that row and column arguments are considered separately
+(logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
+row 1 and all cells in column 2.
+"combinations" specifies that row and column arguments are considered together
+(logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
+cell single at location (1, 2).
+Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
+affected by the match mode.  All other arguments are not.}
+
+\item{\code{cells}}{A `PivotCell` object or a list of `PivotCell`
+objects to constrain the scope of the search.}
 }
 \if{html}{\out{</div>}}
 }
@@ -355,42 +432,60 @@ A list of `PivotCell` objects.
 \if{html}{\out{<a id="method-findGroupColumnNumbers"></a>}}
 \if{latex}{\out{\hypertarget{method-findGroupColumnNumbers}{}}}
 \subsection{Method \code{findGroupColumnNumbers()}}{
-Find the column numbers associated with a specific data group.
+Find the column numbers associated with a specific data group or groups.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PivotCells$findGroupColumnNumbers(group = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$findGroupColumnNumbers(group = NULL, collapse = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{group}}{A `PivotDataGroup` in the column data groups (i.e. a
-column heading).}
+column heading)  or a list of column data groups..}
+
+\item{\code{collapse}}{A logical value specifying whether the return value should be
+simplified.  See details.}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+If `group` is a list:  If `collapse` is `FALSE`, then a list of vectors is
+returned, if `collapse` is `TRUE`, then a single combined vector is returned.
+}
+
 \subsection{Returns}{
-A vector of column numbers related to the specified group.
+Either a vector of column numbers related to the single specified group
+or a list of vectors containing column numbers related to the specified groups.
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-findGroupRowNumbers"></a>}}
 \if{latex}{\out{\hypertarget{method-findGroupRowNumbers}{}}}
 \subsection{Method \code{findGroupRowNumbers()}}{
-Find the row numbers associated with a specific data group.
+Find the row numbers associated with a specific data group or groups.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PivotCells$findGroupRowNumbers(group = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PivotCells$findGroupRowNumbers(group = NULL, collapse = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{group}}{A `PivotDataGroup` in the row data groups (i.e. a
-row heading).}
+row heading) or a list of row data groups.}
+
+\item{\code{collapse}}{A logical value specifying whether the return value should be
+simplified.  See details.}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+If `group` is a list:  If `collapse` is `FALSE`, then a list of vectors is
+returned, if `collapse` is `TRUE`, then a single combined vector is returned.
+}
+
 \subsection{Returns}{
-A vector of row numbers related to the specified group.
+Either a vector of row numbers related to the single specified group
+or a list of vectors containing row numbers related to the specified groups.
 }
 }
 \if{html}{\out{<hr>}}
