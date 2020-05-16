@@ -14,7 +14,7 @@ vignette: >
 * Finding and Formatting
 * Example Pivot Table
 * Finding Headings
-* Getting Cells by Row and/or Column Numbers 
+* Getting Cells
 * Finding Cells
 * Conditional Formatting
 * Summary
@@ -293,11 +293,21 @@ pt$setStyling(groups=groups, declarations=list("background-color"="#00FFFF"))
 pt$renderPivot()
 ```
 
-## Getting Cells By Row and/or Column Numbers
+## Getting Cells
 
-The `getCells()` function is used to retrieve one or more cells by row/column number in the body of the pivot table.  The arguments can be specified in two different ways depending on the value of the `specifyCellsAsList` argument.
+The `getCells()` function is used to retrieve one or more cells in the body of the pivot table using row/column numbers or row/column data groups.  This function has the following parameters:
 
-In versions v0.4.0 and earlier, the default value of the `specifyCellsAsList` argument was `FALSE`.  The default value is now `TRUE`.
+- `specifyCellsAsList` - a logical value, usage and default value described below.
+- `rowNumbers` - an integer vector specifying row numbers.
+- `columnNumbers` - an integer vector specifying column numbers.
+- `cellCoordinates` - a list of two-element vectors that specify the coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.
+- `excludeEmptyCells` - a logical value that specifies whether cells with no value should be excluded, default `TRUE`.
+- `groups` - a `PivotDataGroup` object or a list of `PivotDataGroup` objects on either the rows or columns axes.  The cells to be retrieved must be related to at least one of these groups.
+- `rowGroups` - a `PivotDataGroup` object or a list of `PivotDataGroup` objects on the rows axis.  The cells to be retrieved must be related to at least one of these row groups.
+- `columnGroups` - a `PivotDataGroup` object or a list of `PivotDataGroup` objects on the columns axis.  The cells to be retrieved must be related to at least one of these column groups.
+    + If both `rowGroups` and `columnGroups` are specified, then the cells to be retrieved must be related to at least one of the specified row groups and one of the specified column groups.
+    
+The row/column number arguments can be specified in two different ways depending on the value of the `specifyCellsAsList` argument.  In versions v0.4.0 and earlier, the default value of the `specifyCellsAsList` argument was `FALSE`.  The default value is now `TRUE`.
 
 The `getCells()` function returns a list of cell objects.
 
@@ -509,6 +519,45 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$evaluatePivot()
 cells <- pt$getCells(specifyCellsAsList=FALSE, rowNumbers=c(2, NA, 5), columnNumbers=c(NA, 4, 7))
 pt$setStyling(cells=cells, declarations=list("background-color"="#00FF00"))
+pt$renderPivot()
+```
+
+### Getting cells from row/column data groups
+
+The `groups`, `rowGroups` and `columnGroups` arguments provide a simple way to retrieve the cells related to one or more data groups.
+
+If only one of `rowGroups` or `columnGroups` is specified, then they behave exactly the same as `groups`.  If both `rowGroups` and `columnGroups` are specified, then only cells related to both the specified row and column groups are retrieved.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$addRowDataGroups("Status")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+
+rgrps <- pt$leafRowGroups
+cgrps <- pt$leafColumnGroups
+
+cells <- pt$getCells(groups=list(cgrps[[1]], cgrps[[2]]))
+pt$setStyling(cells=cells, declarations=list("background-color"="yellow"))
+
+cells <- pt$getCells(groups=list(rgrps[[2]], rgrps[[4]]))
+pt$setStyling(cells=cells, declarations=list("background-color"="lightblue"))
+
+cells <- pt$getCells(columnGroups=list(cgrps[[4]], cgrps[[5]]))
+pt$setStyling(cells=cells, declarations=list("background-color"="lightgreen"))
+
+cells <- pt$getCells(rowGroups=list(rgrps[[6]], rgrps[[8]]))
+pt$setStyling(cells=cells, declarations=list("background-color"="pink"))
+
+cells <- pt$getCells(rowGroups=list(rgrps[[11]], rgrps[[13]], rgrps[[15]]),
+                     columnGroups=list(cgrps[[7]], cgrps[[8]]))
+pt$setStyling(cells=cells, declarations=list("background-color"="orange"))
+
 pt$renderPivot()
 ```
 

@@ -1851,6 +1851,9 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    #' you are advised not to base any logic on specific values.
    instanceId = function(value) { return(invisible(private$p_instanceId)) },
 
+   #' @field rowOrColumn Either "row" or "column"
+   rowOrColumn = function(value) { return(invisible(private$p_rowOrColumn)) },
+
    #' @field parentGroup The parent `PivotDataGroup` instance that this
    #' `PivotDataGroup` instance belongs to.
    parentGroup = function(value) { return(invisible(private$p_parentGroup)) },

@@ -453,7 +453,34 @@ fx <- function(x) {
 sapply(grps, fx)
 ```
 
-Once the relevant row and/or column numbers are known, cells can be retrieved either using the `pt$getCell()` function described above or or the `pt$getCells()` function described in the [Finding and Formatting](v08-findingandformatting.html) vignette.
+Cells can be retrieved by specifying row/column numbers with the `pt$getCell()` function described above or or the `pt$getCells()` function described in the [Finding and Formatting](v08-findingandformatting.html) vignette.
+
+The `pt$getCells()` function can also retrieve cells directly from data groups, e.g.
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$addRowDataGroups("Status")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+rgrps <- pt$leafRowGroups
+cgrps <- pt$leafColumnGroups
+
+cells <- pt$getCells(groups=list(cgrps[[1]], cgrps[[2]]))
+pt$setStyling(cells=cells, declarations=list("background-color"="yellow"))
+
+cells <- pt$getCells(groups=list(rgrps[[6]], rgrps[[8]]))
+pt$setStyling(cells=cells, declarations=list("background-color"="lightgreen"))
+
+cells <- pt$getCells(rowGroups=list(rgrps[[11]], rgrps[[13]], rgrps[[15]]),
+                     columnGroups=list(cgrps[[4]], cgrps[[5]], cgrps[[7]]))
+pt$setStyling(cells=cells, declarations=list("background-color"="orange"))
+pt$renderPivot()
+```
 
 ### From rows or columns to data groups
 

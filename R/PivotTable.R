@@ -2056,10 +2056,10 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @description
     #' Find column data groups that match specified criteria.
     #' @param matchMode Either "simple" (default) or "combinations".
-    #' "simple" is used when matching only one variable-value, multiple
+    #' "simple" is used when matching only one variable-value - multiple
     #' variable-value combinations are effectively logical "OR".
     #' "combinations" is used when matching for combinations of variable
-    #' values, multiple variable-value combinations are effectively
+    #' values - multiple variable-value combinations are effectively
     #' logical "AND".  A child group is viewed as having the variable-value
     #' filters of itself and it's parent/ancestors, e.g.
     #' `list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
@@ -2262,25 +2262,46 @@ PivotTable <- R6::R6Class("PivotTable",
     #' or cells to retrieve.
     #' @param cellCoordinates A list of two-element vectors that specify the
     #' coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.
-    #' @param excludeEmptyCells `TRUE` (default) to also search empty cells.
+    #' @param excludeEmptyCells `TRUE` (default) to exclude empty cells.
+    #' @param groups A `PivotDataGroup` object or a list of `PivotDataGroup`
+    #' objects on either the rows or columns axes.  The cells to be retrieved
+    #' must be related to at least one of these groups.
+    #' @param rowGroups A `PivotDataGroup` object or a list of `PivotDataGroup`
+    #' objects on the rows axis.  The cells to be retrieved must be related to
+    #' at least one of these row groups.  If both `rowGroups` and `columnGroups`
+    #' are specified, then the cells to be retrieved must be related to at least
+    #' one of the specified row groups and one of the specified column groups.
+    #' @param columnGroups A `PivotDataGroup` object or a list of `PivotDataGroup`
+    #' objects on the columns axis.  The cells to be retrieved must be related to
+    #' at least one of these column groups.  If both `rowGroups` and `columnGroups`
+    #' are specified, then the cells to be retrieved must be related to at least
+    #' one of the specified row groups and one of the specified column groups.
     #' @return A list of `PivotCell` objects.
-    getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE) {
+    getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE,
+                        groups=NULL, rowGroups=NULL, columnGroups=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", specifyCellsAsList, missing(specifyCellsAsList), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", columnNumbers, missing(columnNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", cellCoordinates, missing(cellCoordinates), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", excludeEmptyCells, missing(excludeEmptyCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", groups, missing(groups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", rowGroups, missing(rowGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCells", columnGroups, missing(columnGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getCells", "Getting cells...")
       if(!private$p_evaluated) stop("PivotTable$getCells():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$getCells():  No cells exist to retrieve.", call. = FALSE)
       # need to miss the specifyCellsAsList argument out if it is missing here, so the warning message is generated
       if(missing(specifyCellsAsList)) {
-        cells <- private$p_cells$getCells(rowNumbers=rowNumbers, columnNumber=columnNumbers, cellCoordinates=cellCoordinates, excludeEmptyCells=excludeEmptyCells)
+        cells <- private$p_cells$getCells(rowNumbers=rowNumbers, columnNumber=columnNumbers, cellCoordinates=cellCoordinates,
+                                          excludeEmptyCells=excludeEmptyCells,
+                                          groups=groups, rowGroups=rowGroups, columnGroups=columnGroups)
       }
       else {
-        cells <- private$p_cells$getCells(specifyCellsAsList=specifyCellsAsList, rowNumbers=rowNumbers, columnNumber=columnNumbers, cellCoordinates=cellCoordinates, excludeEmptyCells=excludeEmptyCells)
+        cells <- private$p_cells$getCells(specifyCellsAsList=specifyCellsAsList, rowNumbers=rowNumbers, columnNumber=columnNumbers,
+                                          cellCoordinates=cellCoordinates, excludeEmptyCells=excludeEmptyCells,
+                                          groups=groups, rowGroups=rowGroups, columnGroups=columnGroups)
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getCells", "Got cells.")
       return(invisible(cells))

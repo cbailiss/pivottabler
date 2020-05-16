@@ -44,14 +44,19 @@ PivotCells <- R6::R6Class("PivotCells",
 
    #' @description
    #' Get the leaf-level data group that is associated with a specific column
-   #' in the pivot table.
-   #' @param c The column number.  The first column is column 1, excluding the
-   #' column(s) associated with row-headings.
+   #' or columns in the pivot table.
+   #' @param c The column number or numbers.  The first column is column 1,
+   #' excluding the column(s) associated with row-headings.
    #' @return A `PivotDataGroup` that is associated with the specified column.
    getColumnGroup = function(c=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getColumnGroup", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_columnGroups))
       }
+      # multiple columns
+      if(length(c)>1) {
+         return(invisible(lapply(c, self$getColumnGroup)))
+      }
+      # single column
       if(c < 1)
          stop(paste0("PivotCells$getColumnGroup(): c (", c, ") must be greater than or equal to 1."), call. = FALSE)
       if(c > self$columnCount)
@@ -62,14 +67,19 @@ PivotCells <- R6::R6Class("PivotCells",
 
    #' @description
    #' Get the leaf-level data group that is associated with a specific row
-   #' in the pivot table.
-   #' @param r The row number.  The first row is row 1, excluding the
-   #' row(s) associated with column-headings.
+   #' or rows in the pivot table.
+   #' @param r The row number or numbers.  The first row is row 1, excluding
+   #' the row(s) associated with column-headings.
    #' @return A `PivotDataGroup` that is associated with the specified row
    getRowGroup = function(r=NULL) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
          checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getRowGroup", r, missing(r), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"), minValue=1, maxValue=length(private$p_rowGroups))
       }
+      # multiple rows
+      if(length(r)>1) {
+         return(invisible(lapply(r, self$getRowGroup)))
+      }
+      # single row
       if(r < 1)
          stop(paste0("PivotCells$getRowGroup(): r (", r, ") must be greater than or equal to 1."), call. = FALSE)
       if(r > self$rowCount)
@@ -193,15 +203,32 @@ PivotCells <- R6::R6Class("PivotCells",
    #' or cells to retrieve.
    #' @param cellCoordinates A list of two-element vectors that specify the
    #' coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.
-   #' @param excludeEmptyCells `TRUE` (default) to also search empty cells.
+   #' @param excludeEmptyCells `TRUE` (default) to exclude empty cells.
+   #' @param groups A `PivotDataGroup` object or a list of `PivotDataGroup`
+   #' objects on either the rows or columns axes.  The cells to be retrieved
+   #' must be related to at least one of these groups.
+   #' @param rowGroups A `PivotDataGroup` object or a list of `PivotDataGroup`
+   #' objects on the rows axis.  The cells to be retrieved must be related to
+   #' at least one of these row groups.  If both `rowGroups` and `columnGroups`
+   #' are specified, then the cells to be retrieved must be related to at least
+   #' one of the specified row groups and one of the specified column groups.
+   #' @param columnGroups A `PivotDataGroup` object or a list of `PivotDataGroup`
+   #' objects on the columns axis.  The cells to be retrieved must be related to
+   #' at least one of these column groups.  If both `rowGroups` and `columnGroups`
+   #' are specified, then the cells to be retrieved must be related to at least
+   #' one of the specified row groups and one of the specified column groups.
    #' @return A list of `PivotCell` objects.
-   getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE) {
+   getCells = function(specifyCellsAsList=TRUE, rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL, excludeEmptyCells=TRUE,
+                       groups=NULL, rowGroups=NULL, columnGroups=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", specifyCellsAsList, missing(specifyCellsAsList), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", rowNumbers, missing(rowNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", columnNumbers, missing(columnNumbers), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", cellCoordinates, missing(cellCoordinates), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", excludeEmptyCells, missing(excludeEmptyCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", groups, missing(groups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", rowGroups, missing(rowGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "getCells", columnGroups, missing(columnGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$getCells", "Getting cells...")
      if(specifyCellsAsList==FALSE) {
@@ -250,9 +277,10 @@ PivotCells <- R6::R6Class("PivotCells",
          stop("PivotCells$getCells():  When specifyCellsAsList=TRUE, rowNumbers/columnNumbers should not contain NA and cell coordinates should be specified using the specifyCellsAsList argument.  Please see the \"Finding and Formatting\" vignette for more details.", call. = FALSE)
        }
      }
-     # if no rows, columns or cells specified, then return all cells
+     # if no criteria specified, then return all cells
      cells <- list()
-     if(is.null(rowNumbers)&&is.null(columnNumbers)&&(length(cellCoordinates)==0)) {
+     if(is.null(rowNumbers)&&is.null(columnNumbers)&&(length(cellCoordinates)==0)&&
+        (length(groups)==0)&&(length(rowGroups)==0)&&(length(columnGroups)==0)) {
        if(length(private$p_rows) > 0) {
          for(r in 1:length(private$p_rows)) {
            if(length(private$p_rows[[r]]) > 0) {
@@ -286,6 +314,32 @@ PivotCells <- R6::R6Class("PivotCells",
      if(length(cellColumnNumbers[cellColumnNumbers > self$columnCount])>0) {
        stop("PivotCells$getCells():  All column numbers in cellCoordinates should be less than or equal to the column count in the pivot table.", call. = FALSE)
      }
+     # prepare and check the groups
+     grpsRowNumbers <- NULL
+     grpsColumnNumbers <- NULL
+     if(!is.null(groups)) {
+        if("PivotDataGroup" %in% class(groups)) groups <- list(groups)
+        grpsRowNumbers <- self$findGroupRowNumbers(group=groups, collapse=TRUE)
+        grpsColumnNumbers <- self$findGroupColumnNumbers(group=groups, collapse=TRUE)
+     }
+     rowGrpsRowNumbers <- NULL
+     if(!is.null(rowGroups)) {
+        if("PivotDataGroup" %in% class(rowGroups)) rowGroups <- list(rowGroups)
+        rowGroupTypes <- sapply(rowGroups, function(x) { x$rowOrColumn })
+        if(length(rowGroupTypes[rowGroupTypes != "row"])>0) {
+           stop("PivotCells$getCells():  All data groups specified as rowGroups must be row data groups.", call. = FALSE)
+        }
+        rowGrpsRowNumbers <- self$findGroupRowNumbers(group=rowGroups, collapse=TRUE)
+     }
+     columnGrpsColumnNumbers <- NULL
+     if(!is.null(columnGroups)) {
+        if("PivotDataGroup" %in% class(columnGroups)) columnGroups <- list(columnGroups)
+        columnGroupTypes <- sapply(columnGroups, function(x) { x$rowOrColumn })
+        if(length(columnGroupTypes[columnGroupTypes != "column"])>0) {
+           stop("PivotCells$getCells():  All data groups specified as columnGroups must be row data groups.", call. = FALSE)
+        }
+        columnGrpsColumnNumbers <- self$findGroupColumnNumbers(group=columnGroups, collapse=TRUE)
+     }
      # iterate the cells and return
      if(length(private$p_rows) > 0) {
        for(r in 1:length(private$p_rows)) {
@@ -295,7 +349,18 @@ PivotCells <- R6::R6Class("PivotCells",
              rowMatch <- sum(r==rowNumbers) > 0
              columnMatch <- sum(c==columnNumbers) > 0
              cellMatch <- sum((r==cellRowNumbers)&(c==cellColumnNumbers)) > 0
-             if(rowMatch||columnMatch||cellMatch) {
+             grpsMatch <- (sum(r==grpsRowNumbers) > 0) || (sum(c==grpsColumnNumbers) > 0)
+             grpsRowColMatch <- FALSE
+             if((length(rowGrpsRowNumbers)>0)&&(length(columnGrpsColumnNumbers)>0)) {
+                grpsRowColMatch <- (sum(r==rowGrpsRowNumbers) > 0) && (sum(c==columnGrpsColumnNumbers) > 0)
+             }
+             else if(length(rowGrpsRowNumbers)>0) {
+                grpsRowColMatch <- (sum(r==rowGrpsRowNumbers) > 0)
+             }
+             else if(length(columnGrpsColumnNumbers)>0) {
+                grpsRowColMatch <- (sum(c==columnGrpsColumnNumbers) > 0)
+             }
+             if(rowMatch||columnMatch||cellMatch||grpsMatch||grpsRowColMatch) {
                cell <- private$p_rows[[r]][[c]]
                if(excludeEmptyCells && cell$isEmpty) next
                cells[[length(cells)+1]] <- cell
@@ -421,14 +486,28 @@ PivotCells <- R6::R6Class("PivotCells",
    },
 
    #' @description
-   #' Find the column numbers associated with a specific data group.
+   #' Find the column numbers associated with a specific data group or groups.
    #' @param group A `PivotDataGroup` in the column data groups (i.e. a
-   #' column heading).
-   #' @return A vector of column numbers related to the specified group.
-   findGroupColumnNumbers = function(group=NULL) {
+   #' column heading)  or a list of column data groups..
+   #' @param collapse A logical value specifying whether the return value should be
+   #' simplified.  See details.
+   #' @details
+   #' If `group` is a list:  If `collapse` is `FALSE`, then a list of vectors is
+   #' returned, if `collapse` is `TRUE`, then a single combined vector is returned.
+   #' @return Either a vector of column numbers related to the single specified group
+   #' or a list of vectors containing column numbers related to the specified groups.
+   findGroupColumnNumbers = function(group=NULL, collapse=FALSE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
-         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findGroupColumnNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findGroupColumnNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findGroupColumnNumbers", collapse, missing(collapse), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
+      # multiple groups
+      if("list" %in% class(group)) {
+         fx <- function(x) { return(self$findGroupColumnNumbers(group=x)) }
+         if(isTRUE(collapse)) return(invisible(unique(unlist(lapply(group, fx)))))
+         else return(invisible(lapply(group, fx)))
+      }
+      # single group
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findGroupColumnNumbers", "Finding group column numbers...")
       # get lowest level of groups
       grps <- group$getLeafGroups()
@@ -450,14 +529,28 @@ PivotCells <- R6::R6Class("PivotCells",
    },
 
    #' @description
-   #' Find the row numbers associated with a specific data group.
+   #' Find the row numbers associated with a specific data group or groups.
    #' @param group A `PivotDataGroup` in the row data groups (i.e. a
-   #' row heading).
-   #' @return A vector of row numbers related to the specified group.
-   findGroupRowNumbers = function(group=NULL) {
+   #' row heading) or a list of row data groups.
+   #' @param collapse A logical value specifying whether the return value should be
+   #' simplified.  See details.
+   #' @details
+   #' If `group` is a list:  If `collapse` is `FALSE`, then a list of vectors is
+   #' returned, if `collapse` is `TRUE`, then a single combined vector is returned.
+   #' @return Either a vector of row numbers related to the single specified group
+   #' or a list of vectors containing row numbers related to the specified groups.
+   findGroupRowNumbers = function(group=NULL, collapse=FALSE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
-         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findGroupRowNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotDataGroup")
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findGroupRowNumbers", group, missing(group), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
+         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findGroupRowNumbers", collapse, missing(collapse), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
+      # multiple groups
+      if("list" %in% class(group)) {
+         fx <- function(x) { return(self$findGroupRowNumbers(group=x)) }
+         if(isTRUE(collapse)) return(invisible(unique(unlist(lapply(group, fx)))))
+         else return(invisible(lapply(group, fx)))
+      }
+      # single group
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findGroupRowNumbers", "Finding group row numbers...")
       # get lowest level of groups
       grps <- group$getLeafGroups()
