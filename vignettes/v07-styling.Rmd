@@ -34,19 +34,21 @@ This 'Quick Start' describes one easy method of styling table cells.  A fuller e
 
 Cells in a table are styled using CSS.  The quickest way to apply styles to individual cells in a table is using:
 
-`pt$setStyling(rFrom, cFrom, rTo, cTo, groups, cells, baseStyleName, style, declarations)`
+`pt$setStyling(rFrom, cFrom, rTo, cTo, rowNumbers, columnNumbers,  groups, cells, baseStyleName, style, declarations)`
 
 To apply styles to a single cell, e.g. at row 1, column 2 (in the body of the table, i.e. excluding the headings):
 
 `pt$setStyling(1, 2, declarations=list("font-weight"="bold", "text-align"="center")`
 
-To apply styles to a range of cells, e.g. rows 2 to 3 and columns 1 to 5:
+To apply styles to a range of cells, e.g. rows 2 to 3 and columns 1 to 5, use either:
 
-`pt$setStyling(2, 1, 3, 5, declarations=list("font-weight"="bold", "text-align"="center")`
+`pt$setStyling(2, 1, 3, 5, declarations=list("font-weight"="bold", "text-align"="center")` <br/>
+or <br/>
+`pt$setStyling(rowNumbers=2:3, columnNumbers=1:5, declarations=list("font-weight"="bold", "text-align"="center")`
 
 The above examples specify the cells to be styled by their row and column numbers in the body of the table.  It is also possible to specify a list of cells using the `cells` argument or a list of data groups (i.e. row or column headings) using the `groups` argument.  Many examples of these can be found in the [Finding and Formatting](v08-findingandformatting.html) vignette.
 
-The above examples also set CSS style attributes on the individual cells.  This is quick and easy, though very verbose.  Named styles are more efficient for large pivot tables (hundreds/thousands of cells) and are described in the following sections. 
+The above examples also set CSS style attributes on the individual cells.  This is quick and easy, though is verbose in the generated HTML.  Named styles are more efficient for large pivot tables (hundreds/thousands of cells) and are described in the following sections. 
 
 ## Styles and Themes
 
@@ -160,6 +162,7 @@ Simple themes can be defined using a list.  Several examples are shown below.
 # define the font and colours
 simpleBlueTheme <- list(
   fontName="Verdana, Arial",
+  fontSize="0.75em",
   headerBackgroundColor = "rgb(68, 114, 196)",
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor = "rgb(255, 255, 255)",
@@ -186,6 +189,7 @@ pt$renderPivot(styleNamePrefix="t3")
 # define the font and colours
 simpleGrayTheme <- list(
   fontName="Courier New, Courier",
+  fontSize="0.75em",
   headerBackgroundColor = "rgb(128, 128, 128)",
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor = "rgb(255, 255, 255)",
@@ -212,6 +216,7 @@ pt$renderPivot(styleNamePrefix="t4")
 # define the font and colours
 simpleGreenTheme <- list(
   fontName="Helvetica, arial",
+  fontSize="0.75em",
   headerBackgroundColor = "rgb(112, 173, 71)",
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor="rgb(255, 255, 255)",
@@ -242,6 +247,7 @@ The following example defines a simple theme and supplies this to the quick pivo
 # define the font and colours
 simpleBlueTheme <- list(
   fontName="Verdana, Arial",
+  fontSize="0.75em",
   headerBackgroundColor = "rgb(68, 114, 196)",
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor = "rgb(255, 255, 255)",
@@ -339,6 +345,7 @@ The individual cells in the pivot table can have their appearance changed by ret
 # define the theme
 orangeTheme <- list(
   fontName="Garamond, arial",
+  fontSize="0.75em",
   headerBackgroundColor = "rgb(237, 125, 49)",
   headerColor = "rgb(255, 255, 255)",
   cellBackgroundColor = "rgb(255, 255, 255)",
@@ -502,6 +509,7 @@ createCustomTheme <- function(parentPivot=NULL, themeName="myCustomTheme") {
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   # borders in purple
   pivotStyles$addStyle(styleName="Table", list(
+      "display"="table",
       "border-collapse"="collapse",
       "border"="2px solid #B28DFF"
     ))
@@ -582,19 +590,21 @@ pt$renderPivot(styleNamePrefix="t8")
 
 * Each cell in a table has an associated cell type (root / rowHeader / columnHeader / cell / total).  This controls the default styling applied to a cell.  The cell type is set by the `pivottabler` package automatically.
 * The styling theme applied to a pivot table defines a set of styles and the default style for each cell type.
-    + Create a new simple theme using:  `getSimpleColoredTblTheme()`
+    + Create a new simple theme as a list:  `pt$theme <- list(...)` (see above for supported list elements).  
+    + Create a new simple theme using:  `getSimpleColoredTheme()`
     + Create a new custom theme by writing a function `createCustomTheme()`
     + Assign a theme to the table `theme` property:  `pt$theme <- createCustomTheme(pt)`
 * Each individual cell can also have a different style, specified by settings the `baseStyleName` for the cell.
+    + Single cell example:  `pt$setStyling(3, 2, baseStyleName="AltCellStyle")`
     + Single cell example:  `pt$cells$getCell(3, 2)$baseStyleName <- "AltCellStyle"`
-    + Alternative single cell example:  `pt$setStyling(3, 2, baseStyleName="AltCellStyle")`
     + Cell range example: `pt$setStyling(3, 2, 3, 6, baseStyleName="AltCellStyle")`
+    + Cell range example: `pt$setStyling(rowNumbers=3, columnNumbers=2:6, baseStyleName="AltCellStyle")`
 * It is also possible to declare individual style overrides  (e.g. a different text colour).  These override specific style settings from the named styles.
     + Single cell example:  `pt$setStyling(3, 2, declarations=list("text-align"="left", "background-color"="yellow"))`
-    + Cell range example: `pt$setStyling(3, 2, 3, 6, declarations=list("text-align"="left", "background-color"="yellow"))`
+    + Cell range example: `pt$setStyling(rowNumbers=3, columnNumbers=2:6, declarations=list("text-align"="left", "background-color"="yellow"))`
 * It is possible to specify a new base style and overrides together.  The declarations override the settings in the base style. 
     + Single cell example:  `pt$setStyling(3, 2, baseStyleName="AltCellStyle", declarations=list("text-align"="left", "background-color"="yellow"))`
-    + Cell range example: `pt$setStyling(3, 2, 3, 6, baseStyleName="AltCellStyle", declarations=list("text-align"="left", "background-color"="yellow"))`
+    + Cell range example: `pt$setStyling(rowNumbers=3, columnNumbers=2:6, baseStyleName="AltCellStyle", declarations=list("text-align"="left", "background-color"="yellow"))`
 * Instead of specifying the declarations as a list, an inline style can be declared.  This is an unnamed style object that is used for one or multiple cells and is not part of the table theme.
     + See the "Changing cell appearance after cells have been created" section in this vignette for an example.
     + See the "Finding and Formatting" vignette for more examples.

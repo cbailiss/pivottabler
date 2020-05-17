@@ -7,8 +7,9 @@
 getSimpleColoredTheme(
   parentPivot,
   themeName = "coloredTheme",
-  colors,
-  fontName
+  colors = NULL,
+  fontName = NULL,
+  theme = NULL
 )
 }
 \arguments{
@@ -16,14 +17,42 @@ getSimpleColoredTheme(
 
 \item{themeName}{The name to use as the new theme name.}
 
-\item{colors}{The set of colours to use when generating the theme (see the Styling vignette for details).}
+\item{colors}{The set of colours to use when generating the theme (see
+the Styling vignette for details).  This parameter exists for
+backward compatibility.}
 
-\item{fontName}{The name of the font to use, or a comma separated list (for font-fall-back).}
+\item{fontName}{The name of the font to use, or a comma separated list
+(for font-fall-back).  This parameter exists for backward compatibility.}
+
+\item{theme}{A simple theme specified in the form of a list.  See example
+for supported list elements (all other elements will be ignored).}
 }
 \value{
-A PivotStyles object.
+A `PivotStyles` object.
 }
 \description{
 Get a simple coloured theme that can be used to style a
 pivot table into a custom colour scheme.
+}
+\examples{
+pt <- PivotTable$new()
+# ...
+simpleBlueTheme <- list(
+  fontName="Verdana, Arial",
+  fontSize="0.75em",
+  headerBackgroundColor = "rgb(68, 114, 196)",
+  headerColor = "rgb(255, 255, 255)",
+  cellBackgroundColor = "rgb(255, 255, 255)",
+  cellColor = "rgb(0, 0, 0)",
+  outlineCellBackgroundColor = "rgb(186, 202, 233)",
+  outlineCellColor = "rgb(0, 0, 0)",
+  totalBackgroundColor = "rgb(186, 202, 233)",
+  totalColor = "rgb(0, 0, 0)",
+  borderColor = "rgb(48, 84, 150)"
+)
+pt$theme <- simpleBlueTheme
+# or
+theme <- getSimpleColoredTheme(pt, theme=simpleBlueTheme)
+# make further changes to the theme
+pt$theme <- theme
 }

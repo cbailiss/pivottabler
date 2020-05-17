@@ -65,8 +65,9 @@ context("THEMING TESTS")
 
 
 
-scenarios <- testScenarios("theming tests:  basic test")
+scenarios <- testScenarios("theming tests:  legacy test")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -99,6 +100,52 @@ for(i in 1:nrow(scenarios)) {
     # prepStr(as.character(pt$getCss()))
     html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"ColumnHeader\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry</th>\n    <td class=\"Cell\">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Total\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland</th>\n    <td class=\"Cell\">14487</td>\n    <td class=\"Cell\">33792</td>\n    <td class=\"Total\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains</th>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">49025</td>\n    <td class=\"Total\">34685</td>\n    <td class=\"Total\">83710</td>\n  </tr>\n</table>"
     css <- ".Table {display: table; border-collapse: collapse; border: 2px solid rgb(198, 89, 17); }\r\n.ColumnHeader {font-family: Garamond, arial; font-size: 0.75em; padding: 2px; border: 1px solid rgb(198, 89, 17); vertical-align: middle; text-align: center; font-weight: bold; color: rgb(255, 255, 255); background-color: rgb(237, 125, 49); }\r\n.RowHeader {font-family: Garamond, arial; font-size: 0.75em; padding: 2px 8px 2px 2px; border: 1px solid rgb(198, 89, 17); vertical-align: middle; text-align: left; font-weight: bold; color: rgb(255, 255, 255); background-color: rgb(237, 125, 49); }\r\n.Cell {font-family: Garamond, arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid rgb(198, 89, 17); vertical-align: middle; text-align: right; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255); }\r\n.OutlineColumnHeader {font-family: Garamond, arial; font-size: 0.75em; padding: 2px; border: 1px solid rgb(198, 89, 17); vertical-align: middle; text-align: center; font-weight: bold; color: rgb(255, 255, 255); background-color: rgb(237, 125, 49); }\r\n.OutlineRowHeader {font-family: Garamond, arial; font-size: 0.75em; padding: 2px 8px 2px 2px; border: 1px solid rgb(198, 89, 17); vertical-align: middle; text-align: left; font-weight: bold; color: rgb(255, 255, 255); background-color: rgb(237, 125, 49); }\r\n.OutlineCell {font-family: Garamond, arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid rgb(198, 89, 17); vertical-align: middle; text-align: right; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255); font-weight: bold; }\r\n.Total {font-family: Garamond, arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid rgb(198, 89, 17); vertical-align: middle; text-align: right; color: rgb(0, 0, 0); background-color: rgb(248, 198, 165); }\r\n"
+
+    expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
+    expect_identical(as.character(pt$getHtml()), html)
+    expect_identical(pt$getCss(), css)
+  })
+}
+
+
+scenarios <- testScenarios("theming tests:  basic test")
+for(i in 1:nrow(scenarios)) {
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    # define the theme
+    simpleGreenTheme <- list(
+      fontName="Helvetica, arial",
+      fontSize="0.75em",
+      headerBackgroundColor = "rgb(112, 173, 71)",
+      headerColor = "rgb(255, 255, 255)",
+      cellBackgroundColor="rgb(255, 255, 255)",
+      cellColor="rgb(0, 0, 0)",
+      outlineCellBackgroundColor = "rgb(182, 216, 158)",
+      outlineCellColor = "rgb(0, 0, 0)",
+      totalBackgroundColor = "rgb(182, 216, 158)",
+      totalColor="rgb(0, 0, 0)",
+      borderColor = "rgb(84, 130, 53)"
+    )
+    # create the pivot table
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    pt$addRowDataGroups("TOC")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
+    pt$theme <- simpleGreenTheme
+    pt$evaluatePivot()
+    # pt$renderPivot()
+    # sum(pt$cells$asMatrix(), na.rm=TRUE)
+    # prepStr(as.character(pt$getHtml()))
+    # prepStr(as.character(pt$getCss()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"ColumnHeader\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry</th>\n    <td class=\"Cell\">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Total\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland</th>\n    <td class=\"Cell\">14487</td>\n    <td class=\"Cell\">33792</td>\n    <td class=\"Total\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains</th>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">49025</td>\n    <td class=\"Total\">34685</td>\n    <td class=\"Total\">83710</td>\n  </tr>\n</table>"
+    css <- ".Table {display: table; border-collapse: collapse; border: 2px solid rgb(84, 130, 53); }\r\n.ColumnHeader {font-family: Helvetica, arial; font-size: 0.75em; padding: 2px; border: 1px solid rgb(84, 130, 53); vertical-align: middle; text-align: center; font-weight: bold; color: rgb(255, 255, 255); background-color: rgb(112, 173, 71); }\r\n.RowHeader {font-family: Helvetica, arial; font-size: 0.75em; padding: 2px 8px 2px 2px; border: 1px solid rgb(84, 130, 53); vertical-align: middle; text-align: left; font-weight: bold; color: rgb(255, 255, 255); background-color: rgb(112, 173, 71); }\r\n.Cell {font-family: Helvetica, arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid rgb(84, 130, 53); vertical-align: middle; text-align: right; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255); }\r\n.OutlineColumnHeader {font-family: Helvetica, arial; font-size: 0.75em; padding: 2px; border: 1px solid rgb(84, 130, 53); vertical-align: middle; text-align: center; font-weight: bold; color: rgb(255, 255, 255); background-color: rgb(112, 173, 71); }\r\n.OutlineRowHeader {font-family: Helvetica, arial; font-size: 0.75em; padding: 2px 8px 2px 2px; border: 1px solid rgb(84, 130, 53); vertical-align: middle; text-align: left; font-weight: bold; color: rgb(255, 255, 255); background-color: rgb(112, 173, 71); }\r\n.OutlineCell {font-family: Helvetica, arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid rgb(84, 130, 53); vertical-align: middle; text-align: right; color: rgb(0, 0, 0); background-color: rgb(182, 216, 158); font-weight: bold; }\r\n.Total {font-family: Helvetica, arial; font-size: 0.75em; padding: 2px 2px 2px 8px; border: 1px solid rgb(84, 130, 53); vertical-align: middle; text-align: right; color: rgb(0, 0, 0); background-color: rgb(182, 216, 158); }\r\n"
 
     expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
     expect_identical(as.character(pt$getHtml()), html)

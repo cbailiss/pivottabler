@@ -347,18 +347,53 @@ getCompactTheme <- function(parentPivot, themeName="compact") {
 #' @export
 #' @param parentPivot Owning pivot table.
 #' @param themeName The name to use as the new theme name.
-#' @param colors The set of colours to use when generating the theme (see the Styling vignette for details).
-#' @param fontName The name of the font to use, or a comma separated list (for font-fall-back).
-#' @return A PivotStyles object.
-getSimpleColoredTheme <- function(parentPivot, themeName="coloredTheme", colors, fontName) {
+#' @param colors The set of colours to use when generating the theme (see
+#' the Styling vignette for details).  This parameter exists for
+#' backward compatibility.
+#' @param fontName The name of the font to use, or a comma separated list
+#' (for font-fall-back).  This parameter exists for backward compatibility.
+#' @param theme A simple theme specified in the form of a list.  See example
+#' for supported list elements (all other elements will be ignored).
+#' @examples
+#' pt <- PivotTable$new()
+#' # ...
+#' simpleBlueTheme <- list(
+#'   fontName="Verdana, Arial",
+#'   fontSize="0.75em",
+#'   headerBackgroundColor = "rgb(68, 114, 196)",
+#'   headerColor = "rgb(255, 255, 255)",
+#'   cellBackgroundColor = "rgb(255, 255, 255)",
+#'   cellColor = "rgb(0, 0, 0)",
+#'   outlineCellBackgroundColor = "rgb(186, 202, 233)",
+#'   outlineCellColor = "rgb(0, 0, 0)",
+#'   totalBackgroundColor = "rgb(186, 202, 233)",
+#'   totalColor = "rgb(0, 0, 0)",
+#'   borderColor = "rgb(48, 84, 150)"
+#' )
+#' pt$theme <- simpleBlueTheme
+#' # or
+#' theme <- getSimpleColoredTheme(pt, theme=simpleBlueTheme)
+#' # make further changes to the theme
+#' pt$theme <- theme
+#' @return A `PivotStyles` object.
+getSimpleColoredTheme <- function(parentPivot, themeName="coloredTheme", colors=NULL, fontName=NULL, theme=NULL) {
   if(R6::is.R6Class(parentPivot)&&(parentPivot$classname=="PivotTable")) argumentCheckMode <- parentPivot$argumentCheckMode
   else argumentCheckMode <- 4
   if(argumentCheckMode > 0) {
     checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", parentPivot, missing(parentPivot), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotTable")
     checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", themeName, missing(themeName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
-    checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", colors, missing(colors), allowMissing=FALSE, allowNull=FALSE, allowedClasses="list", allowedListElementClasses="character")
-    checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", fontName, missing(fontName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
+    checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", colors, missing(colors), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="character")
+    checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", fontName, missing(fontName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+    checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", theme, missing(theme), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="character")
   }
+  # take values from theme argument, if they are not specified explicitly
+  if(missing(colors)) colors <- theme
+  if(is.null(colors)) stop("getSimpleColoredTheme():  colors must be specified.", call. = FALSE)
+  if(missing(fontName)) fontName <- theme$fontName
+  if(is.null(fontName)) fontName <- "Arial"
+  fontSize <- theme$fontSize
+  if(length(fontSize)==0) fontSize <- "0.75em"
+  # build the theme
   pivotStyles <- PivotStyles$new(parentPivot=parentPivot, themeName=themeName)
   pivotStyles$addStyle(styleName="Table", list(
       "display"="table",
@@ -368,7 +403,7 @@ getSimpleColoredTheme <- function(parentPivot, themeName="coloredTheme", colors,
   # header lists
   baseHeaderList <- list(
     "font-family"=fontName,
-    "font-size"="0.75em",
+    "font-size"=fontSize,
     padding="2px",
     "border"=paste0("1px solid ", colors$borderColor),
     "vertical-align"="middle",
@@ -387,7 +422,7 @@ getSimpleColoredTheme <- function(parentPivot, themeName="coloredTheme", colors,
   # cell lists
   cellList <- list(
     "font-family"=fontName,
-    "font-size"="0.75em",
+    "font-size"=fontSize,
     padding="2px 2px 2px 8px",
     "border"=paste0("1px solid ", colors$borderColor),
     "vertical-align"="middle",

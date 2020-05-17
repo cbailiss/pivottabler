@@ -136,7 +136,7 @@ PivotTable <- R6::R6Class("PivotTable",
       else {
         if("PivotStyles" %in% class(theme)) { private$p_styles <- theme }
         else if("list" %in% class(theme)) {
-          private$p_styles <- getSimpleColoredTheme(parentPivot=self, themeName="coloredTheme", colors=theme, fontName=theme$fontName)
+          private$p_styles <- getSimpleColoredTheme(parentPivot=self, themeName="coloredTheme", theme=theme)
         }
         else if("character" %in% class(theme)) {
           if(tolower(trimws(theme))=="none") { theme <- "blank" }
@@ -4031,7 +4031,7 @@ PivotTable <- R6::R6Class("PivotTable",
           checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "theme", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("character", "list", "PivotStyles"), allowedListElementClasses="character")
         }
         if("character" %in% class(value)) private$p_styles <- getTheme(parentPivot=self, themeName=value)
-        else if("list" %in% class(value)) private$p_styles <- getSimpleColoredTheme(parentPivot=self, colors=value, fontName=value$fontName)
+        else if("list" %in% class(value)) private$p_styles <- getSimpleColoredTheme(parentPivot=self, theme=value)
         else if("PivotStyles" %in% class(value)) private$p_styles <- value
         return(invisible())
       }
