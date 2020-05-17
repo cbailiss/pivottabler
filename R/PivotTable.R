@@ -2279,7 +2279,7 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "getCell", c, missing(c), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$getCell", "Getting cell...")
-      if(is.null(private$p_cells)) stop("PivotTable$getCells():  No cells exist to retrieve.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$getCell():  No cells exist to retrieve.", call. = FALSE)
       if(length(r)>1) r <- r[1]
       if(length(c)>1) c <- c[1]
       cell <- private$p_cells$getCell(r=r, c=c)
