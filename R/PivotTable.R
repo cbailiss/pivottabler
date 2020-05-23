@@ -3992,9 +3992,13 @@ PivotTable <- R6::R6Class("PivotTable",
     #' last pivot table evaluation.
     batchInfo = function(value) { return(invisible(private$p_lastCellBatchInfo)) },
 
-    #' @field cells A list where each element represents one row in the pivot table.
-    #' Each row is itself a list, where each list element is a `PivotCell` object.
+    #' @field cells A `PivotCells` object that contains all of the cells in the pivot
+    #' table.
     cells = function(value) { return(invisible(private$p_cells)) },
+
+    #' @field cells A list of all of the cells in the pivot table, where each element
+    #' in the list is a 'PivotCell' object.
+    allCells = function(value) { return(invisible(private$p_cells$all)) },
 
     #' @field rowCount The number of rows in the pivot table, excluding headings.
     rowCount = function(value) { return(invisible(private$p_cells$rowCount)) },

@@ -389,6 +389,10 @@ cell$formattedValue
 
 Note that `pt$getCell()` can only be used to retrieve an individual cell.
 
+### Retrieving all cells
+
+A list containing all of the cells in the pivot table can be retrieved using `pt$allCells`.
+
 ### Cell Unique Identifier
 
 Each cell also has an instance id which can be accessed via the `instanceId` property.  Again, this integer is guaranteed to be unique and is primarily designed to be used when comparing two variables to see if both variables refer to the same cell instance.

@@ -22,6 +22,7 @@ Improvements
 ----------------
 
 * `pt$findRowDataGroups()` and `pt$findColumnDataGroups()` gain new arguments `rowNumbers`, `columnNumbers` and `cells` to restrict the data group search based on combinations of row/column numbers and/or cells.  See the "Finding and Formatting" vignette for details.
+* New property `pt$allCells` provides a simple way to retrieve a list of all cells in the pivot table.
 * `pt$getCells()` gains new arguments `groups`, `rowGroups` and `columnGroups` making it easier to retrieve cells related to specific data groups.  See the "Finding and Formatting" vignette for details.
 * `pt$getCells()` also gains a new `matchMode` argument making it easier to retrieve cells based on combinations of row and column criteria.  See the "Finding and Formatting" vignette for details.
 * `pt$findCells()` gain new arguments `rowNumbers`, `columnNumbers`, `cellCoordinates`, `groups`, `rowGroups`, `columnGroups`, `cells` and `rowColumnMatchMode` to restrict the cell search based on combinations of row, column and cell criteria.  See the "Finding and Formatting" vignette for details.

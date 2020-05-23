@@ -850,7 +850,11 @@ PivotCells <- R6::R6Class("PivotCells",
 
    #' @field rows A list of the rows in the pivot table.  Each element in this list is
    #' a list of `PivotCell` objects comprising the row.
-   rows = function(value) { return(invisible(private$p_rows)) }
+   rows = function(value) { return(invisible(private$p_rows)) },
+
+   #' @field all A list of the cells in the pivot table.  Each element in this list is
+   #' a `PivotCell` object.
+   all = function(value) { return(self$getCells(rowNumbers=1:self$rowCount)) }
   ),
   private = list(
     p_parentPivot = NULL,
