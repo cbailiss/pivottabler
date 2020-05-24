@@ -93,7 +93,7 @@ for(i in 1:nrow(scenarios)) {
 
     expect_equal(sum(pt$cells$asMatrix(), na.rm=TRUE), 334840)
     expect_equal(length(allCells), 15)
-    expect_equal(sum(Values), 334840)
+    expect_equal(sum(values), 334840)
   })
 }
 
