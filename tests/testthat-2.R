@@ -1,4 +1,4 @@
 library(testthat)
 library(pivottabler)
 
-test_check("pivottabler")
+test_check("pivottabler", filter="B-")
