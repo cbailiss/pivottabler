@@ -539,10 +539,10 @@ is specified.
 variable in the data frame that the group relates to and will filter.}
 
 \item{\code{filterType}}{Must be one of "ALL", "VALUES", or "NONE" to specify
-the filter type:
-ALL means no filtering is applied.
+the filter type:\cr
+ALL means no filtering is applied.\cr
 VALUEs is the typical value used to specify that `variableName` is
-filtered to only `values`.
+filtered to only `values`.\cr
 NONE means no data will match this data group.}
 
 \item{\code{values}}{A vector that specifies the filter values applied to
@@ -818,15 +818,15 @@ See the "Regular Layout" vignette for an example.}
 \if{html}{\out{</div>}}
 }
 \subsection{Details}{
-There are broadly three different ways to call `addDataGroups()`:
+There are broadly three different ways to call `addDataGroups()`:\cr
 (1) dataName=name, fromData=TRUE, onlyCombinationsThatExist=TRUE - which
 considers the ancestors of each existing data group to generate only those
-combinations of values that exist in the data frame.
+combinations of values that exist in the data frame.\cr
 (2) dataName=name, fromData=TRUE, onlyCombinationsThatExist=FALSE - which
 ignores the ancestors of each existing data group and simply adds every
 distinct value of the specified variable under every existing data group,
 which can result in combinations of values in the pivot table that don't
-exist in the data frame (i.e. blank rows/columns in the pivot table).
+exist in the data frame (i.e. blank rows/columns in the pivot table).\cr
 (3) fromData=FALSE, explicitListOfValues=list(...) - simply adds every
 value from the specified list under every existing data group.
 }
@@ -863,12 +863,12 @@ data groups.  0 = at the current level, 1 = one level below the current
 group, etc.}
 
 \item{\code{orderBy}}{Must be either "value", "caption", "calculation",
-"customByValue" or "customByCaption".
-"value" sorts by the raw (i.e. unformatted) group value.
-"caption" sorts by the formatted character group caption.
+"customByValue" or "customByCaption".\cr
+"value" sorts by the raw (i.e. unformatted) group value.\cr
+"caption" sorts by the formatted character group caption.\cr
 "calculation" sorts using one of the calculations defined in the pivot table.
 "customValue" sorts by the raw (i.e. unformatted) group value according to
-the specified custom sort order.
+the specified custom sort order.\cr
 "customCaption" sorts by the formatted character group caption according to
 the specified custom sort order.}
 
@@ -1014,13 +1014,13 @@ Test whether this data group matches specified criteria.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{matchMode}}{Either "simple" (default) or "combinations".
+\item{\code{matchMode}}{Either "simple" (default) or "combinations".\cr
 "simple" is used when matching only one variable-value, multiple
-variable-value combinations are effectively logical "OR".
+variable-value combinations are effectively logical "OR".\cr
 "combinations" is used when matching for combinations of variable
 values, multiple variable-value combinations are effectively
 logical "AND".  A child group is viewed as having the variable-value
-filters of itself and it's parent/ancestors, e.g.
+filters of itself and it's parent/ancestors, e.g.\cr
 `list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
 would return the "DMU" data group underneath "Express Passenger".
 See the "Finding and Formatting" vignette for graphical examples.}
@@ -1031,9 +1031,9 @@ irregular layouts, since in regular pivot tables every cell is related
 to every variable.}
 
 \item{\code{variableValues}}{A list specifying the variable names and values to find,
-e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-Specify "**" as the variable value to match totals for the specified variable.
-Specify "!*" as the variable value to match non-totals for the specified variable.
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.\cr
+Specify "**" as the variable value to match totals for the specified variable.\cr
+Specify "!*" as the variable value to match non-totals for the specified variable.\cr
 NB: The totals/non-totals criteria above won’t work when visual totals are used.}
 
 \item{\code{totals}}{A word that specifies how totals are matched (overrides the finer
@@ -1091,13 +1091,13 @@ Find data groups that match specified criteria.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{matchMode}}{Either "simple" (default) or "combinations".
+\item{\code{matchMode}}{Either "simple" (default) or "combinations".\cr
 "simple" is used when matching only one variable-value, multiple
-variable-value combinations are effectively logical "OR".
+variable-value combinations are effectively logical "OR".\cr
 "combinations" is used when matching for combinations of variable
 values, multiple variable-value combinations are effectively
 logical "AND".  A child group is viewed as having the variable-value
-filters of itself and it's parent/ancestors, e.g.
+filters of itself and it's parent/ancestors, e.g.\cr
 `list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
 would return the "DMU" data group underneath "Express Passenger".
 See the "Finding and Formatting" vignette for graphical examples.}
@@ -1108,9 +1108,9 @@ irregular layouts, since in regular pivot tables every cell is related
 to every variable.}
 
 \item{\code{variableValues}}{A list specifying the variable names and values to find,
-e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-Specify "**" as the variable value to match totals for the specified variable.
-Specify "!*" as the variable value to match non-totals for the specified variable.
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.\cr
+Specify "**" as the variable value to match totals for the specified variable.\cr
+Specify "!*" as the variable value to match non-totals for the specified variable.\cr
 NB: The totals/non-totals criteria above won’t work when visual totals are used.}
 
 \item{\code{totals}}{A word that specifies how totals are matched (overrides the finer

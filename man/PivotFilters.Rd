@@ -16,7 +16,29 @@ typically contains multiple \code{\link{PivotFilter}} objects.
 As well as acting as a container for multiple filter conditions, the
 `PivotFilters` class also contains logic for combining filter.
 The `action` parameter in many of the methods controls how two filters
-are combined.
+are combined.\cr
+Most common cases:\cr
+(1) When working out the rowColFilters for each pivot table cell, the
+    filters from the row and column leaf groups are combined using
+    `action="intersect"`.\cr
+(2) When combining the rowColFilters with calculation filters the
+    action could be any of (in order of most typical)
+    "intersect", "replace" or "union".\cr
+    "intersect" would apply additional restrictions, e.g. see the
+    example in the Calculations vignette that has a measure for
+    weekend trains only.\cr
+    "replace" would apply when doing things like percentage of row
+    total calculations - again, see example in the calculations vignette\cr
+    "union" is probably much less likely (hard to envisage many
+    situations when that would be needed).\cr
+(3) In custom calculation functions, the action could be any of
+    "intersect", "replace" or "union".\cr
+NOTE: `pivottabler` does not allow complex conditions to be built up,
+    such as ((A=X) or (B=Y)) and (C=2) since there is complex precedence
+    involved and conditions like this are not typical of pivot tables.
+    If they were really needed, a workaround would be to use a custom
+    calculation function and include this logic in that function.\cr
+See Appendix 2 vignette for many more complex calculation details.
 }
 \examples{
 pt <- PivotTable$new()
@@ -204,15 +226,15 @@ Tests whether this `PivotFilters` object matches specified criteria.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{matchMode}}{Either "simple" (default) or "combinations".
+\item{\code{matchMode}}{Either "simple" (default) or "combinations".\cr
 "simple" is used when matching only one variable-value, multiple
 variable-value combinations are effectively logical "OR", i.e.
 any one single `PivotFilter` match means the `PivotFilters` object
-is a match.
+is a match.\cr
 "combinations" is used when matching for combinations of variable
 values, multiple variable-value combinations are effectively
 logical "AND", i.e. there must be a matching `PivotFilter` for
-every variable name / variable values criteria specified.
+every variable name / variable values criteria specified.\cr
 See the "Finding and Formatting" vignette for graphical examples.}
 
 \item{\code{variableNames}}{The variable name(s) to find a filter for.  This

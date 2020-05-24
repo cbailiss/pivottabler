@@ -275,40 +275,40 @@ at least one of these column groups.  If both `rowGroups` and `columnGroups`
 are specified, then the cells to be retrieved must be related to at least
 one of the specified row groups and one of the specified column groups.}
 
-\item{\code{matchMode}}{Either "simple" (default) or "combinations"
+\item{\code{matchMode}}{Either "simple" (default) or "combinations"\cr
 "simple" specifies that row and column arguments are considered separately
 (logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
-row 1 and all cells in column 2.
+row 1 and all cells in column 2.\cr
 "combinations" specifies that row and column arguments are considered together
 (logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
-cell single at location (1, 2).
+cell single at location (1, 2).\cr
 Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
 affected by the match mode.  All other arguments are not.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Details}{
-when `specifyCellsAsList=TRUE` (the default):
+When `specifyCellsAsList=TRUE` (the default):\cr
 Get one or more rows by specifying the row numbers as a vector as
 the rowNumbers argument and leaving the columnNumbers argument set
-to the default value of `NULL`, or
+to the default value of `NULL`, or\cr
 Get one or more columns by specifying the column numbers as a vector
 as the columnNumbers argument and leaving the rowNumbers argument
-set to the default value of `NULL`, or
+set to the default value of `NULL`, or\cr
 Get one or more individual cells by specifying the cellCoordinates
 argument as a list of vectors of length 2, where each element in the
-list is the row and column number of one cell,
+list is the row and column number of one cell,\cr
 e.g. `list(c(1, 2), c(3, 4))` specifies two cells, the first located
-at row 1, column 2 and the second located at row 3, column 4.
-When `specifyCellsAsList=FALSE`:
+at row 1, column 2 and the second located at row 3, column 4.\cr
+When `specifyCellsAsList=FALSE`:\cr
 Get one or more rows by specifying the row numbers as a vector as the
 rowNumbers argument and leaving the columnNumbers argument set to the
-default value of `NULL`, or
+default value of `NULL`, or\cr
 Get one or more columns by specifying the column numbers as a vector
 as the columnNumbers argument and leaving the rowNumbers argument set
-to the default value of `NULL`, or
+to the default value of `NULL`, or\cr
 Get one or more cells by specifying the row and column numbers as vectors
-for the rowNumbers and columnNumbers arguments, or
+for the rowNumbers and columnNumbers arguments, or\cr
 a mixture of the above, where for entire rows/columns the element in the
 other vector is set to `NA`, e.g. to retrieve whole rows, specify the row
 numbers as the rowNumbers but set the corresponding elements in the
@@ -359,9 +359,9 @@ irregular layouts, since in regular pivot tables every cell is related
 to every variable.}
 
 \item{\code{variableValues}}{A list specifying the variable names and values to find,
-e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-Specify "**" as the variable value to match totals for the specified variable.
-Specify "!*" as the variable value to match non-totals for the specified variable.
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.\cr
+Specify "**" as the variable value to match totals for the specified variable.\cr
+Specify "!*" as the variable value to match non-totals for the specified variable.\cr
 NB: The totals/non-totals criteria above won’t work when visual totals are used.}
 
 \item{\code{totals}}{A word that specifies how totals are matched (overrides the finer
@@ -380,10 +380,10 @@ calculations to find.}
 the cell values must match.  If multiple value range expressions are specified,
 then the cell value must match any of one the specified expressions.}
 
-\item{\code{includeNull}}{specify TRUE to include `NULL` in the matched cells,
+\item{\code{includeNull}}{Specify TRUE to include `NULL` in the matched cells,
 FALSE to exclude `NULL` values.}
 
-\item{\code{includeNA}}{specify TRUE to include `NA` in the matched cells,
+\item{\code{includeNA}}{Specify TRUE to include `NA` in the matched cells,
 FALSE to exclude `NA` values.}
 
 \item{\code{emptyCells}}{A word that specifies how empty cells are matched -
@@ -417,13 +417,13 @@ at least one of these column groups.  If both `rowGroups` and `columnGroups`
 are specified, then the cells to be searched must be related to at least
 one of the specified row groups and one of the specified column groups.}
 
-\item{\code{rowColumnMatchMode}}{Either "simple" (default) or "combinations":
+\item{\code{rowColumnMatchMode}}{Either "simple" (default) or "combinations":\cr
 "simple" specifies that row and column arguments are considered separately
 (logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
-row 1 and all cells in column 2.
+row 1 and all cells in column 2.\cr
 "combinations" specifies that row and column arguments are considered together
 (logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
-cell single at location (1, 2).
+cell single at location (1, 2).\cr
 Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
 affected by the match mode.  All other arguments are not.}
 

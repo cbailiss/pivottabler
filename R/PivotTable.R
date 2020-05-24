@@ -35,18 +35,18 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param argumentCheckMode The level of argument checking to perform.
     #' Must be one of "auto", "none", "minimal", "basic", "balanced" (default)
     #' or "full".
-    #' @param theme A theme to use to style the pivot table. Either:
-    #' (1) The name of a built in theme, or
-    #' (2) A list of simple style settings, or
-    #' (3) A `PivotStyles` object containing a full set of styles.
+    #' @param theme A theme to use to style the pivot table. Either:\cr
+    #' (1) The name of a built in theme, or\cr
+    #' (2) A list of simple style settings, or\cr
+    #' (3) A `PivotStyles` object containing a full set of styles.\cr
     #' See the "Styling" vignette for many examples.
     #' @param replaceExistingStyles Default `FALSE` to retain existing styles in
     #' the styles collection and add specified styles as new custom styles.
     #' Specify `TRUE` to update the definitions of existing styles.
-    #' @param tableStyle Styling to apply to the table.  Either:
-    #' (1) The name of a built in style, or
-    #' (2) A list of CSS style declarations, e.g.
-    #' `list("font-weight"="bold", "color"="#0000FF")`, or
+    #' @param tableStyle Styling to apply to the table.  Either:\cr
+    #' (1) The name of a built in style, or\cr
+    #' (2) A list of CSS style declarations, e.g.\cr
+    #' `list("font-weight"="bold", "color"="#0000FF")`, or\cr
     #' (3) A `PivotStyle` object.
     #' @param headingStyle Styling to apply to the headings.
     #' See the `tableStyle` argument for details.
@@ -238,9 +238,9 @@ PivotTable <- R6::R6Class("PivotTable",
     #' `pt$addRowDataGroups()` and `pt$addColumnDataGroups()`:
     #' `logical` values: `addTotal`, `expandExistingTotals`, `visualTotals`.
     #' `character` values:  `totalPosition`, `totalCaption`.
-    #' `list` or `logical` values:  `outlineBefore`, `outlineAfter`, `outlineTotal`.
-    #' Errors are generated for default values that could not be set.
-    #' Warnings are generated for attempts to set defaults that aren't supported.
+    #' `list` or `logical` values:  `outlineBefore`, `outlineAfter`, `outlineTotal`.\cr
+    #' Errors are generated for default values that could not be set.\cr
+    #' Warnings are generated for attempts to set defaults that aren't supported.\cr
     #' See the "A1. Appendix" vignette for more details.
     #' @return No return value.
     setDefault = function(...) {
@@ -498,10 +498,10 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param variableName A character value that specifies the name of the
     #' variable in the data frame that the group relates to and will filter.
     #' @param filterType Must be one of "ALL", "VALUES", or "NONE" to specify
-    #' the filter type:
-    #' ALL means no filtering is applied.
+    #' the filter type:\cr
+    #' ALL means no filtering is applied.\cr
     #' VALUEs is the typical value used to specify that `variableName` is
-    #' filtered to only `values`.
+    #' filtered to only `values`.\cr
     #' NONE means no data will match this data group.
     #' @param values A vector that specifies the filter values applied to
     #' `variableName` to select the data to match this row/column in the pivot
@@ -615,15 +615,15 @@ PivotTable <- R6::R6Class("PivotTable",
     #' column or using explicitly specified data values.
     #' See the "Data Groups" vignette for example usage.
     #' @details
-    #' There are broadly three different ways to call `addColumnDataGroups()`:
+    #' There are broadly three different ways to call `addColumnDataGroups()`:\cr
     #' (1) dataName=name, fromData=TRUE, onlyCombinationsThatExist=TRUE - which
     #' considers the ancestors of each existing data group to generate only those
-    #' combinations of values that exist in the data frame.
+    #' combinations of values that exist in the data frame.\cr
     #' (2) dataName=name, fromData=TRUE, onlyCombinationsThatExist=FALSE - which
     #' ignores the ancestors of each existing data group and simply adds every
     #' distinct value of the specified variable under every existing data group,
     #' which can result in combinations of values in the pivot table that don't
-    #' exist in the data frame (i.e. blank rows/columns in the pivot table).
+    #' exist in the data frame (i.e. blank rows/columns in the pivot table).\cr
     #' (3) fromData=FALSE, explicitListOfValues=list(...) - simply adds every
     #' value from the specified list under every existing data group.
     #' @param variableName The name of the related column in the data frame(s) of
@@ -759,12 +759,12 @@ PivotTable <- R6::R6Class("PivotTable",
     #' level 1 (default) sorts the data groups at level 1 of the hierarchy
     #' (which is the first visible level of data groups).
     #' @param orderBy Must be either "value", "caption", "calculation",
-    #' "customByValue" or "customByCaption".
-    #' "value" sorts by the raw (i.e. unformatted) group value.
-    #' "caption" sorts by the formatted character group caption.
-    #' "calculation" sorts using one of the calculations defined in the pivot table.
+    #' "customByValue" or "customByCaption".\cr
+    #' "value" sorts by the raw (i.e. unformatted) group value.\cr
+    #' "caption" sorts by the formatted character group caption.\cr
+    #' "calculation" sorts using one of the calculations defined in the pivot table.\cr
     #' "customValue" sorts by the raw (i.e. unformatted) group value according to
-    #' the specified custom sort order.
+    #' the specified custom sort order.\cr
     #' "customCaption" sorts by the formatted character group caption according to
     #' the specified custom sort order.
     #' @param customOrder A vector values sorted into the desired order.
@@ -899,10 +899,10 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param variableName A character value that specifies the name of the
     #' variable in the data frame that the group relates to and will filter.
     #' @param filterType Must be one of "ALL", "VALUES", or "NONE" to specify
-    #' the filter type:
-    #' ALL means no filtering is applied.
+    #' the filter type:\cr
+    #' ALL means no filtering is applied.\cr
     #' VALUEs is the typical value used to specify that `variableName` is
-    #' filtered to only `values`.
+    #' filtered to only `values`.\cr
     #' NONE means no data will match this data group.
     #' @param values A vector that specifies the filter values applied to
     #' `variableName` to select the data to match this row/column in the pivot
@@ -1018,15 +1018,15 @@ PivotTable <- R6::R6Class("PivotTable",
     #' column or using explicitly specified data values.
     #' See the "Data Groups" vignette for example usage.
     #' @details
-    #' There are broadly three different ways to call `addRowDataGroups()`:
+    #' There are broadly three different ways to call `addRowDataGroups()`:\cr
     #' (1) dataName=name, fromData=TRUE, onlyCombinationsThatExist=TRUE - which
     #' considers the ancestors of each existing data group to generate only those
-    #' combinations of values that exist in the data frame.
+    #' combinations of values that exist in the data frame.\cr
     #' (2) dataName=name, fromData=TRUE, onlyCombinationsThatExist=FALSE - which
     #' ignores the ancestors of each existing data group and simply adds every
     #' distinct value of the specified variable under every existing data group,
     #' which can result in combinations of values in the pivot table that don't
-    #' exist in the data frame (i.e. blank rows/columns in the pivot table).
+    #' exist in the data frame (i.e. blank rows/columns in the pivot table).\cr
     #' (3) fromData=FALSE, explicitListOfValues=list(...) - simply adds every
     #' value from the specified list under every existing data group.
     #' @param variableName The name of the related column in the data frame(s) of
@@ -1208,12 +1208,12 @@ PivotTable <- R6::R6Class("PivotTable",
     #' level 1 (default) sorts the data groups at level 1 of the hierarchy
     #' (which is the first visible level of data groups).
     #' @param orderBy Must be either "value", "caption", "calculation",
-    #' "customByValue" or "customByCaption".
-    #' "value" sorts by the raw (i.e. unformatted) group value.
-    #' "caption" sorts by the formatted character group caption.
+    #' "customByValue" or "customByCaption".\cr
+    #' "value" sorts by the raw (i.e. unformatted) group value.\cr
+    #' "caption" sorts by the formatted character group caption.\cr
     #' "calculation" sorts using one of the calculations defined in the pivot table.
     #' "customValue" sorts by the raw (i.e. unformatted) group value according to
-    #' the specified custom sort order.
+    #' the specified custom sort order.\cr
     #' "customCaption" sorts by the formatted character group caption according to
     #' the specified custom sort order.
     #' @param customOrder A vector values sorted into the desired order.
@@ -1549,19 +1549,19 @@ PivotTable <- R6::R6Class("PivotTable",
     #' Apply styling to a set of data groups or cells in a pivot table.
     #' @details
     #' There are five ways to specify the part(s) of a pivot table to apply
-    #' styling to:
-    #' (1) By specifying a list of data groups using the `groups` argument.
-    #' (2) By specifying a list of cells using the `cells` argument.
-    #' (3) By specifying a single cell using the `rFrom` and `cFrom` arguments.
+    #' styling to:\cr
+    #' (1) By specifying a list of data groups using the `groups` argument.\cr
+    #' (2) By specifying a list of cells using the `cells` argument.\cr
+    #' (3) By specifying a single cell using the `rFrom` and `cFrom` arguments.\cr
     #' (4) By specifying a rectangular cell range using the `rFrom`, `cFrom`,
-    #' `rTo` and `cTo` arguments.
+    #' `rTo` and `cTo` arguments.\cr
     #' (5) By specifying a vector of rowNumbers and/or columnNumbers.  If both
     #' rowNumbers and columnNumbers are specified, then the cells at the
-    #' intersection of the specified row numbers and column numbers are styled.
+    #' intersection of the specified row numbers and column numbers are styled.\cr
     #' If both rFrom/rTo and rowNumbers are specified, then rFrom/rTo constrain
-    #' the row numbers specified in rowNumbers.
+    #' the row numbers specified in rowNumbers.\cr
     #' If both cFrom/cTo and columnNumbers are specified, then cFrom/cTo constrain
-    #' the column numbers specified in columnNumbers.
+    #' the column numbers specified in columnNumbers.\cr
     #' See the "Styling" and Finding and Formatting" vignettes for more
     #' information and many examples.
     #' @param rFrom An integer row number that specifies the start row for the
@@ -1725,51 +1725,51 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @details
     #' `mapStyling()` is typically used to conditionally apply styling to cells
     #' based on the value of each individual cell, e.g. cells with values less
-    #' than a specified number could be coloured red.
+    #' than a specified number could be coloured red.\cr
     #' mapType="logic" maps values matching specified logical criteria to
     #' specific "to" values.  The logical criteria can be any of the following
-    #' forms (the first matching mapping is used):
-    #' (1) a specific value, e.g. 12.
+    #' forms (the first matching mapping is used):\cr
+    #' (1) a specific value, e.g. 12.\cr
     #' (2) a specific value equality condition, e.g. "v==12", where v
-    #' represents the cell value.
+    #' represents the cell value.\cr
     #' (3) a value range expression using the following abbreviated form:
     #' "value1<=v<value2", e.g. "10<=v<15".  Only "<" or "<=" can be used
-    #' in these value range expressions.
+    #' in these value range expressions.\cr
     #' (4) a standard R logical expression, e.g.
-    #' "10<=v && v<15".
+    #' "10<=v && v<15".\cr
     #' Basic R functions that test the value can also be
-    #' used, e.g. is.na(v).
+    #' used, e.g. is.na(v).\cr
     #' See the "Styling" and Finding and Formatting" vignettes for more
     #' information and many examples.
     #' @param styleProperty The name of the style property to set on the specified
     #' cells, e.g. background-color.
     #' @param cells A list containing `PivotCell` objects.
     #' @param valueType The type of style value to be set.  Must be one of:
-    #' "text", "character", "number", "numeric", "color" or "colour".
+    #' "text", "character", "number", "numeric", "color" or "colour".\cr
     #' "text" and "character" are equivalent.  "number" and "numeric" are equivalent.
     #' "color" and "colour" are equivalent.
     #' @param mapType The type of mapping to be performed.  The following mapping
-    #' types are supported:
+    #' types are supported:\cr
     #' (1) "value" = a 1:1 mapping which maps each specified "from" value to the
-    #' corresponding "to" value, e.g. 100 -> "green"
-    #' (2) "logic" = each from value is logical criteria.  See details.
+    #' corresponding "to" value, e.g. 100 -> "green".\cr
+    #' (2) "logic" = each from value is logical criteria.  See details.\cr
     #' (3) "range" = values between each pair of "from" values are mapped to the
     #' corresponding "to" value, e.g. values in the range 80-100 -> "green" (more
-    #' specifically values greater than or equal to 80 and less than 100).
+    #' specifically values greater than or equal to 80 and less than 100).\cr
     #' (4) "continuous" = rescales values between each pair of "from" values into
     #' the range of the corresponding pair of "to" values, e.g. if the "from" range
-    #' is 80-100 and the corresponding "to" range is 0.8-1, then 90 -> 0.9.
+    #' is 80-100 and the corresponding "to" range is 0.8-1, then 90 -> 0.9.\cr
     #' "continuous" cannot be used with valueType="text"/"character".
     #' @param mappings The mappings to be applied, specified in one of the following
-    #' three forms:
+    #' three forms:\cr
     #' (1) a list containing pairs of values, e.g.
-    #' `list(0, "red", 0.4, "yellow", 0.8, "green")`
+    #' `list(0, "red", 0.4, "yellow", 0.8, "green")`.\cr
     #' (2) a list containing "from" and "to" vectors/lists, e.g.
-    #' `list(from=c(0, 0.4, 0.8), to=c("red", "yellow", "green"))`
+    #' `list(from=c(0, 0.4, 0.8), to=c("red", "yellow", "green"))`.\cr
     #' (3) a custom mapping function that will be invoked once per cell, e.g.
-    #' `function(v, cell) { if(isTRUE(v>0.8)) return("green") }`.
+    #' `function(v, cell) { if(isTRUE(v>0.8)) return("green") }`.\cr
     #' Mappings must be specified in ascending order when valueType="range" or
-    #' valueType="continuous".
+    #' valueType="continuous".\cr
     #' If a custom mapping function is specified, then the valueType and mapType
     #' parameters are ignored.
     #' @param styleLowerValues A logical value, default FALSE, that specifies
@@ -2321,7 +2321,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @details
     #' This generally only needs to be called explicitly if specific pivot cells
     #' need to be further processed (e.g. formatted) before the pivot table is
-    #' rendered.
+    #' rendered.\cr
     #' This method is a wrapper for calling `normaliseColumnGroups()`,
     #' `normaliseRowGroups()`, `generateCellStructure()` and `evaluateCells()`
     #' in sequence.
@@ -2338,25 +2338,25 @@ PivotTable <- R6::R6Class("PivotTable",
 
     #' @description
     #' Find row data groups that match specified criteria.
-    #' @param matchMode Either "simple" (default) or "combinations".
+    #' @param matchMode Either "simple" (default) or "combinations".\cr
     #' "simple" is used when matching only one variable-value, multiple
-    #' variable-value combinations are effectively logical "OR".
+    #' variable-value combinations are effectively logical "OR".\cr
     #' "combinations" is used when matching for combinations of variable
     #' values, multiple variable-value combinations are effectively
     #' logical "AND".  A child group is viewed as having the variable-value
-    #' filters of itself and it's parent/ancestors, e.g.
+    #' filters of itself and it's parent/ancestors, e.g.\cr
     #' `list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
-    #' would return the "DMU" data group underneath "Express Passenger".
+    #' would return the "DMU" data group underneath "Express Passenger".\cr
     #' See the "Finding and Formatting" vignette for graphical examples.
     #' @param variableNames A character vector specifying the name/names of the
     #' variables to find.  This is useful generally only in pivot tables with
     #' irregular layouts, since in regular pivot tables every cell is related
     #' to every variable.
     #' @param variableValues A list specifying the variable names and values to find,
-    #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-    #' Specify "**" as the variable value to match totals for the specified variable.
-    #' Specify "!*" as the variable value to match non-totals for the specified variable.
-    #' NB: The totals/non-totals criteria above won’t work when visual totals are used.
+    #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.\cr
+    #' Specify "**" as the variable value to match totals for the specified variable.\cr
+    #' Specify "!*" as the variable value to match non-totals for the specified variable.\cr
+    #' NB: The totals/non-totals criteria above won’t work when visual totals are used.\cr
     #' @param totals A word that specifies how totals are matched (overrides the finer
     #' settings above) - must be one of "include" (default), "exclude" or "only".
     #' @param calculationNames A character vector specifying the name/names of the
@@ -2439,24 +2439,24 @@ PivotTable <- R6::R6Class("PivotTable",
 
     #' @description
     #' Find column data groups that match specified criteria.
-    #' @param matchMode Either "simple" (default) or "combinations".
+    #' @param matchMode Either "simple" (default) or "combinations".\cr
     #' "simple" is used when matching only one variable-value - multiple
-    #' variable-value combinations are effectively logical "OR".
+    #' variable-value combinations are effectively logical "OR".\cr
     #' "combinations" is used when matching for combinations of variable
     #' values - multiple variable-value combinations are effectively
     #' logical "AND".  A child group is viewed as having the variable-value
-    #' filters of itself and it's parent/ancestors, e.g.
+    #' filters of itself and it's parent/ancestors, e.g.\cr
     #' `list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
-    #' would return the "DMU" data group underneath "Express Passenger".
+    #' would return the "DMU" data group underneath "Express Passenger".\cr
     #' See the "Finding and Formatting" vignette for graphical examples.
     #' @param variableNames A character vector specifying the name/names of the
     #' variables to find.  This is useful generally only in pivot tables with
     #' irregular layouts, since in regular pivot tables every cell is related
     #' to every variable.
     #' @param variableValues A list specifying the variable names and values to find,
-    #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-    #' Specify "**" as the variable value to match totals for the specified variable.
-    #' Specify "!*" as the variable value to match non-totals for the specified variable.
+    #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.\cr
+    #' Specify "**" as the variable value to match totals for the specified variable.\cr
+    #' Specify "!*" as the variable value to match non-totals for the specified variable.\cr
     #' NB: The totals/non-totals criteria above won’t work when visual totals are used.
     #' @param totals A word that specifies how totals are matched (overrides the finer
     #' settings above) - must be one of "include" (default), "exclude" or "only".
@@ -2644,27 +2644,27 @@ PivotTable <- R6::R6Class("PivotTable",
     #' Retrieve cells by a combination of row and/or column numbers.
     #' See the "Finding and Formatting" vignette for graphical examples.
     #' @details
-    #' when `specifyCellsAsList=TRUE` (the default):
+    #' when `specifyCellsAsList=TRUE` (the default):\cr
     #' Get one or more rows by specifying the row numbers as a vector as
     #' the rowNumbers argument and leaving the columnNumbers argument set
-    #' to the default value of `NULL`, or
+    #' to the default value of `NULL`, or\cr
     #' Get one or more columns by specifying the column numbers as a vector
     #' as the columnNumbers argument and leaving the rowNumbers argument
-    #' set to the default value of `NULL`, or
+    #' set to the default value of `NULL`, or\cr
     #' Get one or more individual cells by specifying the cellCoordinates
     #' argument as a list of vectors of length 2, where each element in the
-    #' list is the row and column number of one cell,
+    #' list is the row and column number of one cell,\cr
     #' e.g. `list(c(1, 2), c(3, 4))` specifies two cells, the first located
-    #' at row 1, column 2 and the second located at row 3, column 4.
-    #' When `specifyCellsAsList=FALSE`:
+    #' at row 1, column 2 and the second located at row 3, column 4.\cr
+    #' When `specifyCellsAsList=FALSE`:\cr
     #' Get one or more rows by specifying the row numbers as a vector as the
     #' rowNumbers argument and leaving the columnNumbers argument set to the
-    #' default value of `NULL`, or
+    #' default value of `NULL`, or\cr
     #' Get one or more columns by specifying the column numbers as a vector
     #' as the columnNumbers argument and leaving the rowNumbers argument set
-    #' to the default value of `NULL`, or
+    #' to the default value of `NULL`, or\cr
     #' Get one or more cells by specifying the row and column numbers as vectors
-    #' for the rowNumbers and columnNumbers arguments, or
+    #' for the rowNumbers and columnNumbers arguments, or\cr
     #' a mixture of the above, where for entire rows/columns the element in the
     #' other vector is set to `NA`, e.g. to retrieve whole rows, specify the row
     #' numbers as the rowNumbers but set the corresponding elements in the
@@ -2692,13 +2692,13 @@ PivotTable <- R6::R6Class("PivotTable",
     #' at least one of these column groups.  If both `rowGroups` and `columnGroups`
     #' are specified, then the cells to be retrieved must be related to at least
     #' one of the specified row groups and one of the specified column groups.
-    #' @param matchMode Either "simple" (default) or "combinations"
+    #' @param matchMode Either "simple" (default) or "combinations":\cr
     #' "simple" specifies that row and column arguments are considered separately
     #' (logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
-    #' row 1 and all cells in column 2.
+    #' row 1 and all cells in column 2.\cr
     #' "combinations" specifies that row and column arguments are considered together
     #' (logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
-    #' cell single at location (1, 2).
+    #' cell single at location (1, 2).\cr
     #' Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
     #' affected by the match mode.  All other arguments are not.
     #' @return A list of `PivotCell` objects.
@@ -2731,25 +2731,25 @@ PivotTable <- R6::R6Class("PivotTable",
     #' See the "Finding and Formatting" vignette for graphical examples.
     #' @details
     #' The valueRanges parameter can be any of the following
-    #' forms:
-    #' (1) a specific value, e.g. 12.
+    #' forms:\cr
+    #' (1) a specific value, e.g. 12.\cr
     #' (2) a specific value equality condition, e.g. "v==12", where v
-    #' represents the cell value.
+    #' represents the cell value.\cr
     #' (3) a value range expression using the following abbreviated form:
     #' "value1<=v<value2", e.g. "10<=v<15".  Only "<" or "<=" can be used
-    #' in these value range expressions.
+    #' in these value range expressions.\cr
     #' (4) a standard R logical expression, e.g.
-    #' "10<=v && v<15".
+    #' "10<=v && v<15".\cr
     #' Basic R functions that test the value can also be
-    #' used, e.g. is.na(v).
+    #' used, e.g. is.na(v).\cr
     #' @param variableNames A character vector specifying the name/names of the
     #' variables to find.  This is useful generally only in pivot tables with
     #' irregular layouts, since in regular pivot tables every cell is related
     #' to every variable.
     #' @param variableValues A list specifying the variable names and values to find,
-    #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-    #' Specify "**" as the variable value to match totals for the specified variable.
-    #' Specify "!*" as the variable value to match non-totals for the specified variable.
+    #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.\cr
+    #' Specify "**" as the variable value to match totals for the specified variable.\cr
+    #' Specify "!*" as the variable value to match non-totals for the specified variable.\cr
     #' NB: The totals/non-totals criteria above won’t work when visual totals are used.
     #' @param totals A word that specifies how totals are matched (overrides the finer
     #' settings above) - must be one of "include" (default), "exclude" or "only".
@@ -2790,13 +2790,13 @@ PivotTable <- R6::R6Class("PivotTable",
     #' one of the specified row groups and one of the specified column groups.
     #' @param cells A `PivotCell` object or a list of `PivotCell`
     #' objects to constrain the scope of the search.
-    #' @param rowColumnMatchMode Either "simple" (default) or "combinations":
+    #' @param rowColumnMatchMode Either "simple" (default) or "combinations":\cr
     #' "simple" specifies that row and column arguments are considered separately
     #' (logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
-    #' row 1 and all cells in column 2.
+    #' row 1 and all cells in column 2.\cr
     #' "combinations" specifies that row and column arguments are considered together
     #' (logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
-    #' cell single at location (1, 2).
+    #' cell single at location (1, 2).\cr
     #' Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
     #' affected by the match mode.  All other arguments are not.
     #' @return A list of `PivotCell` objects.

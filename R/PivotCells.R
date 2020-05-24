@@ -169,27 +169,27 @@ PivotCells <- R6::R6Class("PivotCells",
    #' Retrieve cells by a combination of row and/or column numbers.
    #' See the "Finding and Formatting" vignette for graphical examples.
    #' @details
-   #' when `specifyCellsAsList=TRUE` (the default):
+   #' When `specifyCellsAsList=TRUE` (the default):\cr
    #' Get one or more rows by specifying the row numbers as a vector as
    #' the rowNumbers argument and leaving the columnNumbers argument set
-   #' to the default value of `NULL`, or
+   #' to the default value of `NULL`, or\cr
    #' Get one or more columns by specifying the column numbers as a vector
    #' as the columnNumbers argument and leaving the rowNumbers argument
-   #' set to the default value of `NULL`, or
+   #' set to the default value of `NULL`, or\cr
    #' Get one or more individual cells by specifying the cellCoordinates
    #' argument as a list of vectors of length 2, where each element in the
-   #' list is the row and column number of one cell,
+   #' list is the row and column number of one cell,\cr
    #' e.g. `list(c(1, 2), c(3, 4))` specifies two cells, the first located
-   #' at row 1, column 2 and the second located at row 3, column 4.
-   #' When `specifyCellsAsList=FALSE`:
+   #' at row 1, column 2 and the second located at row 3, column 4.\cr
+   #' When `specifyCellsAsList=FALSE`:\cr
    #' Get one or more rows by specifying the row numbers as a vector as the
    #' rowNumbers argument and leaving the columnNumbers argument set to the
-   #' default value of `NULL`, or
+   #' default value of `NULL`, or\cr
    #' Get one or more columns by specifying the column numbers as a vector
    #' as the columnNumbers argument and leaving the rowNumbers argument set
-   #' to the default value of `NULL`, or
+   #' to the default value of `NULL`, or\cr
    #' Get one or more cells by specifying the row and column numbers as vectors
-   #' for the rowNumbers and columnNumbers arguments, or
+   #' for the rowNumbers and columnNumbers arguments, or\cr
    #' a mixture of the above, where for entire rows/columns the element in the
    #' other vector is set to `NA`, e.g. to retrieve whole rows, specify the row
    #' numbers as the rowNumbers but set the corresponding elements in the
@@ -217,13 +217,13 @@ PivotCells <- R6::R6Class("PivotCells",
    #' at least one of these column groups.  If both `rowGroups` and `columnGroups`
    #' are specified, then the cells to be retrieved must be related to at least
    #' one of the specified row groups and one of the specified column groups.
-   #' @param matchMode Either "simple" (default) or "combinations"
+   #' @param matchMode Either "simple" (default) or "combinations"\cr
    #' "simple" specifies that row and column arguments are considered separately
    #' (logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
-   #' row 1 and all cells in column 2.
+   #' row 1 and all cells in column 2.\cr
    #' "combinations" specifies that row and column arguments are considered together
    #' (logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
-   #' cell single at location (1, 2).
+   #' cell single at location (1, 2).\cr
    #' Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
    #' affected by the match mode.  All other arguments are not.
    #' @return A list of `PivotCell` objects.
@@ -382,9 +382,9 @@ PivotCells <- R6::R6Class("PivotCells",
    #' irregular layouts, since in regular pivot tables every cell is related
    #' to every variable.
    #' @param variableValues A list specifying the variable names and values to find,
-   #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-   #' Specify "**" as the variable value to match totals for the specified variable.
-   #' Specify "!*" as the variable value to match non-totals for the specified variable.
+   #' e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.\cr
+   #' Specify "**" as the variable value to match totals for the specified variable.\cr
+   #' Specify "!*" as the variable value to match non-totals for the specified variable.\cr
    #' NB: The totals/non-totals criteria above won’t work when visual totals are used.
    #' @param totals A word that specifies how totals are matched (overrides the finer
    #' settings above) - must be one of "include" (default), "exclude" or "only".
@@ -396,9 +396,9 @@ PivotCells <- R6::R6Class("PivotCells",
    #' @param valueRanges A vector specifying one or more value range expressions which
    #' the cell values must match.  If multiple value range expressions are specified,
    #' then the cell value must match any of one the specified expressions.
-   #' @param includeNull specify TRUE to include `NULL` in the matched cells,
+   #' @param includeNull Specify TRUE to include `NULL` in the matched cells,
    #' FALSE to exclude `NULL` values.
-   #' @param includeNA specify TRUE to include `NA` in the matched cells,
+   #' @param includeNA Specify TRUE to include `NA` in the matched cells,
    #' FALSE to exclude `NA` values.
    #' @param emptyCells A word that specifies how empty cells are matched -
    #' must be one of "include" (default), "exclude" or "only".
@@ -425,13 +425,13 @@ PivotCells <- R6::R6Class("PivotCells",
    #' one of the specified row groups and one of the specified column groups.
    #' @param cells A `PivotCell` object or a list of `PivotCell`
    #' objects to constrain the scope of the search.
-   #' @param rowColumnMatchMode Either "simple" (default) or "combinations":
+   #' @param rowColumnMatchMode Either "simple" (default) or "combinations":\cr
    #' "simple" specifies that row and column arguments are considered separately
    #' (logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
-   #' row 1 and all cells in column 2.
+   #' row 1 and all cells in column 2.\cr
    #' "combinations" specifies that row and column arguments are considered together
    #' (logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
-   #' cell single at location (1, 2).
+   #' cell single at location (1, 2).\cr
    #' Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
    #' affected by the match mode.  All other arguments are not.
    #' @return A list of `PivotCell` objects.
