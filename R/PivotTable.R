@@ -2730,6 +2730,19 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @description
     #' Find cells matching specified criteria.
     #' See the "Finding and Formatting" vignette for graphical examples.
+    #' @details
+    #' The valueRanges parameter can be any of the following
+    #' forms:
+    #' (1) a specific value, e.g. 12.
+    #' (2) a specific value equality condition, e.g. "v==12", where v
+    #' represents the cell value.
+    #' (3) a value range expression using the following abbreviated form:
+    #' "value1<=v<value2", e.g. "10<=v<15".  Only "<" or "<=" can be used
+    #' in these value range expressions.
+    #' (4) a standard R logical expression, e.g.
+    #' "10<=v && v<15".
+    #' Basic R functions that test the value can also be
+    #' used, e.g. is.na(v).
     #' @param variableNames A character vector specifying the name/names of the
     #' variables to find.  This is useful generally only in pivot tables with
     #' irregular layouts, since in regular pivot tables every cell is related
@@ -2746,6 +2759,9 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param minValue A numerical value specifying a minimum value threshold.
     #' @param maxValue A numerical value specifying a maximum value threshold.
     #' @param exactValues A vector or list specifying a set of allowed values.
+    #' @param valueRanges A vector specifying one or more value range expressions which
+    #' the cell values must match.  If multiple value range expressions are specified,
+    #' then the cell value must match any of one the specified expressions.  See details.
     #' @param includeNull specify TRUE to include `NULL` in the matched cells,
     #' FALSE to exclude `NULL` values.
     #' @param includeNA specify TRUE to include `NA` in the matched cells,
@@ -2786,7 +2802,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' affected by the match mode.  All other arguments are not.
     #' @return A list of `PivotCell` objects.
     findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
-                         minValue=NULL, maxValue=NULL, exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
+                         minValue=NULL, maxValue=NULL, exactValues=NULL, valueRanges=NULL, includeNull=TRUE, includeNA=TRUE,
                          emptyCells="include", outlineCells="exclude",
                          # additional arguments to constrain cells matched
                          rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL,
@@ -2799,6 +2815,7 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", calculationNames, missing(calculationNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", minValue, missing(minValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", maxValue, missing(maxValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", valueRanges, missing(valueRanges), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", exactValues, missing(exactValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric", "character", "logical", "date", "Date", "POSIXct", "list"), listElementsMustBeAtomic=TRUE)
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", includeNull, missing(includeNull), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", includeNA, missing(includeNA), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -2818,7 +2835,8 @@ PivotTable <- R6::R6Class("PivotTable",
       if(!private$p_evaluated) stop("PivotTable$findCells():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$findCells():  No cells exist to retrieve.", call. = FALSE)
       cells <- private$p_cells$findCells(variableNames=variableNames, variableValues=variableValues, totals=totals, calculationNames=calculationNames,
-                                         minValue=minValue, maxValue=maxValue, exactValues=exactValues, includeNull=includeNull, includeNA=includeNA,
+                                         minValue=minValue, maxValue=maxValue, exactValues=exactValues, valueRanges=valueRanges,
+                                         includeNull=includeNull, includeNA=includeNA,
                                          emptyCells=emptyCells, outlineCells=outlineCells,
                                          # additional arguments to constrain cells matched
                                          rowNumbers=rowNumbers, columnNumbers=columnNumbers, cellCoordinates=cellCoordinates,

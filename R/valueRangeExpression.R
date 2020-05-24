@@ -141,7 +141,7 @@ vreIsMatch <- function(vre, v, testOnly=FALSE) {
 #' @param n1 The lower value of the target range.
 #' @param n2 The upper value of the target range.
 #' @param vMin The lower value of the source range.
-#' @param vmax The upper value of the source range.
+#' @param vMax The upper value of the source range.
 #' @param value The source value to rescale into the target range.
 #' @param decimalPlaces The number of decimal places to round the result to.
 #' @return The value rescaled into the target range.
@@ -193,7 +193,7 @@ vreHexToClr <- function(hexclr) {
 #' @param clr1 The colour representing the lower value of the target range.
 #' @param clr2 The colour representing the upper value of the target range.
 #' @param vMin The lower value of the source range.
-#' @param vmax The upper value of the source range.
+#' @param vMax The upper value of the source range.
 #' @param value The source value to rescale into the target range.
 #' @return The value scaled into the target colour gradient.
 

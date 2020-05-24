@@ -507,6 +507,13 @@ The `findCells()` function is used to search for cells within the body of the pi
 - `minValue` - a numerical value specifying a minimum value threshold when matching cells.
 - `maxValue` - a numerical value specifying a maximum value threshold when matching cells.
 - `exactValues` - a vector or list specifying a set of allowed values when matching cells.
+- `valueRanges` - a vector specifying one or more value range expressions to use when matching cells.  The expression(s) can be any of the following forms:
+    + a specific value, e.g. 12.
+    + a specific value equality condition, e.g. `"v==12"`, where v represents the cell value.
+    + a value range expression using the following abbreviated form:  "value1<=v<value2", e.g. `"10<=v<15"`.  
+        - Only "<" or "<=" can be used in these abbreviated value range expressions.
+    +  a standard R logical expression, e.g. `"10<=v && v<15"`.
+        - Basic R functions that test the value can also be used, e.g. `"is.na(v)"`.
 - `includeNA` - specify TRUE to include NA in the matched cells, FALSE to exclude NA values.
 - `includeNull` - specify TRUE to include cells with no value, FALSE to exclude cells with no value.
 - `emptyCells` - a word that specifies how empty cells are matched - must be one of:

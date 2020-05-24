@@ -19,6 +19,8 @@
 #' @param columnNamesAsHeader Include column names in output (if FALSE, the
 #' first row from the matrix is used as the column headings).
 #' @param rowNamesAsHeader Include row names in output.
+#' @param columnAlignment A character vector specifying the horizontal alignment
+#' of each column.
 #' @return A basic table rendered as a HTML widget.
 #' @examples
 #' renderBasicTable(matrix(c(1:12), nrow=3))

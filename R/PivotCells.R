@@ -394,6 +394,9 @@ PivotCells <- R6::R6Class("PivotCells",
    #' @param minValue A numerical value specifying a minimum value threshold.
    #' @param maxValue A numerical value specifying a maximum value threshold.
    #' @param exactValues A vector or list specifying a set of allowed values.
+   #' @param valueRanges A vector specifying one or more value range expressions which
+   #' the cell values must match.  If multiple value range expressions are specified,
+   #' then the cell value must match any of one the specified expressions.
    #' @param includeNull specify TRUE to include `NULL` in the matched cells,
    #' FALSE to exclude `NULL` values.
    #' @param includeNA specify TRUE to include `NA` in the matched cells,
@@ -434,7 +437,7 @@ PivotCells <- R6::R6Class("PivotCells",
    #' affected by the match mode.  All other arguments are not.
    #' @return A list of `PivotCell` objects.
    findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
-                        minValue=NULL, maxValue=NULL, exactValues=NULL, includeNull=TRUE, includeNA=TRUE,
+                        minValue=NULL, maxValue=NULL, exactValues=NULL, valueRanges=NULL, includeNull=TRUE, includeNA=TRUE,
                         emptyCells="include", outlineCells="exclude",
                         # additional arguments to constrain cells matched
                         rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL,
@@ -448,6 +451,7 @@ PivotCells <- R6::R6Class("PivotCells",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", minValue, missing(minValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", maxValue, missing(maxValue), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", exactValues, missing(exactValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer","numeric", "character", "logical", "date", "Date", "POSIXct", "list"), listElementsMustBeAtomic=TRUE)
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", valueRanges, missing(valueRanges), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", includeNull, missing(includeNull), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", includeNA, missing(includeNA), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", emptyCells, missing(emptyCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("include", "exclude", "only"))
@@ -548,6 +552,17 @@ PivotCells <- R6::R6Class("PivotCells",
                    if(!(cell$rawValue %in% exactValues)) next
                  }
                }
+             }
+             # h) value range expressions
+             if(length(valueRanges)>0) {
+                vreMatch <- FALSE
+                for (vre in valueRanges) {
+                   if(vreIsMatch(vre, cell$rawValue)) {
+                      vreMatch <- TRUE
+                      break
+                   }
+                }
+                if(!vreMatch) next
              }
              # is a match
              matches[[length(matches)+1]] <- cell
