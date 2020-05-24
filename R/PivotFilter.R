@@ -16,7 +16,6 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @import jsonlite
 #' @export
 #' @format \code{\link{R6Class}} object.
 #' @examples
@@ -232,7 +231,16 @@ PivotFilter <- R6::R6Class("PivotFilter",
    #' @description
    #' Return the contents of this object as JSON for debugging.
    #' @return A JSON representation of various object properties.
-   asJSON = function() { return(jsonlite::toJSON(self$asList())) },
+   asJSON = function() {
+      if (!requireNamespace("jsonlite", quietly = TRUE)) {
+         stop("The jsonlite package is needed to convert to JSON.  Please install the jsonlite package.", call. = FALSE)
+      }
+      jsonliteversion <- utils::packageDescription("jsonlite")$Version
+      if(numeric_version(jsonliteversion) < numeric_version("1.1")) {
+         stop("Version 1.1 or above of the jsonlite package is needed to convert to JSON.  Please install an updated version of the jsonlite package.", call. = FALSE)
+      }
+      return(jsonlite::toJSON(self$asList()))
+   },
 
    #' @description
    #' Return a representation of this object as a character value.

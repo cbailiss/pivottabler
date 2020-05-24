@@ -25,7 +25,6 @@
 #' @importFrom R6 R6Class
 #' @importFrom data.table data.table is.data.table
 #' @import dplyr
-#' @import jsonlite
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.

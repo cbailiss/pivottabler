@@ -6,7 +6,6 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @import jsonlite
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.

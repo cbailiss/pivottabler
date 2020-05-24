@@ -7,7 +7,6 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @import jsonlite
 #' @format \code{\link{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
@@ -847,7 +846,16 @@ PivotCells <- R6::R6Class("PivotCells",
    #' @description
    #' Return the contents of this object as JSON for debugging.
    #' @return A JSON representation of various object properties.
-   asJSON = function() { return(jsonlite::toJSON(asList())) }
+   asJSON = function() {
+      if (!requireNamespace("jsonlite", quietly = TRUE)) {
+         stop("The jsonlite package is needed to convert to JSON.  Please install the jsonlite package.", call. = FALSE)
+      }
+      jsonliteversion <- utils::packageDescription("jsonlite")$Version
+      if(numeric_version(jsonliteversion) < numeric_version("1.1")) {
+         stop("Version 1.1 or above of the jsonlite package is needed to convert to JSON.  Please install an updated version of the jsonlite package.", call. = FALSE)
+      }
+      return(jsonlite::toJSON(self$asList()))
+   }
   ),
   active = list(
 
