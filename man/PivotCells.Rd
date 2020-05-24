@@ -28,6 +28,9 @@ comprise the body of a pivot table.
 
 \item{\code{rows}}{A list of the rows in the pivot table.  Each element in this list is
 a list of `PivotCell` objects comprising the row.}
+
+\item{\code{all}}{A list of the cells in the pivot table.  Each element in this list is
+a `PivotCell` object.}
 }
 \if{html}{\out{</div>}}
 }

@@ -85,8 +85,11 @@ the calculations are rendered.}
 \item{\code{batchInfo}}{Diagnostic information describing the batches used in the
 last pivot table evaluation.}
 
-\item{\code{cells}}{A list where each element represents one row in the pivot table.
-Each row is itself a list, where each list element is a `PivotCell` object.}
+\item{\code{cells}}{A `PivotCells` object that contains all of the cells in the pivot
+table.}
+
+\item{\code{allCells}}{A list of all of the cells in the pivot table, where each element
+in the list is a 'PivotCell' object.}
 
 \item{\code{rowCount}}{The number of rows in the pivot table, excluding headings.}
 
@@ -167,6 +170,7 @@ of significant pivot table operations (i.e. where elapsed>0.1).}
 \item \href{#method-addStyle}{\code{PivotTable$addStyle()}}
 \item \href{#method-createInlineStyle}{\code{PivotTable$createInlineStyle()}}
 \item \href{#method-setStyling}{\code{PivotTable$setStyling()}}
+\item \href{#method-mapStyling}{\code{PivotTable$mapStyling()}}
 \item \href{#method-generateCellStructure}{\code{PivotTable$generateCellStructure()}}
 \item \href{#method-resetCells}{\code{PivotTable$resetCells()}}
 \item \href{#method-evaluateCells}{\code{PivotTable$evaluateCells()}}
@@ -1662,7 +1666,7 @@ The newly created `PivotStyle` object.
 \if{html}{\out{<a id="method-setStyling"></a>}}
 \if{latex}{\out{\hypertarget{method-setStyling}{}}}
 \subsection{Method \code{setStyling()}}{
-Apply styling to part of a pivot table.
+Apply styling to a set of data groups or cells in a pivot table.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotTable$setStyling(
   rFrom = NULL,
@@ -1728,6 +1732,99 @@ If both rFrom/rTo and rowNumbers are specified, then rFrom/rTo constrain
 the row numbers specified in rowNumbers.
 If both cFrom/cTo and columnNumbers are specified, then cFrom/cTo constrain
 the column numbers specified in columnNumbers.
+See the "Styling" and Finding and Formatting" vignettes for more
+information and many examples.
+}
+
+\subsection{Returns}{
+No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-mapStyling"></a>}}
+\if{latex}{\out{\hypertarget{method-mapStyling}{}}}
+\subsection{Method \code{mapStyling()}}{
+Apply styling to pivot table cells based on the value of each cell.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotTable$mapStyling(
+  styleProperty = NULL,
+  cells = NULL,
+  valueType = "text",
+  mapType = "range",
+  mappings = NULL,
+  styleLowerValues = FALSE,
+  styleHigherValues = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{styleProperty}}{The name of the style property to set on the specified
+cells, e.g. background-color.}
+
+\item{\code{cells}}{A list containing `PivotCell` objects.}
+
+\item{\code{valueType}}{The type of style value to be set.  Must be one of:
+"text", "character", "number", "numeric", "color" or "colour".
+"text" and "character" are equivalent.  "number" and "numeric" are equivalent.
+"color" and "colour" are equivalent.}
+
+\item{\code{mapType}}{The type of mapping to be performed.  The following mapping
+types are supported:
+(1) "value" = a 1:1 mapping which maps each specified "from" value to the
+corresponding "to" value, e.g. 100 -> "green"
+(2) "logic" = each from value is logical criteria.  See details.
+(3) "range" = values between each pair of "from" values are mapped to the
+corresponding "to" value, e.g. values in the range 80-100 -> "green" (more
+specifically values greater than or equal to 80 and less than 100).
+(4) "continuous" = rescales values between each pair of "from" values into
+the range of the corresponding pair of "to" values, e.g. if the "from" range
+is 80-100 and the corresponding "to" range is 0.8-1, then 90 -> 0.9.
+"continuous" cannot be used with valueType="text"/"character".}
+
+\item{\code{mappings}}{The mappings to be applied, specified in one of the following
+three forms:
+(1) a list containing pairs of values, e.g.
+`list(0, "red", 0.4, "yellow", 0.8, "green")`
+(2) a list containing "from" and "to" vectors/lists, e.g.
+`list(from=c(0, 0.4, 0.8), to=c("red", "yellow", "green"))`
+(3) a custom mapping function that will be invoked once per cell, e.g.
+`function(v, cell) { if(isTRUE(v>0.8)) return("green") }`.
+Mappings must be specified in ascending order when valueType="range" or
+valueType="continuous".
+If a custom mapping function is specified, then the valueType and mapType
+parameters are ignored.}
+
+\item{\code{styleLowerValues}}{A logical value, default FALSE, that specifies
+whether values less than the lowest specified "from" value should be styled
+using the style specified for the lowest "from" value.  Only applies when
+valueType="range" or valueType="continuous".}
+
+\item{\code{styleHigherValues}}{A logical value, default TRUE, that specifies
+whether values greater than the highest specified "from" value should be styled
+using the style specified for the highest "from" value.  Only applies when
+valueType="range" or valueType="continuous".}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+`mapStyling()` is typically used to conditionally apply styling to cells
+based on the value of each individual cell, e.g. cells with values less
+than a specified number could be coloured red.
+mapType="logic" maps values matching specified logical criteria to
+specific "to" values.  The logical criteria can be any of the following
+forms (the first matching mapping is used):
+(1) a specific value, e.g. 12.
+(2) a specific value equality condition, e.g. "v==12", where v
+represents the cell value.
+(3) a value range expression using the following abbreviated form:
+"value1<=v<value2", e.g. "10<=v<15".  Only "<" or "<=" can be used
+in these value range expressions.
+(4) a standard R logical expression, e.g.
+"10<=v && v<15".
+Basic R functions that test the value can also be
+used, e.g. is.na(v).
 See the "Styling" and Finding and Formatting" vignettes for more
 information and many examples.
 }

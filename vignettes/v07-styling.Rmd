@@ -20,7 +20,8 @@ vignette: >
 * Styling with the quick pivot functions
 * Styling Data Groups
 * Styling Calculations
-* Changing styling/formatting after table creation using `pt$setStyling()`
+* Changing styling/formatting using `pt$setStyling()`
+* Changing styling/formatting using `pt$mapStyling()`
 * Inheritance of Styles 
 * Creating a New Theme
 * Summary of Styling Rules
@@ -48,7 +49,9 @@ or <br/>
 
 The above examples specify the cells to be styled by their row and column numbers in the body of the table.  It is also possible to specify a list of cells using the `cells` argument or a list of data groups (i.e. row or column headings) using the `groups` argument.  Many examples of these can be found in the [Finding and Formatting](v08-findingandformatting.html) vignette.
 
-The above examples also set CSS style attributes on the individual cells.  This is quick and easy, though is verbose in the generated HTML.  Named styles are more efficient for large pivot tables (hundreds/thousands of cells) and are described in the following sections. 
+To apply styles based on the value of each cell, use the `mapStyling()` function described later in this vignette. 
+
+The above examples set CSS style attributes on the individual cells.  This is quick and easy, though is verbose in the generated HTML.  Named styles are more efficient for large pivot tables (hundreds/thousands of cells) and are described in the following sections. 
 
 ## Styles and Themes
 
@@ -337,7 +340,7 @@ pt$defineCalculation(calculationName="TotalTrains2", summariseExpression="n()",
 pt$renderPivot(styleNamePrefix="tcn")
 ```
 
-## Changing styling/formatting after table creation using `pt$setStyling()`
+## Changing styling/formatting using `pt$setStyling()`
 
 The individual cells in the pivot table can have their appearance changed by retrieving the cell then applying a style to the cell.  These styles typically apply in addition to the styles coming from the underlying theme, e.g. two different ways for highlighting a cell:
 
@@ -412,6 +415,148 @@ pt$renderPivot()
 ```
 
 For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v08-findingandformatting.html) vignette.
+
+## Changing styling/formatting using `pt$mapStyling()`
+
+Sometimes it is desirable to set the styling more dynamically, i.e. the styling of each cell should vary according to the value of the each cell, e.g. increasingly large numbers have an increasingly intense red cell background colour.  This can be done with the `mapStyling()` method, which has the following arguments:
+
+* `styleProperty` - the name of the style property to set e.g. "background-color".
+* `cells` - a list specifying the `PivotCell` objects to be styled.
+* `valueType` - the type of style value to be set - one of the following values: `text`/`character`, `number`/`numeric`, or `color`/`colour`
+* `mapType` - the type of mapping to be performed - the following mapping types are supported:
+    + `value` - a 1:1 mapping which maps each specified "from" value to the corresponding "to" value, e.g. 100 -> "green".
+    + `logic` - each from value is logical criteria - see more details below.
+    + `range` - values between each pair of "from" values are mapped to the corresponding "to" value, e.g. values in the range 80-100 -> "green".
+    + `continuous` - rescales values between each pair of "from" values into the range of the corresponding pair of "to" values, e.g. if the "from" range
+ is 80-100 and the corresponding "to" range is 0.8-1, then 90 -> 0.9.
+* `mappings` - the mappings to be applied, specified in one of the following three forms:
+    + a list containing pairs of values, e.g. `list(0, "red", 0.4, "yellow", 0.8, "green")`
+    + a list containing "from" and "to" vectors/lists, e.g. `list(from=c(0, 0.4, 0.8), to=c("red", "yellow", "green"))`
+    + a custom mapping function that will be invoked once per cell, e.g. `function(v, cell) { if(isTRUE(v>0.8)) return("green") }`.
++ `styleLowerValues` - a logical value, default `FALSE`, that specifies whether values less than the lowest specified "from" value should be styled using the style specified for the lowest "from" value.
+* `styleHigherValues` - a logical value, default `TRUE`, that specifies whether values greater than the highest specified "from" value should be styled using the style specified for the highest "from" value.
+
+`mapType`="logical" is a generic way of specifying mapping rules, which can be of any of the following forms:
+
+* a specific value, e.g. 12.
+* a specific value equality condition, e.g. `"v==12"`, where v represents the cell value.
+* a value range expression using the following abbreviated form:  "value1<=v<value2", e.g. `"10<=v<15"`.  
+    + Only "<" or "<=" can be used in these abbreviated value range expressions.
+* a standard R logical expression, e.g. `"10<=v && v<15"`.
+    + Basic R functions that test the value can also be used, e.g. `"is.na(v)"`.
+
+Further Notes:
+
+* `mapType`="continuous" cannot be used with `valueType`="text"/"character".
+* A range specified as `list(0, "red", 1000)` is equivalent to "0<=v<1000", i.e. the upper value is excluded from the range.
+* `styleLowerValues` and `styleHigherValues` only apply when `valueType` is "range" or "continuous".
+* Mappings must be supplied in ascending order  when `valueType` is "range" or "continuous".
+
+### Style mapping example with `mapType="logic"`
+
+The example pivot table below maps cell colours from cell values using conditional/logical expressions: 
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$mapStyling(cells=pt$allCells, styleProperty="background-color", 
+              valueType="color", mapType="logic",
+              mappings=list("v==3079", "skyblue", "v<1000", "orange", 
+                            "5000<=v<15000", "yellow", "v>50000", "green"))
+pt$mapStyling(cells=pt$allCells, styleProperty="color", valueType="color", 
+              mapType="logic", mappings=list("v>50000", "white"))
+pt$mapStyling(cells=pt$allCells, styleProperty="background-color", 
+              valueType="text", mapType="logic",
+              mappings=list("is.null(v)", "red"))
+pt$renderPivot()
+```
+
+### Style mapping example with `mapType="range"`
+
+The example pivot table below maps cell colours from cell values using ranges, i.e. 0-1000 -> "red" and 1000-15000 -> "orange": 
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$mapStyling(cells=pt$allCells, styleProperty="background-color", valueType="color", mapType="range",
+              mappings=list(0, "red", 1000, "orange", 15000), styleHigherValues=FALSE)
+pt$renderPivot()
+```
+
+### Style mapping example with `mapType="continuous"`
+
+An example of styling using the "continuous" map type can be found in the [Finding and Formatting](v08-findingandformatting.html) vignette.
+
+### Style mapping example with `mapType="function"`
+
+The example pivot table below maps cell colours using a custom function: 
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+fx <- function(v, cell) {
+  if(isTRUE(0<=v && v<1000)) return("red")
+  if(isTRUE(1000<=v && v<15000)) return("orange")
+}
+pt$mapStyling(cells=pt$allCells, styleProperty="background-color", mappings=fx)
+pt$renderPivot()
+```
+
+The `cell` argument passed to the function is the current cell being styled, e.g. to format based on the column number:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+fx <- function(v, cell) {
+  clr <- 255-floor(140*cell$columnNumber/3)
+  return(paste0("#",
+                format(as.hexmode(255), width=2),
+                format(as.hexmode(clr), width=2),
+                format(as.hexmode(clr), width=2)))
+}
+pt$mapStyling(cells=pt$allCells, styleProperty="background-color", mappings=fx)
+pt$renderPivot()
+```
+
+Or even styling using random colours:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+fx <- function(v, cell) {
+  return(paste0("#",
+                format(as.hexmode(sample(160:255, 1)), width=2),
+                format(as.hexmode(sample(160:255, 1)), width=2),
+                format(as.hexmode(sample(160:255, 1)), width=2)))
+}
+pt$mapStyling(cells=pt$allCells, styleProperty="background-color", mappings=fx)
+pt$renderPivot()
+```
 
 ## Inheritance of Styles 
 

@@ -1547,7 +1547,7 @@ PivotTable <- R6::R6Class("PivotTable",
     },
 
     #' @description
-    #' Apply styling to part of a pivot table.
+    #' Apply styling to a set of data groups or cells in a pivot table.
     #' @details
     #' There are five ways to specify the part(s) of a pivot table to apply
     #' styling to:
@@ -1720,10 +1720,72 @@ PivotTable <- R6::R6Class("PivotTable",
     # valueType=color, mapType=continuous:  0, red, 1, yellow, etc                     styleLowerValues=FALSE, styleHigherValues=TRUE
     # Note in documentation that these methods are primarily for numerical data.  Parts may work for dates (e.g. mapType=value and range) ...
     # ... but other bits won't, e.g. v>=as.Date("2020-05-22"), or variables, e.g. v>=x where x is a local variable outside of the pivot table (but the name could collide with a local variable inside the pivot table function).
-    mapStyling = function(cells=NULL, styleProperty=NULL, valueType="text", mapType="range", mappings=NULL, styleLowerValues=FALSE, styleHigherValues=TRUE) {
+
+    #' @description
+    #' Apply styling to pivot table cells based on the value of each cell.
+    #' @details
+    #' `mapStyling()` is typically used to conditionally apply styling to cells
+    #' based on the value of each individual cell, e.g. cells with values less
+    #' than a specified number could be coloured red.
+    #' mapType="logic" maps values matching specified logical criteria to
+    #' specific "to" values.  The logical criteria can be any of the following
+    #' forms (the first matching mapping is used):
+    #' (1) a specific value, e.g. 12.
+    #' (2) a specific value equality condition, e.g. "v==12", where v
+    #' represents the cell value.
+    #' (3) a value range expression using the following abbreviated form:
+    #' "value1<=v<value2", e.g. "10<=v<15".  Only "<" or "<=" can be used
+    #' in these value range expressions.
+    #' (4) a standard R logical expression, e.g.
+    #' "10<=v && v<15".
+    #' Basic R functions that test the value can also be
+    #' used, e.g. is.na(v).
+    #' See the "Styling" and Finding and Formatting" vignettes for more
+    #' information and many examples.
+    #' @param styleProperty The name of the style property to set on the specified
+    #' cells, e.g. background-color.
+    #' @param cells A list containing `PivotCell` objects.
+    #' @param valueType The type of style value to be set.  Must be one of:
+    #' "text", "character", "number", "numeric", "color" or "colour".
+    #' "text" and "character" are equivalent.  "number" and "numeric" are equivalent.
+    #' "color" and "colour" are equivalent.
+    #' @param mapType The type of mapping to be performed.  The following mapping
+    #' types are supported:
+    #' (1) "value" = a 1:1 mapping which maps each specified "from" value to the
+    #' corresponding "to" value, e.g. 100 -> "green"
+    #' (2) "logic" = each from value is logical criteria.  See details.
+    #' (3) "range" = values between each pair of "from" values are mapped to the
+    #' corresponding "to" value, e.g. values in the range 80-100 -> "green" (more
+    #' specifically values greater than or equal to 80 and less than 100).
+    #' (4) "continuous" = rescales values between each pair of "from" values into
+    #' the range of the corresponding pair of "to" values, e.g. if the "from" range
+    #' is 80-100 and the corresponding "to" range is 0.8-1, then 90 -> 0.9.
+    #' "continuous" cannot be used with valueType="text"/"character".
+    #' @param mappings The mappings to be applied, specified in one of the following
+    #' three forms:
+    #' (1) a list containing pairs of values, e.g.
+    #' `list(0, "red", 0.4, "yellow", 0.8, "green")`
+    #' (2) a list containing "from" and "to" vectors/lists, e.g.
+    #' `list(from=c(0, 0.4, 0.8), to=c("red", "yellow", "green"))`
+    #' (3) a custom mapping function that will be invoked once per cell, e.g.
+    #' `function(v, cell) { if(isTRUE(v>0.8)) return("green") }`.
+    #' Mappings must be specified in ascending order when valueType="range" or
+    #' valueType="continuous".
+    #' If a custom mapping function is specified, then the valueType and mapType
+    #' parameters are ignored.
+    #' @param styleLowerValues A logical value, default FALSE, that specifies
+    #' whether values less than the lowest specified "from" value should be styled
+    #' using the style specified for the lowest "from" value.  Only applies when
+    #' valueType="range" or valueType="continuous".
+    #' @param styleHigherValues A logical value, default TRUE, that specifies
+    #' whether values greater than the highest specified "from" value should be styled
+    #' using the style specified for the highest "from" value.  Only applies when
+    #' valueType="range" or valueType="continuous".
+    #' @return No return value.
+    mapStyling = function(styleProperty=NULL, cells=NULL, valueType="text", mapType="range", mappings=NULL, styleLowerValues=FALSE, styleHigherValues=TRUE) {
       if(private$p_argumentCheckMode > 0) {
-        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "mapStyling", cells, missing(cells), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotCell", "list"), allowedListElementClasses="PivotCell")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "mapStyling", styleProperty, missing(styleProperty), allowMissing=FALSE, allowNull=FALSE, allowedClasses="character")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "mapStyling", cells, missing(cells), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("PivotCell", "list"), allowedListElementClasses="PivotCell")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "mapStyling", valueType, missing(valueType), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("character", "text", "numeric", "number", "color", "colour"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "mapStyling", mapType, missing(mapType), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("value", "range", "logic", "continuous"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "mapStyling", mappings, missing(mappings), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("character", "list", "function"), allowedListElementClasses=c("character", "integer", "numeric"))
@@ -1732,7 +1794,6 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$mapStyling", "Mapping styling...")
       # prep parameters
-      if(is.null(cells)) cells <- self$allCells
       if("PivotCell" %in% class(cells)) cells <- list(cells)
       if(mapType=="numeric") mapType <- "number"
       if(mapType=="character") mapType <- "text"
@@ -1753,10 +1814,10 @@ PivotTable <- R6::R6Class("PivotTable",
         return(invisible())
       }
       # general or special case?
-      if(length(mappings)==2) {
-        # special case of a two element list (from, to) - only valid for mapTypes value, range, continuous
-        if(length(intersect(class(mappings$from), c("integer", "numeric")))==0) {
-          stop("PivotTable$mapStyling():  The 'from' values must be either integer or numeric.", call. = FALSE)
+      if((length(mappings)==2)&&(length(intersect(names(mappings), c("from", "to")))==2)) {
+        # special case of a two element list (from, to)
+        if(length(intersect(class(mappings$from), c("character", "integer", "numeric", "list")))==0) {
+          stop("PivotTable$mapStyling():  The 'from' values must be either character, integer, numeric or a list.", call. = FALSE)
         }
         # build the maps list
         maps <- list()
@@ -1764,13 +1825,17 @@ PivotTable <- R6::R6Class("PivotTable",
         m <- 1
         mMax <- mapCount
         for(m in 1:mMax) {
-          vre <- mappings$from[m]
-          value <- mappings$to[m]
+          if("list" %in% class(mappings$from)) vre <- mappings$from[[m]]
+          else vre <- mappings$from[m]
+          if("list" %in% class(mappings$to)) value <- mappings$to[[m]]
+          else value <- mappings$to[m]
           nextVre <- NULL
           nextValue <- NULL
           if((m+1)<=mMax){
-            nextVre <- mappings$from[m+1]
-            nextValue <- mappings$to[m+1]
+            if("list" %in% class(mappings$from)) nextVre <- mappings$from[[m+1]]
+            else nextVre <- mappings$from[m+1]
+            if("list" %in% class(mappings$to)) nextValue <- mappings$to[[m+1]]
+            else nextValue <- mappings$to[m+1]
           }
           maps[[length(maps)+1]] <- list(vre=vre, value=value, nextVre=nextVre, nextValue=nextValue)
         }
@@ -1791,17 +1856,17 @@ PivotTable <- R6::R6Class("PivotTable",
         maps <- list()
         mapCount <- length(mappings)
         m <- 1
-        mMax <- 2*floor(mapCount/2)
+        mMax <- mapCount
         while(m<mMax) {
           vre <- mappings[[m]]
-          value <- mappings[[m+1]]
+          value <- NULL
+          if((m+1)<=length(mappings)) value <- mappings[[m+1]]
           nextVre <- NULL
+          if((m+2)<=length(mappings)) nextVre <- mappings[[m+2]]
           nextValue <- NULL
-          if((m+3)<=length(mappings)){
-            nextVre <- mappings[[m+2]]
-            nextValue <- mappings[[m+3]]
-          }
+          if((m+3)<=length(mappings)) nextValue <- mappings[[m+3]]
           maps[[length(maps)+1]] <- list(vre=vre, value=value, nextVre=nextVre, nextValue=nextValue)
+          # message("vre=", vre, " value=", value, " nextVre=", nextVre, " nextValue=", nextValue)
           m <- m+2
         }
       }
@@ -1829,13 +1894,15 @@ PivotTable <- R6::R6Class("PivotTable",
         }
       }
       else if(mapType=="range") {
-        if(valueType=="text") stop("PivotTable$mapStyling():  Range mappings are not supported with text values.", call. = FALSE)
         for(m in 1:length(maps)) {
           map <- maps[[m]]
           # basic map checks
           if((is.null(map$vre))||(length(map$vre)==0)) stop("PivotTable$mapStyling():  The 'from' value for a mapping cannot be null or blank.", call. = FALSE)
           if(!vreIsSingleValue(map$vre)) stop("PivotTable$mapStyling():  Only single-value 'from' values can be be used with a range mapping.", call. = FALSE)
-          if((is.null(map$value))||(length(map$value)==0)) stop("PivotTable$mapStyling():  The 'to' value for a mapping cannot be null or blank.", call. = FALSE)
+          if(((is.null(map$value))||(length(map$value)==0))&&(m<length(maps))) {
+            # the last value of a range mapping can be null, e.g. mappings=list(0, "red", 1000, "orange", 15000), note there is no colour for 15000
+            stop("PivotTable$mapStyling():  The 'to' value for a mapping cannot be null or blank (except for the last specified 'from' value).", call. = FALSE)
+          }
           # store the numerical range as part of the mapping so they don't need to be parsed repeatedly
           map$rangeStart <- vreGetSingleValue(map$vre)
           if((!is.null(map$nextVre))&&(vreIsSingleValue(map$nextVre))) map$rangeEnd <- vreGetSingleValue(map$nextVre)
@@ -1847,7 +1914,7 @@ PivotTable <- R6::R6Class("PivotTable",
             testColor <- parseColor(map$value)
             if(is.null(testColor)) stop(paste0("PivotTable$mapStyling():  The 'to' value '", map$value, "' must be a valid color/colour since valueType=color has been specified."), call. = FALSE)
           }
-          message(paste0("vre=", map$vre, " nextVre=", map$nextVre, " rangeStart=", map$rangeStart, " rangeEnd=", map$rangeEnd, " value=", map$value, " nextValue=", map$nextValue))
+          # message(paste0("vre=", map$vre, " nextVre=", map$nextVre, " rangeStart=", map$rangeStart, " rangeEnd=", map$rangeEnd, " value=", map$value, " nextValue=", map$nextValue))
           maps[[m]] <- map
         }
         # check the order of the mappings
@@ -1881,7 +1948,7 @@ PivotTable <- R6::R6Class("PivotTable",
               map$endColorList <- vreHexToClr(map$endColorHex)
             }
           }
-          message(paste0("vre=", map$vre, " nextVre=", map$nextVre, " rangeStart=", map$rangeStart, " rangeEnd=", map$rangeEnd, " value=", map$value, " nextValue=", map$nextValue))
+          # message(paste0("vre=", map$vre, " nextVre=", map$nextVre, " rangeStart=", map$rangeStart, " rangeEnd=", map$rangeEnd, " value=", map$value, " nextValue=", map$nextValue))
           maps[[m]] <- map
         }
         # check the order of the mappings
@@ -1962,7 +2029,7 @@ PivotTable <- R6::R6Class("PivotTable",
                 value <- vreScaleNumber(map$value, map$nextValue, map$rangeStart, map$rangeEnd, value)
               }
               else if(valueType=="color") {
-                message(paste0("startColorHex=", map$startColorHex, " endColorHex=", map$endColorHex, " rangeStart=", map$rangeStart, " rangeEnd=", map$rangeEnd, " value=", value))
+                # message(paste0("startColorHex=", map$startColorHex, " endColorHex=", map$endColorHex, " rangeStart=", map$rangeStart, " rangeEnd=", map$rangeEnd, " value=", value))
                 value <- vreScale2Colours(map$startColorList, map$endColorList, map$rangeStart, map$rangeEnd, value)
               }
               if((length(value)>0)&&(!is.na(value))) {
@@ -4283,11 +4350,11 @@ PivotTable <- R6::R6Class("PivotTable",
     #' table.
     cells = function(value) { return(invisible(private$p_cells)) },
 
-    #' @field cells A list of all of the cells in the pivot table, where each element
+    #' @field allCells A list of all of the cells in the pivot table, where each element
     #' in the list is a 'PivotCell' object.
     allCells = function(value) {
       if(!private$p_evaluated) stop("PivotTable$allCells:  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
-      if(is.null(private$p_cells)) stop("PivotTable$allCells:  No cells exist to examine.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$allCells:  No cells exist.", call. = FALSE)
       return(invisible(private$p_cells$all))
     },
 

@@ -90,7 +90,8 @@ To build a series of example pivot tables, we will use the `bhmtrains` data fram
 
 ```{r, message=FALSE, echo=FALSE}
 library(pivottabler)
-renderBasicTable(t(bhmtrains[1:4,]),rowNamesAsHeader=TRUE)
+renderBasicTable(t(bhmtrains[1:4,]),rowNamesAsHeader=TRUE, 
+                 columnAlignment=c("left", "left", "left", "left", "left"))
 ```
 
 GbttArrival and GbttDeparture are the scheduled arrival and departure times of the trains at Birmingham New Street, as advertised in the Great Britain Train Timetable (GBTT).  Also given are the actual arrival and departure times of the trains at Birmingham New Street.  Note that all four of the trains above terminated at New Street, hence they have arrival times but no departure times.  The origin and destination stations of each of the trains is also included, in the form of three letter station codes, e.g. BHM = Birmingham New Street.  The `trainstations` data frame (used later in this vignette) includes a lookup from the code to the full station name for all stations.

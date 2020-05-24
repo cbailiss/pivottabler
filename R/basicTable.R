@@ -16,14 +16,18 @@
 #' @export
 #' @param matrix Tabular data to render.
 #' @param stylePrefix Text prefix for CSS style declarations.
+#' @param columnNamesAsHeader Include column names in output (if FALSE, the
+#' first row from the matrix is used as the column headings).
 #' @param rowNamesAsHeader Include row names in output.
 #' @return A basic table rendered as a HTML widget.
 #' @examples
 #' renderBasicTable(matrix(c(1:12), nrow=3))
 
-renderBasicTable <- function(matrix=NULL, stylePrefix=NULL, rowNamesAsHeader=FALSE) {
+renderBasicTable <- function(matrix=NULL, stylePrefix=NULL, columnNamesAsHeader=FALSE, rowNamesAsHeader=FALSE,
+                             columnAlignment="right") {
   checkArgument(4, TRUE, "", "renderBasicTable", matrix, missing(matrix), allowMissing=FALSE, allowNull=FALSE, allowedClasses="matrix")
   checkArgument(4, TRUE, "", "renderBasicTable", stylePrefix, missing(stylePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
+  checkArgument(4, TRUE, "", "renderBasicTable", columnNamesAsHeader, missing(columnNamesAsHeader), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
   checkArgument(4, TRUE, "", "renderBasicTable", rowNamesAsHeader, missing(rowNamesAsHeader), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
   trows <- list()
   if(is.null(matrix)) return()
@@ -37,19 +41,32 @@ renderBasicTable <- function(matrix=NULL, stylePrefix=NULL, rowNamesAsHeader=FAL
   }
   else m <- matrix
   row <- list()
+  cnames <- colnames(m)
   for(c in 1:columnCount) {
     if(c==1) styleName <- "RowHeader"
     else styleName <- "ColumnHeader"
-    row[[length(row)+1]] <- htmltools::tags$th(class=paste0(stylePrefix, styleName), m[1,c])
+    textAlign <- "left"
+    if(c > 1) textAlign <- "right"
+    if(length(columnAlignment)>=c) textAlign <- columnAlignment[c]
+    textAlign <- paste0("text-align: ", textAlign)
+    if(columnNamesAsHeader) row[[length(row)+1]] <- htmltools::tags$th(class=paste0(stylePrefix, styleName), style=textAlign, cnames[c])
+    else row[[length(row)+1]] <- htmltools::tags$th(class=paste0(stylePrefix, styleName), style=textAlign, m[1,c])
   }
   trows[[length(trows)+1]] <- htmltools::tags$tr(row)
   if(rowCount>1) {
-    for(r in 2:rowCount) {
+    rFrom <- 1
+    if(columnNamesAsHeader) rFrom <- 1
+    else rFrom <- 2
+    for(r in rFrom:rowCount) {
       row <- list()
       for(c in 1:columnCount) {
         if((c==1)&&(rowNamesAsHeader==TRUE)) style <- paste0(stylePrefix, "RowHeader")
         else style <- paste0(stylePrefix, "Cell")
-        row[[length(row)+1]] <- htmltools::tags$td(class=style, m[r,c])
+        textAlign <- "left"
+        if(c > 1) textAlign <- "right"
+        if(length(columnAlignment)>=c) textAlign <- columnAlignment[c]
+        textAlign <- paste0("text-align: ", textAlign)
+        row[[length(row)+1]] <- htmltools::tags$td(class=style, style=textAlign, m[r,c])
       }
       trows[[length(trows)+1]] <- htmltools::tags$tr(row)
     }
