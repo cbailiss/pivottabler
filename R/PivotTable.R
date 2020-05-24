@@ -4285,7 +4285,11 @@ PivotTable <- R6::R6Class("PivotTable",
 
     #' @field cells A list of all of the cells in the pivot table, where each element
     #' in the list is a 'PivotCell' object.
-    allCells = function(value) { return(invisible(private$p_cells$all)) },
+    allCells = function(value) {
+      if(!private$p_evaluated) stop("PivotTable$allCells:  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
+      if(is.null(private$p_cells)) stop("PivotTable$allCells:  No cells exist to examine.", call. = FALSE)
+      return(invisible(private$p_cells$all))
+    },
 
     #' @field rowCount The number of rows in the pivot table, excluding headings.
     rowCount = function(value) { return(invisible(private$p_cells$rowCount)) },
