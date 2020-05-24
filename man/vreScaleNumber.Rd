@@ -13,11 +13,11 @@ vreScaleNumber(n1, n2, vMin, vMax, value, decimalPlaces = 3)
 
 \item{vMin}{The lower value of the source range.}
 
+\item{vMax}{The upper value of the source range.}
+
 \item{value}{The source value to rescale into the target range.}
 
 \item{decimalPlaces}{The number of decimal places to round the result to.}
-
-\item{vmax}{The upper value of the source range.}
 }
 \value{
 The value rescaled into the target range.

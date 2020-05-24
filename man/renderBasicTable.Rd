@@ -21,6 +21,9 @@ renderBasicTable(
 first row from the matrix is used as the column headings).}
 
 \item{rowNamesAsHeader}{Include row names in output.}
+
+\item{columnAlignment}{A character vector specifying the horizontal alignment
+of each column.}
 }
 \value{
 A basic table rendered as a HTML widget.

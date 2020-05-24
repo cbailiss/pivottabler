@@ -334,6 +334,7 @@ See the "Finding and Formatting" vignette for graphical examples.
   minValue = NULL,
   maxValue = NULL,
   exactValues = NULL,
+  valueRanges = NULL,
   includeNull = TRUE,
   includeNA = TRUE,
   emptyCells = "include",
@@ -374,6 +375,10 @@ calculations to find.}
 \item{\code{maxValue}}{A numerical value specifying a maximum value threshold.}
 
 \item{\code{exactValues}}{A vector or list specifying a set of allowed values.}
+
+\item{\code{valueRanges}}{A vector specifying one or more value range expressions which
+the cell values must match.  If multiple value range expressions are specified,
+then the cell value must match any of one the specified expressions.}
 
 \item{\code{includeNull}}{specify TRUE to include `NULL` in the matched cells,
 FALSE to exclude `NULL` values.}

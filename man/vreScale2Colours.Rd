@@ -13,9 +13,9 @@ vreScale2Colours(clr1, clr2, vMin, vMax, value)
 
 \item{vMin}{The lower value of the source range.}
 
-\item{value}{The source value to rescale into the target range.}
+\item{vMax}{The upper value of the source range.}
 
-\item{vmax}{The upper value of the source range.}
+\item{value}{The source value to rescale into the target range.}
 }
 \value{
 The value scaled into the target colour gradient.

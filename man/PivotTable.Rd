@@ -2284,6 +2284,7 @@ See the "Finding and Formatting" vignette for graphical examples.
   minValue = NULL,
   maxValue = NULL,
   exactValues = NULL,
+  valueRanges = NULL,
   includeNull = TRUE,
   includeNA = TRUE,
   emptyCells = "include",
@@ -2324,6 +2325,10 @@ calculations to find.}
 \item{\code{maxValue}}{A numerical value specifying a maximum value threshold.}
 
 \item{\code{exactValues}}{A vector or list specifying a set of allowed values.}
+
+\item{\code{valueRanges}}{A vector specifying one or more value range expressions which
+the cell values must match.  If multiple value range expressions are specified,
+then the cell value must match any of one the specified expressions.  See details.}
 
 \item{\code{includeNull}}{specify TRUE to include `NULL` in the matched cells,
 FALSE to exclude `NULL` values.}
@@ -2377,6 +2382,21 @@ objects to constrain the scope of the search.}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+The valueRanges parameter can be any of the following
+forms:
+(1) a specific value, e.g. 12.
+(2) a specific value equality condition, e.g. "v==12", where v
+represents the cell value.
+(3) a value range expression using the following abbreviated form:
+"value1<=v<value2", e.g. "10<=v<15".  Only "<" or "<=" can be used
+in these value range expressions.
+(4) a standard R logical expression, e.g.
+"10<=v && v<15".
+Basic R functions that test the value can also be
+used, e.g. is.na(v).
+}
+
 \subsection{Returns}{
 A list of `PivotCell` objects.
 }
