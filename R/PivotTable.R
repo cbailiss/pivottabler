@@ -3420,13 +3420,14 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param separator Specifies the character value used to concatenate data
     #' group captions where multiple levels exist in the data group hierarchy.
     #' @param stringsAsFactors Specify `TRUE`to convert strings to factors,
-    #' default `default.stringsAsFactors()`.
+    #' default is currently `default.stringsAsFactors()`, though this will change
+    #' to `FALSE` in a future version.
     #' @param forceNumeric Specify `TRUE` to force the conversion of cell values
     #' to a numeric value, default `FALSE`.
     #' @param rowGroupsAsColumns Specify `TRUE` to include the row groups as
     #' additional columns in the data frame.  Default `FALSE`.
     #' @return A data frame.
-    asDataFrame = function(separator=" ", stringsAsFactors=default.stringsAsFactors(), forceNumeric=FALSE, rowGroupsAsColumns=FALSE) {
+    asDataFrame = function(separator=" ", stringsAsFactors=NULL, forceNumeric=FALSE, rowGroupsAsColumns=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataFrame", separator, missing(separator), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asDataFrame", stringsAsFactors, missing(stringsAsFactors), allowMissing=TRUE, allowNull=TRUE, allowedClasses="logical")
@@ -3436,6 +3437,24 @@ PivotTable <- R6::R6Class("PivotTable",
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$asDataFrame", "Getting pivot table as a data frame...", list(separator=separator, stringsAsFactors=stringsAsFactors))
       if(!private$p_evaluated) stop("PivotTable$asDataFrame():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$asDataFrame():  No cells exist to retrieve.", call. = FALSE)
+      # stringsAsFactors default depends on the version of R...
+      if(is.null(stringsAsFactors)) {
+        if(getRversion() < "4.0.0") {
+          # old version, retain existing behaviour with no warning
+          stringsAsFactors <- default.stringsAsFactors()
+        }
+        else if (getRversion() < "4.1.0") {
+          stringsAsFactors <- default.stringsAsFactors()
+          # generate a warning if the default is TRUE as this will change to FALSE in future
+          if(stringsAsFactors) {
+            warning("PivotTable$asDataFrame(): In a future version of R, default.stringsAsFactors() will be deprecated and removed, at which time the 'stringsAsFactors' argument will default to FALSE.  Explictly set the 'stringsAsFactors' argument to remove this warning.")
+          }
+        }
+        else {
+          # default to FALSE for R 4.1.0 onwards
+          stringsAsFactors <- FALSE
+        }
+      }
       # sizing
       rowHeaderLevelCount <- private$p_rowGroup$getLevelCount()
       columnHeaderLevelCount <- private$p_columnGroup$getLevelCount()
@@ -3534,12 +3553,12 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param separator Specifies the character value used to concatenate
     #' filter values where multiple values exist in a filter.
     #' @param stringsAsFactors Specify `TRUE`to convert strings to factors,
-    #' default `default.stringsAsFactors()`.
+    #' default is currently `default.stringsAsFactors()`, though this will change
+    #' to `FALSE` in a future version.
     #' @param excludeEmptyCells Specify `FALSE` to also include rows for
     #' empty cells in the data frame, default `TRUE`.
     #' @return A data frame.
-    asTidyDataFrame = function(includeGroupCaptions=TRUE, includeGroupValues=TRUE, separator=" ", stringsAsFactors=default.stringsAsFactors(),
-                               excludeEmptyCells=TRUE) {
+    asTidyDataFrame = function(includeGroupCaptions=TRUE, includeGroupValues=TRUE, separator=" ", stringsAsFactors=NULL, excludeEmptyCells=TRUE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asTidyDataFrame", includeGroupCaptions, missing(includeGroupCaptions), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "asTidyDataFrame", includeGroupValues, missing(includeGroupValues), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -3551,6 +3570,25 @@ PivotTable <- R6::R6Class("PivotTable",
                    list(includeGroupCaptions=includeGroupCaptions, includeGroupValues=includeGroupValues, separator=separator, stringsAsFactors=stringsAsFactors))
       if(!private$p_evaluated) stop("PivotTable$asTidyDataFrame():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
       if(is.null(private$p_cells)) stop("PivotTable$asTidyDataFrame():  No cells exist to retrieve.", call. = FALSE)
+      # stringsAsFactors default depends on the version of R...
+      if(is.null(stringsAsFactors)) {
+        if(getRversion() < "4.0.0") {
+          # old version, retain existing behaviour with no warning
+          stringsAsFactors <- default.stringsAsFactors()
+        }
+        else if (getRversion() < "4.1.0") {
+          stringsAsFactors <- default.stringsAsFactors()
+          # generate a warning if the default is TRUE as this will change to FALSE in future
+          if(stringsAsFactors) {
+            warning("PivotTable$asTidyDataFrame(): In a future version of R, default.stringsAsFactors() will be deprecated and removed, at which time the 'stringsAsFactors' argument will default to FALSE.  Explictly set the 'stringsAsFactors' argument to remove this warning.")
+          }
+        }
+        else {
+          # default to FALSE for R 4.1.0 onwards
+          stringsAsFactors <- FALSE
+        }
+      }
+      # convert
       df <- list()
       vals <- list()
       # basic information

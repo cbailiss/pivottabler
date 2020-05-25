@@ -2748,7 +2748,7 @@ as columns in the data frame.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotTable$asDataFrame(
   separator = " ",
-  stringsAsFactors = default.stringsAsFactors(),
+  stringsAsFactors = NULL,
   forceNumeric = FALSE,
   rowGroupsAsColumns = FALSE
 )}\if{html}{\out{</div>}}
@@ -2761,7 +2761,8 @@ as columns in the data frame.
 group captions where multiple levels exist in the data group hierarchy.}
 
 \item{\code{stringsAsFactors}}{Specify `TRUE`to convert strings to factors,
-default `default.stringsAsFactors()`.}
+default is currently `default.stringsAsFactors()`, though this will change
+to `FALSE` in a future version.}
 
 \item{\code{forceNumeric}}{Specify `TRUE` to force the conversion of cell values
 to a numeric value, default `FALSE`.}
@@ -2790,7 +2791,7 @@ the pivot table becomes one row in the data frame.
   includeGroupCaptions = TRUE,
   includeGroupValues = TRUE,
   separator = " ",
-  stringsAsFactors = default.stringsAsFactors(),
+  stringsAsFactors = NULL,
   excludeEmptyCells = TRUE
 )}\if{html}{\out{</div>}}
 }
@@ -2808,7 +2809,8 @@ values as columns in the data frame.}
 filter values where multiple values exist in a filter.}
 
 \item{\code{stringsAsFactors}}{Specify `TRUE`to convert strings to factors,
-default `default.stringsAsFactors()`.}
+default is currently `default.stringsAsFactors()`, though this will change
+to `FALSE` in a future version.}
 
 \item{\code{excludeEmptyCells}}{Specify `FALSE` to also include rows for
 empty cells in the data frame, default `TRUE`.}
