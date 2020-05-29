@@ -304,7 +304,7 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
          rgCellStyle <- NULL
          if(!is.null(rg)) {
            isOutlineCells <- rg$isOutline
-           rgCellBaseStyleName <- rg$cellBaseStyleName
+           rgCellBaseStyleName <- rg$netCellBaseStyleName
            rgCellStyle <- rg$netCellStyle
          }
          trowcells <- private$getCellsInRowHtml(r=r, columnCount=columnCount, exportOptions=exportOptions,

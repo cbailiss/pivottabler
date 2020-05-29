@@ -2107,6 +2107,20 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
       }
    },
 
+   #' @field netCellBaseStyleName The style name for cells related to this data
+   #' group - either from this group or the first ancestor that specifies a
+   #' cellBaseStyleName if cellBaseStyleName is not specified on this group.
+   netCellBaseStyleName = function(value) {
+      cellBaseStyleName <- NULL
+      if(is.null(private$p_cellBaseStyleName)) {
+         if(!is.null(private$p_parentGroup)) {
+            cellBaseStyleName <- private$p_parentGroup$cellBaseStyleName
+         }
+      }
+      else cellBaseStyleName <- private$p_cellBaseStyleName
+      return(invisible(cellBaseStyleName))
+   },
+
    #' @field cellStyle A `PivotStyle` object that contains additional CSS style
    #' declarations that override the base style for cells related to this data
    #' group.  If setting this property, a list can also be specified.

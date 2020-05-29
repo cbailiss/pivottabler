@@ -366,7 +366,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
           rgCellStyle <- NULL
           if(!is.null(rg)) {
             isOutlineCells <- rg$isOutline
-            rgCellBaseStyleName <- rg$cellBaseStyleName
+            rgCellBaseStyleName <- rg$netCellBaseStyleName
             rgCellStyle <- rg$netCellStyle
           }
           if(rowMerge$mergeCells) {
@@ -374,7 +374,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
             xlRowNumber <- topRowNumber + columnGroupLevelCount + r - 1 + rowOffsetDueToDummyColumn
             xlColumnNumber <- leftMostColumnNumber + rowGroupLevelCount + columnOffsetDueToDummyRow
             cs <- cellStyle
-            if(!is.null(rgCellBaseStyleName)) cs <-  rgCellBaseStyleName
+            if(!is.null(rgCellBaseStyleName)) cs <- rgCellBaseStyleName
             else if(isOutlineCells && !is.null(outlineCellStyle)) cs <- outlineCellStyle
             sd <- NULL
             if(!is.null(rgCellStyle)) sd <- rgCellStyle
@@ -393,8 +393,9 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
               columnGroup <- private$p_parentPivot$getLeafColumnGroup(c=c)
               # base style name precedence:  from the cell, from the column group, from the row group,
               #                              then default outline (if outline), default total (if total), default cell
+              cgBaseStyleName <- columnGroup$netCellBaseStyleName
               if(!is.null(cell$baseStyleName)) cs <- cell$baseStyleName
-              else if(!is.null(columnGroup$cellBaseStyleName)) cs <- columnGroup$cellBaseStyleName
+              else if(!is.null(cgBaseStyleName)) cs <- cgBaseStyleName
               else if(!is.null(rgCellBaseStyleName)) cs <- rgCellBaseStyleName
               else if(isOutlineCells && (!is.null(outlineCellStyle))) cs <- outlineCellStyle
               else if(cell$isTotal) cs <- totalStyle
