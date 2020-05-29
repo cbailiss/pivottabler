@@ -368,8 +368,9 @@ PivotHtmlRenderer <- R6::R6Class("PivotHtmlRenderer",
             columnGroup <- private$p_parentPivot$getLeafColumnGroup(c=c)
             # base style name precedence:  from the cell, from the column group, from the row group,
             #                              then default outline (if outline), default total (if total), default cell
+            cgBaseStyleName <- columnGroup$netCellBaseStyleName
             if(!is.null(cell$baseStyleName)) cssCell <- paste0(styleNamePrefix, cell$baseStyleName)
-            else if(!is.null(columnGroup$cellBaseStyleName)) cssCell <- paste0(styleNamePrefix, columnGroup$cellBaseStyleName)
+            else if(!is.null(cgBaseStyleName)) cssCell <- paste0(styleNamePrefix, cgBaseStyleName)
             else if(!is.null(rowGroupCellBaseStyleName)) cssCell <- paste0(styleNamePrefix, rowGroupCellBaseStyleName)
             else if(isOutline && (!is.null(outlineCellStyle))) cssCell <- outlineCellStyle
             else if(cell$isTotal) cssCell <- totalStyle
