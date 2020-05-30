@@ -579,8 +579,8 @@ Style names apply to a cell in the following precendence order:
 
 1. `baseStyleName` set on the cell.
 2. `cellBaseStyleName` set on the calculation.
-3. `baseStyleName` set on the column group related to the cell.
-4. `baseStyleName` set on the row group related to the cell.
+3. `cellBaseStyleName` set on the column group related to the cell.
+4. `cellBaseStyleName` set on the row group related to the cell.
 
 As soon as a cell style name is encountered, stop, e.g. if a cell style name is not set on the cell, but is set in a calculation, then the calculation style name will be used, irrespective of the style names that may be set on the row or column groups.
 
