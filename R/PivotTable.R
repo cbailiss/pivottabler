@@ -514,6 +514,9 @@ PivotTable <- R6::R6Class("PivotTable",
     #' it is part of a header or outline row)
     #' @param isOutline Default value `FALSE` - specify `TRUE` to mark
     #' that this data group is an outline group.
+    #' @param styleAsOutline Default value `FALSE` - specify `TRUE` to style
+    #' this data group as an outline group.  Only applicable when
+    #' `isOutline` is `TRUE`.
     #' @param captionTemplate A character value that specifies the template
     #' for the data group caption, default "{values}".
     #' @param caption Effectively a hard-coded caption that overrides the
@@ -554,7 +557,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' it is next rendered.
     #' @return The new `PivotDataGroup` object.
     addColumnGroup = function(variableName=NULL, filterType="ALL", values=NULL,
-                             doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE,
+                             doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, styleAsOutline=FALSE,
                              captionTemplate="{value}", caption=NULL,
                              isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
                              calculationGroupName=NULL, calculationName=NULL,
@@ -569,6 +572,7 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", doNotExpand, missing(doNotExpand), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", isEmpty, missing(isEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", isOutline, missing(isOutline), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", styleAsOutline, missing(styleAsOutline), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", captionTemplate, missing(captionTemplate), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addColumnGroup", isTotal, missing(isTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -589,15 +593,19 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_argumentCheckMode==TRUE) private$p_traceEnabled("PivotTable$addColumnGroup", "Adding column group...",
                                                                    list(captionTemplate=captionTemplate, caption=caption,
-                                                                        doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, isTotal=isTotal,
+                                                                        doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, styleAsOutline=styleAsOutline,
+                                                                        isTotal=isTotal, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
                                                                         variableName=variableName, values=values,
                                                                         calculationGroupName=calculationGroupName, calculationName=calculationName,
                                                                         baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
                                                                         mergeEmptySpace=mergeEmptySpace, cellBaseStyleName=cellBaseStyleName,
                                                                         cellStyleDeclarations=cellStyleDeclarations, sortAnchor=sortAnchor,
                                                                         resetCells=resetCells))
+      # default to style as outline if not specified
+      if(isOutline && missing(styleAsOutline)) styleAsOutline <- TRUE
+      # add the group
       grp <- private$p_columnGroup$addChildGroup(variableName=variableName, filterType=filterType, values=values,
-                                                 doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline,
+                                                 doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, styleAsOutline=styleAsOutline,
                                                  captionTemplate=captionTemplate, caption=caption,
                                                  isTotal=isTotal, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
                                                  calculationGroupName=calculationGroupName, calculationName=calculationName,
@@ -915,6 +923,9 @@ PivotTable <- R6::R6Class("PivotTable",
     #' it is part of a header or outline row)
     #' @param isOutline Default value `FALSE` - specify `TRUE` to mark
     #' that this data group is an outline group.
+    #' @param styleAsOutline Default value `FALSE` - specify `TRUE` to style
+    #' this data group as an outline group.  Only applicable when
+    #' `isOutline` is `TRUE`.
     #' @param captionTemplate A character value that specifies the template
     #' for the data group caption, default "{values}".
     #' @param caption Effectively a hard-coded caption that overrides the
@@ -957,7 +968,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' it is next rendered.
     #' @return The new `PivotDataGroup` object.
     addRowGroup = function(variableName=NULL, filterType="ALL", values=NULL,
-                           doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE,
+                           doNotExpand=FALSE, isEmpty=FALSE, isOutline=FALSE, styleAsOutline=FALSE,
                            captionTemplate="{value}", caption=NULL,
                            isTotal=FALSE, isLevelSubTotal=FALSE, isLevelTotal=FALSE,
                            calculationGroupName=NULL, calculationName=NULL,
@@ -972,6 +983,7 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", doNotExpand, missing(doNotExpand), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", isEmpty, missing(isEmpty), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", isOutline, missing(isOutline), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", styleAsOutline, missing(styleAsOutline), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", captionTemplate, missing(captionTemplate), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", caption, missing(caption), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addRowGroup", isTotal, missing(isTotal), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
@@ -992,15 +1004,19 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       if(private$p_argumentCheckMode==TRUE) private$p_traceEnabled("PivotTable$addRowGroup", "Adding row group...",
                                                                    list(captionTemplate=captionTemplate, caption=caption,
-                                                                        doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, isTotal=isTotal,
+                                                                        doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, styleAsOutline=styleAsOutline,
+                                                                        isTotal=isTotal, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
                                                                         variableName=variableName, values=values,
                                                                         calculationGroupName=calculationGroupName, calculationName=calculationName,
                                                                         baseStyleName=baseStyleName, styleDeclarations=styleDeclarations,
                                                                         mergeEmptySpace=mergeEmptySpace, cellBaseStyleName=cellBaseStyleName,
                                                                         cellStyleDeclarations=cellStyleDeclarations, sortAnchor=sortAnchor,
                                                                         resetCells=resetCells))
+      # default to style as outline if not specified
+      if(isOutline && missing(styleAsOutline)) styleAsOutline <- TRUE
+      # add the group
       grp <- private$p_rowGroup$addChildGroup(variableName=variableName, filterType=filterType, values=values,
-                                              doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline,
+                                              doNotExpand=doNotExpand, isEmpty=isEmpty, isOutline=isOutline, styleAsOutline=styleAsOutline,
                                               captionTemplate=captionTemplate, caption=caption,
                                               isTotal=isTotal, isLevelSubTotal=isLevelSubTotal, isLevelTotal=isLevelTotal,
                                               calculationGroupName=calculationGroupName, calculationName=calculationName,

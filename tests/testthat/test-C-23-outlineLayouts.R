@@ -754,3 +754,102 @@ for(i in 1:nrow(scenarios)) {
 }
 
 
+scenarios <- testScenarios("pvt row/col tests:  custom balance sheet 3")
+for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    df <- data.frame(
+      Level1 = rep("Net entrepreneurial income", times=12),
+      Level2 = c(rep("Net operating surplus", 9), rep("Interests and rents", 3)),
+      Level3 = c(rep("Factor income", 8),"Compensation of employees","Paid rent",
+                 "Paid interest","Received interest"),
+      Level4 = c(rep("Net value added", 6), rep("Taxes and subsidies", 2), rep(NA, 4)),
+      Level5 = c(rep("Gross value added", 5),"Depreciation","Other taxes on production",
+                 "Other subsidies (non-product specific)", rep(NA, 4)),
+      Level6 = c(rep("Production of the agricultural industry", 4),
+                 "Intermediate services", rep(NA, 7)),
+      Level7 = c("Crop production","Livestock production",
+                 "Production of agricultural services","Other production", rep(NA, 8)),
+      MaxGroupLevel = c(7,7,7,7,6,5,5,5,3,3,3,3),
+      Budget2019 = c(4150.39,4739.2,625.6,325.8,-6427,-2049.3,
+                     -145.4,2847.3,-1149,-221.2,-307.6,12.8),
+      Actual2019 = c(3978.8,4341.1,603.7,343,-6063.9,-2079.6,
+                     -136.8,2578.6,-1092.9,-203.3,-327.6,14.1),
+      Budget2020 = c(4210.9,4857.7,676.6,405.8,-6299,-2086.7,
+                     -145.4,2920.6,-1245,-236.5,-244.7,10.1),
+      Actual2020 = c(4373.7,5307.6,693.9,408.2,-7065.3,-1985,
+                     -154.2,3063,-1229.3,-268.2,-250.3,11.1)
+    )
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt <- PivotTable$new()
+    ob <- list(isEmpty=FALSE, nocgApplyOutlineStyling=FALSE,
+               nocgGroupStyleDeclarations=list("font-weight"="normal"))
+    pt$setDefault(addTotal=FALSE, outlineBefore=ob)
+    pt$addData(df)
+    pt$addRowDataGroups("Level1", outlineBefore=TRUE,
+                        onlyAddOutlineChildGroupIf="MaxGroupLevel>1")
+    pt$addRowDataGroups("Level2", outlineBefore=TRUE,
+                        onlyAddOutlineChildGroupIf="MaxGroupLevel>2",
+                        dataSortOrder="custom",
+                        customSortOrder=c("Net operating surplus", "Interests and rents"))
+    pt$addRowDataGroups("Level3", outlineBefore=TRUE,
+                        onlyAddOutlineChildGroupIf="MaxGroupLevel>3",
+                        dataSortOrder="custom",
+                        customSortOrder=c("Factor income", "Compensation of employees",
+                                          "Paid rent", "Paid interest", "Received interest"))
+    pt$addRowDataGroups("Level4", outlineBefore=TRUE,
+                        onlyAddOutlineChildGroupIf="MaxGroupLevel>4")
+    pt$addRowDataGroups("Level5", outlineBefore=TRUE,
+                        onlyAddOutlineChildGroupIf="MaxGroupLevel>5",
+                        dataSortOrder="custom",
+                        customSortOrder=c("Gross value added", "Depreciation",
+                                          "Other taxes on production",
+                                          "Other subsidies (non-product specific)"))
+    pt$addRowDataGroups("Level6", outlineBefore=TRUE,
+                        onlyAddOutlineChildGroupIf="MaxGroupLevel>6",
+                        dataSortOrder="custom",
+                        customSortOrder=c("Production of the agricultural industry",
+                                          "Intermediate Services"))
+    pt$addRowDataGroups("Level7", dataSortOrder="custom",
+                        customSortOrder=c("Crop production", "Livestock production",
+                                          "Production of agricultural services", "Other production"),
+                        styleDeclarations=list("font-weight"="normal"))
+    pt$defineCalculation(calculationName="Budget",
+                         summariseExpression="sum(Budget2020)")
+    pt$defineCalculation(calculationName="Actual",
+                         summariseExpression="sum(Actual2020)")
+    pt$defineCalculation(calculationName="Variance",
+                         summariseExpression="sum(Actual2020)-sum(Budget2020)",
+                         format="%.1f")
+    pt$evaluatePivot()
+
+    # apply the red style for negative variance
+    cells <- pt$findCells(calculationNames="Variance",
+                          minValue=-1000, maxValue=0,
+                          includeNull=FALSE, includeNA=FALSE)
+    pt$setStyling(cells=cells, declarations=list("color"="#9C0006"))
+    # apply the green style for positive variance
+    cells <- pt$findCells(calculationNames="Variance",
+                          minValue=0, maxValue=10000,
+                          includeNull=FALSE, includeNA=FALSE)
+    pt$setStyling(cells=cells, declarations=list("color"="#006100"))
+
+    # pt$renderPivot()
+    # round(sum(pt$cells$asMatrix(), na.rm=TRUE))
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\" colspan=\"7\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Budget</th>\n    <th class=\"ColumnHeader\">Actual</th>\n    <th class=\"ColumnHeader\">Variance</th>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" colspan=\"7\">Net entrepreneurial income</th>\n    <td class=\"OutlineCell\">2824.4</td>\n    <td class=\"OutlineCell\">2905.2</td>\n    <td class=\"OutlineCell\" style=\"color: #006100; \">80.8</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"19\">&nbsp;</th>\n    <th class=\"OutlineRowHeader\" colspan=\"6\">Net operating surplus</th>\n    <td class=\"OutlineCell\">3295.5</td>\n    <td class=\"OutlineCell\">3412.6</td>\n    <td class=\"OutlineCell\" style=\"color: #006100; \">117.1</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"14\">&nbsp;</th>\n    <th class=\"OutlineRowHeader\" colspan=\"5\">Factor income</th>\n    <td class=\"OutlineCell\">4540.5</td>\n    <td class=\"OutlineCell\">4641.9</td>\n    <td class=\"OutlineCell\" style=\"color: #006100; \">101.4</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"12\">&nbsp;</th>\n    <th class=\"OutlineRowHeader\" colspan=\"4\">Net value added</th>\n    <td class=\"OutlineCell\">1765.3</td>\n    <td class=\"OutlineCell\">1733.1</td>\n    <td class=\"OutlineCell\" style=\"color: #9C0006; \">-32.2</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"8\">&nbsp;</th>\n    <th class=\"OutlineRowHeader\" colspan=\"3\">Gross value added</th>\n    <td class=\"OutlineCell\">3852</td>\n    <td class=\"OutlineCell\">3718.1</td>\n    <td class=\"OutlineCell\" style=\"color: #9C0006; \">-133.9</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"6\">&nbsp;</th>\n    <th class=\"OutlineRowHeader\" colspan=\"2\">Production of the agricultural industry</th>\n    <td class=\"OutlineCell\">10151</td>\n    <td class=\"OutlineCell\">10783.4</td>\n    <td class=\"OutlineCell\" style=\"color: #006100; \">632.4</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"4\">&nbsp;</th>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \">Crop production</th>\n    <td class=\"Cell\">4210.9</td>\n    <td class=\"Cell\">4373.7</td>\n    <td class=\"Cell\" style=\"color: #006100; \">162.8</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \">Livestock production</th>\n    <td class=\"Cell\">4857.7</td>\n    <td class=\"Cell\">5307.6</td>\n    <td class=\"Cell\" style=\"color: #006100; \">449.9</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \">Production of agricultural services</th>\n    <td class=\"Cell\">676.6</td>\n    <td class=\"Cell\">693.9</td>\n    <td class=\"Cell\" style=\"color: #006100; \">17.3</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \">Other production</th>\n    <td class=\"Cell\">405.8</td>\n    <td class=\"Cell\">408.2</td>\n    <td class=\"Cell\" style=\"color: #006100; \">2.4</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \" colspan=\"2\">Intermediate services</th>\n    <td class=\"Total\">-6299</td>\n    <td class=\"Total\">-7065.3</td>\n    <td class=\"Total\" style=\"color: #9C0006; \">-766.3</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \" colspan=\"3\">Depreciation</th>\n    <td class=\"Total\">-2086.7</td>\n    <td class=\"Total\">-1985</td>\n    <td class=\"Total\" style=\"color: #006100; \">101.7</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" colspan=\"4\">Taxes and subsidies</th>\n    <td class=\"OutlineCell\">2775.2</td>\n    <td class=\"OutlineCell\">2908.8</td>\n    <td class=\"OutlineCell\" style=\"color: #006100; \">133.6</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"2\">&nbsp;</th>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \" colspan=\"3\">Other taxes on production</th>\n    <td class=\"Total\">-145.4</td>\n    <td class=\"Total\">-154.2</td>\n    <td class=\"Total\" style=\"color: #9C0006; \">-8.8</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \" colspan=\"3\">Other subsidies (non-product specific)</th>\n    <td class=\"Total\">2920.6</td>\n    <td class=\"Total\">3063</td>\n    <td class=\"Total\" style=\"color: #006100; \">142.4</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \" colspan=\"5\">Compensation of employees</th>\n    <td class=\"Total\">-1245</td>\n    <td class=\"Total\">-1229.3</td>\n    <td class=\"Total\" style=\"color: #006100; \">15.7</td>\n  </tr>\n  <tr>\n    <th class=\"OutlineRowHeader\" colspan=\"6\">Interests and rents</th>\n    <td class=\"OutlineCell\">-471.1</td>\n    <td class=\"OutlineCell\">-507.4</td>\n    <td class=\"OutlineCell\" style=\"color: #9C0006; \">-36.3</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" rowspan=\"3\">&nbsp;</th>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \" colspan=\"5\">Paid rent</th>\n    <td class=\"Total\">-236.5</td>\n    <td class=\"Total\">-268.2</td>\n    <td class=\"Total\" style=\"color: #9C0006; \">-31.7</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \" colspan=\"5\">Paid interest</th>\n    <td class=\"Total\">-244.7</td>\n    <td class=\"Total\">-250.3</td>\n    <td class=\"Total\" style=\"color: #9C0006; \">-5.6</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; \" colspan=\"5\">Received interest</th>\n    <td class=\"Total\">10.1</td>\n    <td class=\"Total\">11.1</td>\n    <td class=\"Total\" style=\"color: #006100; \">1.0</td>\n  </tr>\n</table>"
+
+    expect_equal(round(sum(pt$cells$asMatrix(), na.rm=TRUE)), 65002)
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}
+
+

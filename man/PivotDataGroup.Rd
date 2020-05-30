@@ -65,6 +65,9 @@ it is part of a header or outline row)}
 
 \item{\code{isOutline}}{`TRUE` if this data group is an outline group.}
 
+\item{\code{styleAsOutline}}{`TRUE` if this data group is to be styled as an outline
+group.  Only applicable when `isOutline` is `TRUE`.}
+
 \item{\code{outlineLinkedGroupId}}{The instance id of the child group related
 to this group, if this group is an outline group.}
 
@@ -100,6 +103,10 @@ should be merged.}
 
 \item{\code{cellBaseStyleName}}{The style name for cells related to this data
 group.}
+
+\item{\code{netCellBaseStyleName}}{The style name for cells related to this data
+group - either from this group or the first ancestor that specifies a
+cellBaseStyleName if cellBaseStyleName is not specified on this group.}
 
 \item{\code{cellStyle}}{A `PivotStyle` object that contains additional CSS style
 declarations that override the base style for cells related to this data
@@ -185,6 +192,7 @@ Create a new `PivotDataGroup` object.
   doNotExpand = FALSE,
   isEmpty = FALSE,
   isOutline = FALSE,
+  styleAsOutline = FALSE,
   captionTemplate = "{value}",
   caption = NULL,
   isTotal = FALSE,
@@ -227,6 +235,10 @@ it is part of a header or outline row)}
 
 \item{\code{isOutline}}{Default value `FALSE` - specify `TRUE` to mark
 that this data group is an outline group.}
+
+\item{\code{styleAsOutline}}{Default value `FALSE` - specify `TRUE` to style
+this data group as an outline group.  Only applicable when
+`isOutline` is `TRUE`.}
 
 \item{\code{captionTemplate}}{A character value that specifies the template
 for the data group caption, default "{values}".}
@@ -511,6 +523,7 @@ is specified.
   doNotExpand = FALSE,
   isEmpty = FALSE,
   isOutline = FALSE,
+  styleAsOutline = FALSE,
   captionTemplate = "{value}",
   caption = NULL,
   isTotal = FALSE,
@@ -559,6 +572,10 @@ it is part of a header or outline row)}
 
 \item{\code{isOutline}}{Default value `FALSE` - specify `TRUE` to mark
 that this data group is an outline group.}
+
+\item{\code{styleAsOutline}}{Default value `FALSE` - specify `TRUE` to style
+this data group as an outline group.  Only applicable when
+`isOutline` is `TRUE`.}
 
 \item{\code{captionTemplate}}{A character value that specifies the template
 for the data group caption, default "{values}".}

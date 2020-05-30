@@ -31,6 +31,7 @@ Improvements
 * New method `pt$mapStyling()` simplifies applying styling to cells based on cell value, e.g. banding by value into different colours or colour gradients.  See the "Styling" vignette for details plus the "Finding and Formatting" vignette for a couple more examples.
 * When using a simple theme (specified as a list) to style a pivot table, it is now possible to specify a font size.  Thanks to @msgoussi for the suggestion (#48).  See the "Styling" vignette for details.
 * The following now accept vector/list arguments: `pt$getColumnGroupsByLevel()`, `pt$getRowGroupsByLevel()`, `pt$getLeafColumnGroup()`, `pt$getLeafRowGroup()`, `pt$findGroupColumnNumbers()` and `pt$findGroupRowNumbers()`.
+* Several new outline parameters are now supported to simplify styling when generating row data groups from a variable depth hierarchy.  See "Variable Depth Hierarchy Example" in the "Regular Layout" vignette for details. 
 
 Bug Fixes
 ---------

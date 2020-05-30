@@ -310,6 +310,10 @@ pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
 
+### The nocg Settings
+
+A further set of style settings can be specified when working with variable-depth hierarchies.  These parameters all have the prefix "nocg".  See the "Variable Depth Hierarchy Example" below for details.
+
 
 ## Setting default outline settings
 
@@ -423,8 +427,24 @@ pt$renderPivot()
 
 For advanced scenarios, it is possible to control whether a data group or outline child group is created using the following two parameters in `pt$addRowCalculationGroups()` and `pt$addColumnCalculationGroups()`:
 
-- `onlyAddGroupIf` - a character value that is used as additional filter criteria before creating each data group - only if some rows exist that match this filter will the data group be created.
-- `onlyAddOutlineChildGroupIf` - a character value that is used as additional filter criteria before creating each outline child data group - only if some rows exist that match this filter will the data group be created.
+- `onlyAddGroupIf` - a character value that is used as an additional filter criteria before creating each data group.  Only if some rows exist that match this filter will the data group be created.  In the image below, this allows/prevents all three of the rows being generated.
+- `onlyAddOutlineChildGroupIf` - a character value that is used as additional filter criteria before creating each outline child data group.  Only if some rows exist that match this filter will the child data group be created.  In the image below, this allows/prevents just the middle row (orange "Blank") being generated.
+
+![Row Data Group in Tabular Layout](layout5.png)
+
+<br />
+
+If no outline child data group is created, then some additional parameters can be specified to control how the outline before/outline after rows are styled (i.e. the top and bottom rows in the example image above).  The parameters are:
+
+- `nocgApplyOutlineStyling` - a logical (`TRUE`/`FALSE`, default `TRUE`) value that specifies whether the outline styling should be applied.
+- `nocgGroupStyleName` - a character value specifying an alternative base style name to use for the group.  The named style should be defined in the pivot table theme
+- `nocgGroupStyleDeclarations` - a list of CSS style declarations to be applied to the group.
+- `nocgCellStyleName` - a character value specifying an alternative base style name to use for cells related to this group.  The named style should be defined in the pivot table theme.
+- `nocgCellStyleDeclarations` - a list of CSS style declarations to be applied to the cells related to this group.
+
+For details of named styles and style declarations, see the [Styling](v07-styling.html) vignette.
+
+These additional parameters are specified as part of the `outlineBefore` or `outlineAfter` lists.
 
 The example below demonstrates the use of `onlyAddOutlineChildGroupIf` to create a balance sheet style table with a variable number of levels in the row data groups:
 
@@ -452,9 +472,13 @@ df <- data.frame(
                  -154.2,3063,-1229.3,-268.2,-250.3,11.1)
 )
 
+# settings related to outline groups
+ob <- list(isEmpty=FALSE, nocgApplyOutlineStyling=FALSE, 
+           nocgGroupStyleDeclarations=list("font-weight"="normal"))
+
 library(pivottabler)
-pt <- PivotTable$new() 
-pt$setDefault(addTotal=FALSE, outlineBefore=list(isEmpty=FALSE))
+pt <- PivotTable$new()
+pt$setDefault(addTotal=FALSE, outlineBefore=ob)
 pt$addData(df)
 pt$addRowDataGroups("Level1", outlineBefore=TRUE, 
         onlyAddOutlineChildGroupIf="MaxGroupLevel>1")
@@ -482,7 +506,8 @@ pt$addRowDataGroups("Level6", outlineBefore=TRUE,
                           "Intermediate Services"))
 pt$addRowDataGroups("Level7", dataSortOrder="custom", 
                     customSortOrder=c("Crop production", "Livestock production",
-                    "Production of agricultural services", "Other production"))
+                    "Production of agricultural services", "Other production"),
+                    styleDeclarations=list("font-weight"="normal"))
 pt$defineCalculation(calculationName="Budget", 
                      summariseExpression="sum(Budget2020)")
 pt$defineCalculation(calculationName="Actual", 
@@ -491,21 +516,6 @@ pt$defineCalculation(calculationName="Variance",
                      summariseExpression="sum(Actual2020)-sum(Budget2020)", 
                      format="%.1f")
 pt$evaluatePivot()
-
-# get the row groups relating to outline groups 
-# (above leaf level) and leaf level groups
-grps <- pt$findRowDataGroups(outlineGroups="only", 
-                             outlineLinkedGroupExists=FALSE)
-grps <- c(grps, pt$findRowDataGroups(atLevel=7))
-# set the styling of these groups so the text isn't bold
-pt$setStyling(groups=grps, declarations =list("font-weight"="normal"))
-
-# find the cells corresponding to these groups
-rowNumbers <- sapply(grps, pt$findGroupRowNumbers)
-cells <- pt$getCells(rowNumbers=rowNumbers)
-# set the styling of these cells to be normal cells 
-# instead of the darker outline styling
-pt$setStyling(cells=cells, baseStyleName="Cell")
 
 # apply the red style for negative variance
 cells <- pt$findCells(calculationNames="Variance", 

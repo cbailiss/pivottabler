@@ -343,7 +343,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
               lastDataGroupInRow <- TRUE
             }
             # style info
-            if(ancg$isOutline) rhs <- outlineRowHeaderStyle
+            if(ancg$isOutline && ancg$styleAsOutline) rhs <- outlineRowHeaderStyle
             else rhs <- rowHeaderStyle
             if(!is.null(ancg$baseStyleName)) rhs <- ancg$baseStyleName
             value <- private$getExportValue(ancg$sortValue, ancg$caption, outputHeadingsAs,
@@ -361,11 +361,11 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         }
         # render the cell values
         if(!(rowMerge$merge && isTRUE(rowMerge$skipCells))) {
-          isOutlineCells <- FALSE
+          styleAsOutline <- FALSE
           rgCellBaseStyleName <- NULL
           rgCellStyle <- NULL
           if(!is.null(rg)) {
-            isOutlineCells <- rg$isOutline
+            styleAsOutline <- rg$isOutline && rg$styleAsOutline
             rgCellBaseStyleName <- rg$netCellBaseStyleName
             rgCellStyle <- rg$netCellStyle
           }
@@ -375,7 +375,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
             xlColumnNumber <- leftMostColumnNumber + rowGroupLevelCount + columnOffsetDueToDummyRow
             cs <- cellStyle
             if(!is.null(rgCellBaseStyleName)) cs <- rgCellBaseStyleName
-            else if(isOutlineCells && !is.null(outlineCellStyle)) cs <- outlineCellStyle
+            else if(styleAsOutline && !is.null(outlineCellStyle)) cs <- outlineCellStyle
             sd <- NULL
             if(!is.null(rgCellStyle)) sd <- rgCellStyle
             self$writeToCell(wb, wsName, rowNumber=xlRowNumber, columnNumber=xlColumnNumber,
@@ -397,7 +397,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
               if(!is.null(cell$baseStyleName)) cs <- cell$baseStyleName
               else if(!is.null(cgBaseStyleName)) cs <- cgBaseStyleName
               else if(!is.null(rgCellBaseStyleName)) cs <- rgCellBaseStyleName
-              else if(isOutlineCells && (!is.null(outlineCellStyle))) cs <- outlineCellStyle
+              else if(styleAsOutline && (!is.null(outlineCellStyle))) cs <- outlineCellStyle
               else if(cell$isTotal) cs <- totalStyle
               else cs <- cellStyle
               # style overrides precedence:  from the cell, from the column group, from the row group

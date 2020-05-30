@@ -578,6 +578,7 @@ is specified.
   doNotExpand = FALSE,
   isEmpty = FALSE,
   isOutline = FALSE,
+  styleAsOutline = FALSE,
   captionTemplate = "{value}",
   caption = NULL,
   isTotal = FALSE,
@@ -625,6 +626,10 @@ it is part of a header or outline row)}
 
 \item{\code{isOutline}}{Default value `FALSE` - specify `TRUE` to mark
 that this data group is an outline group.}
+
+\item{\code{styleAsOutline}}{Default value `FALSE` - specify `TRUE` to style
+this data group as an outline group.  Only applicable when
+`isOutline` is `TRUE`.}
 
 \item{\code{captionTemplate}}{A character value that specifies the template
 for the data group caption, default "{values}".}
@@ -998,6 +1003,7 @@ is specified.
   doNotExpand = FALSE,
   isEmpty = FALSE,
   isOutline = FALSE,
+  styleAsOutline = FALSE,
   captionTemplate = "{value}",
   caption = NULL,
   isTotal = FALSE,
@@ -1045,6 +1051,10 @@ it is part of a header or outline row)}
 
 \item{\code{isOutline}}{Default value `FALSE` - specify `TRUE` to mark
 that this data group is an outline group.}
+
+\item{\code{styleAsOutline}}{Default value `FALSE` - specify `TRUE` to style
+this data group as an outline group.  Only applicable when
+`isOutline` is `TRUE`.}
 
 \item{\code{captionTemplate}}{A character value that specifies the template
 for the data group caption, default "{values}".}

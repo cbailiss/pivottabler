@@ -244,6 +244,32 @@ cleanOutlineArg = function(pvt, outline=NULL, defaultCaption="{value}", defaultI
     if(clean$mergeSpace=="cellsOnly") clean$mergeSpace <- "doNotMerge"
     else if(clean$mergeSpace %in% c("dataGroupsAndCellsAs1", "dataGroupsAndCellsAs2")) clean$mergeSpace <- "dataGroupsOnly"
   }
+  # setting: nocgApplyOutlineStyling (allow null)
+  if(!is.null(outline$nocgApplyOutlineStyling)) {
+    if(!("logical" %in% class(outline$nocgApplyOutlineStyling))) stop("cleanOutlineArg(): The nocgApplyOutlineStyling for the outline data group must be a logical value.", call. = FALSE)
+    clean$nocgApplyOutlineStyling <- outline$nocgApplyOutlineStyling
+  }
+  # setting: nocgGroupStyleName (allow null)
+  if(!is.null(outline$nocgGroupStyleName)) {
+    if(!("character" %in% class(outline$nocgGroupStyleName))) stop("cleanOutlineArg(): The nocgGroupStyleName for the outline data group must be a character value.", call. = FALSE)
+    clean$nocgGroupStyleName <- outline$nocgGroupStyleName
+  }
+  # setting: nocgGroupStyleDeclarations (allow null)
+  if(!is.null(outline$nocgGroupStyleDeclarations)) {
+    if(!("list" %in% class(outline$nocgGroupStyleDeclarations))) stop("cleanOutlineArg(): The nocgGroupStyleDeclarations for the outline data group must a list.", call. = FALSE)
+    clean$nocgGroupStyleDeclarations <- outline$nocgGroupStyleDeclarations
+  }
+  # setting: nocgCellStyleName (allow null)
+  if(!is.null(outline$nocgCellStyleName)) {
+    if(!("character" %in% class(outline$nocgCellStyleName))) stop("cleanOutlineArg(): The nocgCellStyleName for the outline data group must be a character value.", call. = FALSE)
+    clean$nocgCellStyleName <- outline$nocgCellStyleName
+  }
+  # setting: nocgCellStyleDeclarations (allow null)
+  if(!is.null(outline$nocgCellStyleDeclarations)) {
+    if(!("list" %in% class(outline$nocgCellStyleDeclarations))) stop("cleanOutlineArg(): The nocgCellStyleDeclarations for the outline data group must a list.", call. = FALSE)
+    clean$nocgCellStyleDeclarations <- outline$nocgCellStyleDeclarations
+  }
+  # finished
   if(pvt$traceEnabled==TRUE) pvt$trace("cleanOutlineArg", "Cleaned outline argument.")
   return(clean)
 }
