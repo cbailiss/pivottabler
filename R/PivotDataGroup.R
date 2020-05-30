@@ -2131,7 +2131,10 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
             checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotDataGroup", "cellStyle", value, missing(value), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("PivotStyle", "list"), allowedListElementClasses=c("character", "integer", "numeric"))
          }
          if("PivotStyle" %in% class(value)) { private$p_cellStyle <- value }
-         else { private$p_cellStyle <- PivotStyle$new(private$p_parentPivot, "", declarations=value) }
+         else if("list" %in% class(value)) {
+            if(is.null(private$p_cellStyle)) private$p_cellStyle <- PivotStyle$new(private$p_parentPivot, "", declarations=value)
+            else private$p_cellStyle$setPropertyValues(declarations=value)
+         }
          return(invisible())
       }
    },
