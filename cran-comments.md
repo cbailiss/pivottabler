@@ -5,12 +5,6 @@ This update has not made any significant changes to the structure of the package
 Development approach is aligned with practices described in:
 http://r-pkgs.had.co.nz/
 
-## CRAN Resubmission
-
-This is a resubmission.  The previous submission generated notes:  "Found the following (possibly) invalid file URIs:..."
-This was because some extra vignettes were wrongly included in the submitted package.
-.Rbuildignore has now been updated and these vignettes are now correctly excluded - so the "invalid URIs" problem is resolved.
-
 ## Test environments
 
 * local OS (windows) install, R 4.0.0
