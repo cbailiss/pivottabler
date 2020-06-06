@@ -2002,6 +2002,7 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       else if(mapType=="range") {
         for(cell in cells) {
+          cellStyleSet <- FALSE
           value <- cell$rawValue
           for(map in maps) {
             if(length(map$rangeStart)==0) next
@@ -2011,9 +2012,12 @@ PivotTable <- R6::R6Class("PivotTable",
               declarations <- list()
               declarations[[styleProperty]] <- map$value
               self$setStyling(cells=cell, declarations=declarations)
+              cellStyleSet <- TRUE
               break # jump to next cell
             }
           }
+          # if this cell has been processed, jump to the next cell
+          if(cellStyleSet==TRUE) next
           # none of the mappings have matched...
           # ...style the same as the first mapping?
           map <- maps[[1]]
