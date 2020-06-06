@@ -2033,6 +2033,7 @@ PivotTable <- R6::R6Class("PivotTable",
       }
       else if(mapType=="continuous") {
         for(cell in cells) {
+          cellStyleSet <- FALSE
           value <- cell$rawValue
           for(map in maps) {
             if(length(map$rangeStart)==0) next
@@ -2042,10 +2043,12 @@ PivotTable <- R6::R6Class("PivotTable",
             if(isTRUE(map$rangeStart <= value && value < map$rangeEnd)) {
               if(valueType=="number") {
                 value <- vreScaleNumber(map$value, map$nextValue, map$rangeStart, map$rangeEnd, value)
+                cellStyleSet <- TRUE
               }
               else if(valueType=="color") {
                 # message(paste0("startColorHex=", map$startColorHex, " endColorHex=", map$endColorHex, " rangeStart=", map$rangeStart, " rangeEnd=", map$rangeEnd, " value=", value))
                 value <- vreScale2Colours(map$startColorList, map$endColorList, map$rangeStart, map$rangeEnd, value)
+                cellStyleSet <- TRUE
               }
               if((length(value)>0)&&(!is.na(value))) {
                 declarations <- list()
@@ -2055,6 +2058,8 @@ PivotTable <- R6::R6Class("PivotTable",
               }
             }
           }
+          # if this cell has been processed, jump to the next cell
+          if(cellStyleSet==TRUE) next
           # none of the mappings have matched...
           # ...style the same as the first mapping?
           map <- maps[[1]]
