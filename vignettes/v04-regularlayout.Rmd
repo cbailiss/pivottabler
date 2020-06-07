@@ -21,6 +21,7 @@ vignette: >
 * Combined Outline Layout Example
 * Multiple Level Outline Layout Example
 * Outline Calculation Example
+* Variable Depth Hierarchy Example
 * Irregular Layout
 * Further Reading
 
@@ -425,10 +426,10 @@ pt$renderPivot()
 
 ## Variable Depth Hierarchy Example
 
-For advanced scenarios, it is possible to control whether a data group or outline child group is created using the following two parameters in `pt$addRowCalculationGroups()` and `pt$addColumnCalculationGroups()`:
+For advanced scenarios, it is possible to control whether a data group or outline child group is created using the following parameters in `pt$addRowCalculationGroups()` and `pt$addColumnCalculationGroups()`:
 
-- `onlyAddGroupIf` - a character value that is used as an additional filter criteria before creating each data group.  Only if some rows exist that match this filter will the data group be created.  In the image below, this allows/prevents all three of the rows being generated.
-- `onlyAddOutlineChildGroupIf` - a character value that is used as additional filter criteria before creating each outline child data group.  Only if some rows exist that match this filter will the child data group be created.  In the image below, this allows/prevents just the middle row (orange "Blank") being generated.
+- `onlyAddGroupIf` - a character value that is used as an additional filter criteria before creating each data group.  Only if some rows exist that match this filter will the data group be created.  In the image below, this allows/prevents all of the rows being generated.
+- `onlyAddOutlineChildGroupIf` - a character value that is used as additional filter criteria before creating each outline child data group.  Only if some rows exist that match this filter will the child data group be created.  In the image below, this allows/prevents just the middle (orange "Blank") row being generated.
 
 ![Row Data Group in Tabular Layout](layout5.png)
 

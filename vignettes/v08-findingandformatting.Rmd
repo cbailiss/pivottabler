@@ -90,11 +90,11 @@ Several examples follow below.  In each of the examples the data groups that hav
 
 The examples in this section use column data groups, but all are equally applicable to row data groups.
 
-### Examples:  `matchMode="simple"`
+### Finding headings when `matchMode="simple"`
 
-"simple" match mode is the default.  The following examples illustrate how the "simple" matching mode works.
+The following examples illustrate how the "simple" matching mode works.  "simple" match mode is the default.
 
-#### variableNames
+#### From variable name(s) (variableNames)
 
 Find all of the data groups for the "TrainCategory" variable:
 
@@ -111,7 +111,7 @@ pt$setStyling(groups=groups, declarations=list("background-color"="#FFFF00"))
 pt$renderPivot()
 ```
 
-#### variableValues
+#### From variable value(s) (variableValues)
 
 Find all of the data groups for the "PowerType" variable with the values "DMU" and "HST":
 
@@ -128,7 +128,7 @@ pt$setStyling(groups=groups, declarations=list("background-color"="#FFFF00"))
 pt$renderPivot()
 ```
 
-#### totals (exclude)
+#### totals
 
 Exclude totals:
 
@@ -144,8 +144,6 @@ groups <- pt$findColumnDataGroups(variableNames="TrainCategory", totals="exclude
 pt$setStyling(groups=groups, declarations=list("background-color"="#FFFF00"))
 pt$renderPivot()
 ```
-
-### totals (only)
 
 Find only totals:
 
@@ -181,7 +179,7 @@ pt$setStyling(groups=groups, declarations=list("background-color"="#FFFF00"))
 pt$renderPivot()
 ```
 
-### Selecting a grand total data group
+#### Selecting a grand total data group
 
 To select the right-most/bottom total data group:
 
@@ -200,13 +198,13 @@ pt$setStyling(groups=groups, declarations=list("background-color"="#FFFF00"))
 pt$renderPivot()
 ```
 
-### Examples:  `matchMode="combinations"`
+### Finding headings when `matchMode="combinations"`
 
 The following examples illustrate how the "combinations" matching mode works.  
 
 The key concept to understand here is that the filtering criteria (i.e. the variableName(s) and variableValues) set for a data group also apply to all descendant data groups.  For example, in the example pivot table above, the "DMU" under "Express Passenger" effectively means `WHERE ("TrainCategory"="Express Passenger") AND ("PowerType"="DMU")`.
 
-#### variableNames
+#### From variable name(s) (variableNames)
 
 Find all of the data groups that have filter criteria specified for both the "TrainCategory" and "Power Type" variables:
 
@@ -226,7 +224,7 @@ pt$renderPivot()
 
 In the example above, the first row of headings relates only to the "TrainCategory" variable.  The second row of headings relates both to the "PowerType" variable and the "TrainCategory" variable. 
 
-#### variableValues
+#### From variable value(s) (variableValues)
 
 Find all of the data groups for the "PowerType" variable with the values "DMU" and "HST" for the "TrainCategory" of "Express Passenger":
 
@@ -280,7 +278,7 @@ pt$setStyling(groups=groups, declarations=list("background-color"="#00FFFF"))
 pt$renderPivot()
 ```
 
-### Selecting a specific sub-total
+#### Selecting a specific sub-total
 
 To select the sub-total data group under "Express Passenger":
 
@@ -298,7 +296,7 @@ pt$setStyling(groups=groups, declarations=list("background-color"="#00FFFF"))
 pt$renderPivot()
 ```
 
-### Restricting the search for data groups
+### Restricting the search
 
 The following example illustrates the use of the `rowNumbers`, `columnNumbers` and `cells` arguments to restrict the data group search:
 
@@ -546,7 +544,9 @@ Broadly speaking, these additional parameters function identically to the parame
 
 Several examples of the above are given below.
 
-### variableNames
+### Finding cells from headings
+
+#### From heading variable name(s) (variableNames)
 
 Finding cells that reference the "PowerType" variable:
 
@@ -566,7 +566,7 @@ pt$renderPivot()
 
 All of the cells above reference the "PowerType" variable.  For the `findCells()` function, the `variableNames` argument is only really used when a pivot table is constructed that has a custom layout.
 
-### variableValues
+#### From heading variable value(s) (variableValues)
 
 Finding cells that reference the "DMU" and "HST" values for the "PowerType" variable:
 
@@ -600,7 +600,7 @@ pt$setStyling(cells=cells, declarations=list("background-color"="#00FF00"))
 pt$renderPivot()
 ```
 
-### totals
+#### totals
 
 Finding only totals cells that reference the "PowerType" variable:
 
@@ -668,6 +668,10 @@ pt$setStyling(cells=cells, declarations=list("background-color"="#00FF00"))
 pt$renderPivot()
 ```
 
+### Finding cells by cell value
+
+For guidance on finding cell(s) based on the value of the cell (i.e. based on the results of calculations), see the Conditional Formating section below.
+
 ### Additional criteria
 
 The example below illustrates using additional criteria (row/column numbers and row/column data groups) to restrict the cells that are searched:
@@ -720,7 +724,7 @@ pt$renderPivot()
 
 ## Conditional Formatting
 
-The `findCells()` and `getCells()` functions can be used to help conditionally format a pivot table.
+The `findCells()` and `getCells()` functions can be used to help conditionally format the cells of a pivot table based on the cell values (i.e. calculation values).
 
 For example, to highlight in red those cells in the basic example pivot table that have a value between 30000 and 50000:
 
@@ -783,11 +787,9 @@ Assume we wish to format the average arrival delay as follows:
 - Average arrival delay between 2 and 4 minutes - yellow,
 - Average arrival delay of 4 and above minutes - red.
 
-There are two approaches we can take to this - either use `mapStyling()`, or use `findCells()` and `setStyling()`.
+There are two approaches we can take to this - either use `mapStyling()`, or use `findCells()` and `setStyling()`.  `mapStyling()` is described in the [Styling](v07-styling.html) vignette.
 
-`mapStyling()` is described in the [Styling](v07-styling.html) vignette.
-
-Using `mapStyling()` with `mapType="range"` is more concise:
+Using `mapStyling()` with `mapType="range"` is the more concise approach:
 
 ```{r, warning=FALSE, message=FALSE}
 library(pivottabler)
@@ -817,7 +819,7 @@ pt$mapStyling(cells=pt$allCells, styleProperty="color",
 pt$renderPivot()
 ```
 
-Using `findCells()` and `setStyling()`:
+Alternatively, using `findCells()` and `setStyling()`:
 
 ```{r, warning=FALSE, message=FALSE}
 library(pivottabler)

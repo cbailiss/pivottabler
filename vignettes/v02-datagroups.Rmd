@@ -17,7 +17,7 @@ vignette: >
     + Adding data groups explicitly
     + Adding data groups that combine values
     + More complex layouts of data groups
-* Formatting data groups
+* Formatting data group values
 * Sorting data groups
 * Pivot tables as standard tables (row group headings)
 
@@ -145,7 +145,7 @@ pt$renderPivot()
 
 Adding data groups one-at-a-time for fine-grained control to create a pivot table with an irregular layout is also possible.  See the [Irregular Layout](v11-irregularlayout.html) vignette for more details.
 
-## Formatting data groups
+## Formatting data group values
 
 Each data group has three values:  
 
