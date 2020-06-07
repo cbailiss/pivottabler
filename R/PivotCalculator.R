@@ -582,7 +582,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
    #' @param fmtFuncArgs Additional arguments for a custom format function.
    #' See `formatValue()` for details.
    #' @param noDataValue A replacement raw value to use if the value is NULL.
-   #' @param noDataCaption A replcement formatted value to use if the value is NULL.
+   #' @param noDataCaption A replacement formatted value to use if the value is NULL.
    #' @return A list containing two elements: rawValue (typically numeric) and
    #' formattedValue (typically a character value).
    evaluateSingleValue = function(dataFrame=NULL, workingFilters=NULL, valueName=NULL, format=NULL, fmtFuncArgs=NULL, noDataValue=NULL, noDataCaption=NULL) {
@@ -659,7 +659,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
    #' @param fmtFuncArgs Additional arguments for a custom format function.
    #' See `formatValue()` for details.
    #' @param noDataValue A replacement raw value to use if the value is NULL.
-   #' @param noDataCaption A replcement formatted value to use if the value is NULL.
+   #' @param noDataCaption A replacement formatted value to use if the value is NULL.
    #' @return A list containing two elements: rawValue (typically numeric) and
    #' formattedValue (typically a character value).
    evaluateSummariseExpression = function(dataName=NULL, dataFrame=NULL, workingFilters=NULL, batchName=NULL,
@@ -825,7 +825,7 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
    #' @param fmtFuncArgs Additional arguments for a custom format function.
    #' See `formatValue()` for details.
    #' @param noDataValue A replacement raw value to use if the value is NULL.
-   #' @param noDataCaption A replcement formatted value to use if the value is NULL.
+   #' @param noDataCaption A replacement formatted value to use if the value is NULL.
    #' @return A list containing two elements: rawValue (typically numeric) and
    #' formattedValue (typically a character value).
    evaluateCalculationExpression = function(values=NULL, calculationExpression=NULL, format=NULL, fmtFuncArgs=NULL, noDataValue=NULL, noDataCaption=NULL) {

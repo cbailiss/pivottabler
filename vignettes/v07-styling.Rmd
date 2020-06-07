@@ -575,7 +575,7 @@ This means there are several different ways styles can be specified for the cell
 
 ### Style Names
 
-Style names apply to a cell in the following precendence order:
+Style names apply to a cell in the following precedence order:
 
 1. `baseStyleName` set on the cell.
 2. `cellBaseStyleName` set on the calculation.

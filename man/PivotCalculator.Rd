@@ -590,7 +590,7 @@ See `formatValue()` for details.}
 
 \item{\code{noDataValue}}{A replacement raw value to use if the value is NULL.}
 
-\item{\code{noDataCaption}}{A replcement formatted value to use if the value is NULL.}
+\item{\code{noDataCaption}}{A replacement formatted value to use if the value is NULL.}
 }
 \if{html}{\out{</div>}}
 }
@@ -654,7 +654,7 @@ See `formatValue()` for details.}
 
 \item{\code{noDataValue}}{A replacement raw value to use if the value is NULL.}
 
-\item{\code{noDataCaption}}{A replcement formatted value to use if the value is NULL.}
+\item{\code{noDataCaption}}{A replacement formatted value to use if the value is NULL.}
 }
 \if{html}{\out{</div>}}
 }
@@ -706,7 +706,7 @@ See `formatValue()` for details.}
 
 \item{\code{noDataValue}}{A replacement raw value to use if the value is NULL.}
 
-\item{\code{noDataCaption}}{A replcement formatted value to use if the value is NULL.}
+\item{\code{noDataCaption}}{A replacement formatted value to use if the value is NULL.}
 }
 \if{html}{\out{</div>}}
 }
