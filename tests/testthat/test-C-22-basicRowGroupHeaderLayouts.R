@@ -64,6 +64,8 @@ testScenarios <- function(description="test", releaseEvaluationMode="batch", rel
 
 # Test data
 
+library(dplyr)
+library(lubridate)
 library(pivottabler)
 trains <- mutate(bhmtrains,
                  GbttDate=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
