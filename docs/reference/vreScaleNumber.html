@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Page not found (404) • pivottabler</title>
+<title>Rescale a number from one range into another range. — vreScaleNumber • pivottabler</title>
 
 
 <!-- jquery -->
@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
-<link rel="stylesheet" href="http://www.pivottabler.org.uk/bootstrap-toc.css">
-<script src="http://www.pivottabler.org.uk/bootstrap-toc.js"></script>
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
@@ -33,19 +33,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="http://www.pivottabler.org.uk/pkgdown.css" rel="stylesheet">
-<script src="http://www.pivottabler.org.uk/pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 <!-- docsearch -->
-<script src="http://www.pivottabler.org.uk/docsearch.js"></script>
+<script src="../docsearch.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
-<link href="http://www.pivottabler.org.uk/docsearch.css" rel="stylesheet">
+<link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
 
 
-<meta property="og:title" content="Page not found (404)" />
+<meta property="og:title" content="Rescale a number from one range into another range. — vreScaleNumber" />
+<meta property="og:description" content="vreScaleNumber takes a value from one range and
+scales it proportionally into another range." />
 
 
 
@@ -74,7 +76,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-title-body">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -86,7 +88,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="http://www.pivottabler.org.uk/index.html">pivottabler</a>
+        <a class="navbar-link" href="../index.html">pivottabler</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
@@ -94,19 +96,19 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="articles/index.html">Articles</a>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
-  <a href="news/index.html">Changelog</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -133,23 +135,60 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Page not found (404)</h1>
+    <h1>Rescale a number from one range into another range.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cbailiss/pivottabler/blob/master/R/valueRangeExpression.R'><code>R/valueRangeExpression.R</code></a></small>
+    <div class="hidden name"><code>vreScaleNumber.Rd</code></div>
     </div>
 
-Content not found. Please use links in the navbar.
+    <div class="ref-description">
+    <p><code>vreScaleNumber</code> takes a value from one range and
+scales it proportionally into another range.</p>
+    </div>
+
+    <pre class="usage"><span class='fu'>vreScaleNumber</span>(<span class='no'>n1</span>, <span class='no'>n2</span>, <span class='no'>vMin</span>, <span class='no'>vMax</span>, <span class='no'>value</span>, <span class='kw'>decimalPlaces</span> <span class='kw'>=</span> <span class='fl'>3</span>)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>n1</th>
+      <td><p>The lower value of the target range.</p></td>
+    </tr>
+    <tr>
+      <th>n2</th>
+      <td><p>The upper value of the target range.</p></td>
+    </tr>
+    <tr>
+      <th>vMin</th>
+      <td><p>The lower value of the source range.</p></td>
+    </tr>
+    <tr>
+      <th>vMax</th>
+      <td><p>The upper value of the source range.</p></td>
+    </tr>
+    <tr>
+      <th>value</th>
+      <td><p>The source value to rescale into the target range.</p></td>
+    </tr>
+    <tr>
+      <th>decimalPlaces</th>
+      <td><p>The number of decimal places to round the result to.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The value rescaled into the target range.</p>
 
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
-
 </div>
-
 
 
       <footer>

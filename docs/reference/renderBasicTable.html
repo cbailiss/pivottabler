@@ -90,7 +90,7 @@ the pivottabler package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -149,7 +149,13 @@ package vignette.  This function is primarily intended for internal use by
 the pivottabler package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>renderBasicTable</span>(<span class='kw'>matrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>stylePrefix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rowNamesAsHeader</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>renderBasicTable</span>(
+  <span class='kw'>matrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>stylePrefix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>columnNamesAsHeader</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>rowNamesAsHeader</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>columnAlignment</span> <span class='kw'>=</span> <span class='st'>"right"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,8 +169,18 @@ the pivottabler package.</p>
       <td><p>Text prefix for CSS style declarations.</p></td>
     </tr>
     <tr>
+      <th>columnNamesAsHeader</th>
+      <td><p>Include column names in output (if FALSE, the
+first row from the matrix is used as the column headings).</p></td>
+    </tr>
+    <tr>
       <th>rowNamesAsHeader</th>
       <td><p>Include row names in output.</p></td>
+    </tr>
+    <tr>
+      <th>columnAlignment</th>
+      <td><p>A character vector specifying the horizontal alignment
+of each column.</p></td>
     </tr>
     </table>
 

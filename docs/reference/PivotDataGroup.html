@@ -90,7 +90,7 @@ i.e. each `PivotDataGroup` instance can have one or more child data groups." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -162,6 +162,8 @@ NB:  This number is guaranteed to be unique within the pivot table,
 but the method of generation of the values may change in future, so
 you are advised not to base any logic on specific values.</p></dd>
 
+<dt><code>rowOrColumn</code></dt><dd><p>Either "row" or "column"</p></dd>
+
 <dt><code>parentGroup</code></dt><dd><p>The parent `PivotDataGroup` instance that this
 `PivotDataGroup` instance belongs to.</p></dd>
 
@@ -201,6 +203,9 @@ it is part of a header or outline row)</p></dd>
 
 <dt><code>isOutline</code></dt><dd><p>`TRUE` if this data group is an outline group.</p></dd>
 
+<dt><code>styleAsOutline</code></dt><dd><p>`TRUE` if this data group is to be styled as an outline
+group.  Only applicable when `isOutline` is `TRUE`.</p></dd>
+
 <dt><code>outlineLinkedGroupId</code></dt><dd><p>The instance id of the child group related
 to this group, if this group is an outline group.</p></dd>
 
@@ -237,9 +242,17 @@ should be merged.</p></dd>
 <dt><code>cellBaseStyleName</code></dt><dd><p>The style name for cells related to this data
 group.</p></dd>
 
+<dt><code>netCellBaseStyleName</code></dt><dd><p>The style name for cells related to this data
+group - either from this group or the first ancestor that specifies a
+cellBaseStyleName if cellBaseStyleName is not specified on this group.</p></dd>
+
 <dt><code>cellStyle</code></dt><dd><p>A `PivotStyle` object that contains additional CSS style
 declarations that override the base style for cells related to this data
-group.</p></dd>
+group.  If setting this property, a list can also be specified.</p></dd>
+
+<dt><code>netCellStyle</code></dt><dd><p>A `PivotStyle` object that contains additional CSS style
+declarations that override the base style for cells related to this data
+group - both from this group and all ancestors.</p></dd>
 
 <dt><code>fixedWidthSize</code></dt><dd><p>The width (in characters) needed for
 this data group when rendering to plain text.</p></dd>
@@ -315,6 +328,7 @@ data groups.</p></dd>
   <span class='kw'>doNotExpand</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>isEmpty</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>isOutline</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>styleAsOutline</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>captionTemplate</span> <span class='kw'>=</span> <span class='st'>"{value}"</span>,
   <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>isTotal</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -355,6 +369,10 @@ it is part of a header or outline row)</p></dd>
 
 <dt><code>isOutline</code></dt><dd><p>Default value `FALSE` - specify `TRUE` to mark
 that this data group is an outline group.</p></dd>
+
+<dt><code>styleAsOutline</code></dt><dd><p>Default value `FALSE` - specify `TRUE` to style
+this data group as an outline group.  Only applicable when
+`isOutline` is `TRUE`.</p></dd>
 
 <dt><code>captionTemplate</code></dt><dd><p>A character value that specifies the template
 for the data group caption, default "values".</p></dd>
@@ -563,6 +581,7 @@ is specified.</p><h3>Usage</h3>
   <span class='kw'>doNotExpand</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>isEmpty</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>isOutline</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>styleAsOutline</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>captionTemplate</span> <span class='kw'>=</span> <span class='st'>"{value}"</span>,
   <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>isTotal</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -589,10 +608,10 @@ is specified.</p><h3>Usage</h3>
 variable in the data frame that the group relates to and will filter.</p></dd>
 
 <dt><code>filterType</code></dt><dd><p>Must be one of "ALL", "VALUES", or "NONE" to specify
-the filter type:
-ALL means no filtering is applied.
+the filter type:<br />
+ALL means no filtering is applied.<br />
 VALUEs is the typical value used to specify that `variableName` is
-filtered to only `values`.
+filtered to only `values`.<br />
 NONE means no data will match this data group.</p></dd>
 
 <dt><code>values</code></dt><dd><p>A vector that specifies the filter values applied to
@@ -609,6 +628,10 @@ it is part of a header or outline row)</p></dd>
 
 <dt><code>isOutline</code></dt><dd><p>Default value `FALSE` - specify `TRUE` to mark
 that this data group is an outline group.</p></dd>
+
+<dt><code>styleAsOutline</code></dt><dd><p>Default value `FALSE` - specify `TRUE` to style
+this data group as an outline group.  Only applicable when
+`isOutline` is `TRUE`.</p></dd>
 
 <dt><code>captionTemplate</code></dt><dd><p>A character value that specifies the template
 for the data group caption, default "values".</p></dd>
@@ -843,15 +866,15 @@ See the "Regular Layout" vignette for an example.</p></dd>
 
 </dl><p></div></p>
 <h3>Details</h3>
-<p>There are broadly three different ways to call `addDataGroups()`:
+<p>There are broadly three different ways to call `addDataGroups()`:<br />
 (1) dataName=name, fromData=TRUE, onlyCombinationsThatExist=TRUE - which
 considers the ancestors of each existing data group to generate only those
-combinations of values that exist in the data frame.
+combinations of values that exist in the data frame.<br />
 (2) dataName=name, fromData=TRUE, onlyCombinationsThatExist=FALSE - which
 ignores the ancestors of each existing data group and simply adds every
 distinct value of the specified variable under every existing data group,
 which can result in combinations of values in the pivot table that don't
-exist in the data frame (i.e. blank rows/columns in the pivot table).
+exist in the data frame (i.e. blank rows/columns in the pivot table).<br />
 (3) fromData=FALSE, explicitListOfValues=list(...) - simply adds every
 value from the specified list under every existing data group.</p>
 
@@ -880,12 +903,12 @@ data groups.  0 = at the current level, 1 = one level below the current
 group, etc.</p></dd>
 
 <dt><code>orderBy</code></dt><dd><p>Must be either "value", "caption", "calculation",
-"customByValue" or "customByCaption".
-"value" sorts by the raw (i.e. unformatted) group value.
-"caption" sorts by the formatted character group caption.
+"customByValue" or "customByCaption".<br />
+"value" sorts by the raw (i.e. unformatted) group value.<br />
+"caption" sorts by the formatted character group caption.<br />
 "calculation" sorts using one of the calculations defined in the pivot table.
 "customValue" sorts by the raw (i.e. unformatted) group value according to
-the specified custom sort order.
+the specified custom sort order.<br />
 "customCaption" sorts by the formatted character group caption according to
 the specified custom sort order.</p></dd>
 
@@ -995,13 +1018,13 @@ data group and all of its ancestors in the data group hierarchy.</p><h3>Usage</h
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
-<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations".
+<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations".<br />
 "simple" is used when matching only one variable-value, multiple
-variable-value combinations are effectively logical "OR".
+variable-value combinations are effectively logical "OR".<br />
 "combinations" is used when matching for combinations of variable
 values, multiple variable-value combinations are effectively
 logical "AND".  A child group is viewed as having the variable-value
-filters of itself and it's parent/ancestors, e.g.
+filters of itself and it's parent/ancestors, e.g.<br />
 `list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
 would return the "DMU" data group underneath "Express Passenger".
 See the "Finding and Formatting" vignette for graphical examples.</p></dd>
@@ -1012,9 +1035,9 @@ irregular layouts, since in regular pivot tables every cell is related
 to every variable.</p></dd>
 
 <dt><code>variableValues</code></dt><dd><p>A list specifying the variable names and values to find,
-e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-Specify "**" as the variable value to match totals for the specified variable.
-Specify "!*" as the variable value to match non-totals for the specified variable.
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.<br />
+Specify "**" as the variable value to match totals for the specified variable.<br />
+Specify "!*" as the variable value to match non-totals for the specified variable.<br />
 NB: The totals/non-totals criteria above won’t work when visual totals are used.</p></dd>
 
 <dt><code>totals</code></dt><dd><p>A word that specifies how totals are matched (overrides the finer
@@ -1058,18 +1081,19 @@ outline child group no longer exists.</p></dd>
   <span class='kw'>emptyGroups</span> <span class='kw'>=</span> <span class='st'>"exclude"</span>,
   <span class='kw'>outlineGroups</span> <span class='kw'>=</span> <span class='st'>"exclude"</span>,
   <span class='kw'>outlineLinkedGroupExists</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>includeDescendantGroups</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>includeDescendantGroups</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>includeCurrentGroup</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
-<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations".
+<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations".<br />
 "simple" is used when matching only one variable-value, multiple
-variable-value combinations are effectively logical "OR".
+variable-value combinations are effectively logical "OR".<br />
 "combinations" is used when matching for combinations of variable
 values, multiple variable-value combinations are effectively
 logical "AND".  A child group is viewed as having the variable-value
-filters of itself and it's parent/ancestors, e.g.
+filters of itself and it's parent/ancestors, e.g.<br />
 `list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
 would return the "DMU" data group underneath "Express Passenger".
 See the "Finding and Formatting" vignette for graphical examples.</p></dd>
@@ -1080,9 +1104,9 @@ irregular layouts, since in regular pivot tables every cell is related
 to every variable.</p></dd>
 
 <dt><code>variableValues</code></dt><dd><p>A list specifying the variable names and values to find,
-e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-Specify "**" as the variable value to match totals for the specified variable.
-Specify "!*" as the variable value to match non-totals for the specified variable.
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.<br />
+Specify "**" as the variable value to match totals for the specified variable.<br />
+Specify "!*" as the variable value to match non-totals for the specified variable.<br />
 NB: The totals/non-totals criteria above won’t work when visual totals are used.</p></dd>
 
 <dt><code>totals</code></dt><dd><p>A word that specifies how totals are matched (overrides the finer
@@ -1110,6 +1134,9 @@ outline child group no longer exists.</p></dd>
 
 <dt><code>includeDescendantGroups</code></dt><dd><p>Default `FALSE`.  Specify true to also return
 all descendants of data groups that match the specified criteria.</p></dd>
+
+<dt><code>includeCurrentGroup</code></dt><dd><p>Default `TRUE`.  Specify `FALSE` to prevent the
+current group being included in the returned results.</p></dd>
 
 </dl><p></div></p>
 <h3>Returns</h3>

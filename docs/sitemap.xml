@@ -196,6 +196,33 @@
     <loc>http://www.pivottabler.org.uk/reference/trainstations.html</loc>
   </url>
   <url>
+    <loc>http://www.pivottabler.org.uk/reference/vreConvertSimpleNumericRange.html</loc>
+  </url>
+  <url>
+    <loc>http://www.pivottabler.org.uk/reference/vreGetSingleValue.html</loc>
+  </url>
+  <url>
+    <loc>http://www.pivottabler.org.uk/reference/vreHexToClr.html</loc>
+  </url>
+  <url>
+    <loc>http://www.pivottabler.org.uk/reference/vreIsEqual.html</loc>
+  </url>
+  <url>
+    <loc>http://www.pivottabler.org.uk/reference/vreIsMatch.html</loc>
+  </url>
+  <url>
+    <loc>http://www.pivottabler.org.uk/reference/vreIsSimpleNumericRange.html</loc>
+  </url>
+  <url>
+    <loc>http://www.pivottabler.org.uk/reference/vreIsSingleValue.html</loc>
+  </url>
+  <url>
+    <loc>http://www.pivottabler.org.uk/reference/vreScale2Colours.html</loc>
+  </url>
+  <url>
+    <loc>http://www.pivottabler.org.uk/reference/vreScaleNumber.html</loc>
+  </url>
+  <url>
     <loc>http://www.pivottabler.org.uk/articles/v00-vignettes.html</loc>
   </url>
   <url>

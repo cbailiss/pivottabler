@@ -89,7 +89,7 @@ pivot table into a custom colour scheme." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -150,8 +150,9 @@ pivot table into a custom colour scheme.</p>
     <pre class="usage"><span class='fu'>getSimpleColoredTheme</span>(
   <span class='no'>parentPivot</span>,
   <span class='kw'>themeName</span> <span class='kw'>=</span> <span class='st'>"coloredTheme"</span>,
-  <span class='no'>colors</span>,
-  <span class='no'>fontName</span>
+  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fontName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>theme</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -167,18 +168,47 @@ pivot table into a custom colour scheme.</p>
     </tr>
     <tr>
       <th>colors</th>
-      <td><p>The set of colours to use when generating the theme (see the Styling vignette for details).</p></td>
+      <td><p>The set of colours to use when generating the theme (see
+the Styling vignette for details).  This parameter exists for
+backward compatibility.</p></td>
     </tr>
     <tr>
       <th>fontName</th>
-      <td><p>The name of the font to use, or a comma separated list (for font-fall-back).</p></td>
+      <td><p>The name of the font to use, or a comma separated list
+(for font-fall-back).  This parameter exists for backward compatibility.</p></td>
+    </tr>
+    <tr>
+      <th>theme</th>
+      <td><p>A simple theme specified in the form of a list.  See example
+for supported list elements (all other elements will be ignored).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A PivotStyles object.</p>
+    <p>A `PivotStyles` object.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>pt</span> <span class='kw'>&lt;-</span> <span class='no'>PivotTable</span>$<span class='fu'>new</span>()
+<span class='co'># ...</span>
+<span class='no'>simpleBlueTheme</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
+  <span class='kw'>fontName</span><span class='kw'>=</span><span class='st'>"Verdana, Arial"</span>,
+  <span class='kw'>fontSize</span><span class='kw'>=</span><span class='st'>"0.75em"</span>,
+  <span class='kw'>headerBackgroundColor</span> <span class='kw'>=</span> <span class='st'>"rgb(68, 114, 196)"</span>,
+  <span class='kw'>headerColor</span> <span class='kw'>=</span> <span class='st'>"rgb(255, 255, 255)"</span>,
+  <span class='kw'>cellBackgroundColor</span> <span class='kw'>=</span> <span class='st'>"rgb(255, 255, 255)"</span>,
+  <span class='kw'>cellColor</span> <span class='kw'>=</span> <span class='st'>"rgb(0, 0, 0)"</span>,
+  <span class='kw'>outlineCellBackgroundColor</span> <span class='kw'>=</span> <span class='st'>"rgb(186, 202, 233)"</span>,
+  <span class='kw'>outlineCellColor</span> <span class='kw'>=</span> <span class='st'>"rgb(0, 0, 0)"</span>,
+  <span class='kw'>totalBackgroundColor</span> <span class='kw'>=</span> <span class='st'>"rgb(186, 202, 233)"</span>,
+  <span class='kw'>totalColor</span> <span class='kw'>=</span> <span class='st'>"rgb(0, 0, 0)"</span>,
+  <span class='kw'>borderColor</span> <span class='kw'>=</span> <span class='st'>"rgb(48, 84, 150)"</span>
+)
+<span class='no'>pt</span>$<span class='no'>theme</span> <span class='kw'>&lt;-</span> <span class='no'>simpleBlueTheme</span>
+<span class='co'># or</span>
+<span class='no'>theme</span> <span class='kw'>&lt;-</span> <span class='fu'>getSimpleColoredTheme</span>(<span class='no'>pt</span>, <span class='kw'>theme</span><span class='kw'>=</span><span class='no'>simpleBlueTheme</span>)
+<span class='co'># make further changes to the theme</span>
+<span class='no'>pt</span>$<span class='no'>theme</span> <span class='kw'>&lt;-</span> <span class='no'>theme</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

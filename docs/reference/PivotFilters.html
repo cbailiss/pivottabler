@@ -90,7 +90,7 @@ typically contains multiple PivotFilter objects." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -159,7 +159,29 @@ typically contains multiple <code><a href='PivotFilter.html'>PivotFilter</a></co
     <p>As well as acting as a container for multiple filter conditions, the
 `PivotFilters` class also contains logic for combining filter.
 The `action` parameter in many of the methods controls how two filters
-are combined.</p>
+are combined.<br />
+Most common cases:<br />
+(1) When working out the rowColFilters for each pivot table cell, the
+    filters from the row and column leaf groups are combined using
+    `action="intersect"`.<br />
+(2) When combining the rowColFilters with calculation filters the
+    action could be any of (in order of most typical)
+    "intersect", "replace" or "union".<br />
+    "intersect" would apply additional restrictions, e.g. see the
+    example in the Calculations vignette that has a measure for
+    weekend trains only.<br />
+    "replace" would apply when doing things like percentage of row
+    total calculations - again, see example in the calculations vignette<br />
+    "union" is probably much less likely (hard to envisage many
+    situations when that would be needed).<br />
+(3) In custom calculation functions, the action could be any of
+    "intersect", "replace" or "union".<br />
+NOTE: `pivottabler` does not allow complex conditions to be built up,
+    such as ((A=X) or (B=Y)) and (C=2) since there is complex precedence
+    involved and conditions like this are not typical of pivot tables.
+    If they were really needed, a workaround would be to use a custom
+    calculation function and include this logic in that function.<br />
+See Appendix 2 vignette for many more complex calculation details.</p>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl'>
@@ -289,15 +311,15 @@ other variables will be retained.</p></dd>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
-<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations".
+<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations".<br />
 "simple" is used when matching only one variable-value, multiple
 variable-value combinations are effectively logical "OR", i.e.
 any one single `PivotFilter` match means the `PivotFilters` object
-is a match.
+is a match.<br />
 "combinations" is used when matching for combinations of variable
 values, multiple variable-value combinations are effectively
 logical "AND", i.e. there must be a matching `PivotFilter` for
-every variable name / variable values criteria specified.
+every variable name / variable values criteria specified.<br />
 See the "Finding and Formatting" vignette for graphical examples.</p></dd>
 
 <dt><code>variableNames</code></dt><dd><p>The variable name(s) to find a filter for.  This

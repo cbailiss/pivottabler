@@ -89,7 +89,7 @@ constructing and interacting with a pivot table." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -214,8 +214,11 @@ the calculations are rendered.</p></dd>
 <dt><code>batchInfo</code></dt><dd><p>Diagnostic information describing the batches used in the
 last pivot table evaluation.</p></dd>
 
-<dt><code>cells</code></dt><dd><p>A list where each element represents one row in the pivot table.
-Each row is itself a list, where each list element is a `PivotCell` object.</p></dd>
+<dt><code>cells</code></dt><dd><p>A `PivotCells` object that contains all of the cells in the pivot
+table.</p></dd>
+
+<dt><code>allCells</code></dt><dd><p>A list of all of the cells in the pivot table, where each element
+in the list is a 'PivotCell' object.</p></dd>
 
 <dt><code>rowCount</code></dt><dd><p>The number of rows in the pivot table, excluding headings.</p></dd>
 
@@ -298,6 +301,7 @@ of significant pivot table operations (i.e. where elapsed&gt;0.1).</p></dd>
 <li><p><a href='#method-addStyle'><code>PivotTable$addStyle()</code></a></p></li>
 <li><p><a href='#method-createInlineStyle'><code>PivotTable$createInlineStyle()</code></a></p></li>
 <li><p><a href='#method-setStyling'><code>PivotTable$setStyling()</code></a></p></li>
+<li><p><a href='#method-mapStyling'><code>PivotTable$mapStyling()</code></a></p></li>
 <li><p><a href='#method-generateCellStructure'><code>PivotTable$generateCellStructure()</code></a></p></li>
 <li><p><a href='#method-resetCells'><code>PivotTable$resetCells()</code></a></p></li>
 <li><p><a href='#method-evaluateCells'><code>PivotTable$evaluateCells()</code></a></p></li>
@@ -367,20 +371,20 @@ Must be one of "auto" (which today is dplyr), "dplyr" or "data.table".</p></dd>
 Must be one of "auto", "none", "minimal", "basic", "balanced" (default)
 or "full".</p></dd>
 
-<dt><code>theme</code></dt><dd><p>A theme to use to style the pivot table. Either:
-(1) The name of a built in theme, or
-(2) A list of simple style settings, or
-(3) A `PivotStyles` object containing a full set of styles.
+<dt><code>theme</code></dt><dd><p>A theme to use to style the pivot table. Either:<br />
+(1) The name of a built in theme, or<br />
+(2) A list of simple style settings, or<br />
+(3) A `PivotStyles` object containing a full set of styles.<br />
 See the "Styling" vignette for many examples.</p></dd>
 
 <dt><code>replaceExistingStyles</code></dt><dd><p>Default `FALSE` to retain existing styles in
 the styles collection and add specified styles as new custom styles.
 Specify `TRUE` to update the definitions of existing styles.</p></dd>
 
-<dt><code>tableStyle</code></dt><dd><p>Styling to apply to the table.  Either:
-(1) The name of a built in style, or
-(2) A list of CSS style declarations, e.g.
-`list("font-weight"="bold", "color"="#0000FF")`, or
+<dt><code>tableStyle</code></dt><dd><p>Styling to apply to the table.  Either:<br />
+(1) The name of a built in style, or<br />
+(2) A list of CSS style declarations, e.g.<br />
+`list("font-weight"="bold", "color"="#0000FF")`, or<br />
 (3) A `PivotStyle` object.</p></dd>
 
 <dt><code>headingStyle</code></dt><dd><p>Styling to apply to the headings.
@@ -418,9 +422,9 @@ for debugging purposes.</p></dd>
 `pt$addRowDataGroups()` and `pt$addColumnDataGroups()`:
 `logical` values: `addTotal`, `expandExistingTotals`, `visualTotals`.
 `character` values:  `totalPosition`, `totalCaption`.
-`list` or `logical` values:  `outlineBefore`, `outlineAfter`, `outlineTotal`.
-Errors are generated for default values that could not be set.
-Warnings are generated for attempts to set defaults that aren't supported.
+`list` or `logical` values:  `outlineBefore`, `outlineAfter`, `outlineTotal`.<br />
+Errors are generated for default values that could not be set.<br />
+Warnings are generated for attempts to set defaults that aren't supported.<br />
 See the "A1. Appendix" vignette for more details.</p>
 
 <h3>Returns</h3>
@@ -545,15 +549,23 @@ See the "Calculations" vignette for details and an example.</p>
 <p>No return value.</p>
 <p><hr>
 <a id="method-getColumnGroupsByLevel"></a></p><h3>Method <code>getColumnGroupsByLevel()</code></h3>
-<p>Retrieve the data groups at the specified level in the column groups hierarchy.</p><h3>Usage</h3>
-<p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>getColumnGroupsByLevel</span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+<p>Retrieve the data groups at the specified level or levels in the column
+groups hierarchy.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>getColumnGroupsByLevel</span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collapse</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
-<dt><code>level</code></dt><dd><p>An integer specifying the level number.
+<dt><code>level</code></dt><dd><p>An integer value or vector specifying one or more level numbers.
 Level 1 represents the first visible level of data groups.</p></dd>
 
+<dt><code>collapse</code></dt><dd><p>A logical value specifying whether the return value should be
+simplified.  See details.</p></dd>
+
 </dl><p></div></p>
+<h3>Details</h3>
+<p>If `level` is a vector:  If `collapse` is `FALSE`, then a list of lists is
+returned, if `collapse` is `TRUE`, then a single combined list is returned.</p>
+
 <h3>Returns</h3>
 <p>A list containing `PivotDataGroup` objects.</p>
 <p><hr>
@@ -574,16 +586,17 @@ Retrieve the bottom level of column data groups.</p><h3>Usage</h3>
 <p>A list containing `PivotDataGroup` objects.</p>
 <p><hr>
 <a id="method-getLeafColumnGroup"></a></p><h3>Method <code>getLeafColumnGroup()</code></h3>
-<p>Retrieve the leaf-level data group associated with a specific column.</p><h3>Usage</h3>
+<p>Retrieve the leaf-level data group associated with a specific column or
+columns.</p><h3>Usage</h3>
 <p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>getLeafColumnGroup</span>(<span class='kw'>c</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
-<dt><code>c</code></dt><dd><p>An integer column number.</p></dd>
+<dt><code>c</code></dt><dd><p>An integer column number or an integer vector of column numbers.</p></dd>
 
 </dl><p></div></p>
 <h3>Returns</h3>
-<p>A `PivotDataGroup` object.</p>
+<p>A `PivotDataGroup` object or a list of `PivotDataGroup` objects.</p>
 <p><hr>
 <a id="method-addColumnGroup"></a></p><h3>Method <code>addColumnGroup()</code></h3>
 <p>Add a new column data group at the top level of the column group
@@ -596,6 +609,7 @@ is specified.</p><h3>Usage</h3>
   <span class='kw'>doNotExpand</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>isEmpty</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>isOutline</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>styleAsOutline</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>captionTemplate</span> <span class='kw'>=</span> <span class='st'>"{value}"</span>,
   <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>isTotal</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -621,10 +635,10 @@ is specified.</p><h3>Usage</h3>
 variable in the data frame that the group relates to and will filter.</p></dd>
 
 <dt><code>filterType</code></dt><dd><p>Must be one of "ALL", "VALUES", or "NONE" to specify
-the filter type:
-ALL means no filtering is applied.
+the filter type:<br />
+ALL means no filtering is applied.<br />
 VALUEs is the typical value used to specify that `variableName` is
-filtered to only `values`.
+filtered to only `values`.<br />
 NONE means no data will match this data group.</p></dd>
 
 <dt><code>values</code></dt><dd><p>A vector that specifies the filter values applied to
@@ -641,6 +655,10 @@ it is part of a header or outline row)</p></dd>
 
 <dt><code>isOutline</code></dt><dd><p>Default value `FALSE` - specify `TRUE` to mark
 that this data group is an outline group.</p></dd>
+
+<dt><code>styleAsOutline</code></dt><dd><p>Default value `FALSE` - specify `TRUE` to style
+this data group as an outline group.  Only applicable when
+`isOutline` is `TRUE`.</p></dd>
 
 <dt><code>captionTemplate</code></dt><dd><p>A character value that specifies the template
 for the data group caption, default "values".</p></dd>
@@ -809,15 +827,15 @@ style, expressed as a list, e.g. `list("font-weight"=bold")`.</p></dd>
 
 </dl><p></div></p>
 <h3>Details</h3>
-<p>There are broadly three different ways to call `addColumnDataGroups()`:
+<p>There are broadly three different ways to call `addColumnDataGroups()`:<br />
 (1) dataName=name, fromData=TRUE, onlyCombinationsThatExist=TRUE - which
 considers the ancestors of each existing data group to generate only those
-combinations of values that exist in the data frame.
+combinations of values that exist in the data frame.<br />
 (2) dataName=name, fromData=TRUE, onlyCombinationsThatExist=FALSE - which
 ignores the ancestors of each existing data group and simply adds every
 distinct value of the specified variable under every existing data group,
 which can result in combinations of values in the pivot table that don't
-exist in the data frame (i.e. blank rows/columns in the pivot table).
+exist in the data frame (i.e. blank rows/columns in the pivot table).<br />
 (3) fromData=FALSE, explicitListOfValues=list(...) - simply adds every
 value from the specified list under every existing data group.</p>
 
@@ -862,12 +880,12 @@ level 1 (default) sorts the data groups at level 1 of the hierarchy
 (which is the first visible level of data groups).</p></dd>
 
 <dt><code>orderBy</code></dt><dd><p>Must be either "value", "caption", "calculation",
-"customByValue" or "customByCaption".
-"value" sorts by the raw (i.e. unformatted) group value.
-"caption" sorts by the formatted character group caption.
-"calculation" sorts using one of the calculations defined in the pivot table.
+"customByValue" or "customByCaption".<br />
+"value" sorts by the raw (i.e. unformatted) group value.<br />
+"caption" sorts by the formatted character group caption.<br />
+"calculation" sorts using one of the calculations defined in the pivot table.<br />
 "customValue" sorts by the raw (i.e. unformatted) group value according to
-the specified custom sort order.
+the specified custom sort order.<br />
 "customCaption" sorts by the formatted character group caption according to
 the specified custom sort order.</p></dd>
 
@@ -894,15 +912,23 @@ it is next rendered.</p></dd>
 <p>No return value.</p>
 <p><hr>
 <a id="method-getRowGroupsByLevel"></a></p><h3>Method <code>getRowGroupsByLevel()</code></h3>
-<p>Retrieve the data groups at the specified level in the row groups hierarchy.</p><h3>Usage</h3>
-<p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>getRowGroupsByLevel</span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+<p>Retrieve the data groups at the specified level or levels in the row groups
+hierarchy.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>getRowGroupsByLevel</span>(<span class='kw'>level</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collapse</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
-<dt><code>level</code></dt><dd><p>An integer specifying the level number.
+<dt><code>level</code></dt><dd><p>An integer value or vector specifying one or more level numbers.
 Level 1 represents the first visible level of data groups.</p></dd>
 
+<dt><code>collapse</code></dt><dd><p>A logical value specifying whether the return value should be
+simplified.  See details.</p></dd>
+
 </dl><p></div></p>
+<h3>Details</h3>
+<p>If `level` is a vector:  If `collapse` is `FALSE`, then a list of lists is
+returned, if `collapse` is `TRUE`, then a single combined list is returned.</p>
+
 <h3>Returns</h3>
 <p>A list containing `PivotDataGroup` objects.</p>
 <p><hr>
@@ -923,16 +949,16 @@ Retrieve the bottom level of row data groups.</p><h3>Usage</h3>
 <p>A list containing `PivotDataGroup` objects.</p>
 <p><hr>
 <a id="method-getLeafRowGroup"></a></p><h3>Method <code>getLeafRowGroup()</code></h3>
-<p>Retrieve the leaf-level data group associated with a specific row.</p><h3>Usage</h3>
+<p>Retrieve the leaf-level data group associated with a specific row or rows.</p><h3>Usage</h3>
 <p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>getLeafRowGroup</span>(<span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
-<dt><code>r</code></dt><dd><p>An integer row number.</p></dd>
+<dt><code>r</code></dt><dd><p>An integer row number or an integer vector of row numbers.</p></dd>
 
 </dl><p></div></p>
 <h3>Returns</h3>
-<p>A `PivotDataGroup` object.</p>
+<p>A `PivotDataGroup` object or a list of `PivotDataGroup` objects.</p>
 <p><hr>
 <a id="method-addRowGroup"></a></p><h3>Method <code>addRowGroup()</code></h3>
 <p>Add a new column data group at the top level of the row group
@@ -945,6 +971,7 @@ is specified.</p><h3>Usage</h3>
   <span class='kw'>doNotExpand</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>isEmpty</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>isOutline</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>styleAsOutline</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>captionTemplate</span> <span class='kw'>=</span> <span class='st'>"{value}"</span>,
   <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>isTotal</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -970,10 +997,10 @@ is specified.</p><h3>Usage</h3>
 variable in the data frame that the group relates to and will filter.</p></dd>
 
 <dt><code>filterType</code></dt><dd><p>Must be one of "ALL", "VALUES", or "NONE" to specify
-the filter type:
-ALL means no filtering is applied.
+the filter type:<br />
+ALL means no filtering is applied.<br />
 VALUEs is the typical value used to specify that `variableName` is
-filtered to only `values`.
+filtered to only `values`.<br />
 NONE means no data will match this data group.</p></dd>
 
 <dt><code>values</code></dt><dd><p>A vector that specifies the filter values applied to
@@ -990,6 +1017,10 @@ it is part of a header or outline row)</p></dd>
 
 <dt><code>isOutline</code></dt><dd><p>Default value `FALSE` - specify `TRUE` to mark
 that this data group is an outline group.</p></dd>
+
+<dt><code>styleAsOutline</code></dt><dd><p>Default value `FALSE` - specify `TRUE` to style
+this data group as an outline group.  Only applicable when
+`isOutline` is `TRUE`.</p></dd>
 
 <dt><code>captionTemplate</code></dt><dd><p>A character value that specifies the template
 for the data group caption, default "values".</p></dd>
@@ -1188,15 +1219,15 @@ See the "Regular Layout" vignette for an example.</p></dd>
 
 </dl><p></div></p>
 <h3>Details</h3>
-<p>There are broadly three different ways to call `addRowDataGroups()`:
+<p>There are broadly three different ways to call `addRowDataGroups()`:<br />
 (1) dataName=name, fromData=TRUE, onlyCombinationsThatExist=TRUE - which
 considers the ancestors of each existing data group to generate only those
-combinations of values that exist in the data frame.
+combinations of values that exist in the data frame.<br />
 (2) dataName=name, fromData=TRUE, onlyCombinationsThatExist=FALSE - which
 ignores the ancestors of each existing data group and simply adds every
 distinct value of the specified variable under every existing data group,
 which can result in combinations of values in the pivot table that don't
-exist in the data frame (i.e. blank rows/columns in the pivot table).
+exist in the data frame (i.e. blank rows/columns in the pivot table).<br />
 (3) fromData=FALSE, explicitListOfValues=list(...) - simply adds every
 value from the specified list under every existing data group.</p>
 
@@ -1241,12 +1272,12 @@ level 1 (default) sorts the data groups at level 1 of the hierarchy
 (which is the first visible level of data groups).</p></dd>
 
 <dt><code>orderBy</code></dt><dd><p>Must be either "value", "caption", "calculation",
-"customByValue" or "customByCaption".
-"value" sorts by the raw (i.e. unformatted) group value.
-"caption" sorts by the formatted character group caption.
+"customByValue" or "customByCaption".<br />
+"value" sorts by the raw (i.e. unformatted) group value.<br />
+"caption" sorts by the formatted character group caption.<br />
 "calculation" sorts using one of the calculations defined in the pivot table.
 "customValue" sorts by the raw (i.e. unformatted) group value according to
-the specified custom sort order.
+the specified custom sort order.<br />
 "customCaption" sorts by the formatted character group caption according to
 the specified custom sort order.</p></dd>
 
@@ -1520,12 +1551,14 @@ where as named styles are linked to cells using the 'class' attribute.</p>
 <p>The newly created `PivotStyle` object.</p>
 <p><hr>
 <a id="method-setStyling"></a></p><h3>Method <code>setStyling()</code></h3>
-<p>Apply styling to part of a pivot table.</p><h3>Usage</h3>
+<p>Apply styling to a set of data groups or cells in a pivot table.</p><h3>Usage</h3>
 <p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>setStyling</span>(
   <span class='kw'>rFrom</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>cFrom</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>rTo</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>cTo</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rowNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>columnNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>groups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>cells</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>baseStyleName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -1547,6 +1580,12 @@ changes.</p></dd>
 <dt><code>cTo</code></dt><dd><p>An integer column number that specifies the end column for the
 styling changes.</p></dd>
 
+<dt><code>rowNumbers</code></dt><dd><p>An integer vector that specifies the row numbers for the
+styling changes.</p></dd>
+
+<dt><code>columnNumbers</code></dt><dd><p>An integer vector that specifies the column numbers for
+the styling changes.</p></dd>
+
 <dt><code>groups</code></dt><dd><p>A list containing `PivotDataGroup` objects.</p></dd>
 
 <dt><code>cells</code></dt><dd><p>A list containing `PivotCell` objects.</p></dd>
@@ -1560,14 +1599,106 @@ e.g. `list("font-weight"="bold", "color"="#0000FF")`</p></dd>
 
 </dl><p></div></p>
 <h3>Details</h3>
-<p>There are three ways to specify the part of a pivot table to apply styling
-to:
-(1) By specifying a list of data groups using the `groups` argument.
-(2) By specifying a list of cells using the `cells` argument.
-(3) By specifying a rectangular cell range using `rFrom`, `cFrom`, `rTo`
-and `cTo`.
-See the "Finding and Formatting" vignette for more information and many
-examples.</p>
+<p>There are five ways to specify the part(s) of a pivot table to apply
+styling to:<br />
+(1) By specifying a list of data groups using the `groups` argument.<br />
+(2) By specifying a list of cells using the `cells` argument.<br />
+(3) By specifying a single cell using the `rFrom` and `cFrom` arguments.<br />
+(4) By specifying a rectangular cell range using the `rFrom`, `cFrom`,
+`rTo` and `cTo` arguments.<br />
+(5) By specifying a vector of rowNumbers and/or columnNumbers.  If both
+rowNumbers and columnNumbers are specified, then the cells at the
+intersection of the specified row numbers and column numbers are styled.<br />
+If both rFrom/rTo and rowNumbers are specified, then rFrom/rTo constrain
+the row numbers specified in rowNumbers.<br />
+If both cFrom/cTo and columnNumbers are specified, then cFrom/cTo constrain
+the column numbers specified in columnNumbers.<br />
+See the "Styling" and Finding and Formatting" vignettes for more
+information and many examples.</p>
+
+<h3>Returns</h3>
+<p>No return value.</p>
+<p><hr>
+<a id="method-mapStyling"></a></p><h3>Method <code>mapStyling()</code></h3>
+<p>Apply styling to pivot table cells based on the value of each cell.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>mapStyling</span>(
+  <span class='kw'>styleProperty</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>cells</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>valueType</span> <span class='kw'>=</span> <span class='st'>"text"</span>,
+  <span class='kw'>mapType</span> <span class='kw'>=</span> <span class='st'>"range"</span>,
+  <span class='kw'>mappings</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>styleLowerValues</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>styleHigherValues</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>styleProperty</code></dt><dd><p>The name of the style property to set on the specified
+cells, e.g. background-color.</p></dd>
+
+<dt><code>cells</code></dt><dd><p>A list containing `PivotCell` objects.</p></dd>
+
+<dt><code>valueType</code></dt><dd><p>The type of style value to be set.  Must be one of:
+"text", "character", "number", "numeric", "color" or "colour".<br />
+"text" and "character" are equivalent.  "number" and "numeric" are equivalent.
+"color" and "colour" are equivalent.</p></dd>
+
+<dt><code>mapType</code></dt><dd><p>The type of mapping to be performed.  The following mapping
+types are supported:<br />
+(1) "value" = a 1:1 mapping which maps each specified "from" value to the
+corresponding "to" value, e.g. 100 -&gt; "green".<br />
+(2) "logic" = each from value is logical criteria.  See details.<br />
+(3) "range" = values between each pair of "from" values are mapped to the
+corresponding "to" value, e.g. values in the range 80-100 -&gt; "green" (more
+specifically values greater than or equal to 80 and less than 100).<br />
+(4) "continuous" = rescales values between each pair of "from" values into
+the range of the corresponding pair of "to" values, e.g. if the "from" range
+is 80-100 and the corresponding "to" range is 0.8-1, then 90 -&gt; 0.9.<br />
+"continuous" cannot be used with valueType="text"/"character".</p></dd>
+
+<dt><code>mappings</code></dt><dd><p>The mappings to be applied, specified in one of the following
+three forms:<br />
+(1) a list containing pairs of values, e.g.
+`list(0, "red", 0.4, "yellow", 0.8, "green")`.<br />
+(2) a list containing "from" and "to" vectors/lists, e.g.
+`list(from=c(0, 0.4, 0.8), to=c("red", "yellow", "green"))`.<br />
+(3) a custom mapping function that will be invoked once per cell, e.g.
+`function(v, cell)  if(isTRUE(v&gt;0.8)) return("green") `.<br />
+Mappings must be specified in ascending order when valueType="range" or
+valueType="continuous".<br />
+If a custom mapping function is specified, then the valueType and mapType
+parameters are ignored.</p></dd>
+
+<dt><code>styleLowerValues</code></dt><dd><p>A logical value, default FALSE, that specifies
+whether values less than the lowest specified "from" value should be styled
+using the style specified for the lowest "from" value.  Only applies when
+valueType="range" or valueType="continuous".</p></dd>
+
+<dt><code>styleHigherValues</code></dt><dd><p>A logical value, default TRUE, that specifies
+whether values greater than the highest specified "from" value should be styled
+using the style specified for the highest "from" value.  Only applies when
+valueType="range" or valueType="continuous".</p></dd>
+
+</dl><p></div></p>
+<h3>Details</h3>
+<p>`mapStyling()` is typically used to conditionally apply styling to cells
+based on the value of each individual cell, e.g. cells with values less
+than a specified number could be coloured red.<br />
+mapType="logic" maps values matching specified logical criteria to
+specific "to" values.  The logical criteria can be any of the following
+forms (the first matching mapping is used):<br />
+(1) a specific value, e.g. 12.<br />
+(2) a specific value equality condition, e.g. "v==12", where v
+represents the cell value.<br />
+(3) a value range expression using the following abbreviated form:
+"value1&lt;=v&lt;value2", e.g. "10&lt;=v&lt;15".  Only "&lt;" or "&lt;=" can be used
+in these value range expressions.<br />
+(4) a standard R logical expression, e.g.
+"10&lt;=v &amp;&amp; v&lt;15".<br />
+Basic R functions that test the value can also be
+used, e.g. is.na(v).<br />
+See the "Styling" and Finding and Formatting" vignettes for more
+information and many examples.</p>
 
 <h3>Returns</h3>
 <p>No return value.</p>
@@ -1612,7 +1743,7 @@ invoke it if needed.</p>
 <h3>Details</h3>
 <p>This generally only needs to be called explicitly if specific pivot cells
 need to be further processed (e.g. formatted) before the pivot table is
-rendered.
+rendered.<br />
 This method is a wrapper for calling `normaliseColumnGroups()`,
 `normaliseRowGroups()`, `generateCellStructure()` and `evaluateCells()`
 in sequence.</p>
@@ -1634,20 +1765,22 @@ in sequence.</p>
   <span class='kw'>emptyGroups</span> <span class='kw'>=</span> <span class='st'>"exclude"</span>,
   <span class='kw'>outlineGroups</span> <span class='kw'>=</span> <span class='st'>"exclude"</span>,
   <span class='kw'>outlineLinkedGroupExists</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>includeDescendantGroups</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>includeDescendantGroups</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>rowNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>cells</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
-<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations".
+<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations".<br />
 "simple" is used when matching only one variable-value, multiple
-variable-value combinations are effectively logical "OR".
+variable-value combinations are effectively logical "OR".<br />
 "combinations" is used when matching for combinations of variable
 values, multiple variable-value combinations are effectively
 logical "AND".  A child group is viewed as having the variable-value
-filters of itself and it's parent/ancestors, e.g.
+filters of itself and it's parent/ancestors, e.g.<br />
 `list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
-would return the "DMU" data group underneath "Express Passenger".
+would return the "DMU" data group underneath "Express Passenger".<br />
 See the "Finding and Formatting" vignette for graphical examples.</p></dd>
 
 <dt><code>variableNames</code></dt><dd><p>A character vector specifying the name/names of the
@@ -1656,10 +1789,10 @@ irregular layouts, since in regular pivot tables every cell is related
 to every variable.</p></dd>
 
 <dt><code>variableValues</code></dt><dd><p>A list specifying the variable names and values to find,
-e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-Specify "**" as the variable value to match totals for the specified variable.
-Specify "!*" as the variable value to match non-totals for the specified variable.
-NB: The totals/non-totals criteria above won’t work when visual totals are used.</p></dd>
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.<br />
+Specify "**" as the variable value to match totals for the specified variable.<br />
+Specify "!*" as the variable value to match non-totals for the specified variable.<br />
+NB: The totals/non-totals criteria above won’t work when visual totals are used.<br /></p></dd>
 
 <dt><code>totals</code></dt><dd><p>A word that specifies how totals are matched (overrides the finer
 settings above) - must be one of "include" (default), "exclude" or "only".</p></dd>
@@ -1687,6 +1820,12 @@ outline child group no longer exists.</p></dd>
 <dt><code>includeDescendantGroups</code></dt><dd><p>Default `FALSE`.  Specify true to also return
 all descendants of data groups that match the specified criteria.</p></dd>
 
+<dt><code>rowNumbers</code></dt><dd><p>An integer vector specifying row numbers that constrains
+the data groups to be found.</p></dd>
+
+<dt><code>cells</code></dt><dd><p>A `PivotCell` object or a list of `PivotCell` objects to specify
+one or more cells that must intersect the data groups.</p></dd>
+
 </dl><p></div></p>
 <h3>Returns</h3>
 <p>A list of data groups matching the specified criteria.</p>
@@ -1703,20 +1842,22 @@ all descendants of data groups that match the specified criteria.</p></dd>
   <span class='kw'>minChildCount</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>maxChildCount</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>emptyGroups</span> <span class='kw'>=</span> <span class='st'>"exclude"</span>,
-  <span class='kw'>includeDescendantGroups</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>includeDescendantGroups</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>columnNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>cells</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
-<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations".
-"simple" is used when matching only one variable-value, multiple
-variable-value combinations are effectively logical "OR".
+<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations".<br />
+"simple" is used when matching only one variable-value - multiple
+variable-value combinations are effectively logical "OR".<br />
 "combinations" is used when matching for combinations of variable
-values, multiple variable-value combinations are effectively
+values - multiple variable-value combinations are effectively
 logical "AND".  A child group is viewed as having the variable-value
-filters of itself and it's parent/ancestors, e.g.
+filters of itself and it's parent/ancestors, e.g.<br />
 `list("TrainCategory"="Express Passenger", "PowerType"="DMU")`,
-would return the "DMU" data group underneath "Express Passenger".
+would return the "DMU" data group underneath "Express Passenger".<br />
 See the "Finding and Formatting" vignette for graphical examples.</p></dd>
 
 <dt><code>variableNames</code></dt><dd><p>A character vector specifying the name/names of the
@@ -1725,9 +1866,9 @@ irregular layouts, since in regular pivot tables every cell is related
 to every variable.</p></dd>
 
 <dt><code>variableValues</code></dt><dd><p>A list specifying the variable names and values to find,
-e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-Specify "**" as the variable value to match totals for the specified variable.
-Specify "!*" as the variable value to match non-totals for the specified variable.
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.<br />
+Specify "**" as the variable value to match totals for the specified variable.<br />
+Specify "!*" as the variable value to match non-totals for the specified variable.<br />
 NB: The totals/non-totals criteria above won’t work when visual totals are used.</p></dd>
 
 <dt><code>totals</code></dt><dd><p>A word that specifies how totals are matched (overrides the finer
@@ -1748,6 +1889,12 @@ must be one of "include", "exclude" (default) or "only".</p></dd>
 
 <dt><code>includeDescendantGroups</code></dt><dd><p>Default `FALSE`.  Specify true to also return
 all descendants of data groups that match the specified criteria.</p></dd>
+
+<dt><code>columnNumbers</code></dt><dd><p>An integer vector specifying column numbers that constrains
+the data groups to be found.</p></dd>
+
+<dt><code>cells</code></dt><dd><p>A `PivotCell` object or a list of `PivotCell` objects to specify
+one or more cells that must intersect the data groups.</p></dd>
 
 </dl><p></div></p>
 <h3>Returns</h3>
@@ -1831,7 +1978,11 @@ See the "Finding and Formatting" vignette for graphical examples.</p><h3>Usage</
   <span class='kw'>rowNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>columnNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>cellCoordinates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>excludeEmptyCells</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  <span class='kw'>excludeEmptyCells</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rowGroups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>columnGroups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>matchMode</span> <span class='kw'>=</span> <span class='st'>"simple"</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
@@ -1842,37 +1993,64 @@ Default `TRUE`. More information is provided in the details section.</p></dd>
 <dt><code>rowNumbers</code></dt><dd><p>A vector of row numbers that specify the rows or
 cells to retrieve.</p></dd>
 
-<dt><code>columnNumbers</code></dt><dd><p>A vector of row numbers that specify the columns
+<dt><code>columnNumbers</code></dt><dd><p>A vector of column numbers that specify the columns
 or cells to retrieve.</p></dd>
 
 <dt><code>cellCoordinates</code></dt><dd><p>A list of two-element vectors that specify the
 coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.</p></dd>
 
-<dt><code>excludeEmptyCells</code></dt><dd><p>`TRUE` (default) to also search empty cells.</p></dd>
+<dt><code>excludeEmptyCells</code></dt><dd><p>Default `FALSE`.  Specify `TRUE` to exclude empty
+cells.</p></dd>
+
+<dt><code>groups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on either the rows or columns axes.  The cells to be retrieved
+must be related to at least one of these groups.</p></dd>
+
+<dt><code>rowGroups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the rows axis.  The cells to be retrieved must be related to
+at least one of these row groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be retrieved must be related to at least
+one of the specified row groups and one of the specified column groups.</p></dd>
+
+<dt><code>columnGroups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the columns axis.  The cells to be retrieved must be related to
+at least one of these column groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be retrieved must be related to at least
+one of the specified row groups and one of the specified column groups.</p></dd>
+
+<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations":<br />
+"simple" specifies that row and column arguments are considered separately
+(logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
+row 1 and all cells in column 2.<br />
+"combinations" specifies that row and column arguments are considered together
+(logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
+cell single at location (1, 2).<br />
+Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
+affected by the match mode.  All other arguments are not.</p></dd>
 
 </dl><p></div></p>
 <h3>Details</h3>
-<p>when `specifyCellsAsList=TRUE` (the default):
+<p>when `specifyCellsAsList=TRUE` (the default):<br />
 Get one or more rows by specifying the row numbers as a vector as
 the rowNumbers argument and leaving the columnNumbers argument set
-to the default value of `NULL`, or
+to the default value of `NULL`, or<br />
 Get one or more columns by specifying the column numbers as a vector
 as the columnNumbers argument and leaving the rowNumbers argument
-set to the default value of `NULL`, or
+set to the default value of `NULL`, or<br />
 Get one or more individual cells by specifying the cellCoordinates
 argument as a list of vectors of length 2, where each element in the
-list is the row and column number of one cell,
+list is the row and column number of one cell,<br />
 e.g. `list(c(1, 2), c(3, 4))` specifies two cells, the first located
-at row 1, column 2 and the second located at row 3, column 4.
-When `specifyCellsAsList=FALSE`:
+at row 1, column 2 and the second located at row 3, column 4.<br />
+When `specifyCellsAsList=FALSE`:<br />
 Get one or more rows by specifying the row numbers as a vector as the
 rowNumbers argument and leaving the columnNumbers argument set to the
-default value of `NULL`, or
+default value of `NULL`, or<br />
 Get one or more columns by specifying the column numbers as a vector
 as the columnNumbers argument and leaving the rowNumbers argument set
-to the default value of `NULL`, or
+to the default value of `NULL`, or<br />
 Get one or more cells by specifying the row and column numbers as vectors
-for the rowNumbers and columnNumbers arguments, or
+for the rowNumbers and columnNumbers arguments, or<br />
 a mixture of the above, where for entire rows/columns the element in the
 other vector is set to `NA`, e.g. to retrieve whole rows, specify the row
 numbers as the rowNumbers but set the corresponding elements in the
@@ -1892,10 +2070,19 @@ See the "Finding and Formatting" vignette for graphical examples.</p><h3>Usage</
   <span class='kw'>minValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>maxValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>exactValues</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>valueRanges</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>includeNull</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>includeNA</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>emptyCells</span> <span class='kw'>=</span> <span class='st'>"exclude"</span>,
-  <span class='kw'>outlineCells</span> <span class='kw'>=</span> <span class='st'>"exclude"</span>
+  <span class='kw'>emptyCells</span> <span class='kw'>=</span> <span class='st'>"include"</span>,
+  <span class='kw'>outlineCells</span> <span class='kw'>=</span> <span class='st'>"exclude"</span>,
+  <span class='kw'>rowNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>columnNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>cellCoordinates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rowGroups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>columnGroups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rowColumnMatchMode</span> <span class='kw'>=</span> <span class='st'>"simple"</span>,
+  <span class='kw'>cells</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
@@ -1906,9 +2093,9 @@ irregular layouts, since in regular pivot tables every cell is related
 to every variable.</p></dd>
 
 <dt><code>variableValues</code></dt><dd><p>A list specifying the variable names and values to find,
-e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-Specify "**" as the variable value to match totals for the specified variable.
-Specify "!*" as the variable value to match non-totals for the specified variable.
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.<br />
+Specify "**" as the variable value to match totals for the specified variable.<br />
+Specify "!*" as the variable value to match non-totals for the specified variable.<br />
 NB: The totals/non-totals criteria above won’t work when visual totals are used.</p></dd>
 
 <dt><code>totals</code></dt><dd><p>A word that specifies how totals are matched (overrides the finer
@@ -1923,6 +2110,10 @@ calculations to find.</p></dd>
 
 <dt><code>exactValues</code></dt><dd><p>A vector or list specifying a set of allowed values.</p></dd>
 
+<dt><code>valueRanges</code></dt><dd><p>A vector specifying one or more value range expressions which
+the cell values must match.  If multiple value range expressions are specified,
+then the cell value must match any of one the specified expressions.  See details.</p></dd>
+
 <dt><code>includeNull</code></dt><dd><p>specify TRUE to include `NULL` in the matched cells,
 FALSE to exclude `NULL` values.</p></dd>
 
@@ -1930,40 +2121,109 @@ FALSE to exclude `NULL` values.</p></dd>
 FALSE to exclude `NA` values.</p></dd>
 
 <dt><code>emptyCells</code></dt><dd><p>A word that specifies how empty cells are matched -
-must be one of "include", "exclude" (default) or "only".</p></dd>
+must be one of "include" (default), "exclude" or "only".</p></dd>
 
 <dt><code>outlineCells</code></dt><dd><p>A word that specifies how outline cells are matched -
 must be one of "include", "exclude" (default) or "only".</p></dd>
 
+<dt><code>rowNumbers</code></dt><dd><p>A vector of row numbers that specify the rows or
+cells to constrain the search.</p></dd>
+
+<dt><code>columnNumbers</code></dt><dd><p>A vector of column numbers that specify the columns
+or cells to constrain the search.</p></dd>
+
+<dt><code>cellCoordinates</code></dt><dd><p>A list of two-element vectors that specify the
+coordinates of cells to constrain the search.</p></dd>
+
+<dt><code>groups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on either the rows or columns axes.  The cells to be searched
+must be related to at least one of these groups.</p></dd>
+
+<dt><code>rowGroups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the rows axis.  The cells to be searched must be related to
+at least one of these row groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be searched must be related to at least
+one of the specified row groups and one of the specified column groups.</p></dd>
+
+<dt><code>columnGroups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the columns axis.  The cells to be searched must be related to
+at least one of these column groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be searched must be related to at least
+one of the specified row groups and one of the specified column groups.</p></dd>
+
+<dt><code>rowColumnMatchMode</code></dt><dd><p>Either "simple" (default) or "combinations":<br />
+"simple" specifies that row and column arguments are considered separately
+(logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
+row 1 and all cells in column 2.<br />
+"combinations" specifies that row and column arguments are considered together
+(logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
+cell single at location (1, 2).<br />
+Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
+affected by the match mode.  All other arguments are not.</p></dd>
+
+<dt><code>cells</code></dt><dd><p>A `PivotCell` object or a list of `PivotCell`
+objects to constrain the scope of the search.</p></dd>
+
 </dl><p></div></p>
+<h3>Details</h3>
+<p>The valueRanges parameter can be any of the following
+forms:<br />
+(1) a specific value, e.g. 12.<br />
+(2) a specific value equality condition, e.g. "v==12", where v
+represents the cell value.<br />
+(3) a value range expression using the following abbreviated form:
+"value1&lt;=v&lt;value2", e.g. "10&lt;=v&lt;15".  Only "&lt;" or "&lt;=" can be used
+in these value range expressions.<br />
+(4) a standard R logical expression, e.g.
+"10&lt;=v &amp;&amp; v&lt;15".<br />
+Basic R functions that test the value can also be
+used, e.g. is.na(v).<br /></p>
+
 <h3>Returns</h3>
 <p>A list of `PivotCell` objects.</p>
 <p><hr>
 <a id="method-findGroupColumnNumbers"></a></p><h3>Method <code>findGroupColumnNumbers()</code></h3>
-<p>Find the column numbers associated with a specific data group.</p><h3>Usage</h3>
-<p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>findGroupColumnNumbers</span>(<span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+<p>Find the column numbers associated with a specific data group or
+groups.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>findGroupColumnNumbers</span>(<span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collapse</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
 <dt><code>group</code></dt><dd><p>A `PivotDataGroup` in the column data groups (i.e. a
-column heading).</p></dd>
+column heading) or a list of column data groups.</p></dd>
+
+<dt><code>collapse</code></dt><dd><p>A logical value specifying whether the return value should be
+simplified.  See details.</p></dd>
 
 </dl><p></div></p>
+<h3>Details</h3>
+<p>If `group` is a list:  If `collapse` is `FALSE`, then a list of vectors is
+returned, if `collapse` is `TRUE`, then a single combined vector is returned.</p>
+
 <h3>Returns</h3>
-<p>A vector of column numbers related to the specified group.</p>
+<p>Either a vector of column numbers related to the single specified group
+or a list of vectors containing column numbers related to the specified groups.</p>
 <p><hr>
 <a id="method-findGroupRowNumbers"></a></p><h3>Method <code>findGroupRowNumbers()</code></h3>
-<p>Find the row numbers associated with a specific data group.</p><h3>Usage</h3>
-<p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>findGroupRowNumbers</span>(<span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+<p>Find the row numbers associated with a specific data group or groups.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>findGroupRowNumbers</span>(<span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collapse</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
 <dt><code>group</code></dt><dd><p>A `PivotDataGroup` in the row data groups (i.e. a
-row heading).</p></dd>
+row heading) or a list of row data groups.</p></dd>
+
+<dt><code>collapse</code></dt><dd><p>A logical value specifying whether the return value should be
+simplified.  See details.</p></dd>
 
 </dl><p></div></p>
+<h3>Details</h3>
+<p>If `group` is a list:  If `collapse` is `FALSE`, then a list of vectors is
+returned, if `collapse` is `TRUE`, then a single combined vector is returned.</p>
+
 <h3>Returns</h3>
-<p>A vector of row numbers related to the specified group.</p>
+<p>Either a vector of row numbers related to the single specified group
+or a list of vectors containing row numbers related to the specified groups.</p>
 <p><hr>
 <a id="method-removeColumn"></a></p><h3>Method <code>removeColumn()</code></h3>
 <p>Remove a column from the pivot table.</p><h3>Usage</h3>
@@ -2167,7 +2427,7 @@ headings with the specified separator and/or exporting the row groups
 as columns in the data frame.</p><h3>Usage</h3>
 <p><div class="r"></p><pre><span class='no'>PivotTable</span>$<span class='fu'>asDataFrame</span>(
   <span class='kw'>separator</span> <span class='kw'>=</span> <span class='st'>" "</span>,
-  <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>default.stringsAsFactors</a></span>(),
+  <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>forceNumeric</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>rowGroupsAsColumns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre><p></div></p>
@@ -2178,7 +2438,8 @@ as columns in the data frame.</p><h3>Usage</h3>
 group captions where multiple levels exist in the data group hierarchy.</p></dd>
 
 <dt><code>stringsAsFactors</code></dt><dd><p>Specify `TRUE`to convert strings to factors,
-default `default.stringsAsFactors()`.</p></dd>
+default is currently `default.stringsAsFactors()`, though this will change
+to `FALSE` in a future version.</p></dd>
 
 <dt><code>forceNumeric</code></dt><dd><p>Specify `TRUE` to force the conversion of cell values
 to a numeric value, default `FALSE`.</p></dd>
@@ -2200,7 +2461,7 @@ the pivot table becomes one row in the data frame.</p><h3>Usage</h3>
   <span class='kw'>includeGroupCaptions</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>includeGroupValues</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>separator</span> <span class='kw'>=</span> <span class='st'>" "</span>,
-  <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>default.stringsAsFactors</a></span>(),
+  <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>excludeEmptyCells</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre><p></div></p>
 
@@ -2216,7 +2477,8 @@ values as columns in the data frame.</p></dd>
 filter values where multiple values exist in a filter.</p></dd>
 
 <dt><code>stringsAsFactors</code></dt><dd><p>Specify `TRUE`to convert strings to factors,
-default `default.stringsAsFactors()`.</p></dd>
+default is currently `default.stringsAsFactors()`, though this will change
+to `FALSE` in a future version.</p></dd>
 
 <dt><code>excludeEmptyCells</code></dt><dd><p>Specify `FALSE` to also include rows for
 empty cells in the data frame, default `TRUE`.</p></dd>

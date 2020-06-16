@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -90,7 +90,7 @@
       <h1 data-toc-skip>14. Shiny</h1>
                         <h4 class="author">Chris Bailiss</h4>
             
-            <h4 class="date">2020-05-12</h4>
+            <h4 class="date">2020-06-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cbailiss/pivottabler/blob/master/vignettes/v14-shiny.Rmd"><code>vignettes/v14-shiny.Rmd</code></a></small>
       <div class="hidden name"><code>v14-shiny.Rmd</code></div>
@@ -211,8 +211,8 @@
 <span class="no">stations</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="no">trainstations</span>, <span class="kw">CrsCodeChr</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="no">CrsCode</span>))
 <span class="no">trains</span> <span class="kw">&lt;-</span> <span class="no">bhmtrains</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">OriginChr</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="no">Origin</span>), <span class="kw">DestinationChr</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="no">Destination</span>)) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join.html">inner_join</a></span>(<span class="no">stations</span>, <span class="kw">by</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"OriginChr"</span><span class="kw">=</span><span class="st">"CrsCodeChr"</span>)) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join.html">inner_join</a></span>(<span class="no">stations</span>, <span class="kw">by</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"DestinationChr"</span><span class="kw">=</span><span class="st">"CrsCodeChr"</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span>(<span class="no">stations</span>, <span class="kw">by</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"OriginChr"</span><span class="kw">=</span><span class="st">"CrsCodeChr"</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span>(<span class="no">stations</span>, <span class="kw">by</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"DestinationChr"</span><span class="kw">=</span><span class="st">"CrsCodeChr"</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">Status</span>, <span class="no">TOC</span>, <span class="no">TrainCategory</span>, <span class="no">PowerType</span>, <span class="no">SchedSpeedMPH</span>,
          <span class="kw">Origin</span><span class="kw">=</span><span class="no">StationName.x</span>, <span class="no">OriginGbttDeparture</span>, <span class="no">OriginActualDeparture</span>,
          <span class="no">GbttArrival</span>, <span class="no">ActualArrival</span>, <span class="no">GbttDeparture</span>, <span class="no">ActualDeparture</span>,
@@ -273,7 +273,7 @@
    <span class="no">pt</span> <span class="kw">&lt;-</span> <span class="no">PivotTable</span>$<span class="fu">new</span>()
    <span class="no">trains2</span> <span class="kw">&lt;-</span> <span class="no">trains</span> <span class="kw">%&gt;%</span>
      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html">group_by_</a></span>(<span class="no">input</span>$<span class="no">selectCols</span>, <span class="no">input</span>$<span class="no">selectRows</span>) <span class="kw">%&gt;%</span>
-     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span>(<span class="kw">TotalTrains</span><span class="kw">=</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>(), <span class="kw">DelayMinutes</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">ArrivalDelayMins</span>, <span class="kw">na.rm</span><span class="kw">=</span><span class="fl">TRUE</span>)) <span class="kw">%&gt;%</span>
+     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span>(<span class="kw">TotalTrains</span><span class="kw">=</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span>(), <span class="kw">DelayMinutes</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">ArrivalDelayMins</span>, <span class="kw">na.rm</span><span class="kw">=</span><span class="fl">TRUE</span>)) <span class="kw">%&gt;%</span>
      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>()
    <span class="no">pt</span>$<span class="fu">addData</span>(<span class="no">trains2</span>)
    <span class="no">pt</span>$<span class="fu">addColumnDataGroups</span>(<span class="no">input</span>$<span class="no">selectCols</span>)
@@ -317,8 +317,8 @@
                          <span class="st">"A"</span> <span class="kw">=</span> <span class="st">"Active"</span>, <span class="st">"C"</span> <span class="kw">=</span> <span class="st">"Cancelled"</span>, <span class="st">"R"</span> <span class="kw">=</span> <span class="st">"Reinstated"</span>),
          <span class="kw">Origin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="no">Origin</span>),
          <span class="kw">Destination</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="no">Destination</span>)) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join.html">left_join</a></span>(<span class="no">tsorigin</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Origin"</span> <span class="kw">=</span> <span class="st">"CrsCode"</span>)) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join.html">left_join</a></span>(<span class="no">tsdestination</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Destination"</span> <span class="kw">=</span> <span class="st">"CrsCode"</span>))
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(<span class="no">tsorigin</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Origin"</span> <span class="kw">=</span> <span class="st">"CrsCode"</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(<span class="no">tsdestination</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Destination"</span> <span class="kw">=</span> <span class="st">"CrsCode"</span>))
 
 <span class="co"># derive some additional delay data</span>
 <span class="no">data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="no">data</span>,

@@ -89,7 +89,7 @@ comprise the body of a pivot table." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pivottabler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -166,6 +166,9 @@ comprise the body of a pivot table.</p>
 <dt><code>rows</code></dt><dd><p>A list of the rows in the pivot table.  Each element in this list is
 a list of `PivotCell` objects comprising the row.</p></dd>
 
+<dt><code>all</code></dt><dd><p>A list of the cells in the pivot table.  Each element in this list is
+a `PivotCell` object.</p></dd>
+
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
@@ -218,13 +221,13 @@ counts back to zero.</p><h3>Usage</h3>
 <p><hr>
 <a id="method-getColumnGroup"></a></p><h3>Method <code>getColumnGroup()</code></h3>
 <p>Get the leaf-level data group that is associated with a specific column
-in the pivot table.</p><h3>Usage</h3>
+or columns in the pivot table.</p><h3>Usage</h3>
 <p><div class="r"></p><pre><span class='no'>PivotCells</span>$<span class='fu'>getColumnGroup</span>(<span class='kw'>c</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
-<dt><code>c</code></dt><dd><p>The column number.  The first column is column 1, excluding the
-column(s) associated with row-headings.</p></dd>
+<dt><code>c</code></dt><dd><p>The column number or numbers.  The first column is column 1,
+excluding the column(s) associated with row-headings.</p></dd>
 
 </dl><p></div></p>
 <h3>Returns</h3>
@@ -232,13 +235,13 @@ column(s) associated with row-headings.</p></dd>
 <p><hr>
 <a id="method-getRowGroup"></a></p><h3>Method <code>getRowGroup()</code></h3>
 <p>Get the leaf-level data group that is associated with a specific row
-in the pivot table.</p><h3>Usage</h3>
+or rows in the pivot table.</p><h3>Usage</h3>
 <p><div class="r"></p><pre><span class='no'>PivotCells</span>$<span class='fu'>getRowGroup</span>(<span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
-<dt><code>r</code></dt><dd><p>The row number.  The first row is row 1, excluding the
-row(s) associated with column-headings.</p></dd>
+<dt><code>r</code></dt><dd><p>The row number or numbers.  The first row is row 1, excluding
+the row(s) associated with column-headings.</p></dd>
 
 </dl><p></div></p>
 <h3>Returns</h3>
@@ -309,7 +312,11 @@ See the "Finding and Formatting" vignette for graphical examples.</p><h3>Usage</
   <span class='kw'>rowNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>columnNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>cellCoordinates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>excludeEmptyCells</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  <span class='kw'>excludeEmptyCells</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rowGroups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>columnGroups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>matchMode</span> <span class='kw'>=</span> <span class='st'>"simple"</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
@@ -326,31 +333,58 @@ or cells to retrieve.</p></dd>
 <dt><code>cellCoordinates</code></dt><dd><p>A list of two-element vectors that specify the
 coordinates of cells to retrieve.  Ignored when `specifyCellsAsList=FALSE`.</p></dd>
 
-<dt><code>excludeEmptyCells</code></dt><dd><p>`TRUE` (default) to also search empty cells.</p></dd>
+<dt><code>excludeEmptyCells</code></dt><dd><p>Default `FALSE`.  Specify `TRUE` to exclude empty
+cells.</p></dd>
+
+<dt><code>groups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on either the rows or columns axes.  The cells to be retrieved
+must be related to at least one of these groups.</p></dd>
+
+<dt><code>rowGroups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the rows axis.  The cells to be retrieved must be related to
+at least one of these row groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be retrieved must be related to at least
+one of the specified row groups and one of the specified column groups.</p></dd>
+
+<dt><code>columnGroups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the columns axis.  The cells to be retrieved must be related to
+at least one of these column groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be retrieved must be related to at least
+one of the specified row groups and one of the specified column groups.</p></dd>
+
+<dt><code>matchMode</code></dt><dd><p>Either "simple" (default) or "combinations"<br />
+"simple" specifies that row and column arguments are considered separately
+(logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
+row 1 and all cells in column 2.<br />
+"combinations" specifies that row and column arguments are considered together
+(logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
+cell single at location (1, 2).<br />
+Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
+affected by the match mode.  All other arguments are not.</p></dd>
 
 </dl><p></div></p>
 <h3>Details</h3>
-<p>when `specifyCellsAsList=TRUE` (the default):
+<p>When `specifyCellsAsList=TRUE` (the default):<br />
 Get one or more rows by specifying the row numbers as a vector as
 the rowNumbers argument and leaving the columnNumbers argument set
-to the default value of `NULL`, or
+to the default value of `NULL`, or<br />
 Get one or more columns by specifying the column numbers as a vector
 as the columnNumbers argument and leaving the rowNumbers argument
-set to the default value of `NULL`, or
+set to the default value of `NULL`, or<br />
 Get one or more individual cells by specifying the cellCoordinates
 argument as a list of vectors of length 2, where each element in the
-list is the row and column number of one cell,
+list is the row and column number of one cell,<br />
 e.g. `list(c(1, 2), c(3, 4))` specifies two cells, the first located
-at row 1, column 2 and the second located at row 3, column 4.
-When `specifyCellsAsList=FALSE`:
+at row 1, column 2 and the second located at row 3, column 4.<br />
+When `specifyCellsAsList=FALSE`:<br />
 Get one or more rows by specifying the row numbers as a vector as the
 rowNumbers argument and leaving the columnNumbers argument set to the
-default value of `NULL`, or
+default value of `NULL`, or<br />
 Get one or more columns by specifying the column numbers as a vector
 as the columnNumbers argument and leaving the rowNumbers argument set
-to the default value of `NULL`, or
+to the default value of `NULL`, or<br />
 Get one or more cells by specifying the row and column numbers as vectors
-for the rowNumbers and columnNumbers arguments, or
+for the rowNumbers and columnNumbers arguments, or<br />
 a mixture of the above, where for entire rows/columns the element in the
 other vector is set to `NA`, e.g. to retrieve whole rows, specify the row
 numbers as the rowNumbers but set the corresponding elements in the
@@ -370,10 +404,19 @@ See the "Finding and Formatting" vignette for graphical examples.</p><h3>Usage</
   <span class='kw'>minValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>maxValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>exactValues</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>valueRanges</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>includeNull</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>includeNA</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>emptyCells</span> <span class='kw'>=</span> <span class='st'>"exclude"</span>,
-  <span class='kw'>outlineCells</span> <span class='kw'>=</span> <span class='st'>"exclude"</span>
+  <span class='kw'>emptyCells</span> <span class='kw'>=</span> <span class='st'>"include"</span>,
+  <span class='kw'>outlineCells</span> <span class='kw'>=</span> <span class='st'>"exclude"</span>,
+  <span class='kw'>rowNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>columnNumbers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>cellCoordinates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rowGroups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>columnGroups</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rowColumnMatchMode</span> <span class='kw'>=</span> <span class='st'>"simple"</span>,
+  <span class='kw'>cells</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
@@ -384,9 +427,9 @@ irregular layouts, since in regular pivot tables every cell is related
 to every variable.</p></dd>
 
 <dt><code>variableValues</code></dt><dd><p>A list specifying the variable names and values to find,
-e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.
-Specify "**" as the variable value to match totals for the specified variable.
-Specify "!*" as the variable value to match non-totals for the specified variable.
+e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.<br />
+Specify "**" as the variable value to match totals for the specified variable.<br />
+Specify "!*" as the variable value to match non-totals for the specified variable.<br />
 NB: The totals/non-totals criteria above won’t work when visual totals are used.</p></dd>
 
 <dt><code>totals</code></dt><dd><p>A word that specifies how totals are matched (overrides the finer
@@ -401,47 +444,105 @@ calculations to find.</p></dd>
 
 <dt><code>exactValues</code></dt><dd><p>A vector or list specifying a set of allowed values.</p></dd>
 
-<dt><code>includeNull</code></dt><dd><p>specify TRUE to include `NULL` in the matched cells,
+<dt><code>valueRanges</code></dt><dd><p>A vector specifying one or more value range expressions which
+the cell values must match.  If multiple value range expressions are specified,
+then the cell value must match any of one the specified expressions.</p></dd>
+
+<dt><code>includeNull</code></dt><dd><p>Specify TRUE to include `NULL` in the matched cells,
 FALSE to exclude `NULL` values.</p></dd>
 
-<dt><code>includeNA</code></dt><dd><p>specify TRUE to include `NA` in the matched cells,
+<dt><code>includeNA</code></dt><dd><p>Specify TRUE to include `NA` in the matched cells,
 FALSE to exclude `NA` values.</p></dd>
 
 <dt><code>emptyCells</code></dt><dd><p>A word that specifies how empty cells are matched -
-must be one of "include", "exclude" (default) or "only".</p></dd>
+must be one of "include" (default), "exclude" or "only".</p></dd>
 
 <dt><code>outlineCells</code></dt><dd><p>A word that specifies how outline cells are matched -
 must be one of "include", "exclude" (default) or "only".</p></dd>
+
+<dt><code>rowNumbers</code></dt><dd><p>A vector of row numbers that specify the rows or
+cells to constrain the search.</p></dd>
+
+<dt><code>columnNumbers</code></dt><dd><p>A vector of column numbers that specify the columns
+or cells to constrain the search.</p></dd>
+
+<dt><code>cellCoordinates</code></dt><dd><p>A list of two-element vectors that specify the
+coordinates of cells to constrain the search.</p></dd>
+
+<dt><code>groups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on either the rows or columns axes.  The cells to be searched
+must be related to at least one of these groups.</p></dd>
+
+<dt><code>rowGroups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the rows axis.  The cells to be searched must be related to
+at least one of these row groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be searched must be related to at least
+one of the specified row groups and one of the specified column groups.</p></dd>
+
+<dt><code>columnGroups</code></dt><dd><p>A `PivotDataGroup` object or a list of `PivotDataGroup`
+objects on the columns axis.  The cells to be searched must be related to
+at least one of these column groups.  If both `rowGroups` and `columnGroups`
+are specified, then the cells to be searched must be related to at least
+one of the specified row groups and one of the specified column groups.</p></dd>
+
+<dt><code>rowColumnMatchMode</code></dt><dd><p>Either "simple" (default) or "combinations":<br />
+"simple" specifies that row and column arguments are considered separately
+(logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
+row 1 and all cells in column 2.<br />
+"combinations" specifies that row and column arguments are considered together
+(logical AND), e.g. rowNumbers=1 and columnNumbers=2 will match only the
+cell single at location (1, 2).<br />
+Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
+affected by the match mode.  All other arguments are not.</p></dd>
+
+<dt><code>cells</code></dt><dd><p>A `PivotCell` object or a list of `PivotCell`
+objects to constrain the scope of the search.</p></dd>
 
 </dl><p></div></p>
 <h3>Returns</h3>
 <p>A list of `PivotCell` objects.</p>
 <p><hr>
 <a id="method-findGroupColumnNumbers"></a></p><h3>Method <code>findGroupColumnNumbers()</code></h3>
-<p>Find the column numbers associated with a specific data group.</p><h3>Usage</h3>
-<p><div class="r"></p><pre><span class='no'>PivotCells</span>$<span class='fu'>findGroupColumnNumbers</span>(<span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+<p>Find the column numbers associated with a specific data group or groups.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotCells</span>$<span class='fu'>findGroupColumnNumbers</span>(<span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collapse</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
 <dt><code>group</code></dt><dd><p>A `PivotDataGroup` in the column data groups (i.e. a
-column heading).</p></dd>
+column heading)  or a list of column data groups..</p></dd>
+
+<dt><code>collapse</code></dt><dd><p>A logical value specifying whether the return value should be
+simplified.  See details.</p></dd>
 
 </dl><p></div></p>
+<h3>Details</h3>
+<p>If `group` is a list:  If `collapse` is `FALSE`, then a list of vectors is
+returned, if `collapse` is `TRUE`, then a single combined vector is returned.</p>
+
 <h3>Returns</h3>
-<p>A vector of column numbers related to the specified group.</p>
+<p>Either a vector of column numbers related to the single specified group
+or a list of vectors containing column numbers related to the specified groups.</p>
 <p><hr>
 <a id="method-findGroupRowNumbers"></a></p><h3>Method <code>findGroupRowNumbers()</code></h3>
-<p>Find the row numbers associated with a specific data group.</p><h3>Usage</h3>
-<p><div class="r"></p><pre><span class='no'>PivotCells</span>$<span class='fu'>findGroupRowNumbers</span>(<span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre><p></div></p>
+<p>Find the row numbers associated with a specific data group or groups.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>PivotCells</span>$<span class='fu'>findGroupRowNumbers</span>(<span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collapse</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
 <dt><code>group</code></dt><dd><p>A `PivotDataGroup` in the row data groups (i.e. a
-row heading).</p></dd>
+row heading) or a list of row data groups.</p></dd>
+
+<dt><code>collapse</code></dt><dd><p>A logical value specifying whether the return value should be
+simplified.  See details.</p></dd>
 
 </dl><p></div></p>
+<h3>Details</h3>
+<p>If `group` is a list:  If `collapse` is `FALSE`, then a list of vectors is
+returned, if `collapse` is `TRUE`, then a single combined vector is returned.</p>
+
 <h3>Returns</h3>
-<p>A vector of row numbers related to the specified group.</p>
+<p>Either a vector of row numbers related to the single specified group
+or a list of vectors containing row numbers related to the specified groups.</p>
 <p><hr>
 <a id="method-getColumnWidths"></a></p><h3>Method <code>getColumnWidths()</code></h3>
 <p>Retrieve the width (in characters) of the longest value in each column.</p><h3>Usage</h3>
