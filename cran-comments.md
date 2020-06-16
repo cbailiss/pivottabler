@@ -31,7 +31,7 @@ http://r-pkgs.had.co.nz/
 
 ### R-hub check results
 
-0 errors | 0 warnings | 0 notes
+Currently failing for R-develop on R Hub due to an issue with package data.table on R Hub and an environment issue on R Hub preventing PDF creation.
 
 ### Comments on check results
 
