@@ -4463,7 +4463,7 @@ PivotTable <- R6::R6Class("PivotTable",
       }
     },
 
-    #' @field asCharacter A plain test representation of the pivot table.
+    #' @field asCharacter A plain text representation of the pivot table.
     asCharacter = function() { return(self$print(asCharacter=TRUE)) },
 
     #' @field theme The name of the theme used to style the pivot table.
