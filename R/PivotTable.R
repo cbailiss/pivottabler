@@ -1578,7 +1578,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' the row numbers specified in rowNumbers.\cr
     #' If both cFrom/cTo and columnNumbers are specified, then cFrom/cTo constrain
     #' the column numbers specified in columnNumbers.\cr
-    #' See the "Styling" and Finding and Formatting" vignettes for more
+    #' See the "Styling" and "Finding and Formatting" vignettes for more
     #' information and many examples.
     #' @param rFrom An integer row number that specifies the start row for the
     #' styling changes.
@@ -2669,7 +2669,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' Retrieve cells by a combination of row and/or column numbers.
     #' See the "Finding and Formatting" vignette for graphical examples.
     #' @details
-    #' when `specifyCellsAsList=TRUE` (the default):\cr
+    #' When `specifyCellsAsList=TRUE` (the default):\cr
     #' Get one or more rows by specifying the row numbers as a vector as
     #' the rowNumbers argument and leaving the columnNumbers argument set
     #' to the default value of `NULL`, or\cr
@@ -2694,7 +2694,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' other vector is set to `NA`, e.g. to retrieve whole rows, specify the row
     #' numbers as the rowNumbers but set the corresponding elements in the
     #' columnNumbers vector to `NA`.
-    #' @param specifyCellsAsList `TRUE` to specify how cells are retrieved.
+    #' @param specifyCellsAsList Specify how cells are retrieved.
     #' Default `TRUE`. More information is provided in the details section.
     #' @param rowNumbers A vector of row numbers that specify the rows or
     #' cells to retrieve.
@@ -3444,9 +3444,9 @@ PivotTable <- R6::R6Class("PivotTable",
     #' See the "Outputs" vignette for more details and examples
     #' @param separator Specifies the character value used to concatenate data
     #' group captions where multiple levels exist in the data group hierarchy.
-    #' @param stringsAsFactors Specify `TRUE`to convert strings to factors,
-    #' default is currently `default.stringsAsFactors()`, though this will change
-    #' to `FALSE` in a future version.
+    #' @param stringsAsFactors Specify `TRUE` to convert strings to factors,
+    #' default is `default.stringsAsFactors()` for R < 4.1.0 and `FALSE`
+    #' for R >= 4.1.0.
     #' @param forceNumeric Specify `TRUE` to force the conversion of cell values
     #' to a numeric value, default `FALSE`.
     #' @param rowGroupsAsColumns Specify `TRUE` to include the row groups as
@@ -3577,9 +3577,9 @@ PivotTable <- R6::R6Class("PivotTable",
     #' values as columns in the data frame.
     #' @param separator Specifies the character value used to concatenate
     #' filter values where multiple values exist in a filter.
-    #' @param stringsAsFactors Specify `TRUE`to convert strings to factors,
-    #' default is currently `default.stringsAsFactors()`, though this will change
-    #' to `FALSE` in a future version.
+    #' @param stringsAsFactors Specify `TRUE` to convert strings to factors,
+    #' default is `default.stringsAsFactors()` for R < 4.1.0 and `FALSE`
+    #' for R >= 4.1.0.
     #' @param excludeEmptyCells Specify `FALSE` to also include rows for
     #' empty cells in the data frame, default `TRUE`.
     #' @return A data frame.
@@ -4183,7 +4183,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param wsName A character value specifying the name of the worksheet to
     #' write to.
     #' @param topRowNumber An integer value specifying the row number in the
-    #' Excel worksheet  to write the pivot table.
+    #' Excel worksheet to write the pivot table.
     #' @param leftMostColumnNumber An integer value specifying the column number
     #' in the Excel worksheet to write the pivot table.
     #' @param outputHeadingsAs Must be one of "rawValue",

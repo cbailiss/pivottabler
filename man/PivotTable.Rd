@@ -98,7 +98,7 @@ in the list is a 'PivotCell' object.}
 \item{\code{fixedWidthSized}}{The total width of the pivot table in characters if
 the pivot table were to be rendered as plain text, e.g. to the console.}
 
-\item{\code{asCharacter}}{A plain test representation of the pivot table.}
+\item{\code{asCharacter}}{A plain text representation of the pivot table.}
 
 \item{\code{theme}}{The name of the theme used to style the pivot table.
 If setting this property, either a theme name can be used, or
@@ -1742,7 +1742,7 @@ If both rFrom/rTo and rowNumbers are specified, then rFrom/rTo constrain
 the row numbers specified in rowNumbers.\cr
 If both cFrom/cTo and columnNumbers are specified, then cFrom/cTo constrain
 the column numbers specified in columnNumbers.\cr
-See the "Styling" and Finding and Formatting" vignettes for more
+See the "Styling" and "Finding and Formatting" vignettes for more
 information and many examples.
 }
 
@@ -2204,7 +2204,7 @@ See the "Finding and Formatting" vignette for graphical examples.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{specifyCellsAsList}}{`TRUE` to specify how cells are retrieved.
+\item{\code{specifyCellsAsList}}{Specify how cells are retrieved.
 Default `TRUE`. More information is provided in the details section.}
 
 \item{\code{rowNumbers}}{A vector of row numbers that specify the rows or
@@ -2248,7 +2248,7 @@ affected by the match mode.  All other arguments are not.}
 \if{html}{\out{</div>}}
 }
 \subsection{Details}{
-when `specifyCellsAsList=TRUE` (the default):\cr
+When `specifyCellsAsList=TRUE` (the default):\cr
 Get one or more rows by specifying the row numbers as a vector as
 the rowNumbers argument and leaving the columnNumbers argument set
 to the default value of `NULL`, or\cr
@@ -2770,9 +2770,9 @@ as columns in the data frame.
 \item{\code{separator}}{Specifies the character value used to concatenate data
 group captions where multiple levels exist in the data group hierarchy.}
 
-\item{\code{stringsAsFactors}}{Specify `TRUE`to convert strings to factors,
-default is currently `default.stringsAsFactors()`, though this will change
-to `FALSE` in a future version.}
+\item{\code{stringsAsFactors}}{Specify `TRUE` to convert strings to factors,
+default is `default.stringsAsFactors()` for R < 4.1.0 and `FALSE`
+for R >= 4.1.0.}
 
 \item{\code{forceNumeric}}{Specify `TRUE` to force the conversion of cell values
 to a numeric value, default `FALSE`.}
@@ -2818,9 +2818,9 @@ values as columns in the data frame.}
 \item{\code{separator}}{Specifies the character value used to concatenate
 filter values where multiple values exist in a filter.}
 
-\item{\code{stringsAsFactors}}{Specify `TRUE`to convert strings to factors,
-default is currently `default.stringsAsFactors()`, though this will change
-to `FALSE` in a future version.}
+\item{\code{stringsAsFactors}}{Specify `TRUE` to convert strings to factors,
+default is `default.stringsAsFactors()` for R < 4.1.0 and `FALSE`
+for R >= 4.1.0.}
 
 \item{\code{excludeEmptyCells}}{Specify `FALSE` to also include rows for
 empty cells in the data frame, default `TRUE`.}
@@ -3218,7 +3218,7 @@ to.}
 write to.}
 
 \item{\code{topRowNumber}}{An integer value specifying the row number in the
-Excel worksheet  to write the pivot table.}
+Excel worksheet to write the pivot table.}
 
 \item{\code{leftMostColumnNumber}}{An integer value specifying the column number
 in the Excel worksheet to write the pivot table.}

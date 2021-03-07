@@ -244,7 +244,7 @@ See the "Finding and Formatting" vignette for graphical examples.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{specifyCellsAsList}}{`TRUE` to specify how cells are retrieved.
+\item{\code{specifyCellsAsList}}{Specify how cells are retrieved.
 Default `TRUE`. More information is provided in the details section.}
 
 \item{\code{rowNumbers}}{A vector of row numbers that specify the rows or

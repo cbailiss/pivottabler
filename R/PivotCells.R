@@ -194,7 +194,7 @@ PivotCells <- R6::R6Class("PivotCells",
    #' other vector is set to `NA`, e.g. to retrieve whole rows, specify the row
    #' numbers as the rowNumbers but set the corresponding elements in the
    #' columnNumbers vector to `NA`.
-   #' @param specifyCellsAsList `TRUE` to specify how cells are retrieved.
+   #' @param specifyCellsAsList Specify how cells are retrieved.
    #' Default `TRUE`. More information is provided in the details section.
    #' @param rowNumbers A vector of row numbers that specify the rows or
    #' cells to retrieve.
