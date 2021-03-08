@@ -1788,11 +1788,11 @@ PivotTable <- R6::R6Class("PivotTable",
     #' valueType="continuous".\cr
     #' If a custom mapping function is specified, then the valueType and mapType
     #' parameters are ignored.
-    #' @param styleLowerValues A logical value, default FALSE, that specifies
+    #' @param styleLowerValues A logical value, default `FALSE`, that specifies
     #' whether values less than the lowest specified "from" value should be styled
     #' using the style specified for the lowest "from" value.  Only applies when
     #' valueType="range" or valueType="continuous".
-    #' @param styleHigherValues A logical value, default TRUE, that specifies
+    #' @param styleHigherValues A logical value, default `TRUE`, that specifies
     #' whether values greater than the highest specified "from" value should be styled
     #' using the style specified for the highest "from" value.  Only applies when
     #' valueType="range" or valueType="continuous".
