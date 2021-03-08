@@ -387,9 +387,9 @@ getSimpleColoredTheme <- function(parentPivot, themeName="coloredTheme", colors=
     checkArgument(argumentCheckMode, TRUE, "", "getSimpleColoredTheme", theme, missing(theme), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses="character")
   }
   # take values from theme argument, if they are not specified explicitly
-  if(missing(colors)) colors <- theme
+  if(is.null(colors)) colors <- theme
   if(is.null(colors)) stop("getSimpleColoredTheme():  colors must be specified.", call. = FALSE)
-  if(missing(fontName)) fontName <- theme$fontName
+  if(is.null(fontName)) fontName <- theme$fontName
   if(is.null(fontName)) fontName <- "Arial"
   fontSize <- theme$fontSize
   if(length(fontSize)==0) fontSize <- "0.75em"
