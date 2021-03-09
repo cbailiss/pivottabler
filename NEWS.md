@@ -11,7 +11,7 @@ From R 4.1.0, the default value of the `stringsAsFactors` argument in `tbl$asDat
 Bug Fixes
 ---------
 
-* Resolved error "getSimpleColoredTblTheme(): colors must be specified." that was sometimes encountered when using a simple theme as a list that is assigned to the pivot table `pt$theme` field.
+* Resolved error "getSimpleColoredTheme(): colors must be specified." that was sometimes encountered when using a simple theme as a list that is assigned to the pivot table `pt$theme` field.
 
 
 pivottabler 1.5.0
