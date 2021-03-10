@@ -7,13 +7,9 @@ http://r-pkgs.had.co.nz/
 
 ## Test environments
 
-* local OS (windows) install, R 4.0.0
-* Ubuntu 16.04.6 LTS (on travis-ci), R 4.0.0.
+* local OS (windows) install, R 4.0.4
+* Ubuntu 16.04.6 LTS LTS (on travis-ci), R 4.0.2.
 * win-builder, R-devel
-* R-hub, three tests:
-  * Windows Server 2008 R2 SP1, R-devel 32/64 bit
-  * Ubuntu Linux 16.04 LTS, R-release, GCC
-  * Fedora Linux, R-devel, clang, gfortran
 
 ## R CMD check results
 
@@ -28,10 +24,6 @@ http://r-pkgs.had.co.nz/
 ### win-builder check results
 
 0 errors | 0 warnings | 0 notes
-
-### R-hub check results
-
-Currently failing for R-develop on R Hub due to an issue with package data.table on R Hub and an environment issue on R Hub preventing PDF creation.
 
 ### Comments on check results
 

@@ -1806,12 +1806,12 @@ valueType="continuous".\cr
 If a custom mapping function is specified, then the valueType and mapType
 parameters are ignored.}
 
-\item{\code{styleLowerValues}}{A logical value, default FALSE, that specifies
+\item{\code{styleLowerValues}}{A logical value, default `FALSE`, that specifies
 whether values less than the lowest specified "from" value should be styled
 using the style specified for the lowest "from" value.  Only applies when
 valueType="range" or valueType="continuous".}
 
-\item{\code{styleHigherValues}}{A logical value, default TRUE, that specifies
+\item{\code{styleHigherValues}}{A logical value, default `TRUE`, that specifies
 whether values greater than the highest specified "from" value should be styled
 using the style specified for the highest "from" value.  Only applies when
 valueType="range" or valueType="continuous".}
