@@ -18,7 +18,7 @@ A data frame with 2568 rows and  7 variables:
 }
 }
 \source{
-\url{http://www.recenttraintimes.co.uk/}
+\url{https://www.recenttraintimes.co.uk/}
 }
 \usage{
 trainstations

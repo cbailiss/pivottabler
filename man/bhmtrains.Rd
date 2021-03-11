@@ -29,7 +29,7 @@ A data frame with 83710 rows and 16 variables:
 }
 }
 \source{
-\url{http://www.recenttraintimes.co.uk/}
+\url{https://www.recenttraintimes.co.uk/}
 }
 \usage{
 bhmtrains

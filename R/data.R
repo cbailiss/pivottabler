@@ -28,7 +28,7 @@
 #'   destination station}
 #'   \item{DestinationActualArrival}{Actual arrival time at the destination station}
 #' }
-#' @source \url{http://www.recenttraintimes.co.uk/}
+#' @source \url{https://www.recenttraintimes.co.uk/}
 "bhmtrains"
 
 
@@ -58,7 +58,7 @@
 #'   \item{LastChangeOfOriginReasonDesc}{A more specific reason why the origin
 #'   was changed}
 #' }
-#' @source \url{http://www.recenttraintimes.co.uk/}
+#' @source \url{https://www.recenttraintimes.co.uk/}
 "bhmtraindisruption"
 
 
@@ -79,7 +79,7 @@
 #'   \item{Latitude}{Latitude of the station location}
 #'   \item{Longitude}{Longitude of the station location}
 #' }
-#' @source \url{http://www.recenttraintimes.co.uk/}
+#' @source \url{https://www.recenttraintimes.co.uk/}
 "trainstations"
 
 

@@ -98,7 +98,7 @@ GbttArrival and GbttDeparture are the scheduled arrival and departure times of t
 
 The first train above:
 
-- has an identifier of 33960725^[This is the identifier assigned by the [Recent Train Times](http://www.recenttraintimes.co.uk) website, the source of this sample data].
+- has an identifier of 33960725^[This is the identifier assigned by the [Recent Train Times](https://www.recenttraintimes.co.uk) website, the source of this sample data].
 - was operated by the London Midland train operating company.
 - was an express passenger train (=fewer stops).
 - was scheduled to be operated by an "Electric Multiple Unit".
