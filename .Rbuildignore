@@ -1,7 +1,6 @@
 ^CRAN-RELEASE$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^\.travis\.yml$
 ^cran-comments\.md$
 ^README\.Rmd$
 ^dev$
@@ -26,3 +25,4 @@
 ^vignettes/vA1-appendix\.Rmd$
 ^vignettes/vA2-appendix\.Rmd$
 ^vignettes/vA3-appendix\.Rmd$
+^\.github$
