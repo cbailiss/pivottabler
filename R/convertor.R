@@ -173,7 +173,8 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=
         grp <- grps[[c]]
         bc <- bc + 1
         btbl$cells$setCell(r=br, c=bc, cellType="columnHeader", visible=TRUE, colSpan=length(grp$leafGroups),
-                           rawValue=grp$sortValue, formattedValue=exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue=""),
+                           rawValue=ifelse(is.null(grp$sortValue)&&!is.null(grp$caption), grp$caption, grp$sortValue),
+                           formattedValue=exportValueAs(grp$sortValue, grp$caption, exportOptions, blankValue=""),
                            baseStyleName=grp$baseStyleName, styleDeclarations=getPvtStyleDeclarations(grp$style))
         bc <- bc + length(grp$leafGroups) - 1
       }
@@ -213,7 +214,8 @@ convertPvtTblToBasicTbl <- function(pvt=NULL, exportOptions=NULL, compatibility=
         if(!is.null(ancg$baseStyleName)) rhs <- ancg$baseStyleName
         # render headers
         btbl$cells$setCell(r=br, c=bc, cellType="rowHeader", visible=TRUE, rowSpan=length(ancg$leafGroups), colSpan=rowMrgColumnSpan,
-                           rawValue=ancg$sortValue, formattedValue=exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue=""),
+                           rawValue=ifelse(is.null(ancg$sortValue)&&!is.null(ancg$caption), ancg$caption, ancg$sortValue),
+                           formattedValue=exportValueAs(ancg$sortValue, ancg$caption, exportOptions, blankValue=""),
                            baseStyleName=rhs, styleDeclarations=getPvtStyleDeclarations(ancg$style))
         ancg$isRendered <- TRUE
         if(lastDataGroupInRow) {
