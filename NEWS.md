@@ -1,3 +1,11 @@
+pivottabler 1.5.2
+=================
+
+This release includes one small bug fix that sometimes affected pivot tables that were converted to basic tables (from the `basictabler` package) and which then were exported to an Excel file.  The issue caused row/column headings for totals or calculations (when multiple calculations are defined) to appear blank when the `basictabler` table was exported to Excel.  This issue has been resolved in two ways:  
+1) Headings (such as totals and calculation names) now have a raw value specified in the converted `basictabler` table.
+2) The `basictabler` package now (by default) will write the formatted value to the Excel file if no raw value exists.
+
+
 pivottabler 1.5.1
 =================
 
