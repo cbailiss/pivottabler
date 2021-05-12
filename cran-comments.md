@@ -7,8 +7,8 @@ http://r-pkgs.had.co.nz/
 
 ## Test environments
 
-* local OS (windows) install, R 4.0.5
-* Ubuntu 16.04.6 LTS LTS (on travis-ci), R 4.0.2.
+* local OS (windows/Ubuntu 20.04), R 4.0.5
+* Windows latest, macOS-latest, Ubuntu 20.04 release+devel (via github actions), R 4.0.5.
 * win-builder, R-devel
 
 ## R CMD check results
