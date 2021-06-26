@@ -1,4 +1,4 @@
-pivottabler 1.5.2
+pivottabler 1.5.3
 =================
 
 Improvements
@@ -7,6 +7,9 @@ Improvements
 Tables can now be exported to a wider variety of file formats using the basictabler and flextable packages.  In addition to HTML, Latex and Excel (which can be generated directly by the pivottabler package), additional formats now supported using basictabler+flextable include include Microsoft Word, Microsoft PowerPoint and PDF.  See the Outputs vignette for more details. 
 
 It is now easier to format the borders for specific cells.  See the "Formatting cell borders for specific cells" section of the Styling vignette for more details.
+
+pivottabler 1.5.2
+=================
 
 Bug Fixes
 ----------------
