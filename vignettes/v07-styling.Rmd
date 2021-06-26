@@ -21,6 +21,7 @@ vignette: >
 * Styling Data Groups
 * Styling Calculations
 * Changing styling/formatting using `pt$setStyling()`
+* Formatting cell borders for specific cells
 * Changing styling/formatting using `pt$mapStyling()`
 * Inheritance of Styles 
 * Creating a New Theme
@@ -392,6 +393,7 @@ The `pt$setStyling()` function is used in the example above.  This function has 
 * `baseStyleName` is the name of a style in the table theme to apply to the specified cells.  Set this explicitly to NULL to revert to the default style specified in the table theme.
 * `style` is a `TableStyle` override object to apply to the specified cells.  This is created by calling `tbl$createInlineStyle()` as shown in the example above.
 * `declarations` is a list of style override declarations to apply to the specified cells. 
+* `applyBorderToAdjacentCells` is a logical value - specify TRUE to override the border in neighbouring cells, e.g. the left border of the current cell becomes the right border of the cell to the left.  Does not apply to row/column groups.
 
 The `pt$createInlineStyle()` function is also used in the example above.  This function creates a new unnamed style (that is not part of the table theme) and takes two arguments:  `baseStyleName` specifies the name of the style that the new style will be based on (i.e. will have it's style properties copied from) and `declarations` which specifies new/overriding style properties for the new style. 
 
@@ -415,6 +417,39 @@ pt$renderPivot()
 ```
 
 For many more examples of styling parts of a pivot table, see the [Finding and Formatting](v08-findingandformatting.html) vignette.
+
+## Formatting cell borders for specific cells
+
+CSS rendering rules mean that the first encountered border setting is used.  When table cells have no separation, this means the left/top borders of a cell are actually defined by the right/bottom borders of the previous cells (i.e. to the left and above).  This means attempting to set the border of a specific cell often doesn't produce the desired effect, e.g. attempting to change the border of a specific cell to red:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$setStyling(rowNumbers=3, columnNumbers=2, 
+               declarations=list("border"="1px solid red"))
+pt$renderPivot()
+```
+
+This can be resolved by specifying `applyBorderToAdjacentCells=TRUE` (only for cells in the body of the pivot table - not row/column headings):
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+pt$setStyling(rowNumbers=3, columnNumbers=2, 
+               declarations=list("border"="1px solid red"),
+               applyBorderToAdjacentCells=TRUE)
+pt$renderPivot()
+```
 
 ## Changing styling/formatting using `pt$mapStyling()`
 

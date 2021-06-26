@@ -23,6 +23,7 @@ prepStr <- function(s) {
   if(s!=u) stop("Unable to escape string!")
   t <- paste0("\thtml <- \"", t, "\"")
   utils::writeClipboard(t)
+  # clipr::write_clip(t)
   return(invisible())
 }
 
@@ -331,6 +332,36 @@ for(i in 1:nrow(scenarios)) {
     # pt$renderPivot()
     # prepStr(as.character(pt$getHtml()))
     html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Cell\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">CrossCountry</th>\n    <td class=\"Cell\" style=\"color: red; font-weight: bold; \">22865</td>\n    <td class=\"Cell\">63</td>\n    <td class=\"Cell\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">London Midland</th>\n    <td class=\"Cell\">14487</td>\n    <td class=\"Cell\">33792</td>\n    <td class=\"Cell\">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">Virgin Trains</th>\n    <td class=\"Cell\" style=\"font-weight: bold; color: green; \">8594</td>\n    <td class=\"Cell\" style=\"font-weight: bold; color: green; \"></td>\n    <td class=\"Cell\" style=\"font-weight: bold; color: green; \">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\" style=\"font-weight: normal; color: blue; \">Total</th>\n    <td class=\"Cell\">49025</td>\n    <td class=\"Cell\">34685</td>\n    <td class=\"Cell\">83710</td>\n  </tr>\n</table>"
+
+    expect_identical(as.character(pt$getHtml()), html)
+  })
+}
+
+
+scenarios <- testScenarios("theming tests:  applying styling with applyBorderToAdjacentCells", runAllForReleaseVersion=FALSE)
+for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
+  evaluationMode <- scenarios$evaluationMode[i]
+  processingLibrary <- scenarios$processingLibrary[i]
+  description <- scenarios$description[i]
+  countFunction <- scenarios$countFunction[i]
+
+  test_that(description, {
+
+    library(pivottabler)
+    pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode)
+    pt$addData(bhmtrains)
+    pt$addColumnDataGroups("TrainCategory")
+    pt$addRowDataGroups("TOC")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+    pt$evaluatePivot()
+    pt$setStyling(rowNumbers=3, columnNumbers=2,
+                  declarations=list("border"="1px solid red"),
+                  applyBorderToAdjacentCells=TRUE)
+
+    # pt$renderPivot()
+    # prepStr(as.character(pt$getHtml()))
+    html <- "<table class=\"Table\">\n  <tr>\n    <th class=\"RowHeader\">&nbsp;</th>\n    <th class=\"ColumnHeader\">Express Passenger</th>\n    <th class=\"ColumnHeader\">Ordinary Passenger</th>\n    <th class=\"ColumnHeader\">Total</th>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Arriva Trains Wales</th>\n    <td class=\"Cell\">3079</td>\n    <td class=\"Cell\">830</td>\n    <td class=\"Total\">3909</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">CrossCountry</th>\n    <td class=\"Cell\">22865</td>\n    <td class=\"Cell\" style=\"border-bottom: 1px solid red; \">63</td>\n    <td class=\"Total\">22928</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">London Midland</th>\n    <td class=\"Cell\" style=\"border-right: 1px solid red; \">14487</td>\n    <td class=\"Cell\" style=\"border: 1px solid red; \">33792</td>\n    <td class=\"Total\" style=\"border-left: 1px solid red; \">48279</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Virgin Trains</th>\n    <td class=\"Cell\">8594</td>\n    <td class=\"Cell\" style=\"border-top: 1px solid red; \"></td>\n    <td class=\"Total\">8594</td>\n  </tr>\n  <tr>\n    <th class=\"RowHeader\">Total</th>\n    <td class=\"Total\">49025</td>\n    <td class=\"Total\">34685</td>\n    <td class=\"Total\">83710</td>\n  </tr>\n</table>"
 
     expect_identical(as.character(pt$getHtml()), html)
   })

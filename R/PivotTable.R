@@ -1598,9 +1598,12 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param style A `PivotStyle` object to apply.
     #' @param declarations CSS style declarations to apply in the form of a list,
     #' e.g. `list("font-weight"="bold", "color"="#0000FF")`
+    #' @param applyBorderToAdjacentCells TRUE to override the border in
+    #' neighbouring cells, e.g. the left border of the current cell becomes the
+    #' right border of the cell to the left.  Does not apply to row/column groups.
     #' @return No return value.
     setStyling = function(rFrom=NULL, cFrom=NULL, rTo=NULL, cTo=NULL, rowNumbers=NULL, columnNumbers=NULL,
-                          groups=NULL, cells=NULL, baseStyleName=NULL, style=NULL, declarations=NULL) {
+                          groups=NULL, cells=NULL, baseStyleName=NULL, style=NULL, declarations=NULL, applyBorderToAdjacentCells=FALSE) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", rFrom, missing(rFrom), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", cFrom, missing(cFrom), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
@@ -1613,6 +1616,7 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", baseStyleName, missing(baseStyleName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", style, missing(style), allowMissing=TRUE, allowNull=TRUE, allowedClasses="PivotStyle")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", declarations, missing(declarations), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "setStyling", applyBorderToAdjacentCells, missing(applyBorderToAdjacentCells), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$setStyling", "Setting styling...")
       if(missing(baseStyleName)&&missing(style)&&missing(declarations)) { stop("PivotTable$setStyling():  Please specify at least one of baseStyleName, style or declarations.", call. = FALSE) }
@@ -1630,6 +1634,9 @@ PivotTable <- R6::R6Class("PivotTable",
               if((!missing(declarations))&&(!is.null(declarations))) {
                 if (is.null(grp$style)) { grp$style <- PivotStyle$new(parentPivot=self, declarations=declarations) }
                 else { grp$style$setPropertyValues(declarations) }
+                # applyBorderToAdjacentCells does not apply to groups, because groups are rendered as merged cells, and CSS cannot support border rendering for some merge cell combinations
+                # e.g. consider a 2nd level row group (i.e. has a parent row group to the left).  The parent row group specifies a border - and because this is encountered first
+                # when rendering in the browser it is not possible to override the border it specifies.
               }
             }
           }
@@ -1649,6 +1656,7 @@ PivotTable <- R6::R6Class("PivotTable",
               if((!missing(declarations))&&(!is.null(declarations))) {
                 if (is.null(cell$style)) { cell$style <- PivotStyle$new(parentPivot=self, declarations=declarations) }
                 else { cell$style$setPropertyValues(declarations) }
+                if (isTRUE(applyBorderToAdjacentCells)) { private$applyBorderToAdjacentCells(cell=cell, declarations=declarations) }
               }
             }
           }
@@ -1714,6 +1722,7 @@ PivotTable <- R6::R6Class("PivotTable",
               if((!missing(declarations))&&(!is.null(declarations))) {
                 if (is.null(cell$style)) { cell$style <- PivotStyle$new(parentPivot=self, declarations=declarations) }
                 else { cell$style$setPropertyValues(declarations) }
+                if (isTRUE(applyBorderToAdjacentCells)) { private$applyBorderToAdjacentCells(cell=cell, declarations=declarations) }
               }
             }
           }
@@ -4621,6 +4630,53 @@ PivotTable <- R6::R6Class("PivotTable",
     addTiming = function(descr, timeStart) {
       timeEnd <- proc.time()
       private$p_timings[[length(private$p_timings)+1]] <- list(descr=descr, time=timeEnd-timeStart)
+    },
+    applyBorderToAdjacentCells = function(cell, declarations) {
+      # get border properties
+      border <- declarations$border
+      borderTop <- declarations[["border-top"]]
+      borderRight <- declarations[["border-right"]]
+      borderBottom <- declarations[["border-bottom"]]
+      borderLeft <- declarations[["border-left"]]
+      xlBorder <- declarations[["xl-border"]]
+      xlBorderTop <- declarations[["xl-border-top"]]
+      xlBorderRight <- declarations[["xl-border-right"]]
+      xlBorderBottom <- declarations[["xl-border-bottom"]]
+      xlBorderLeft <- declarations[["xl-border-left"]]
+      r <- cell$rowNumber
+      c <- cell$columnNumber
+      # bottom border of cell above
+      if (r > 1) {
+        cl <- private$p_cells$getCell(r=r-1, c=c)
+        if (!is.null(border)) { self$setStyling(cells=cl, declarations=list("border-bottom"=border)) }
+        if (!is.null(borderTop)) { self$setStyling(cells=cl, declarations=list("border-bottom"=borderTop)) }
+        if (!is.null(xlBorder)) { self$setStyling(cells=cl, declarations=list("xl-border-bottom"=xlBorder)) }
+        if (!is.null(xlBorderTop)) { self$setStyling(cells=cl, declarations=list("xl-border-bottom"=xlBorderTop)) }
+      }
+      # left border of cell to the right
+      if (c < private$p_cells$columnCount) {
+        cl <- private$p_cells$getCell(r=r, c=c+1)
+        if (!is.null(border)) { self$setStyling(cells=cl, declarations=list("border-left"=border)) }
+        if (!is.null(borderRight)) { self$setStyling(cells=cl, declarations=list("border-left"=borderRight)) }
+        if (!is.null(xlBorder)) { self$setStyling(cells=cl, declarations=list("xl-border-left"=xlBorder)) }
+        if (!is.null(xlBorderRight)) { self$setStyling(cells=cl, declarations=list("xl-border-left"=xlBorderRight)) }
+      }
+      # top border of the cell below
+      if (r < private$p_cells$rowCount) {
+        cl <- private$p_cells$getCell(r=r+1, c=c)
+        if (!is.null(border)) { self$setStyling(cells=cl, declarations=list("border-top"=border)) }
+        if (!is.null(borderBottom)) { self$setStyling(cells=cl, declarations=list("border-top"=borderBottom)) }
+        if (!is.null(xlBorder)) { self$setStyling(cells=cl, declarations=list("xl-border-top"=xlBorder)) }
+        if (!is.null(xlBorderBottom)) { self$setStyling(cells=cl, declarations=list("xl-border-top"=xlBorderBottom)) }
+      }
+      # right border of cell to the left
+      if (c > 1) {
+        cl <- private$p_cells$getCell(r=r, c=c-1)
+        if (!is.null(border)) { self$setStyling(cells=cl, declarations=list("border-right"=border)) }
+        if (!is.null(borderLeft)) { self$setStyling(cells=cl, declarations=list("border-right"=borderLeft)) }
+        if (!is.null(xlBorder)) { self$setStyling(cells=cl, declarations=list("xl-border-right"=xlBorder)) }
+        if (!is.null(xlBorderLeft)) { self$setStyling(cells=cl, declarations=list("xl-border-right"=xlBorderLeft)) }
+      }
     }
   )
 )

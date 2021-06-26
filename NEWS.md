@@ -1,6 +1,16 @@
 pivottabler 1.5.2
 =================
 
+Improvements
+----------------
+
+Tables can now be exported to a wider variety of file formats using the basictabler and flextable packages.  In addition to HTML, Latex and Excel (which can be generated directly by the pivottabler package), additional formats now supported using basictabler+flextable include include Microsoft Word, Microsoft PowerPoint and PDF.  See the Outputs vignette for more details. 
+
+It is now easier to format the borders for specific cells.  See the "Formatting cell borders for specific cells" section of the Styling vignette for more details.
+
+Bug Fixes
+----------------
+
 This release includes one small bug fix that sometimes affected pivot tables that were converted to basic tables (from the `basictabler` package) and which then were exported to an Excel file.  The issue caused row/column headings for totals or calculations (when multiple calculations are defined) to appear blank when the `basictabler` table was exported to Excel.  This issue has been resolved in two ways:  
 1) Headings (such as totals and calculation names) now have a raw value specified in the converted `basictabler` table.
 2) The `basictabler` package now (by default) will write the formatted value to the Excel file if no raw value exists.

@@ -1689,7 +1689,8 @@ Apply styling to a set of data groups or cells in a pivot table.
   cells = NULL,
   baseStyleName = NULL,
   style = NULL,
-  declarations = NULL
+  declarations = NULL,
+  applyBorderToAdjacentCells = FALSE
 )}\if{html}{\out{</div>}}
 }
 
@@ -1724,6 +1725,10 @@ the styling changes.}
 
 \item{\code{declarations}}{CSS style declarations to apply in the form of a list,
 e.g. `list("font-weight"="bold", "color"="#0000FF")`}
+
+\item{\code{applyBorderToAdjacentCells}}{TRUE to override the border in
+neighbouring cells, e.g. the left border of the current cell becomes the
+right border of the cell to the left.  Does not apply to row/column groups.}
 }
 \if{html}{\out{</div>}}
 }

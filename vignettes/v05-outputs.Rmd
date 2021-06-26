@@ -17,6 +17,9 @@ vignette: >
 * Results as HTML
 * Results as Latex
 * Results in Excel
+* Results as FlexTable
+* Results in Word
+* Results in PowerPoint
 * Results as an R Matrix
 * Results as an R Data Frame
 * Results as a basictabler Table
@@ -114,6 +117,90 @@ Please see the [Latex Output](v06-latexoutput.html) vignette.
 ## Results in Excel
 
 Please see the [Excel Export](v13-excelexport.html) vignette.
+
+## Results as FlexTable
+
+Converting a table from the `flextabler` package is possible:
+
+```{r, message=FALSE, warning=FALSE, eval=TRUE, comment=""}
+# construct the table
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+
+# convert to a basictabler table
+library(basictabler)
+tbl <- pt$asBasicTable()
+
+# convert to flextable
+library(flextable)
+ft <- tbl$asFlexTable()
+ft
+```
+
+## Results in Word
+
+Converting a table to a Word document is possible using the `flextabler` package:
+
+```{r, eval=FALSE}
+# construct the table
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+
+# convert to a basictabler table
+library(basictabler)
+tbl <- pt$asBasicTable()
+
+# convert to flextable
+library(flextable)
+ft <- tbl$asFlexTable()
+
+# save word document
+library(officer)
+docx <- read_docx()
+docx <- body_add_par(docx, "Example Table")
+docx <- body_add_flextable(docx, value = ft)
+print(docx, target = "example_table_word.docx")
+```
+
+## Results in PowerPoint
+
+Converting a table to a PowerPoint document is possible using the `flextabler` package:
+
+```{r, eval=FALSE}
+# construct the table
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+
+# convert to a basictabler table
+library(basictabler)
+tbl <- pt$asBasicTable()
+
+# convert to flextable
+library(flextable)
+ft <- tbl$asFlexTable()
+
+# save PowerPoint document
+library(officer)
+ppt <- read_pptx()
+ppt <- add_slide(ppt, layout = "Title and Content", master = "Office Theme")
+ppt <- ph_with(ppt, value = ft, location = ph_location_left()) 
+print(ppt, target = "example_table_powerpoint.pptx")
+```
 
 ## Results as an R Matrix
 
