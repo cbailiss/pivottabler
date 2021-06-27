@@ -353,7 +353,7 @@ for(i in 1:nrow(scenarios)) {
     pt$addData(bhmtrains)
     pt$addColumnDataGroups("TrainCategory")
     pt$addRowDataGroups("TOC")
-    pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+    pt$defineCalculation(calculationName="TotalTrains", summariseExpression=countFunction)
     pt$evaluatePivot()
     pt$setStyling(rowNumbers=3, columnNumbers=2,
                   declarations=list("border"="1px solid red"),
