@@ -273,3 +273,86 @@ cleanOutlineArg = function(pvt, outline=NULL, defaultCaption="{value}", defaultI
   if(pvt$traceEnabled==TRUE) pvt$trace("cleanOutlineArg", "Cleaned outline argument.")
   return(clean)
 }
+
+#' Intersect two vectors without changing their data types.
+#'
+#' \code{typeSafeIntersect} preserves data types in a way that the
+#' \code{base::intersect} function does not, e.g. for Date values.
+#'
+#' @param x First set of values.
+#' @param y Second set of values.
+#' @param dedupe Specify TRUE to remove duplicate values.
+#' @return A vector containing the intersection of x and y.
+
+typeSafeIntersect = function(x, y, dedupe=FALSE) {
+  if(is.null(x) || is.null(y)) {
+    return(invisible(NULL))
+  }
+  if(length(x) == 0) {
+    return(invisible(x))
+  }
+  if(length(y) == 0) {
+    return(invisible(y))
+  }
+  matches <- x %in% y
+  intersection <- x[matches]
+  if(dedupe) {
+    intersection <- unique(intersection)
+  }
+  return(invisible(intersection))
+}
+
+#' Union two vectors without changing their data types.
+#'
+#' \code{typeSafeUnion} preserves data types in a way that the
+#' \code{base::union} function does not, e.g. for Date values.
+#'
+#' @param x First set of values.
+#' @param y Second set of values.
+#' @param dedupe Specify TRUE to remove duplicate values.
+#' @return A vector containing the union of x and y
+
+typeSafeUnion = function(x, y, dedupe=FALSE) {
+  if(is.null(x) && is.null(y)) {
+    return(invisible(NULL))
+  }
+  if((length(x) == 0) && (length(y) == 0)) {
+    return(invisible(x))
+  }
+  matches <- x %in% y
+  mismatches <- !matches
+  unioned <- c(x[mismatches], y)
+  if(dedupe) {
+    unioned <- unique(unioned)
+  }
+  return(invisible(unioned))
+}
+
+#' Unlist a list into a vector in a type-safe way where possible.
+#'
+#' \code{typeSafeUnlist} tries to preserve data types in a way that the
+#' \code{base::unlist} function does not for Date, POSIXct and POSIXlt values.
+#'
+#' If a list containing mixed types is specified, then \code{typeSafeUnlist}
+#' falls back to using \code{base::unlist}.
+#'
+#' @param x A list to convert to a vector.
+#' @return A vector containing the values from x.
+
+typeSafeUnlist = function(x) {
+  if(is.null(x)) {
+    return(invisible(NULL))
+  }
+  if((length(x) == 0)) {
+    return(invisible(x))
+  }
+  # check type
+  expectedType <- class(x[[1]])
+  specialTypes <- c("Date", "POSIXct", "POSIXlt")
+  if(any(expectedType %in% specialTypes)) {
+    return(invisible(do.call("c", x)))
+  }
+  else {
+    return(invisible(unlist(x)))
+  }
+}

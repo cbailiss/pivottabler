@@ -99,7 +99,7 @@ PivotFilter <- R6::R6Class("PivotFilter",
          # do nothing
        }
        else if(filter$type=="VALUES") {
-         private$p_values <- intersect(private$p_values, filter$values)
+         private$p_values <- typeSafeIntersect(private$p_values, filter$values)
          if(is.null(private$p_values)) {
            private$p_type <- "NONE"
          }
@@ -162,7 +162,7 @@ PivotFilter <- R6::R6Class("PivotFilter",
          private$p_values <- NULL
        }
        else if(filter$type=="VALUES") {
-         private$p_values <- union(private$p_values, filter$values)
+         private$p_values <- typeSafeUnion(private$p_values, filter$values)
        }
        else if(filter$type=="NONE") {
          # do nothing

@@ -250,7 +250,7 @@ PivotFilters <- R6::R6Class("PivotFilters",
             }
             if(is.null(varValues)) next
             if(length(varValues)==0) next
-            intrsct <- intersect(filter$values, varValues)
+            intrsct <- typeSafeIntersect(filter$values, varValues)
             if(is.null(intrsct)) {
               if(matchMode=="simple") next
               else return(invisible(FALSE))

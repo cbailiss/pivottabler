@@ -850,7 +850,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        topLevelDisinctValues <- explicitListOfValues
        topLevelCaptions <- names(explicitListOfValues)
        allValues <- topLevelDisinctValues
-       if("list" %in% class(topLevelDisinctValues)) { allValues <- unlist(topLevelDisinctValues) }
+       if("list" %in% class(topLevelDisinctValues)) { allValues <- typeSafeUnlist(topLevelDisinctValues) }
      }
      # ignore the filters from the other heading groups?
      if((fromData==TRUE)&&(onlyCombinationsThatExist==FALSE)) {
@@ -1001,7 +1001,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            distinctValues <- private$getDistinctValuesForAddDataGrps(data=df, variableName=variableName, safeVariableName=safeVariableName,
                                                                      rowColFilters=rowColFilters, additionalFilter=onlyAddGroupIf,
                                                                      dataSortOrder=dataSortOrder, customSortOrder=customSortOrder)
-           allValues <- union(allValues, distinctValues)
+           allValues <- typeSafeUnion(allValues, distinctValues)
          }
        }
 
@@ -1302,8 +1302,8 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
      }
      # if we have some values, do the sort and reorder the child groups
      if(length(values)>0){
-        if(sortOrder=="asc") sortIndexes <- order(unlist(values))
-        else sortIndexes <- order(unlist(values), decreasing=TRUE)
+        if(sortOrder=="asc") sortIndexes <- order(typeSafeUnlist(values))
+        else sortIndexes <- order(typeSafeUnlist(values), decreasing=TRUE)
         i <- 0
         for(j in 1:length(groups)) {
            grp <- groups[[sortIndexes[j]]]

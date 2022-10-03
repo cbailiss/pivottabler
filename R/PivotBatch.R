@@ -90,7 +90,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
         }
         else if((!is.null(private$p_variableNames))&&(!is.null(variableNames))) {
           if(length(private$p_variableNames)==length(variableNames)) {
-            intrsct <- intersect(private$p_variableNames, variableNames)
+            intrsct <- typeSafeIntersect(private$p_variableNames, variableNames)
             if(length(private$p_variableNames)==length(intrsct)) {
               bIsCompatible <- TRUE
             }
@@ -125,7 +125,7 @@ PivotBatch <- R6::R6Class("PivotBatch",
         if(length(values)>0) {
           nms <- names(values)
           for(i in 1:length(values)) {
-            private$p_values[[nms[i]]] <- union(private$p_values[[nms[i]]], values[[i]])
+            private$p_values[[nms[i]]] <- typeSafeUnion(private$p_values[[nms[i]]], values[[i]])
           }
         }
       }
