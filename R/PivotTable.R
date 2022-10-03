@@ -2822,8 +2822,6 @@ PivotTable <- R6::R6Class("PivotTable",
     #' at least one of these column groups.  If both `rowGroups` and `columnGroups`
     #' are specified, then the cells to be searched must be related to at least
     #' one of the specified row groups and one of the specified column groups.
-    #' @param cells A `PivotCell` object or a list of `PivotCell`
-    #' objects to constrain the scope of the search.
     #' @param rowColumnMatchMode Either "simple" (default) or "combinations":\cr
     #' "simple" specifies that row and column arguments are considered separately
     #' (logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
@@ -2833,6 +2831,10 @@ PivotTable <- R6::R6Class("PivotTable",
     #' cell single at location (1, 2).\cr
     #' Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
     #' affected by the match mode.  All other arguments are not.
+    #' @param cells A `PivotCell` object or a list of `PivotCell`
+    #' objects to constrain the scope of the search.
+    #' @param lowN Find the first N cells (ascending order, lowest values first).
+    #' @param highN Find the last N cells (descending order, highest values first).
     #' @return A list of `PivotCell` objects.
     findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
                          minValue=NULL, maxValue=NULL, exactValues=NULL, valueRanges=NULL, includeNull=TRUE, includeNA=TRUE,
@@ -2840,7 +2842,8 @@ PivotTable <- R6::R6Class("PivotTable",
                          # additional arguments to constrain cells matched
                          rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL,
                          groups=NULL, rowGroups=NULL, columnGroups=NULL,
-                         rowColumnMatchMode="simple", cells=NULL) {
+                         rowColumnMatchMode="simple", cells=NULL,
+                         lowN=NULL, highN=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
@@ -2863,6 +2866,8 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", columnGroups, missing(columnGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", cells, missing(cells), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotCell", "list"), allowedListElementClasses="PivotCell")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "findCells", rowColumnMatchMode, missing(rowColumnMatchMode), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("simple", "combinations"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotCells", "findCells", lowN, missing(lowN), allowMissing=TRUE, allowNull=TRUE, minValue=0, allowedClasses=c("integer", "numeric"))
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotCells", "findCells", highN, missing(highN), allowMissing=TRUE, allowNull=TRUE, minValue=0, allowedClasses=c("integer", "numeric"))
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findCells", "Finding cells...")
       if(!private$p_evaluated) stop("PivotTable$findCells():  Pivot table has not been evaluated.  Call evaluatePivot() to evaluate the pivot table.", call. = FALSE)
@@ -2874,7 +2879,7 @@ PivotTable <- R6::R6Class("PivotTable",
                                          # additional arguments to constrain cells matched
                                          rowNumbers=rowNumbers, columnNumbers=columnNumbers, cellCoordinates=cellCoordinates,
                                          groups=groups, rowGroups=rowGroups, columnGroups=columnGroups,
-                                         rowColumnMatchMode=rowColumnMatchMode, cells=cells)
+                                         rowColumnMatchMode=rowColumnMatchMode, cells=cells, lowN=lowN, highN=highN)
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$findCells", "Found cells.")
       return(invisible(cells))
     },

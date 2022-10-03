@@ -14,9 +14,8 @@ vignette: >
 * Finding and Formatting
 * Example Pivot Table
 * Finding Headings
-* Getting Cells
-* Finding Cells
-* Conditional Formatting
+* Getting Cells (based on location in the pivot table)
+* Finding Cells (based on cell value inc. conditional formatting)
 * Summary
 * Further Reading
 
@@ -542,6 +541,17 @@ In addition, the following parameters can also be used with `pt$findCells()`:
 
 Broadly speaking, these additional parameters function identically to the parameters of the same name in the `pt$getCells()` method.
 
+The following parameters control how the cells matching the criteria specified above are returned:
+
+- `lowN` - an integer value specifying that only N cells containing the lowest values should be returned, e.g.
+  + Specifying `lowN=1` will find the cell containing the minimum value.
+  + Specifying `lowN=5` will find the five cells containing the lowest values, sorted into ascending order (lowest value first).
+- `highN` - an integer value specifying that only N cells containing the highest values should be returned, e.g.
+  + Specifying `highN=1` will find the cell containing the maximum value.
+  + Specifying `highN=5` will find the five cells containing the highest values, sorted into descending order (highest value first).
+
+Note that `lowN` and `highN` apply to all cell values in the pivot table, e.g. including totals.  Use the other arguments described above to exclude the types of cell you are not interested in, e.g. specifying `totals="exclude"` to stop totals being included. 
+
 Several examples of the above are given below.
 
 ### Finding cells from headings
@@ -668,63 +678,11 @@ pt$setStyling(cells=cells, declarations=list("background-color"="#00FF00"))
 pt$renderPivot()
 ```
 
-### Finding cells by cell value
-
-For guidance on finding cell(s) based on the value of the cell (i.e. based on the results of calculations), see the Conditional Formating section below.
-
-### Additional criteria
-
-The example below illustrates using additional criteria (row/column numbers and row/column data groups) to restrict the cells that are searched:
-
-```{r, message=FALSE, warning=FALSE}
-library(pivottabler)
-pt <- PivotTable$new()
-pt$addData(bhmtrains)
-pt$addColumnDataGroups("TrainCategory")
-pt$addColumnDataGroups("PowerType")
-pt$addRowDataGroups("TOC")
-pt$addRowDataGroups("Status")
-pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
-pt$evaluatePivot()
-
-# get the data groups on each axis
-rgrps <- pt$leafRowGroups
-cgrps <- pt$leafColumnGroups
-
-# search the first two columns for cells that aren't empty
-cells <- pt$findCells(groups=cgrps[1:2], emptyCells="exclude")
-pt$setStyling(cells=cells, declarations=list("background-color"="yellow"))
-
-# search the sixth and eighth rows for cells with values greater than 10
-cells <- pt$findCells(groups=list(rgrps[[6]], rgrps[[8]]), minValue=10)
-pt$setStyling(cells=cells, declarations=list("background-color"="lightgreen"))
-
-# search the cells in rows 2 to 4 in columns 7 to 8 to find non-empty cells
-cells <- pt$findCells(rowNumbers=2:4, columnGroups=cgrps[7:8],
-                      emptyCells="exclude",
-                      rowColumnMatchMode="combinations")
-pt$setStyling(cells=cells, declarations=list("background-color"="pink"))
-
-# search the cells in rows 11 to 17 in columns 4, 5 and 7
-# highlight non-empty cells in this range with value 10000 or greater
-rgrps <- rgrps[11:17]
-cgrps <- list(cgrps[[4]], cgrps[[5]], cgrps[[7]])
-cells <- pt$findCells(rowGroups=rgrps, columnGroups=cgrps,
-                      rowColumnMatchMode="combinations")
-pt$setStyling(cells=cells, declarations=list("background-color"="blanchedalmond"))
-
-cells <- pt$findCells(rowGroups=rgrps, columnGroups=cgrps,
-                     rowColumnMatchMode="combinations",
-                     minValue=10000, emptyCells="exclude")
-pt$setStyling(cells=cells, declarations=list("background-color"="orange"))
-
-# render the pivot
-pt$renderPivot()
-```
-
-## Conditional Formatting
+### Finding cells by cell value (aka. Conditional Formatting)
 
 The `findCells()` and `getCells()` functions can be used to help conditionally format the cells of a pivot table based on the cell values (i.e. calculation values).
+
+#### Basic conditional formatting
 
 For example, to highlight in red those cells in the basic example pivot table that have a value between 30000 and 50000:
 
@@ -787,7 +745,7 @@ Assume we wish to format the average arrival delay as follows:
 - Average arrival delay between 2 and 4 minutes - yellow,
 - Average arrival delay of 4 and above minutes - red.
 
-There are two approaches we can take to this - either use `mapStyling()`, or use `findCells()` and `setStyling()`.  `mapStyling()` is described in the [Styling](v07-styling.html) vignette.
+There are two approaches we can take - either use `mapStyling()`, or use `findCells()` and `setStyling()`.  `mapStyling()` is described in the [Styling](v07-styling.html) vignette.
 
 Using `mapStyling()` with `mapType="range"` is the more concise approach:
 
@@ -851,7 +809,9 @@ pt$setStyling(cells=cells, declarations=list("background-color"="#FFC7CE", "colo
 pt$renderPivot()
 ```
 
-The examples above uses three sets of colours.  It is also possible to apply these colours as a continuous colour gradient, e.g. an average arrival delay of 3 minutes would be formatted using a mixed yellow-green colour.  Again, this can be done following the same two approaches.
+#### Conditional formatting using colour gradients
+
+The examples above uses three sets of colours.  It is also possible to apply these colours as a continuous colour gradient, e.g. based on the example above an average arrival delay of 3 minutes would be formatted using a mixed yellow-green colour.  Again, this can be done following the same two approaches.
 
 Using `mapStyling()` with `mapType="continuous"` is much more concise:
 
@@ -955,6 +915,188 @@ invisible(lapply(cells, formatCell))
 pt$renderPivot()
 ```
 
+### Finding the minimum/maximum values or top/bottom N values
+
+The `lowN` and `highN` arguments allow the cells containing the minimum/maximum values or the top/bottom N values to be easily found.
+
+These arguments generally need to be combined with other arguments to find the cells you are interested in as shown in the examples below.
+
+#### Finding the cell containing the maximum value
+
+By default, the totals are included, so just specifying `highN=1` will probably locate the grand total cell:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+cells <- pt$findCells(highN=1)
+pt$setStyling(cells=cells, declarations=list("background-color"="#00FF00"))
+pt$renderPivot()
+```
+
+To exclude the grand total cell, specify `totals="exclude"`:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+cells <- pt$findCells(highN=1, totals="exclude")
+pt$setStyling(cells=cells, declarations=list("background-color"="#00FF00"))
+pt$renderPivot()
+```
+
+The variable names and values for the cell containing the maximum value can be retrieved as a list, e.g. using the example above:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+cells <- pt$findCells(highN=1, totals="exclude")
+print(cells[[1]]$rowColFilters$filteredValues)
+```
+
+#### Finding the top 3 cells
+
+Follow the same method as above but specify `highN=3`:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+cells <- pt$findCells(highN=3, totals="exclude")
+pt$setStyling(cells=cells, declarations=list("background-color"="#00FF00"))
+pt$renderPivot()
+```
+
+#### Finding the cell containing the maximum value for a specific data group
+
+To highlight the maximum value for a specific data group, then specify the group value when calling `pt$findCells()`, e.g. to find the maximum value for "Express Passenger":
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+cells <- pt$findCells(highN=1, 
+                      variableValues=list("TrainCategory"="Express Passenger"),
+                      totals="exclude")
+pt$setStyling(cells=cells, declarations=list("background-color"="#00FF00"))
+pt$renderPivot()
+```
+
+Combinations of values can be specified to select exactly where in the pivot table to find the maximum value, e.g. to find the maximum value for the "Ordinary Passenger" and "DMU" combination:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+cells <- pt$findCells(highN=1, 
+                      variableValues=list("TrainCategory"="Ordinary Passenger",
+                                          "PowerType"="DMU"),
+                      totals="exclude")
+pt$setStyling(cells=cells, declarations=list("background-color"="#00FF00"))
+pt$renderPivot()
+```
+
+#### Finding the cell containing the maximum value in each column
+
+To highlight the maximum value for each column, call `pt$findCells()` specifying the column number:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+for(c in 1:pt$columnCount) {
+  cells <- pt$findCells(highN=1, columnNumbers=c, totals="exclude")
+  pt$setStyling(cells=cells, declarations=list("background-color"="#00FF00"))
+}
+pt$renderPivot()
+```
+
+### Finding cells - additional criteria
+
+The example below illustrates using additional criteria (row/column numbers and row/column data groups) to restrict the cells that are searched:
+
+```{r, message=FALSE, warning=FALSE}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addColumnDataGroups("PowerType")
+pt$addRowDataGroups("TOC")
+pt$addRowDataGroups("Status")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$evaluatePivot()
+
+# get the data groups on each axis
+rgrps <- pt$leafRowGroups
+cgrps <- pt$leafColumnGroups
+
+# search the first two columns for cells that aren't empty
+cells <- pt$findCells(groups=cgrps[1:2], emptyCells="exclude")
+pt$setStyling(cells=cells, declarations=list("background-color"="yellow"))
+
+# search the sixth and eighth rows for cells with values greater than 10
+cells <- pt$findCells(groups=list(rgrps[[6]], rgrps[[8]]), minValue=10)
+pt$setStyling(cells=cells, declarations=list("background-color"="lightgreen"))
+
+# search the cells in rows 2 to 4 in columns 7 to 8 to find non-empty cells
+cells <- pt$findCells(rowNumbers=2:4, columnGroups=cgrps[7:8],
+                      emptyCells="exclude",
+                      rowColumnMatchMode="combinations")
+pt$setStyling(cells=cells, declarations=list("background-color"="pink"))
+
+# search the cells in rows 11 to 17 in columns 4, 5 and 7
+# highlight non-empty cells in this range with value 10000 or greater
+rgrps <- rgrps[11:17]
+cgrps <- list(cgrps[[4]], cgrps[[5]], cgrps[[7]])
+cells <- pt$findCells(rowGroups=rgrps, columnGroups=cgrps,
+                      rowColumnMatchMode="combinations")
+pt$setStyling(cells=cells, declarations=list("background-color"="blanchedalmond"))
+
+cells <- pt$findCells(rowGroups=rgrps, columnGroups=cgrps,
+                     rowColumnMatchMode="combinations",
+                     minValue=10000, emptyCells="exclude")
+pt$setStyling(cells=cells, declarations=list("background-color"="orange"))
+
+# render the pivot
+pt$renderPivot()
+```
+
 ## Summary
 
 * The `findRowDataGroups()` and `findColumnDataGroups()` functions are used to find data groups (i.e. row and/or column headings) that match specific criteria.
@@ -968,6 +1110,7 @@ pt$renderPivot()
     + `findCells()` returns a list of cell objects.
     + `variableValues` is a commonly used parameter and specifies the variable values to find.
     + The values of cells to find can be specified using the `minValue`, `maxValue` and `exactValues` parameters.
+    + The `lowN` and `highN` parameters can be used to find the cell or cells with the minimum value(s) and maximum value(s). 
     + Where a pivot table contains multiple calculations, the `calculationNames` parameter is used to only match those cells relating to specific calculations.
     + Example:  `pt$findCells(variableValues=list("PowerType"=c("DMU", "HST")), minValue=500, maxValue=5000)` finds all cells where PowerType is either DMU or HST and the cell value is between 500 and 5000 inclusive. 
 

@@ -423,8 +423,6 @@ PivotCells <- R6::R6Class("PivotCells",
    #' at least one of these column groups.  If both `rowGroups` and `columnGroups`
    #' are specified, then the cells to be searched must be related to at least
    #' one of the specified row groups and one of the specified column groups.
-   #' @param cells A `PivotCell` object or a list of `PivotCell`
-   #' objects to constrain the scope of the search.
    #' @param rowColumnMatchMode Either "simple" (default) or "combinations":\cr
    #' "simple" specifies that row and column arguments are considered separately
    #' (logical OR), e.g. rowNumbers=1 and columnNumbers=2 will match all cells in
@@ -434,6 +432,10 @@ PivotCells <- R6::R6Class("PivotCells",
    #' cell single at location (1, 2).\cr
    #' Arguments `rowNumbers`, `columnNumbers`, `rowGroups` and `columnGroups` are
    #' affected by the match mode.  All other arguments are not.
+   #' @param cells A `PivotCell` object or a list of `PivotCell`
+   #' objects to constrain the scope of the search.
+   #' @param lowN Find the first N cells (ascending order, lowest values first).
+   #' @param highN Find the last N cells (descending order, highest values first).
    #' @return A list of `PivotCell` objects.
    findCells = function(variableNames=NULL, variableValues=NULL, totals="include", calculationNames=NULL,
                         minValue=NULL, maxValue=NULL, exactValues=NULL, valueRanges=NULL, includeNull=TRUE, includeNA=TRUE,
@@ -441,7 +443,8 @@ PivotCells <- R6::R6Class("PivotCells",
                         # additional arguments to constrain cells matched
                         rowNumbers=NULL, columnNumbers=NULL, cellCoordinates=NULL,
                         groups=NULL, rowGroups=NULL, columnGroups=NULL,
-                        rowColumnMatchMode="simple", cells=NULL) {
+                        rowColumnMatchMode="simple", cells=NULL,
+                        lowN=NULL, highN=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", variableNames, missing(variableNames), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", variableValues, missing(variableValues), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", listElementsMustBeAtomic=TRUE)
@@ -464,8 +467,14 @@ PivotCells <- R6::R6Class("PivotCells",
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", columnGroups, missing(columnGroups), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotDataGroup", "list"), allowedListElementClasses="PivotDataGroup")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", cells, missing(cells), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("PivotCell", "list"), allowedListElementClasses="PivotCell")
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", rowColumnMatchMode, missing(rowColumnMatchMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("simple", "combinations"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", lowN, missing(lowN), allowMissing=TRUE, allowNull=TRUE, minValue=0, allowedClasses=c("integer", "numeric"))
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotCells", "findCells", highN, missing(highN), allowMissing=TRUE, allowNull=TRUE, minValue=0, allowedClasses=c("integer", "numeric"))
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findCells", "Finding cells...")
+     # cannot specify both lowN and highN
+     if((!is.null(lowN))&&(!is.null(highN))) {
+       stop("PivotCells$findCells(): Only one of lowN and highN can be specified.", call. = FALSE)
+     }
      # if some constraining row/column numbers, data groups or cells are specified, then need to build the constraining lists
      if("PivotDataGroup" %in% class(groups)) groups <- list(groups)
      if("PivotDataGroup" %in% class(rowGroups)) rowGroups <- list(rowGroups)
@@ -569,6 +578,36 @@ PivotCells <- R6::R6Class("PivotCells",
          }
        }
      }
+     # if lowN or bottomN have been specified, then sort the results and return
+     # only the specified number of matches
+     orderMatches <- FALSE
+     if(!is.null(lowN)) {
+       orderMatches <- TRUE
+       orderDecreasing <- FALSE
+       headN <- lowN
+     }
+     else if(!is.null(highN)) {
+       orderMatches <- TRUE
+       orderDecreasing <- TRUE
+       headN <- highN
+     }
+     if(orderMatches && (length(matches) > 0)) {
+       matchValues <- list()
+       for(i in 1:length(matches)) {
+         cell <- matches[[i]]
+         if(cell$isEmpty || is.null(cell$rawValue)|| is.na(cell$rawValue)) {
+           matchValues[[i]] <- NA
+         }
+         else {
+           matchValues[[i]] <- cell$rawValue
+         }
+       }
+       matchValues <- typeSafeUnlist(matchValues)
+       sortOrder <- order(matchValues, decreasing=orderDecreasing)
+       matches <- matches[sortOrder]
+       matches <- head(matches, headN)
+     }
+     # done
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCells$findCells", "Found cells.")
      return(invisible(matches))
    },
