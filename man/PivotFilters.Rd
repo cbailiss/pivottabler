@@ -78,27 +78,27 @@ variable names.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotFilters$new()}}
-\item \href{#method-clearFilters}{\code{PivotFilters$clearFilters()}}
-\item \href{#method-keepOnlyFiltersFor}{\code{PivotFilters$keepOnlyFiltersFor()}}
-\item \href{#method-removeFiltersFor}{\code{PivotFilters$removeFiltersFor()}}
-\item \href{#method-getFilter}{\code{PivotFilters$getFilter()}}
-\item \href{#method-isFilterMatch}{\code{PivotFilters$isFilterMatch()}}
-\item \href{#method-setFilters}{\code{PivotFilters$setFilters()}}
-\item \href{#method-setFilter}{\code{PivotFilters$setFilter()}}
-\item \href{#method-setFilterValues}{\code{PivotFilters$setFilterValues()}}
-\item \href{#method-addFilter}{\code{PivotFilters$addFilter()}}
-\item \href{#method-getFilteredDataFrame}{\code{PivotFilters$getFilteredDataFrame()}}
-\item \href{#method-getCopy}{\code{PivotFilters$getCopy()}}
-\item \href{#method-asList}{\code{PivotFilters$asList()}}
-\item \href{#method-asJSON}{\code{PivotFilters$asJSON()}}
-\item \href{#method-asString}{\code{PivotFilters$asString()}}
-\item \href{#method-clone}{\code{PivotFilters$clone()}}
+\item \href{#method-PivotFilters-new}{\code{PivotFilters$new()}}
+\item \href{#method-PivotFilters-clearFilters}{\code{PivotFilters$clearFilters()}}
+\item \href{#method-PivotFilters-keepOnlyFiltersFor}{\code{PivotFilters$keepOnlyFiltersFor()}}
+\item \href{#method-PivotFilters-removeFiltersFor}{\code{PivotFilters$removeFiltersFor()}}
+\item \href{#method-PivotFilters-getFilter}{\code{PivotFilters$getFilter()}}
+\item \href{#method-PivotFilters-isFilterMatch}{\code{PivotFilters$isFilterMatch()}}
+\item \href{#method-PivotFilters-setFilters}{\code{PivotFilters$setFilters()}}
+\item \href{#method-PivotFilters-setFilter}{\code{PivotFilters$setFilter()}}
+\item \href{#method-PivotFilters-setFilterValues}{\code{PivotFilters$setFilterValues()}}
+\item \href{#method-PivotFilters-addFilter}{\code{PivotFilters$addFilter()}}
+\item \href{#method-PivotFilters-getFilteredDataFrame}{\code{PivotFilters$getFilteredDataFrame()}}
+\item \href{#method-PivotFilters-getCopy}{\code{PivotFilters$getCopy()}}
+\item \href{#method-PivotFilters-asList}{\code{PivotFilters$asList()}}
+\item \href{#method-PivotFilters-asJSON}{\code{PivotFilters$asJSON()}}
+\item \href{#method-PivotFilters-asString}{\code{PivotFilters$asString()}}
+\item \href{#method-PivotFilters-clone}{\code{PivotFilters$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotFilters-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotFilters` object, optionally adding a filter.
 \subsection{Usage}{
@@ -134,8 +134,8 @@ A new `PivotFilters` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clearFilters"></a>}}
-\if{latex}{\out{\hypertarget{method-clearFilters}{}}}
+\if{html}{\out{<a id="method-PivotFilters-clearFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-clearFilters}{}}}
 \subsection{Method \code{clearFilters()}}{
 Remove all filters from this `PivotFilters` object.
 \subsection{Usage}{
@@ -147,8 +147,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-keepOnlyFiltersFor"></a>}}
-\if{latex}{\out{\hypertarget{method-keepOnlyFiltersFor}{}}}
+\if{html}{\out{<a id="method-PivotFilters-keepOnlyFiltersFor"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-keepOnlyFiltersFor}{}}}
 \subsection{Method \code{keepOnlyFiltersFor()}}{
 Remove the filters for all variables except those specified.
 \subsection{Usage}{
@@ -169,8 +169,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeFiltersFor"></a>}}
-\if{latex}{\out{\hypertarget{method-removeFiltersFor}{}}}
+\if{html}{\out{<a id="method-PivotFilters-removeFiltersFor"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-removeFiltersFor}{}}}
 \subsection{Method \code{removeFiltersFor()}}{
 Remove the filters for the specified variables.
 \subsection{Usage}{
@@ -191,8 +191,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getFilter"></a>}}
-\if{latex}{\out{\hypertarget{method-getFilter}{}}}
+\if{html}{\out{<a id="method-PivotFilters-getFilter"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-getFilter}{}}}
 \subsection{Method \code{getFilter()}}{
 Find a filter with the specified variable name.
 \subsection{Usage}{
@@ -211,8 +211,8 @@ A `PivotFilter` object that filters on the specified variable.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-isFilterMatch"></a>}}
-\if{latex}{\out{\hypertarget{method-isFilterMatch}{}}}
+\if{html}{\out{<a id="method-PivotFilters-isFilterMatch"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-isFilterMatch}{}}}
 \subsection{Method \code{isFilterMatch()}}{
 Tests whether this `PivotFilters` object matches specified criteria.
 \subsection{Usage}{
@@ -251,8 +251,8 @@ to find, e.g. `variableValues=list("PowerType"=c("DMU", "HST"))`.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setFilters"></a>}}
-\if{latex}{\out{\hypertarget{method-setFilters}{}}}
+\if{html}{\out{<a id="method-PivotFilters-setFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-setFilters}{}}}
 \subsection{Method \code{setFilters()}}{
 Update the value of this `PivotFilters` object with the filters from the
 specified `PivotFilters` object, either intersecting, replacing or unioning
@@ -277,8 +277,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setFilter"></a>}}
-\if{latex}{\out{\hypertarget{method-setFilter}{}}}
+\if{html}{\out{<a id="method-PivotFilters-setFilter"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-setFilter}{}}}
 \subsection{Method \code{setFilter()}}{
 Update the value of this `PivotFilters` object with the filters from the
 specified `PivotFilter` object, either intersecting, replacing or unioning
@@ -303,8 +303,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setFilterValues"></a>}}
-\if{latex}{\out{\hypertarget{method-setFilterValues}{}}}
+\if{html}{\out{<a id="method-PivotFilters-setFilterValues"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-setFilterValues}{}}}
 \subsection{Method \code{setFilterValues()}}{
 Update the value of this `PivotFilters` object with additional filter criteria,
 either intersecting, replacing or unioning the filter criteria.
@@ -339,8 +339,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addFilter"></a>}}
-\if{latex}{\out{\hypertarget{method-addFilter}{}}}
+\if{html}{\out{<a id="method-PivotFilters-addFilter"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-addFilter}{}}}
 \subsection{Method \code{addFilter()}}{
 Add a new `PivotFilter` object to the filter list in this `PivotFilters`
 object.
@@ -360,8 +360,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getFilteredDataFrame"></a>}}
-\if{latex}{\out{\hypertarget{method-getFilteredDataFrame}{}}}
+\if{html}{\out{<a id="method-PivotFilters-getFilteredDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-getFilteredDataFrame}{}}}
 \subsection{Method \code{getFilteredDataFrame()}}{
 Filters the specified data frame using the filters defined in this
 `PivotFilters` object and returns the results as another data frame.
@@ -381,8 +381,8 @@ A data frame filtered according to the criteria in this `PivotFilters` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCopy"></a>}}
-\if{latex}{\out{\hypertarget{method-getCopy}{}}}
+\if{html}{\out{<a id="method-PivotFilters-getCopy"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-getCopy}{}}}
 \subsection{Method \code{getCopy()}}{
 Create a copy of this `PivotFilters` object.
 \subsection{Usage}{
@@ -394,8 +394,8 @@ A copy of this `PivotFilters` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotFilters-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -407,8 +407,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotFilters-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -420,8 +420,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asString"></a>}}
-\if{latex}{\out{\hypertarget{method-asString}{}}}
+\if{html}{\out{<a id="method-PivotFilters-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-asString}{}}}
 \subsection{Method \code{asString()}}{
 Return a representation of this object as a character value.
 \subsection{Usage}{
@@ -444,8 +444,8 @@ A character summary of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotFilters-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilters-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

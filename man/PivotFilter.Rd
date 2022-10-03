@@ -46,20 +46,20 @@ matching values/data.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotFilter$new()}}
-\item \href{#method-intersect}{\code{PivotFilter$intersect()}}
-\item \href{#method-union}{\code{PivotFilter$union()}}
-\item \href{#method-replace}{\code{PivotFilter$replace()}}
-\item \href{#method-getCopy}{\code{PivotFilter$getCopy()}}
-\item \href{#method-asList}{\code{PivotFilter$asList()}}
-\item \href{#method-asJSON}{\code{PivotFilter$asJSON()}}
-\item \href{#method-asString}{\code{PivotFilter$asString()}}
-\item \href{#method-clone}{\code{PivotFilter$clone()}}
+\item \href{#method-PivotFilter-new}{\code{PivotFilter$new()}}
+\item \href{#method-PivotFilter-intersect}{\code{PivotFilter$intersect()}}
+\item \href{#method-PivotFilter-union}{\code{PivotFilter$union()}}
+\item \href{#method-PivotFilter-replace}{\code{PivotFilter$replace()}}
+\item \href{#method-PivotFilter-getCopy}{\code{PivotFilter$getCopy()}}
+\item \href{#method-PivotFilter-asList}{\code{PivotFilter$asList()}}
+\item \href{#method-PivotFilter-asJSON}{\code{PivotFilter$asJSON()}}
+\item \href{#method-PivotFilter-asString}{\code{PivotFilter$asString()}}
+\item \href{#method-PivotFilter-clone}{\code{PivotFilter$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotFilter-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilter-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotFilter` object.
 \subsection{Usage}{
@@ -90,8 +90,8 @@ A new `PivotFilter` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-intersect"></a>}}
-\if{latex}{\out{\hypertarget{method-intersect}{}}}
+\if{html}{\out{<a id="method-PivotFilter-intersect"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilter-intersect}{}}}
 \subsection{Method \code{intersect()}}{
 Updates this filter by intersecting the values in this filter with the
 values from another `PivotFilter` object.
@@ -111,8 +111,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-union"></a>}}
-\if{latex}{\out{\hypertarget{method-union}{}}}
+\if{html}{\out{<a id="method-PivotFilter-union"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilter-union}{}}}
 \subsection{Method \code{union()}}{
 Updates this filter by unioning the values in this filter with the
 values from another `PivotFilter` object.
@@ -132,8 +132,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-replace"></a>}}
-\if{latex}{\out{\hypertarget{method-replace}{}}}
+\if{html}{\out{<a id="method-PivotFilter-replace"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilter-replace}{}}}
 \subsection{Method \code{replace()}}{
 Updates this filter by replacing the values in this filter with the
 values from another `PivotFilter` object.
@@ -153,8 +153,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCopy"></a>}}
-\if{latex}{\out{\hypertarget{method-getCopy}{}}}
+\if{html}{\out{<a id="method-PivotFilter-getCopy"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilter-getCopy}{}}}
 \subsection{Method \code{getCopy()}}{
 Create a copy of this `PivotFilter` object.
 \subsection{Usage}{
@@ -166,8 +166,8 @@ A copy of this `PivotFilter` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotFilter-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilter-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -179,8 +179,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotFilter-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilter-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -192,8 +192,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asString"></a>}}
-\if{latex}{\out{\hypertarget{method-asString}{}}}
+\if{html}{\out{<a id="method-PivotFilter-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilter-asString}{}}}
 \subsection{Method \code{asString()}}{
 Return a representation of this object as a character value.
 \subsection{Usage}{
@@ -216,8 +216,8 @@ A character summary of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotFilter-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilter-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

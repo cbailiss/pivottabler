@@ -138,83 +138,83 @@ of significant pivot table operations (i.e. where elapsed>0.1).}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotTable$new()}}
-\item \href{#method-setDefault}{\code{PivotTable$setDefault()}}
-\item \href{#method-getDefault1}{\code{PivotTable$getDefault1()}}
-\item \href{#method-getDefault2}{\code{PivotTable$getDefault2()}}
-\item \href{#method-getDefault3}{\code{PivotTable$getDefault3()}}
-\item \href{#method-getNextInstanceId}{\code{PivotTable$getNextInstanceId()}}
-\item \href{#method-addData}{\code{PivotTable$addData()}}
-\item \href{#method-addTotalData}{\code{PivotTable$addTotalData()}}
-\item \href{#method-getColumnGroupsByLevel}{\code{PivotTable$getColumnGroupsByLevel()}}
-\item \href{#method-getTopColumnGroups}{\code{PivotTable$getTopColumnGroups()}}
-\item \href{#method-getLeafColumnGroups}{\code{PivotTable$getLeafColumnGroups()}}
-\item \href{#method-getLeafColumnGroup}{\code{PivotTable$getLeafColumnGroup()}}
-\item \href{#method-addColumnGroup}{\code{PivotTable$addColumnGroup()}}
-\item \href{#method-addColumnDataGroups}{\code{PivotTable$addColumnDataGroups()}}
-\item \href{#method-normaliseColumnGroups}{\code{PivotTable$normaliseColumnGroups()}}
-\item \href{#method-sortColumnDataGroups}{\code{PivotTable$sortColumnDataGroups()}}
-\item \href{#method-getRowGroupsByLevel}{\code{PivotTable$getRowGroupsByLevel()}}
-\item \href{#method-getTopRowGroups}{\code{PivotTable$getTopRowGroups()}}
-\item \href{#method-getLeafRowGroups}{\code{PivotTable$getLeafRowGroups()}}
-\item \href{#method-getLeafRowGroup}{\code{PivotTable$getLeafRowGroup()}}
-\item \href{#method-addRowGroup}{\code{PivotTable$addRowGroup()}}
-\item \href{#method-addRowDataGroups}{\code{PivotTable$addRowDataGroups()}}
-\item \href{#method-normaliseRowGroups}{\code{PivotTable$normaliseRowGroups()}}
-\item \href{#method-sortRowDataGroups}{\code{PivotTable$sortRowDataGroups()}}
-\item \href{#method-setRowDataGroupHeader}{\code{PivotTable$setRowDataGroupHeader()}}
-\item \href{#method-addCalculationGroup}{\code{PivotTable$addCalculationGroup()}}
-\item \href{#method-defineCalculation}{\code{PivotTable$defineCalculation()}}
-\item \href{#method-addColumnCalculationGroups}{\code{PivotTable$addColumnCalculationGroups()}}
-\item \href{#method-addRowCalculationGroups}{\code{PivotTable$addRowCalculationGroups()}}
-\item \href{#method-addStyle}{\code{PivotTable$addStyle()}}
-\item \href{#method-createInlineStyle}{\code{PivotTable$createInlineStyle()}}
-\item \href{#method-setStyling}{\code{PivotTable$setStyling()}}
-\item \href{#method-mapStyling}{\code{PivotTable$mapStyling()}}
-\item \href{#method-generateCellStructure}{\code{PivotTable$generateCellStructure()}}
-\item \href{#method-resetCells}{\code{PivotTable$resetCells()}}
-\item \href{#method-evaluateCells}{\code{PivotTable$evaluateCells()}}
-\item \href{#method-evaluatePivot}{\code{PivotTable$evaluatePivot()}}
-\item \href{#method-findRowDataGroups}{\code{PivotTable$findRowDataGroups()}}
-\item \href{#method-findColumnDataGroups}{\code{PivotTable$findColumnDataGroups()}}
-\item \href{#method-getEmptyRows}{\code{PivotTable$getEmptyRows()}}
-\item \href{#method-getEmptyColumns}{\code{PivotTable$getEmptyColumns()}}
-\item \href{#method-getCell}{\code{PivotTable$getCell()}}
-\item \href{#method-getCells}{\code{PivotTable$getCells()}}
-\item \href{#method-findCells}{\code{PivotTable$findCells()}}
-\item \href{#method-findGroupColumnNumbers}{\code{PivotTable$findGroupColumnNumbers()}}
-\item \href{#method-findGroupRowNumbers}{\code{PivotTable$findGroupRowNumbers()}}
-\item \href{#method-removeColumn}{\code{PivotTable$removeColumn()}}
-\item \href{#method-removeColumns}{\code{PivotTable$removeColumns()}}
-\item \href{#method-removeEmptyColumns}{\code{PivotTable$removeEmptyColumns()}}
-\item \href{#method-removeRow}{\code{PivotTable$removeRow()}}
-\item \href{#method-removeRows}{\code{PivotTable$removeRows()}}
-\item \href{#method-removeEmptyRows}{\code{PivotTable$removeEmptyRows()}}
-\item \href{#method-print}{\code{PivotTable$print()}}
-\item \href{#method-asMatrix}{\code{PivotTable$asMatrix()}}
-\item \href{#method-asDataMatrix}{\code{PivotTable$asDataMatrix()}}
-\item \href{#method-asDataFrame}{\code{PivotTable$asDataFrame()}}
-\item \href{#method-asTidyDataFrame}{\code{PivotTable$asTidyDataFrame()}}
-\item \href{#method-getMerges}{\code{PivotTable$getMerges()}}
-\item \href{#method-asBasicTable}{\code{PivotTable$asBasicTable()}}
-\item \href{#method-getCss}{\code{PivotTable$getCss()}}
-\item \href{#method-getHtml}{\code{PivotTable$getHtml()}}
-\item \href{#method-saveHtml}{\code{PivotTable$saveHtml()}}
-\item \href{#method-renderPivot}{\code{PivotTable$renderPivot()}}
-\item \href{#method-getLatex}{\code{PivotTable$getLatex()}}
-\item \href{#method-writeToExcelWorksheet}{\code{PivotTable$writeToExcelWorksheet()}}
-\item \href{#method-trace}{\code{PivotTable$trace()}}
-\item \href{#method-showBatchInfo}{\code{PivotTable$showBatchInfo()}}
-\item \href{#method-asList}{\code{PivotTable$asList()}}
-\item \href{#method-asJSON}{\code{PivotTable$asJSON()}}
-\item \href{#method-viewJSON}{\code{PivotTable$viewJSON()}}
-\item \href{#method-finalize}{\code{PivotTable$finalize()}}
-\item \href{#method-clone}{\code{PivotTable$clone()}}
+\item \href{#method-PivotTable-new}{\code{PivotTable$new()}}
+\item \href{#method-PivotTable-setDefault}{\code{PivotTable$setDefault()}}
+\item \href{#method-PivotTable-getDefault1}{\code{PivotTable$getDefault1()}}
+\item \href{#method-PivotTable-getDefault2}{\code{PivotTable$getDefault2()}}
+\item \href{#method-PivotTable-getDefault3}{\code{PivotTable$getDefault3()}}
+\item \href{#method-PivotTable-getNextInstanceId}{\code{PivotTable$getNextInstanceId()}}
+\item \href{#method-PivotTable-addData}{\code{PivotTable$addData()}}
+\item \href{#method-PivotTable-addTotalData}{\code{PivotTable$addTotalData()}}
+\item \href{#method-PivotTable-getColumnGroupsByLevel}{\code{PivotTable$getColumnGroupsByLevel()}}
+\item \href{#method-PivotTable-getTopColumnGroups}{\code{PivotTable$getTopColumnGroups()}}
+\item \href{#method-PivotTable-getLeafColumnGroups}{\code{PivotTable$getLeafColumnGroups()}}
+\item \href{#method-PivotTable-getLeafColumnGroup}{\code{PivotTable$getLeafColumnGroup()}}
+\item \href{#method-PivotTable-addColumnGroup}{\code{PivotTable$addColumnGroup()}}
+\item \href{#method-PivotTable-addColumnDataGroups}{\code{PivotTable$addColumnDataGroups()}}
+\item \href{#method-PivotTable-normaliseColumnGroups}{\code{PivotTable$normaliseColumnGroups()}}
+\item \href{#method-PivotTable-sortColumnDataGroups}{\code{PivotTable$sortColumnDataGroups()}}
+\item \href{#method-PivotTable-getRowGroupsByLevel}{\code{PivotTable$getRowGroupsByLevel()}}
+\item \href{#method-PivotTable-getTopRowGroups}{\code{PivotTable$getTopRowGroups()}}
+\item \href{#method-PivotTable-getLeafRowGroups}{\code{PivotTable$getLeafRowGroups()}}
+\item \href{#method-PivotTable-getLeafRowGroup}{\code{PivotTable$getLeafRowGroup()}}
+\item \href{#method-PivotTable-addRowGroup}{\code{PivotTable$addRowGroup()}}
+\item \href{#method-PivotTable-addRowDataGroups}{\code{PivotTable$addRowDataGroups()}}
+\item \href{#method-PivotTable-normaliseRowGroups}{\code{PivotTable$normaliseRowGroups()}}
+\item \href{#method-PivotTable-sortRowDataGroups}{\code{PivotTable$sortRowDataGroups()}}
+\item \href{#method-PivotTable-setRowDataGroupHeader}{\code{PivotTable$setRowDataGroupHeader()}}
+\item \href{#method-PivotTable-addCalculationGroup}{\code{PivotTable$addCalculationGroup()}}
+\item \href{#method-PivotTable-defineCalculation}{\code{PivotTable$defineCalculation()}}
+\item \href{#method-PivotTable-addColumnCalculationGroups}{\code{PivotTable$addColumnCalculationGroups()}}
+\item \href{#method-PivotTable-addRowCalculationGroups}{\code{PivotTable$addRowCalculationGroups()}}
+\item \href{#method-PivotTable-addStyle}{\code{PivotTable$addStyle()}}
+\item \href{#method-PivotTable-createInlineStyle}{\code{PivotTable$createInlineStyle()}}
+\item \href{#method-PivotTable-setStyling}{\code{PivotTable$setStyling()}}
+\item \href{#method-PivotTable-mapStyling}{\code{PivotTable$mapStyling()}}
+\item \href{#method-PivotTable-generateCellStructure}{\code{PivotTable$generateCellStructure()}}
+\item \href{#method-PivotTable-resetCells}{\code{PivotTable$resetCells()}}
+\item \href{#method-PivotTable-evaluateCells}{\code{PivotTable$evaluateCells()}}
+\item \href{#method-PivotTable-evaluatePivot}{\code{PivotTable$evaluatePivot()}}
+\item \href{#method-PivotTable-findRowDataGroups}{\code{PivotTable$findRowDataGroups()}}
+\item \href{#method-PivotTable-findColumnDataGroups}{\code{PivotTable$findColumnDataGroups()}}
+\item \href{#method-PivotTable-getEmptyRows}{\code{PivotTable$getEmptyRows()}}
+\item \href{#method-PivotTable-getEmptyColumns}{\code{PivotTable$getEmptyColumns()}}
+\item \href{#method-PivotTable-getCell}{\code{PivotTable$getCell()}}
+\item \href{#method-PivotTable-getCells}{\code{PivotTable$getCells()}}
+\item \href{#method-PivotTable-findCells}{\code{PivotTable$findCells()}}
+\item \href{#method-PivotTable-findGroupColumnNumbers}{\code{PivotTable$findGroupColumnNumbers()}}
+\item \href{#method-PivotTable-findGroupRowNumbers}{\code{PivotTable$findGroupRowNumbers()}}
+\item \href{#method-PivotTable-removeColumn}{\code{PivotTable$removeColumn()}}
+\item \href{#method-PivotTable-removeColumns}{\code{PivotTable$removeColumns()}}
+\item \href{#method-PivotTable-removeEmptyColumns}{\code{PivotTable$removeEmptyColumns()}}
+\item \href{#method-PivotTable-removeRow}{\code{PivotTable$removeRow()}}
+\item \href{#method-PivotTable-removeRows}{\code{PivotTable$removeRows()}}
+\item \href{#method-PivotTable-removeEmptyRows}{\code{PivotTable$removeEmptyRows()}}
+\item \href{#method-PivotTable-print}{\code{PivotTable$print()}}
+\item \href{#method-PivotTable-asMatrix}{\code{PivotTable$asMatrix()}}
+\item \href{#method-PivotTable-asDataMatrix}{\code{PivotTable$asDataMatrix()}}
+\item \href{#method-PivotTable-asDataFrame}{\code{PivotTable$asDataFrame()}}
+\item \href{#method-PivotTable-asTidyDataFrame}{\code{PivotTable$asTidyDataFrame()}}
+\item \href{#method-PivotTable-getMerges}{\code{PivotTable$getMerges()}}
+\item \href{#method-PivotTable-asBasicTable}{\code{PivotTable$asBasicTable()}}
+\item \href{#method-PivotTable-getCss}{\code{PivotTable$getCss()}}
+\item \href{#method-PivotTable-getHtml}{\code{PivotTable$getHtml()}}
+\item \href{#method-PivotTable-saveHtml}{\code{PivotTable$saveHtml()}}
+\item \href{#method-PivotTable-renderPivot}{\code{PivotTable$renderPivot()}}
+\item \href{#method-PivotTable-getLatex}{\code{PivotTable$getLatex()}}
+\item \href{#method-PivotTable-writeToExcelWorksheet}{\code{PivotTable$writeToExcelWorksheet()}}
+\item \href{#method-PivotTable-trace}{\code{PivotTable$trace()}}
+\item \href{#method-PivotTable-showBatchInfo}{\code{PivotTable$showBatchInfo()}}
+\item \href{#method-PivotTable-asList}{\code{PivotTable$asList()}}
+\item \href{#method-PivotTable-asJSON}{\code{PivotTable$asJSON()}}
+\item \href{#method-PivotTable-viewJSON}{\code{PivotTable$viewJSON()}}
+\item \href{#method-PivotTable-finalize}{\code{PivotTable$finalize()}}
+\item \href{#method-PivotTable-clone}{\code{PivotTable$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotTable-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotTable` object.
 \subsection{Usage}{
@@ -286,8 +286,8 @@ A new `PivotTable` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setDefault"></a>}}
-\if{latex}{\out{\hypertarget{method-setDefault}{}}}
+\if{html}{\out{<a id="method-PivotTable-setDefault"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-setDefault}{}}}
 \subsection{Method \code{setDefault()}}{
 Specify default values for some function arguments.
 \subsection{Usage}{
@@ -317,8 +317,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getDefault1"></a>}}
-\if{latex}{\out{\hypertarget{method-getDefault1}{}}}
+\if{html}{\out{<a id="method-PivotTable-getDefault1"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getDefault1}{}}}
 \subsection{Method \code{getDefault1()}}{
 Get the default value of an argument.
 \subsection{Usage}{
@@ -346,8 +346,8 @@ The current value of the argument or the default value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getDefault2"></a>}}
-\if{latex}{\out{\hypertarget{method-getDefault2}{}}}
+\if{html}{\out{<a id="method-PivotTable-getDefault2"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getDefault2}{}}}
 \subsection{Method \code{getDefault2()}}{
 Get the default value of an argument.
 \subsection{Usage}{
@@ -370,8 +370,8 @@ The current value of the argument or the default value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getDefault3"></a>}}
-\if{latex}{\out{\hypertarget{method-getDefault3}{}}}
+\if{html}{\out{<a id="method-PivotTable-getDefault3"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getDefault3}{}}}
 \subsection{Method \code{getDefault3()}}{
 Get the default value of an argument.
 \subsection{Usage}{
@@ -390,8 +390,8 @@ The default value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getNextInstanceId"></a>}}
-\if{latex}{\out{\hypertarget{method-getNextInstanceId}{}}}
+\if{html}{\out{<a id="method-PivotTable-getNextInstanceId"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getNextInstanceId}{}}}
 \subsection{Method \code{getNextInstanceId()}}{
 Get the next unique object instance identifier.
 \subsection{Usage}{
@@ -411,8 +411,8 @@ An integer instance id.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addData"></a>}}
-\if{latex}{\out{\hypertarget{method-addData}{}}}
+\if{html}{\out{<a id="method-PivotTable-addData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-addData}{}}}
 \subsection{Method \code{addData()}}{
 Add a data frame with the specified name to the pivot table.
 \subsection{Usage}{
@@ -445,8 +445,8 @@ The `PivotData` object managing the data frames for the pivot table.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addTotalData"></a>}}
-\if{latex}{\out{\hypertarget{method-addTotalData}{}}}
+\if{html}{\out{<a id="method-PivotTable-addTotalData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-addTotalData}{}}}
 \subsection{Method \code{addTotalData()}}{
 Add a data frame containing totals data with the specified name and
 variables to the pivot table.
@@ -485,8 +485,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getColumnGroupsByLevel"></a>}}
-\if{latex}{\out{\hypertarget{method-getColumnGroupsByLevel}{}}}
+\if{html}{\out{<a id="method-PivotTable-getColumnGroupsByLevel"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getColumnGroupsByLevel}{}}}
 \subsection{Method \code{getColumnGroupsByLevel()}}{
 Retrieve the data groups at the specified level or levels in the column
 groups hierarchy.
@@ -515,8 +515,8 @@ A list containing `PivotDataGroup` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getTopColumnGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-getTopColumnGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-getTopColumnGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getTopColumnGroups}{}}}
 \subsection{Method \code{getTopColumnGroups()}}{
 [Deprecated: Use topColumnGroups instead]
 Retrieve the first level of column data groups.
@@ -529,8 +529,8 @@ A list containing `PivotDataGroup` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getLeafColumnGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-getLeafColumnGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-getLeafColumnGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getLeafColumnGroups}{}}}
 \subsection{Method \code{getLeafColumnGroups()}}{
 [Deprecated: Use leafColumnGroups instead]
 Retrieve the bottom level of column data groups.
@@ -543,8 +543,8 @@ A list containing `PivotDataGroup` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getLeafColumnGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-getLeafColumnGroup}{}}}
+\if{html}{\out{<a id="method-PivotTable-getLeafColumnGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getLeafColumnGroup}{}}}
 \subsection{Method \code{getLeafColumnGroup()}}{
 Retrieve the leaf-level data group associated with a specific column or
 columns.
@@ -564,8 +564,8 @@ A `PivotDataGroup` object or a list of `PivotDataGroup` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addColumnGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-addColumnGroup}{}}}
+\if{html}{\out{<a id="method-PivotTable-addColumnGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-addColumnGroup}{}}}
 \subsection{Method \code{addColumnGroup()}}{
 Add a new column data group at the top level of the column group
 hierarchy.  The new group is added as the last child unless an index
@@ -697,8 +697,8 @@ The new `PivotDataGroup` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addColumnDataGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-addColumnDataGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-addColumnDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-addColumnDataGroups}{}}}
 \subsection{Method \code{addColumnDataGroups()}}{
 Add multiple new data groups to the column group hierarchy
 based on the distinct values in a data frame
@@ -826,8 +826,8 @@ A list of new `PivotDataGroup` objects that have been added.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-normaliseColumnGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-normaliseColumnGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-normaliseColumnGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-normaliseColumnGroups}{}}}
 \subsection{Method \code{normaliseColumnGroups()}}{
 Normalise the column data group hierarchy so that all branches have the
 same number of levels - accomplished by adding empty child data groups
@@ -850,8 +850,8 @@ A list of new `PivotDataGroup` objects that have been added.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-sortColumnDataGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-sortColumnDataGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-sortColumnDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-sortColumnDataGroups}{}}}
 \subsection{Method \code{sortColumnDataGroups()}}{
 Sort column data groups either by the data group data value, caption,
 a custom order or based on calculation result values.
@@ -911,8 +911,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getRowGroupsByLevel"></a>}}
-\if{latex}{\out{\hypertarget{method-getRowGroupsByLevel}{}}}
+\if{html}{\out{<a id="method-PivotTable-getRowGroupsByLevel"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getRowGroupsByLevel}{}}}
 \subsection{Method \code{getRowGroupsByLevel()}}{
 Retrieve the data groups at the specified level or levels in the row groups
 hierarchy.
@@ -941,8 +941,8 @@ A list containing `PivotDataGroup` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getTopRowGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-getTopRowGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-getTopRowGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getTopRowGroups}{}}}
 \subsection{Method \code{getTopRowGroups()}}{
 [Deprecated: Use topRowGroups instead]
 Retrieve the first level of row data groups.
@@ -955,8 +955,8 @@ A list containing `PivotDataGroup` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getLeafRowGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-getLeafRowGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-getLeafRowGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getLeafRowGroups}{}}}
 \subsection{Method \code{getLeafRowGroups()}}{
 [Deprecated: Use leafRowGroups instead]
 Retrieve the bottom level of row data groups.
@@ -969,8 +969,8 @@ A list containing `PivotDataGroup` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getLeafRowGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-getLeafRowGroup}{}}}
+\if{html}{\out{<a id="method-PivotTable-getLeafRowGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getLeafRowGroup}{}}}
 \subsection{Method \code{getLeafRowGroup()}}{
 Retrieve the leaf-level data group associated with a specific row or rows.
 \subsection{Usage}{
@@ -989,8 +989,8 @@ A `PivotDataGroup` object or a list of `PivotDataGroup` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addRowGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-addRowGroup}{}}}
+\if{html}{\out{<a id="method-PivotTable-addRowGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-addRowGroup}{}}}
 \subsection{Method \code{addRowGroup()}}{
 Add a new column data group at the top level of the row group
 hierarchy.  The new group is added as the last child unless an index
@@ -1125,8 +1125,8 @@ The new `PivotDataGroup` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addRowDataGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-addRowDataGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-addRowDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-addRowDataGroups}{}}}
 \subsection{Method \code{addRowDataGroups()}}{
 Add multiple new data groups to the row group hierarchy
 based on the distinct values in a data frame
@@ -1281,8 +1281,8 @@ A list of new `PivotDataGroup` objects that have been added.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-normaliseRowGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-normaliseRowGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-normaliseRowGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-normaliseRowGroups}{}}}
 \subsection{Method \code{normaliseRowGroups()}}{
 Normalise the row data group hierarchy so that all branches have the
 same number of levels - accomplished by adding empty child data groups
@@ -1305,8 +1305,8 @@ A list of new `PivotDataGroup` objects that have been added.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-sortRowDataGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-sortRowDataGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-sortRowDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-sortRowDataGroups}{}}}
 \subsection{Method \code{sortRowDataGroups()}}{
 Sort row data groups either by the data group data value, caption,
 a custom order or based on calculation result values.
@@ -1366,8 +1366,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setRowDataGroupHeader"></a>}}
-\if{latex}{\out{\hypertarget{method-setRowDataGroupHeader}{}}}
+\if{html}{\out{<a id="method-PivotTable-setRowDataGroupHeader"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-setRowDataGroupHeader}{}}}
 \subsection{Method \code{setRowDataGroupHeader()}}{
 Set the row group header associated with a level of the row data group
 hierarchy.
@@ -1396,8 +1396,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addCalculationGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-addCalculationGroup}{}}}
+\if{html}{\out{<a id="method-PivotTable-addCalculationGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-addCalculationGroup}{}}}
 \subsection{Method \code{addCalculationGroup()}}{
 Create a new calculation group.  This is rarely needed since the
 default group is sufficient for all regular pivot tables.
@@ -1417,8 +1417,8 @@ A `PivotCalculationGroup` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-defineCalculation"></a>}}
-\if{latex}{\out{\hypertarget{method-defineCalculation}{}}}
+\if{html}{\out{<a id="method-PivotTable-defineCalculation"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-defineCalculation}{}}}
 \subsection{Method \code{defineCalculation()}}{
 Create a new `PivotCalculation` object.
 \subsection{Usage}{
@@ -1532,8 +1532,8 @@ A new `PivotCalculation` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addColumnCalculationGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-addColumnCalculationGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-addColumnCalculationGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-addColumnCalculationGroups}{}}}
 \subsection{Method \code{addColumnCalculationGroups()}}{
 Set calculations on existing data groups or add multiple new groups
 to the column data group hierarchy to represent calculations.
@@ -1570,8 +1570,8 @@ A list of new `PivotDataGroup` objects that have been added.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addRowCalculationGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-addRowCalculationGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-addRowCalculationGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-addRowCalculationGroups}{}}}
 \subsection{Method \code{addRowCalculationGroups()}}{
 Set calculations on existing data groups or add multiple new groups
 to the row data group hierarchy to represent calculations.
@@ -1618,8 +1618,8 @@ A list of new `PivotDataGroup` objects that have been added.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-addStyle}{}}}
+\if{html}{\out{<a id="method-PivotTable-addStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-addStyle}{}}}
 \subsection{Method \code{addStyle()}}{
 Add a new named style to the pivot table.
 \subsection{Usage}{
@@ -1641,8 +1641,8 @@ The newly created `PivotStyle` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-createInlineStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-createInlineStyle}{}}}
+\if{html}{\out{<a id="method-PivotTable-createInlineStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-createInlineStyle}{}}}
 \subsection{Method \code{createInlineStyle()}}{
 Create an inline style that can be used to override a base style.
 For general use cases, the `setStyling()` method provides a simpler
@@ -1673,8 +1673,8 @@ The newly created `PivotStyle` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setStyling"></a>}}
-\if{latex}{\out{\hypertarget{method-setStyling}{}}}
+\if{html}{\out{<a id="method-PivotTable-setStyling"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-setStyling}{}}}
 \subsection{Method \code{setStyling()}}{
 Apply styling to a set of data groups or cells in a pivot table.
 \subsection{Usage}{
@@ -1756,8 +1756,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-mapStyling"></a>}}
-\if{latex}{\out{\hypertarget{method-mapStyling}{}}}
+\if{html}{\out{<a id="method-PivotTable-mapStyling"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-mapStyling}{}}}
 \subsection{Method \code{mapStyling()}}{
 Apply styling to pivot table cells based on the value of each cell.
 \subsection{Usage}{
@@ -1849,8 +1849,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-generateCellStructure"></a>}}
-\if{latex}{\out{\hypertarget{method-generateCellStructure}{}}}
+\if{html}{\out{<a id="method-PivotTable-generateCellStructure"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-generateCellStructure}{}}}
 \subsection{Method \code{generateCellStructure()}}{
 Generate the cells that will form the body of the pivot table.
 \subsection{Usage}{
@@ -1867,8 +1867,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-resetCells"></a>}}
-\if{latex}{\out{\hypertarget{method-resetCells}{}}}
+\if{html}{\out{<a id="method-PivotTable-resetCells"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-resetCells}{}}}
 \subsection{Method \code{resetCells()}}{
 Clear the cells of the pivot table.
 \subsection{Usage}{
@@ -1885,8 +1885,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluateCells"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluateCells}{}}}
+\if{html}{\out{<a id="method-PivotTable-evaluateCells"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-evaluateCells}{}}}
 \subsection{Method \code{evaluateCells()}}{
 Calculate the cell values in the body of the pivot table.
 \subsection{Usage}{
@@ -1903,8 +1903,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluatePivot"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluatePivot}{}}}
+\if{html}{\out{<a id="method-PivotTable-evaluatePivot"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-evaluatePivot}{}}}
 \subsection{Method \code{evaluatePivot()}}{
 Calculate the cell values in the body of the pivot table.
 \subsection{Usage}{
@@ -1925,8 +1925,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findRowDataGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-findRowDataGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-findRowDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-findRowDataGroups}{}}}
 \subsection{Method \code{findRowDataGroups()}}{
 Find row data groups that match specified criteria.
 \subsection{Usage}{
@@ -2012,8 +2012,8 @@ A list of data groups matching the specified criteria.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findColumnDataGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-findColumnDataGroups}{}}}
+\if{html}{\out{<a id="method-PivotTable-findColumnDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-findColumnDataGroups}{}}}
 \subsection{Method \code{findColumnDataGroups()}}{
 Find column data groups that match specified criteria.
 \subsection{Usage}{
@@ -2090,8 +2090,8 @@ A list of data groups matching the specified criteria.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getEmptyRows"></a>}}
-\if{latex}{\out{\hypertarget{method-getEmptyRows}{}}}
+\if{html}{\out{<a id="method-PivotTable-getEmptyRows"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getEmptyRows}{}}}
 \subsection{Method \code{getEmptyRows()}}{
 Retrieve row numbers for rows where all cells are empty.
 \subsection{Usage}{
@@ -2126,8 +2126,8 @@ An integer vector of row numbers.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getEmptyColumns"></a>}}
-\if{latex}{\out{\hypertarget{method-getEmptyColumns}{}}}
+\if{html}{\out{<a id="method-PivotTable-getEmptyColumns"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getEmptyColumns}{}}}
 \subsection{Method \code{getEmptyColumns()}}{
 Retrieve column numbers for columns where all cells are empty.
 \subsection{Usage}{
@@ -2159,8 +2159,8 @@ An integer vector of column numbers.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCell"></a>}}
-\if{latex}{\out{\hypertarget{method-getCell}{}}}
+\if{html}{\out{<a id="method-PivotTable-getCell"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getCell}{}}}
 \subsection{Method \code{getCell()}}{
 Get the cell at the specified row and column coordinates in the pivot table.
 \subsection{Usage}{
@@ -2187,8 +2187,8 @@ A `PivotCell` object representing the cell.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCells"></a>}}
-\if{latex}{\out{\hypertarget{method-getCells}{}}}
+\if{html}{\out{<a id="method-PivotTable-getCells"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getCells}{}}}
 \subsection{Method \code{getCells()}}{
 Retrieve cells by a combination of row and/or column numbers.
 See the "Finding and Formatting" vignette for graphical examples.
@@ -2285,8 +2285,8 @@ A list of `PivotCell` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findCells"></a>}}
-\if{latex}{\out{\hypertarget{method-findCells}{}}}
+\if{html}{\out{<a id="method-PivotTable-findCells"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-findCells}{}}}
 \subsection{Method \code{findCells()}}{
 Find cells matching specified criteria.
 See the "Finding and Formatting" vignette for graphical examples.
@@ -2311,7 +2311,9 @@ See the "Finding and Formatting" vignette for graphical examples.
   rowGroups = NULL,
   columnGroups = NULL,
   rowColumnMatchMode = "simple",
-  cells = NULL
+  cells = NULL,
+  lowN = NULL,
+  highN = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -2394,6 +2396,10 @@ affected by the match mode.  All other arguments are not.}
 
 \item{\code{cells}}{A `PivotCell` object or a list of `PivotCell`
 objects to constrain the scope of the search.}
+
+\item{\code{lowN}}{Find the first N cells (ascending order, lowest values first).}
+
+\item{\code{highN}}{Find the last N cells (descending order, highest values first).}
 }
 \if{html}{\out{</div>}}
 }
@@ -2417,8 +2423,8 @@ A list of `PivotCell` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findGroupColumnNumbers"></a>}}
-\if{latex}{\out{\hypertarget{method-findGroupColumnNumbers}{}}}
+\if{html}{\out{<a id="method-PivotTable-findGroupColumnNumbers"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-findGroupColumnNumbers}{}}}
 \subsection{Method \code{findGroupColumnNumbers()}}{
 Find the column numbers associated with a specific data group or
 groups.
@@ -2448,8 +2454,8 @@ or a list of vectors containing column numbers related to the specified groups.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findGroupRowNumbers"></a>}}
-\if{latex}{\out{\hypertarget{method-findGroupRowNumbers}{}}}
+\if{html}{\out{<a id="method-PivotTable-findGroupRowNumbers"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-findGroupRowNumbers}{}}}
 \subsection{Method \code{findGroupRowNumbers()}}{
 Find the row numbers associated with a specific data group or groups.
 \subsection{Usage}{
@@ -2478,8 +2484,8 @@ or a list of vectors containing row numbers related to the specified groups.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeColumn"></a>}}
-\if{latex}{\out{\hypertarget{method-removeColumn}{}}}
+\if{html}{\out{<a id="method-PivotTable-removeColumn"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-removeColumn}{}}}
 \subsection{Method \code{removeColumn()}}{
 Remove a column from the pivot table.
 \subsection{Usage}{
@@ -2503,8 +2509,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeColumns"></a>}}
-\if{latex}{\out{\hypertarget{method-removeColumns}{}}}
+\if{html}{\out{<a id="method-PivotTable-removeColumns"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-removeColumns}{}}}
 \subsection{Method \code{removeColumns()}}{
 Remove multiple column from the pivot table.
 \subsection{Usage}{
@@ -2528,8 +2534,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeEmptyColumns"></a>}}
-\if{latex}{\out{\hypertarget{method-removeEmptyColumns}{}}}
+\if{html}{\out{<a id="method-PivotTable-removeEmptyColumns"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-removeEmptyColumns}{}}}
 \subsection{Method \code{removeEmptyColumns()}}{
 Remove columns where all cells are empty.
 \subsection{Usage}{
@@ -2561,8 +2567,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeRow"></a>}}
-\if{latex}{\out{\hypertarget{method-removeRow}{}}}
+\if{html}{\out{<a id="method-PivotTable-removeRow"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-removeRow}{}}}
 \subsection{Method \code{removeRow()}}{
 Remove a row from the pivot table.
 \subsection{Usage}{
@@ -2586,8 +2592,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeRows"></a>}}
-\if{latex}{\out{\hypertarget{method-removeRows}{}}}
+\if{html}{\out{<a id="method-PivotTable-removeRows"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-removeRows}{}}}
 \subsection{Method \code{removeRows()}}{
 Remove multiple rows from the pivot table.
 \subsection{Usage}{
@@ -2611,8 +2617,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeEmptyRows"></a>}}
-\if{latex}{\out{\hypertarget{method-removeEmptyRows}{}}}
+\if{html}{\out{<a id="method-PivotTable-removeEmptyRows"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-removeEmptyRows}{}}}
 \subsection{Method \code{removeEmptyRows()}}{
 Remove rows where all cells are empty.
 \subsection{Usage}{
@@ -2648,8 +2654,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-PivotTable-print"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-print}{}}}
 \subsection{Method \code{print()}}{
 Outputs a plain text representation of the pivot table to the console or
 returns a character representation of the pivot table.
@@ -2673,8 +2679,8 @@ Plain text representation of the pivot table.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asMatrix"></a>}}
-\if{latex}{\out{\hypertarget{method-asMatrix}{}}}
+\if{html}{\out{<a id="method-PivotTable-asMatrix"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-asMatrix}{}}}
 \subsection{Method \code{asMatrix()}}{
 Convert the pivot table to a matrix, where the data group headings
 are included in the body of the matrix.  This method tends to produce
@@ -2715,8 +2721,8 @@ A matrix.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asDataMatrix"></a>}}
-\if{latex}{\out{\hypertarget{method-asDataMatrix}{}}}
+\if{html}{\out{<a id="method-PivotTable-asDataMatrix"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-asDataMatrix}{}}}
 \subsection{Method \code{asDataMatrix()}}{
 Convert the pivot table to a matrix, where the data group headings
 are included as row/column headings in the matrix.
@@ -2754,8 +2760,8 @@ A matrix.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asDataFrame"></a>}}
-\if{latex}{\out{\hypertarget{method-asDataFrame}{}}}
+\if{html}{\out{<a id="method-PivotTable-asDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-asDataFrame}{}}}
 \subsection{Method \code{asDataFrame()}}{
 Convert the pivot table to a data frame, combining multiple levels of
 headings with the specified separator and/or exporting the row groups
@@ -2796,8 +2802,8 @@ A data frame.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asTidyDataFrame"></a>}}
-\if{latex}{\out{\hypertarget{method-asTidyDataFrame}{}}}
+\if{html}{\out{<a id="method-PivotTable-asTidyDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-asTidyDataFrame}{}}}
 \subsection{Method \code{asTidyDataFrame()}}{
 Convert the pivot table to tidy data frame, where each cell in the body of
 the pivot table becomes one row in the data frame.
@@ -2841,8 +2847,8 @@ A data frame.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getMerges"></a>}}
-\if{latex}{\out{\hypertarget{method-getMerges}{}}}
+\if{html}{\out{<a id="method-PivotTable-getMerges"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getMerges}{}}}
 \subsection{Method \code{getMerges()}}{
 Generate a list of the merged cell information arising from the data
 group hierarchies.
@@ -2863,8 +2869,8 @@ A list containing details of the merged cells.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asBasicTable"></a>}}
-\if{latex}{\out{\hypertarget{method-asBasicTable}{}}}
+\if{html}{\out{<a id="method-PivotTable-asBasicTable"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-asBasicTable}{}}}
 \subsection{Method \code{asBasicTable()}}{
 Convert the pivot table to a `basictabler` table (from the `basictabler`
 R package) which allows further custom manipulation of the pivot table.
@@ -2899,8 +2905,8 @@ A `basictabler` table.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCss"></a>}}
-\if{latex}{\out{\hypertarget{method-getCss}{}}}
+\if{html}{\out{<a id="method-PivotTable-getCss"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getCss}{}}}
 \subsection{Method \code{getCss()}}{
 Get the CSS declarations for the pivot table.
 \subsection{Usage}{
@@ -2924,8 +2930,8 @@ A character value containing the CSS style declaration.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getHtml"></a>}}
-\if{latex}{\out{\hypertarget{method-getHtml}{}}}
+\if{html}{\out{<a id="method-PivotTable-getHtml"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getHtml}{}}}
 \subsection{Method \code{getHtml()}}{
 Generate a HTML representation of the pivot table, optionally including
 additional detail for debugging purposes.
@@ -2993,8 +2999,8 @@ Convert this to a character variable using `as.character()`.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-saveHtml"></a>}}
-\if{latex}{\out{\hypertarget{method-saveHtml}{}}}
+\if{html}{\out{<a id="method-PivotTable-saveHtml"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-saveHtml}{}}}
 \subsection{Method \code{saveHtml()}}{
 Save a HTML representation of the pivot table to file, optionally including
 additional detail for debugging purposes.
@@ -3068,8 +3074,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-renderPivot"></a>}}
-\if{latex}{\out{\hypertarget{method-renderPivot}{}}}
+\if{html}{\out{<a id="method-PivotTable-renderPivot"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-renderPivot}{}}}
 \subsection{Method \code{renderPivot()}}{
 Render a HTML representation of the pivot table as an HTML widget,
 optionally including additional detail for debugging purposes.
@@ -3142,8 +3148,8 @@ A HTML widget from the `htmlwidgets` package.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getLatex"></a>}}
-\if{latex}{\out{\hypertarget{method-getLatex}{}}}
+\if{html}{\out{<a id="method-PivotTable-getLatex"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-getLatex}{}}}
 \subsection{Method \code{getLatex()}}{
 Generate a Latex representation of the pivot table.
 \subsection{Usage}{
@@ -3193,8 +3199,8 @@ the pivot table.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-writeToExcelWorksheet"></a>}}
-\if{latex}{\out{\hypertarget{method-writeToExcelWorksheet}{}}}
+\if{html}{\out{<a id="method-PivotTable-writeToExcelWorksheet"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-writeToExcelWorksheet}{}}}
 \subsection{Method \code{writeToExcelWorksheet()}}{
 Write the pivot table into the specified workbook and worksheet at
 the specified row-column location.
@@ -3254,8 +3260,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-trace"></a>}}
-\if{latex}{\out{\hypertarget{method-trace}{}}}
+\if{html}{\out{<a id="method-PivotTable-trace"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-trace}{}}}
 \subsection{Method \code{trace()}}{
 Capture a call for tracing purposes.
 This is an internal method.
@@ -3279,8 +3285,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-showBatchInfo"></a>}}
-\if{latex}{\out{\hypertarget{method-showBatchInfo}{}}}
+\if{html}{\out{<a id="method-PivotTable-showBatchInfo"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-showBatchInfo}{}}}
 \subsection{Method \code{showBatchInfo()}}{
 Output batch information to the console.
 \subsection{Usage}{
@@ -3292,8 +3298,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotTable-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of the pivot table as a list for debugging.
 \subsection{Usage}{
@@ -3305,8 +3311,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotTable-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of the pivot table as JSON for debugging.
 \subsection{Usage}{
@@ -3318,8 +3324,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-viewJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-viewJSON}{}}}
+\if{html}{\out{<a id="method-PivotTable-viewJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-viewJSON}{}}}
 \subsection{Method \code{viewJSON()}}{
 Use the `listviewer` package to view the pivot table as JSON for debugging.
 \subsection{Usage}{
@@ -3331,8 +3337,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-finalize"></a>}}
-\if{latex}{\out{\hypertarget{method-finalize}{}}}
+\if{html}{\out{<a id="method-PivotTable-finalize"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-finalize}{}}}
 \subsection{Method \code{finalize()}}{
 Clean-up the pivot table.
 \subsection{Usage}{
@@ -3344,8 +3350,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotTable-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotTable-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

@@ -86,16 +86,16 @@ use as the base styling for the cells related to this calculation.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotCalculation$new()}}
-\item \href{#method-asList}{\code{PivotCalculation$asList()}}
-\item \href{#method-asJSON}{\code{PivotCalculation$asJSON()}}
-\item \href{#method-asString}{\code{PivotCalculation$asString()}}
-\item \href{#method-clone}{\code{PivotCalculation$clone()}}
+\item \href{#method-PivotCalculation-new}{\code{PivotCalculation$new()}}
+\item \href{#method-PivotCalculation-asList}{\code{PivotCalculation$asList()}}
+\item \href{#method-PivotCalculation-asJSON}{\code{PivotCalculation$asJSON()}}
+\item \href{#method-PivotCalculation-asString}{\code{PivotCalculation$asString()}}
+\item \href{#method-PivotCalculation-clone}{\code{PivotCalculation$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotCalculation-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculation-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotCalculation` object.
 \subsection{Usage}{
@@ -202,8 +202,8 @@ A new `PivotCalculation` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotCalculation-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculation-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -215,8 +215,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotCalculation-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculation-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -228,8 +228,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asString"></a>}}
-\if{latex}{\out{\hypertarget{method-asString}{}}}
+\if{html}{\out{<a id="method-PivotCalculation-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculation-asString}{}}}
 \subsection{Method \code{asString()}}{
 Return a representation of this object as a character value.
 \subsection{Usage}{
@@ -241,8 +241,8 @@ A character summary of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotCalculation-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculation-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

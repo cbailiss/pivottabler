@@ -43,38 +43,38 @@ easy way for custom calculation functions to carry out common operations.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotCalculator$new()}}
-\item \href{#method-getDataFrame}{\code{PivotCalculator$getDataFrame()}}
-\item \href{#method-countTotalData}{\code{PivotCalculator$countTotalData()}}
-\item \href{#method-getTotalDataFrame}{\code{PivotCalculator$getTotalDataFrame()}}
-\item \href{#method-getCalculationGroup}{\code{PivotCalculator$getCalculationGroup()}}
-\item \href{#method-getCalculation}{\code{PivotCalculator$getCalculation()}}
-\item \href{#method-generateBatchesForCellEvaluation}{\code{PivotCalculator$generateBatchesForCellEvaluation()}}
-\item \href{#method-evaluateBatches}{\code{PivotCalculator$evaluateBatches()}}
-\item \href{#method-newFilter}{\code{PivotCalculator$newFilter()}}
-\item \href{#method-newFilters}{\code{PivotCalculator$newFilters()}}
-\item \href{#method-setFilters}{\code{PivotCalculator$setFilters()}}
-\item \href{#method-setFilter}{\code{PivotCalculator$setFilter()}}
-\item \href{#method-setFilterValues}{\code{PivotCalculator$setFilterValues()}}
-\item \href{#method-getFilteredDataFrame}{\code{PivotCalculator$getFilteredDataFrame()}}
-\item \href{#method-getDistinctValues}{\code{PivotCalculator$getDistinctValues()}}
-\item \href{#method-formatValue}{\code{PivotCalculator$formatValue()}}
-\item \href{#method-getCombinedFilters}{\code{PivotCalculator$getCombinedFilters()}}
-\item \href{#method-getFiltersForNamedCalculation}{\code{PivotCalculator$getFiltersForNamedCalculation()}}
-\item \href{#method-setWorkingData}{\code{PivotCalculator$setWorkingData()}}
-\item \href{#method-evaluateSingleValue}{\code{PivotCalculator$evaluateSingleValue()}}
-\item \href{#method-evaluateSummariseExpression}{\code{PivotCalculator$evaluateSummariseExpression()}}
-\item \href{#method-evaluateCalculationExpression}{\code{PivotCalculator$evaluateCalculationExpression()}}
-\item \href{#method-evaluateCalculateFunction}{\code{PivotCalculator$evaluateCalculateFunction()}}
-\item \href{#method-evaluateNamedCalculationWD}{\code{PivotCalculator$evaluateNamedCalculationWD()}}
-\item \href{#method-evaluateNamedCalculation}{\code{PivotCalculator$evaluateNamedCalculation()}}
-\item \href{#method-evaluateCell}{\code{PivotCalculator$evaluateCell()}}
-\item \href{#method-clone}{\code{PivotCalculator$clone()}}
+\item \href{#method-PivotCalculator-new}{\code{PivotCalculator$new()}}
+\item \href{#method-PivotCalculator-getDataFrame}{\code{PivotCalculator$getDataFrame()}}
+\item \href{#method-PivotCalculator-countTotalData}{\code{PivotCalculator$countTotalData()}}
+\item \href{#method-PivotCalculator-getTotalDataFrame}{\code{PivotCalculator$getTotalDataFrame()}}
+\item \href{#method-PivotCalculator-getCalculationGroup}{\code{PivotCalculator$getCalculationGroup()}}
+\item \href{#method-PivotCalculator-getCalculation}{\code{PivotCalculator$getCalculation()}}
+\item \href{#method-PivotCalculator-generateBatchesForCellEvaluation}{\code{PivotCalculator$generateBatchesForCellEvaluation()}}
+\item \href{#method-PivotCalculator-evaluateBatches}{\code{PivotCalculator$evaluateBatches()}}
+\item \href{#method-PivotCalculator-newFilter}{\code{PivotCalculator$newFilter()}}
+\item \href{#method-PivotCalculator-newFilters}{\code{PivotCalculator$newFilters()}}
+\item \href{#method-PivotCalculator-setFilters}{\code{PivotCalculator$setFilters()}}
+\item \href{#method-PivotCalculator-setFilter}{\code{PivotCalculator$setFilter()}}
+\item \href{#method-PivotCalculator-setFilterValues}{\code{PivotCalculator$setFilterValues()}}
+\item \href{#method-PivotCalculator-getFilteredDataFrame}{\code{PivotCalculator$getFilteredDataFrame()}}
+\item \href{#method-PivotCalculator-getDistinctValues}{\code{PivotCalculator$getDistinctValues()}}
+\item \href{#method-PivotCalculator-formatValue}{\code{PivotCalculator$formatValue()}}
+\item \href{#method-PivotCalculator-getCombinedFilters}{\code{PivotCalculator$getCombinedFilters()}}
+\item \href{#method-PivotCalculator-getFiltersForNamedCalculation}{\code{PivotCalculator$getFiltersForNamedCalculation()}}
+\item \href{#method-PivotCalculator-setWorkingData}{\code{PivotCalculator$setWorkingData()}}
+\item \href{#method-PivotCalculator-evaluateSingleValue}{\code{PivotCalculator$evaluateSingleValue()}}
+\item \href{#method-PivotCalculator-evaluateSummariseExpression}{\code{PivotCalculator$evaluateSummariseExpression()}}
+\item \href{#method-PivotCalculator-evaluateCalculationExpression}{\code{PivotCalculator$evaluateCalculationExpression()}}
+\item \href{#method-PivotCalculator-evaluateCalculateFunction}{\code{PivotCalculator$evaluateCalculateFunction()}}
+\item \href{#method-PivotCalculator-evaluateNamedCalculationWD}{\code{PivotCalculator$evaluateNamedCalculationWD()}}
+\item \href{#method-PivotCalculator-evaluateNamedCalculation}{\code{PivotCalculator$evaluateNamedCalculation()}}
+\item \href{#method-PivotCalculator-evaluateCell}{\code{PivotCalculator$evaluateCell()}}
+\item \href{#method-PivotCalculator-clone}{\code{PivotCalculator$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotCalculator` object.
 \subsection{Usage}{
@@ -94,8 +94,8 @@ A new `PivotCalculator` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getDataFrame"></a>}}
-\if{latex}{\out{\hypertarget{method-getDataFrame}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-getDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-getDataFrame}{}}}
 \subsection{Method \code{getDataFrame()}}{
 Retrieve a data frame that was added to the pivot table.
 \subsection{Usage}{
@@ -115,8 +115,8 @@ The data frame with the specified name.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-countTotalData"></a>}}
-\if{latex}{\out{\hypertarget{method-countTotalData}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-countTotalData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-countTotalData}{}}}
 \subsection{Method \code{countTotalData()}}{
 Count the number of "totals" data frames that have been
 added to the pivot table.
@@ -137,8 +137,8 @@ The number of "totals" data frames associated with the specified name.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getTotalDataFrame"></a>}}
-\if{latex}{\out{\hypertarget{method-getTotalDataFrame}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-getTotalDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-getTotalDataFrame}{}}}
 \subsection{Method \code{getTotalDataFrame()}}{
 Retrieve a "totals" data frame that was added to the
 pivot table.
@@ -162,8 +162,8 @@ The "totals" data frame.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCalculationGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-getCalculationGroup}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-getCalculationGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-getCalculationGroup}{}}}
 \subsection{Method \code{getCalculationGroup()}}{
 Retrieve a calculation group in the pivot table.
 \subsection{Usage}{
@@ -182,8 +182,8 @@ The calculation group with the specified name.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCalculation"></a>}}
-\if{latex}{\out{\hypertarget{method-getCalculation}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-getCalculation"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-getCalculation}{}}}
 \subsection{Method \code{getCalculation()}}{
 Retrieve a calculation in the pivot table.
 \subsection{Usage}{
@@ -207,8 +207,8 @@ The calculation with the specified name in the specified group.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-generateBatchesForCellEvaluation"></a>}}
-\if{latex}{\out{\hypertarget{method-generateBatchesForCellEvaluation}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-generateBatchesForCellEvaluation"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-generateBatchesForCellEvaluation}{}}}
 \subsection{Method \code{generateBatchesForCellEvaluation()}}{
 Examine the data groups and cells in a pivot table to
 generate the structure of the batches in preparation for evaluating the
@@ -222,8 +222,8 @@ The batches that exist in the pivot table.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluateBatches"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluateBatches}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-evaluateBatches"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-evaluateBatches}{}}}
 \subsection{Method \code{evaluateBatches()}}{
 Execute the batch calculations as part of evaluating the pivot table.
 \subsection{Usage}{
@@ -235,8 +235,8 @@ The number of batches that were evaluated.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-newFilter"></a>}}
-\if{latex}{\out{\hypertarget{method-newFilter}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-newFilter"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-newFilter}{}}}
 \subsection{Method \code{newFilter()}}{
 Create a new `PivotFilter` object associated with the
 specified data frame column name and column values.  The new filter is
@@ -259,8 +259,8 @@ The new `PivotFilter` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-newFilters"></a>}}
-\if{latex}{\out{\hypertarget{method-newFilters}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-newFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-newFilters}{}}}
 \subsection{Method \code{newFilters()}}{
 Create a new `PivotFilters` object associated with the
 specified data frame column name and column values.  The new filter is
@@ -289,8 +289,8 @@ The new `PivotFilter` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setFilters"></a>}}
-\if{latex}{\out{\hypertarget{method-setFilters}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-setFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-setFilters}{}}}
 \subsection{Method \code{setFilters()}}{
 Combines two `PivotFilters` objects, e.g. to intersect the filters coming
 from the row and column headings for a particular cell.
@@ -319,8 +319,8 @@ A new `PivotFilters` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setFilter"></a>}}
-\if{latex}{\out{\hypertarget{method-setFilter}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-setFilter"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-setFilter}{}}}
 \subsection{Method \code{setFilter()}}{
 Combines a `PivotFilters` object with a `PivotFilter` object.
 \subsection{Usage}{
@@ -344,8 +344,8 @@ A new `PivotFilters` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setFilterValues"></a>}}
-\if{latex}{\out{\hypertarget{method-setFilterValues}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-setFilterValues"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-setFilterValues}{}}}
 \subsection{Method \code{setFilterValues()}}{
 Combines a `PivotFilters` object with additional filter criteria.
 \subsection{Usage}{
@@ -379,8 +379,8 @@ A new `PivotFilters` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getFilteredDataFrame"></a>}}
-\if{latex}{\out{\hypertarget{method-getFilteredDataFrame}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-getFilteredDataFrame"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-getFilteredDataFrame}{}}}
 \subsection{Method \code{getFilteredDataFrame()}}{
 Apply a set of filters to a data frame and return the filtered results.
 \subsection{Usage}{
@@ -404,8 +404,8 @@ A filtered data frame.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getDistinctValues"></a>}}
-\if{latex}{\out{\hypertarget{method-getDistinctValues}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-getDistinctValues"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-getDistinctValues}{}}}
 \subsection{Method \code{getDistinctValues()}}{
 Get the distinct values from a specified column in a data frame.
 \subsection{Usage}{
@@ -426,8 +426,8 @@ A vector containing the distinct values.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-formatValue"></a>}}
-\if{latex}{\out{\hypertarget{method-formatValue}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-formatValue"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-formatValue}{}}}
 \subsection{Method \code{formatValue()}}{
 Format a value using a variety of different methods.
 \subsection{Usage}{
@@ -455,8 +455,8 @@ converted to a character value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCombinedFilters"></a>}}
-\if{latex}{\out{\hypertarget{method-getCombinedFilters}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-getCombinedFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-getCombinedFilters}{}}}
 \subsection{Method \code{getCombinedFilters()}}{
 Get the working filters for a calculation by combining
 row-column filters and calculation filters.
@@ -489,8 +489,8 @@ combined with the calculation filters.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getFiltersForNamedCalculation"></a>}}
-\if{latex}{\out{\hypertarget{method-getFiltersForNamedCalculation}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-getFiltersForNamedCalculation"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-getFiltersForNamedCalculation}{}}}
 \subsection{Method \code{getFiltersForNamedCalculation()}}{
 Get the working filters for a named calculation by calling
 `getCombinedFilters()` as needed, depending on the calculation type.
@@ -526,8 +526,8 @@ return value is a list.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setWorkingData"></a>}}
-\if{latex}{\out{\hypertarget{method-setWorkingData}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-setWorkingData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-setWorkingData}{}}}
 \subsection{Method \code{setWorkingData()}}{
 Set the working data filters for a cell in the pivot table.
 \subsection{Usage}{
@@ -556,8 +556,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluateSingleValue"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluateSingleValue}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-evaluateSingleValue"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-evaluateSingleValue}{}}}
 \subsection{Method \code{evaluateSingleValue()}}{
 Get a single value from a data frame, as part of evaluating a calculation
 where the calculation is of type `calc$type="value"`.
@@ -600,8 +600,8 @@ formattedValue (typically a character value).
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluateSummariseExpression"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluateSummariseExpression}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-evaluateSummariseExpression"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-evaluateSummariseExpression}{}}}
 \subsection{Method \code{evaluateSummariseExpression()}}{
 Get a summary value from a data frame, as part of evaluating a calculation
 where the calculation is of type `calc$type="summary"`.
@@ -671,8 +671,8 @@ formattedValue (typically a character value).
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluateCalculationExpression"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluateCalculationExpression}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-evaluateCalculationExpression"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-evaluateCalculationExpression}{}}}
 \subsection{Method \code{evaluateCalculationExpression()}}{
 Evaluates an R expression in order to combine the results of
 other calculations, as part of evaluating a calculation
@@ -721,8 +721,8 @@ formattedValue (typically a character value).
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluateCalculateFunction"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluateCalculateFunction}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-evaluateCalculateFunction"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-evaluateCalculateFunction}{}}}
 \subsection{Method \code{evaluateCalculateFunction()}}{
 Invokes a user-provided custom R function to aggregate data and
 perform calculations, as part of evaluating a calculation
@@ -774,8 +774,8 @@ formattedValue (typically a character value).
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluateNamedCalculationWD"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluateNamedCalculationWD}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-evaluateNamedCalculationWD"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-evaluateNamedCalculationWD}{}}}
 \subsection{Method \code{evaluateNamedCalculationWD()}}{
 Invokes the relevant calculation function based upon the calculation
 type.
@@ -817,8 +817,8 @@ formattedValue (typically a character value).
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluateNamedCalculation"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluateNamedCalculation}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-evaluateNamedCalculation"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-evaluateNamedCalculation}{}}}
 \subsection{Method \code{evaluateNamedCalculation()}}{
 Invokes the relevant calculation function based upon the calculation
 type.
@@ -859,8 +859,8 @@ formattedValue (typically a character value).
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluateCell"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluateCell}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-evaluateCell"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-evaluateCell}{}}}
 \subsection{Method \code{evaluateCell()}}{
 Evaluate calculations to compute the value of a cell in a pivot table.
 \subsection{Usage}{
@@ -880,8 +880,8 @@ formattedValue (typically a character value).
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotCalculator-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculator-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

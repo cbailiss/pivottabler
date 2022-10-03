@@ -1,3 +1,21 @@
+pivottabler 1.5.4
+=================
+
+This release includes one improvement and one change in anticipation of R 4.3.0.
+
+Improvements
+----------------
+
+`pt$findCells()` gains additional arguments `lowN` and `highN`.  These arguments allow the cell with the min/max value or the cells with the lowest N/highest N values to be easily found.  When either of these arguments is specified, the cells returned from `pt$findCells()` are sorted into the corresponding order by cell value, e.g. specifying `lowN=1` will find the cell with the lowest value.  Similarly, specifying `highN=5` will find the five cells containing the highest values, sorted into descending order by cell value.
+
+R 4.3.0 Change
+----------------
+
+The change described below will not affect most pivottabler package users.
+
+R 4.3.0 includes a fix/breaking change that affects how the base R match() function works and how the %in% operator works.  Specifically Date, POSIXct and POSIXlt values are matched as character values from R 4.3.0 rather than their underlying internal value.  This breaks one of the pivottabler package automated tests.  Whilst fixing this test, the opportunity was also taken to to improve how pivottabler filters work with Date, POSIXct and POSIXlt values when filters specify more than one value of these types (e.g. when visual totals are in use) by replacing uses of the `base::intersect()`, `base::union()` and `base::unlist()` functions with versions that better handle Date, POSIXct and POSIXlt values.
+
+
 pivottabler 1.5.3
 =================
 
@@ -7,6 +25,7 @@ Improvements
 Tables can now be exported to a wider variety of file formats using the basictabler and flextable packages.  In addition to HTML, Latex and Excel (which can be generated directly by the pivottabler package), additional formats now supported using basictabler+flextable include include Microsoft Word, Microsoft PowerPoint and PDF.  See the Outputs vignette for more details. 
 
 It is now easier to format the borders for specific cells.  See the "Formatting cell borders for specific cells" section of the Styling vignette for more details.
+
 
 pivottabler 1.5.2
 =================

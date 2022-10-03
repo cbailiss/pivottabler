@@ -17,15 +17,15 @@ The `PivotHtmlRenderer` class creates a HTML representation of a pivot table.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotHtmlRenderer$new()}}
-\item \href{#method-clearIsRenderedFlags}{\code{PivotHtmlRenderer$clearIsRenderedFlags()}}
-\item \href{#method-getTableHtml}{\code{PivotHtmlRenderer$getTableHtml()}}
-\item \href{#method-clone}{\code{PivotHtmlRenderer$clone()}}
+\item \href{#method-PivotHtmlRenderer-new}{\code{PivotHtmlRenderer$new()}}
+\item \href{#method-PivotHtmlRenderer-clearIsRenderedFlags}{\code{PivotHtmlRenderer$clearIsRenderedFlags()}}
+\item \href{#method-PivotHtmlRenderer-getTableHtml}{\code{PivotHtmlRenderer$getTableHtml()}}
+\item \href{#method-PivotHtmlRenderer-clone}{\code{PivotHtmlRenderer$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotHtmlRenderer-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotHtmlRenderer-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotHtmlRenderer` object.
 \subsection{Usage}{
@@ -45,8 +45,8 @@ A new `PivotHtmlRenderer` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clearIsRenderedFlags"></a>}}
-\if{latex}{\out{\hypertarget{method-clearIsRenderedFlags}{}}}
+\if{html}{\out{<a id="method-PivotHtmlRenderer-clearIsRenderedFlags"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotHtmlRenderer-clearIsRenderedFlags}{}}}
 \subsection{Method \code{clearIsRenderedFlags()}}{
 An internal method used when rendering a pivot table to HTML.
 Clear the IsRendered flags that exist on the `PivotDataGroup` class.
@@ -59,8 +59,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getTableHtml"></a>}}
-\if{latex}{\out{\hypertarget{method-getTableHtml}{}}}
+\if{html}{\out{<a id="method-PivotHtmlRenderer-getTableHtml"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotHtmlRenderer-getTableHtml}{}}}
 \subsection{Method \code{getTableHtml()}}{
 Generate a HTML representation of the pivot table, optionally including
 additional detail for debugging purposes.
@@ -124,8 +124,8 @@ Convert this to a character variable using `as.character()`.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotHtmlRenderer-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotHtmlRenderer-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

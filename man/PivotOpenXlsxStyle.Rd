@@ -89,19 +89,19 @@ a numeric format code such as 0.00, #,###.00, etc}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotOpenXlsxStyle$new()}}
-\item \href{#method-isBasicStyleNameMatch}{\code{PivotOpenXlsxStyle$isBasicStyleNameMatch()}}
-\item \href{#method-isFullStyleDetailMatch}{\code{PivotOpenXlsxStyle$isFullStyleDetailMatch()}}
-\item \href{#method-createOpenXslxStyle}{\code{PivotOpenXlsxStyle$createOpenXslxStyle()}}
-\item \href{#method-asList}{\code{PivotOpenXlsxStyle$asList()}}
-\item \href{#method-asJSON}{\code{PivotOpenXlsxStyle$asJSON()}}
-\item \href{#method-asString}{\code{PivotOpenXlsxStyle$asString()}}
-\item \href{#method-clone}{\code{PivotOpenXlsxStyle$clone()}}
+\item \href{#method-PivotOpenXlsxStyle-new}{\code{PivotOpenXlsxStyle$new()}}
+\item \href{#method-PivotOpenXlsxStyle-isBasicStyleNameMatch}{\code{PivotOpenXlsxStyle$isBasicStyleNameMatch()}}
+\item \href{#method-PivotOpenXlsxStyle-isFullStyleDetailMatch}{\code{PivotOpenXlsxStyle$isFullStyleDetailMatch()}}
+\item \href{#method-PivotOpenXlsxStyle-createOpenXslxStyle}{\code{PivotOpenXlsxStyle$createOpenXslxStyle()}}
+\item \href{#method-PivotOpenXlsxStyle-asList}{\code{PivotOpenXlsxStyle$asList()}}
+\item \href{#method-PivotOpenXlsxStyle-asJSON}{\code{PivotOpenXlsxStyle$asJSON()}}
+\item \href{#method-PivotOpenXlsxStyle-asString}{\code{PivotOpenXlsxStyle$asString()}}
+\item \href{#method-PivotOpenXlsxStyle-clone}{\code{PivotOpenXlsxStyle$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyle-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotOpenXlsxStyle` object.
 \subsection{Usage}{
@@ -212,8 +212,8 @@ A new `PivotOpenXlsxStyle` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-isBasicStyleNameMatch"></a>}}
-\if{latex}{\out{\hypertarget{method-isBasicStyleNameMatch}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyle-isBasicStyleNameMatch"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-isBasicStyleNameMatch}{}}}
 \subsection{Method \code{isBasicStyleNameMatch()}}{
 Test whether a style is a base style with the specified name.
 \subsection{Usage}{
@@ -232,8 +232,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-isFullStyleDetailMatch"></a>}}
-\if{latex}{\out{\hypertarget{method-isFullStyleDetailMatch}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyle-isFullStyleDetailMatch"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-isFullStyleDetailMatch}{}}}
 \subsection{Method \code{isFullStyleDetailMatch()}}{
 Test whether a style has matching style attributes.
 \subsection{Usage}{
@@ -345,8 +345,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-createOpenXslxStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-createOpenXslxStyle}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyle-createOpenXslxStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-createOpenXslxStyle}{}}}
 \subsection{Method \code{createOpenXslxStyle()}}{
 Create an `openxlsx` style from this style definition.
 \subsection{Usage}{
@@ -358,8 +358,8 @@ No return value.  Retrieve the style using the `openxlsxStyle` property.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyle-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -371,8 +371,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyle-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -384,8 +384,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asString"></a>}}
-\if{latex}{\out{\hypertarget{method-asString}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyle-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-asString}{}}}
 \subsection{Method \code{asString()}}{
 Return a representation of this object as a character value.
 \subsection{Usage}{
@@ -397,8 +397,8 @@ A character summary of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyle-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

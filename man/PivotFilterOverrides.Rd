@@ -72,18 +72,18 @@ other pivot filters.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotFilterOverrides$new()}}
-\item \href{#method-add}{\code{PivotFilterOverrides$add()}}
-\item \href{#method-apply}{\code{PivotFilterOverrides$apply()}}
-\item \href{#method-asList}{\code{PivotFilterOverrides$asList()}}
-\item \href{#method-asJSON}{\code{PivotFilterOverrides$asJSON()}}
-\item \href{#method-asString}{\code{PivotFilterOverrides$asString()}}
-\item \href{#method-clone}{\code{PivotFilterOverrides$clone()}}
+\item \href{#method-PivotFilterOverrides-new}{\code{PivotFilterOverrides$new()}}
+\item \href{#method-PivotFilterOverrides-add}{\code{PivotFilterOverrides$add()}}
+\item \href{#method-PivotFilterOverrides-apply}{\code{PivotFilterOverrides$apply()}}
+\item \href{#method-PivotFilterOverrides-asList}{\code{PivotFilterOverrides$asList()}}
+\item \href{#method-PivotFilterOverrides-asJSON}{\code{PivotFilterOverrides$asJSON()}}
+\item \href{#method-PivotFilterOverrides-asString}{\code{PivotFilterOverrides$asString()}}
+\item \href{#method-PivotFilterOverrides-clone}{\code{PivotFilterOverrides$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotFilterOverrides-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilterOverrides-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotFilterOverrides` object.
 \subsection{Usage}{
@@ -144,8 +144,8 @@ A new `PivotFilterOverrides` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add"></a>}}
-\if{latex}{\out{\hypertarget{method-add}{}}}
+\if{html}{\out{<a id="method-PivotFilterOverrides-add"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilterOverrides-add}{}}}
 \subsection{Method \code{add()}}{
 Add additional filter criteria into this `PivotFilterOverrides` object.
 Either `filter` is specified, or `variableName`, `type` and `values` are specified.
@@ -183,8 +183,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-apply"></a>}}
-\if{latex}{\out{\hypertarget{method-apply}{}}}
+\if{html}{\out{<a id="method-PivotFilterOverrides-apply"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilterOverrides-apply}{}}}
 \subsection{Method \code{apply()}}{
 Apply the filter overrides to an existing `PivotFilters` object.
 \subsection{Usage}{
@@ -205,8 +205,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotFilterOverrides-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilterOverrides-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -218,8 +218,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotFilterOverrides-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilterOverrides-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -231,8 +231,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asString"></a>}}
-\if{latex}{\out{\hypertarget{method-asString}{}}}
+\if{html}{\out{<a id="method-PivotFilterOverrides-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilterOverrides-asString}{}}}
 \subsection{Method \code{asString()}}{
 Return a representation of this object as a character value.
 \subsection{Usage}{
@@ -255,8 +255,8 @@ A character summary of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotFilterOverrides-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotFilterOverrides-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

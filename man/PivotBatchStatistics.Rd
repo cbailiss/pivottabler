@@ -25,17 +25,17 @@ track how many calculations are batch compatible/incompatible.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotBatchStatistics$new()}}
-\item \href{#method-reset}{\code{PivotBatchStatistics$reset()}}
-\item \href{#method-incrementNoData}{\code{PivotBatchStatistics$incrementNoData()}}
-\item \href{#method-incrementCompatible}{\code{PivotBatchStatistics$incrementCompatible()}}
-\item \href{#method-incrementIncompatible}{\code{PivotBatchStatistics$incrementIncompatible()}}
-\item \href{#method-clone}{\code{PivotBatchStatistics$clone()}}
+\item \href{#method-PivotBatchStatistics-new}{\code{PivotBatchStatistics$new()}}
+\item \href{#method-PivotBatchStatistics-reset}{\code{PivotBatchStatistics$reset()}}
+\item \href{#method-PivotBatchStatistics-incrementNoData}{\code{PivotBatchStatistics$incrementNoData()}}
+\item \href{#method-PivotBatchStatistics-incrementCompatible}{\code{PivotBatchStatistics$incrementCompatible()}}
+\item \href{#method-PivotBatchStatistics-incrementIncompatible}{\code{PivotBatchStatistics$incrementIncompatible()}}
+\item \href{#method-PivotBatchStatistics-clone}{\code{PivotBatchStatistics$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotBatchStatistics-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchStatistics-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotBatchStatistics` object.
 \subsection{Usage}{
@@ -55,8 +55,8 @@ A new `PivotBatchStatistics` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset"></a>}}
-\if{latex}{\out{\hypertarget{method-reset}{}}}
+\if{html}{\out{<a id="method-PivotBatchStatistics-reset"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchStatistics-reset}{}}}
 \subsection{Method \code{reset()}}{
 Clear the batch statistics.
 \subsection{Usage}{
@@ -68,8 +68,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-incrementNoData"></a>}}
-\if{latex}{\out{\hypertarget{method-incrementNoData}{}}}
+\if{html}{\out{<a id="method-PivotBatchStatistics-incrementNoData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchStatistics-incrementNoData}{}}}
 \subsection{Method \code{incrementNoData()}}{
 Increment the noData count for a batch.
 \subsection{Usage}{
@@ -93,8 +93,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-incrementCompatible"></a>}}
-\if{latex}{\out{\hypertarget{method-incrementCompatible}{}}}
+\if{html}{\out{<a id="method-PivotBatchStatistics-incrementCompatible"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchStatistics-incrementCompatible}{}}}
 \subsection{Method \code{incrementCompatible()}}{
 Increment the compatible count for a batch.
 \subsection{Usage}{
@@ -118,8 +118,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-incrementIncompatible"></a>}}
-\if{latex}{\out{\hypertarget{method-incrementIncompatible}{}}}
+\if{html}{\out{<a id="method-PivotBatchStatistics-incrementIncompatible"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchStatistics-incrementIncompatible}{}}}
 \subsection{Method \code{incrementIncompatible()}}{
 Increment the incompatible count for a batch.
 \subsection{Usage}{
@@ -143,8 +143,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotBatchStatistics-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchStatistics-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

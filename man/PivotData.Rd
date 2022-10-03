@@ -32,21 +32,21 @@ which are used to enable the "value" calculation type.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotData$new()}}
-\item \href{#method-addData}{\code{PivotData$addData()}}
-\item \href{#method-getData}{\code{PivotData$getData()}}
-\item \href{#method-isKnownData}{\code{PivotData$isKnownData()}}
-\item \href{#method-addTotalData}{\code{PivotData$addTotalData()}}
-\item \href{#method-countTotalData}{\code{PivotData$countTotalData()}}
-\item \href{#method-getTotalData}{\code{PivotData$getTotalData()}}
-\item \href{#method-asList}{\code{PivotData$asList()}}
-\item \href{#method-asJSON}{\code{PivotData$asJSON()}}
-\item \href{#method-clone}{\code{PivotData$clone()}}
+\item \href{#method-PivotData-new}{\code{PivotData$new()}}
+\item \href{#method-PivotData-addData}{\code{PivotData$addData()}}
+\item \href{#method-PivotData-getData}{\code{PivotData$getData()}}
+\item \href{#method-PivotData-isKnownData}{\code{PivotData$isKnownData()}}
+\item \href{#method-PivotData-addTotalData}{\code{PivotData$addTotalData()}}
+\item \href{#method-PivotData-countTotalData}{\code{PivotData$countTotalData()}}
+\item \href{#method-PivotData-getTotalData}{\code{PivotData$getTotalData()}}
+\item \href{#method-PivotData-asList}{\code{PivotData$asList()}}
+\item \href{#method-PivotData-asJSON}{\code{PivotData$asJSON()}}
+\item \href{#method-PivotData-clone}{\code{PivotData$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotData-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotData-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotData` object.
 \subsection{Usage}{
@@ -66,8 +66,8 @@ A new `PivotData` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addData"></a>}}
-\if{latex}{\out{\hypertarget{method-addData}{}}}
+\if{html}{\out{<a id="method-PivotData-addData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotData-addData}{}}}
 \subsection{Method \code{addData()}}{
 Add a data frame to the pivot table, specifying a name that can be used
 later to easily retrieve it or refer to it.
@@ -91,8 +91,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getData"></a>}}
-\if{latex}{\out{\hypertarget{method-getData}{}}}
+\if{html}{\out{<a id="method-PivotData-getData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotData-getData}{}}}
 \subsection{Method \code{getData()}}{
 Retrieve the data frame with the specified name.
 \subsection{Usage}{
@@ -112,8 +112,8 @@ A data frame.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-isKnownData"></a>}}
-\if{latex}{\out{\hypertarget{method-isKnownData}{}}}
+\if{html}{\out{<a id="method-PivotData-isKnownData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotData-isKnownData}{}}}
 \subsection{Method \code{isKnownData()}}{
 Check if a data frame exists with the specified name.
 \subsection{Usage}{
@@ -134,8 +134,8 @@ added to the pivot table.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addTotalData"></a>}}
-\if{latex}{\out{\hypertarget{method-addTotalData}{}}}
+\if{html}{\out{<a id="method-PivotData-addTotalData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotData-addTotalData}{}}}
 \subsection{Method \code{addTotalData()}}{
 Add pre-calculated totals/aggregate data to the pivot table.
 \subsection{Usage}{
@@ -160,8 +160,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-countTotalData"></a>}}
-\if{latex}{\out{\hypertarget{method-countTotalData}{}}}
+\if{html}{\out{<a id="method-PivotData-countTotalData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotData-countTotalData}{}}}
 \subsection{Method \code{countTotalData()}}{
 Count the number of data frames containing total/aggregate data that
 exist in the pivot table associated with a specific named data frame.
@@ -183,8 +183,8 @@ pivot table associated with the specified data frame name.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getTotalData"></a>}}
-\if{latex}{\out{\hypertarget{method-getTotalData}{}}}
+\if{html}{\out{<a id="method-PivotData-getTotalData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotData-getTotalData}{}}}
 \subsection{Method \code{getTotalData()}}{
 Retrieve pre-calculated totals/aggregate data from the pivot table.
 \subsection{Usage}{
@@ -207,8 +207,8 @@ A data frame.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotData-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotData-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -220,8 +220,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotData-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotData-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -233,8 +233,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotData-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotData-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

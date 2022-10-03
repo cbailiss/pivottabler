@@ -76,22 +76,22 @@ table.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotStyles$new()}}
-\item \href{#method-isExistingStyle}{\code{PivotStyles$isExistingStyle()}}
-\item \href{#method-getStyle}{\code{PivotStyles$getStyle()}}
-\item \href{#method-addStyle}{\code{PivotStyles$addStyle()}}
-\item \href{#method-copyStyle}{\code{PivotStyles$copyStyle()}}
-\item \href{#method-asCSSRule}{\code{PivotStyles$asCSSRule()}}
-\item \href{#method-asNamedCSSStyle}{\code{PivotStyles$asNamedCSSStyle()}}
-\item \href{#method-asList}{\code{PivotStyles$asList()}}
-\item \href{#method-asJSON}{\code{PivotStyles$asJSON()}}
-\item \href{#method-asString}{\code{PivotStyles$asString()}}
-\item \href{#method-clone}{\code{PivotStyles$clone()}}
+\item \href{#method-PivotStyles-new}{\code{PivotStyles$new()}}
+\item \href{#method-PivotStyles-isExistingStyle}{\code{PivotStyles$isExistingStyle()}}
+\item \href{#method-PivotStyles-getStyle}{\code{PivotStyles$getStyle()}}
+\item \href{#method-PivotStyles-addStyle}{\code{PivotStyles$addStyle()}}
+\item \href{#method-PivotStyles-copyStyle}{\code{PivotStyles$copyStyle()}}
+\item \href{#method-PivotStyles-asCSSRule}{\code{PivotStyles$asCSSRule()}}
+\item \href{#method-PivotStyles-asNamedCSSStyle}{\code{PivotStyles$asNamedCSSStyle()}}
+\item \href{#method-PivotStyles-asList}{\code{PivotStyles$asList()}}
+\item \href{#method-PivotStyles-asJSON}{\code{PivotStyles$asJSON()}}
+\item \href{#method-PivotStyles-asString}{\code{PivotStyles$asString()}}
+\item \href{#method-PivotStyles-clone}{\code{PivotStyles$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotStyles-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyles-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotStyles` object.
 \subsection{Usage}{
@@ -120,8 +120,8 @@ A new `PivotStyles` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-isExistingStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-isExistingStyle}{}}}
+\if{html}{\out{<a id="method-PivotStyles-isExistingStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyles-isExistingStyle}{}}}
 \subsection{Method \code{isExistingStyle()}}{
 Check whether a style with the specified style name exists in the
 collection.
@@ -141,8 +141,8 @@ collection.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-getStyle}{}}}
+\if{html}{\out{<a id="method-PivotStyles-getStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyles-getStyle}{}}}
 \subsection{Method \code{getStyle()}}{
 Retrieve a style with the specified style name.
 \subsection{Usage}{
@@ -161,8 +161,8 @@ A `PivotStyle` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-addStyle}{}}}
+\if{html}{\out{<a id="method-PivotStyles-addStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyles-addStyle}{}}}
 \subsection{Method \code{addStyle()}}{
 Add a new style to the collection of styles.
 \subsection{Usage}{
@@ -184,8 +184,8 @@ The newly created `PivotStyle` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-copyStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-copyStyle}{}}}
+\if{html}{\out{<a id="method-PivotStyles-copyStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyles-copyStyle}{}}}
 \subsection{Method \code{copyStyle()}}{
 Create a copy of a style with the specified name and store
 it in the collection.
@@ -207,8 +207,8 @@ The newly created `PivotStyle` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asCSSRule"></a>}}
-\if{latex}{\out{\hypertarget{method-asCSSRule}{}}}
+\if{html}{\out{<a id="method-PivotStyles-asCSSRule"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyles-asCSSRule}{}}}
 \subsection{Method \code{asCSSRule()}}{
 Get a style definition in the form of a CSS rule.
 \subsection{Usage}{
@@ -232,8 +232,8 @@ e.g. div { font-weight: bold, color: #0000FF }
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asNamedCSSStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-asNamedCSSStyle}{}}}
+\if{html}{\out{<a id="method-PivotStyles-asNamedCSSStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyles-asNamedCSSStyle}{}}}
 \subsection{Method \code{asNamedCSSStyle()}}{
 Get a style definition in the form of a named CSS style.
 \subsection{Usage}{
@@ -257,8 +257,8 @@ e.g. .pvt1Cell { font-weight: bold, color: #0000FF }
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotStyles-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyles-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -270,8 +270,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotStyles-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyles-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -283,8 +283,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asString"></a>}}
-\if{latex}{\out{\hypertarget{method-asString}{}}}
+\if{html}{\out{<a id="method-PivotStyles-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyles-asString}{}}}
 \subsection{Method \code{asString()}}{
 Return a representation of this object as a character value.
 \subsection{Usage}{
@@ -304,8 +304,8 @@ A character summary of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotStyles-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyles-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

@@ -149,39 +149,39 @@ data groups.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotDataGroup$new()}}
-\item \href{#method-getLevelNumber}{\code{PivotDataGroup$getLevelNumber()}}
-\item \href{#method-getAncestorGroups}{\code{PivotDataGroup$getAncestorGroups()}}
-\item \href{#method-getDescendantGroups}{\code{PivotDataGroup$getDescendantGroups()}}
-\item \href{#method-getLeafGroups}{\code{PivotDataGroup$getLeafGroups()}}
-\item \href{#method-getLevelCount}{\code{PivotDataGroup$getLevelCount()}}
-\item \href{#method-getLevelGroups}{\code{PivotDataGroup$getLevelGroups()}}
-\item \href{#method-getRelatedOutlineGroups}{\code{PivotDataGroup$getRelatedOutlineGroups()}}
-\item \href{#method-getChildIndex}{\code{PivotDataGroup$getChildIndex()}}
-\item \href{#method-findChildIndex}{\code{PivotDataGroup$findChildIndex()}}
-\item \href{#method-addChildGroup}{\code{PivotDataGroup$addChildGroup()}}
-\item \href{#method-removeChildGroup}{\code{PivotDataGroup$removeChildGroup()}}
-\item \href{#method-removeGroup}{\code{PivotDataGroup$removeGroup()}}
-\item \href{#method-addDataGroups}{\code{PivotDataGroup$addDataGroups()}}
-\item \href{#method-sortDataGroups}{\code{PivotDataGroup$sortDataGroups()}}
-\item \href{#method-addCalculationGroups}{\code{PivotDataGroup$addCalculationGroups()}}
-\item \href{#method-normaliseDataGroup}{\code{PivotDataGroup$normaliseDataGroup()}}
-\item \href{#method-getNetFilters}{\code{PivotDataGroup$getNetFilters()}}
-\item \href{#method-getNetCalculationName}{\code{PivotDataGroup$getNetCalculationName()}}
-\item \href{#method-isFindMatch}{\code{PivotDataGroup$isFindMatch()}}
-\item \href{#method-findDataGroups}{\code{PivotDataGroup$findDataGroups()}}
-\item \href{#method-setStyling}{\code{PivotDataGroup$setStyling()}}
-\item \href{#method-clearSortGroups}{\code{PivotDataGroup$clearSortGroups()}}
-\item \href{#method-addSortGroupBefore}{\code{PivotDataGroup$addSortGroupBefore()}}
-\item \href{#method-addSortGroupAfter}{\code{PivotDataGroup$addSortGroupAfter()}}
-\item \href{#method-asList}{\code{PivotDataGroup$asList()}}
-\item \href{#method-asJSON}{\code{PivotDataGroup$asJSON()}}
-\item \href{#method-clone}{\code{PivotDataGroup$clone()}}
+\item \href{#method-PivotDataGroup-new}{\code{PivotDataGroup$new()}}
+\item \href{#method-PivotDataGroup-getLevelNumber}{\code{PivotDataGroup$getLevelNumber()}}
+\item \href{#method-PivotDataGroup-getAncestorGroups}{\code{PivotDataGroup$getAncestorGroups()}}
+\item \href{#method-PivotDataGroup-getDescendantGroups}{\code{PivotDataGroup$getDescendantGroups()}}
+\item \href{#method-PivotDataGroup-getLeafGroups}{\code{PivotDataGroup$getLeafGroups()}}
+\item \href{#method-PivotDataGroup-getLevelCount}{\code{PivotDataGroup$getLevelCount()}}
+\item \href{#method-PivotDataGroup-getLevelGroups}{\code{PivotDataGroup$getLevelGroups()}}
+\item \href{#method-PivotDataGroup-getRelatedOutlineGroups}{\code{PivotDataGroup$getRelatedOutlineGroups()}}
+\item \href{#method-PivotDataGroup-getChildIndex}{\code{PivotDataGroup$getChildIndex()}}
+\item \href{#method-PivotDataGroup-findChildIndex}{\code{PivotDataGroup$findChildIndex()}}
+\item \href{#method-PivotDataGroup-addChildGroup}{\code{PivotDataGroup$addChildGroup()}}
+\item \href{#method-PivotDataGroup-removeChildGroup}{\code{PivotDataGroup$removeChildGroup()}}
+\item \href{#method-PivotDataGroup-removeGroup}{\code{PivotDataGroup$removeGroup()}}
+\item \href{#method-PivotDataGroup-addDataGroups}{\code{PivotDataGroup$addDataGroups()}}
+\item \href{#method-PivotDataGroup-sortDataGroups}{\code{PivotDataGroup$sortDataGroups()}}
+\item \href{#method-PivotDataGroup-addCalculationGroups}{\code{PivotDataGroup$addCalculationGroups()}}
+\item \href{#method-PivotDataGroup-normaliseDataGroup}{\code{PivotDataGroup$normaliseDataGroup()}}
+\item \href{#method-PivotDataGroup-getNetFilters}{\code{PivotDataGroup$getNetFilters()}}
+\item \href{#method-PivotDataGroup-getNetCalculationName}{\code{PivotDataGroup$getNetCalculationName()}}
+\item \href{#method-PivotDataGroup-isFindMatch}{\code{PivotDataGroup$isFindMatch()}}
+\item \href{#method-PivotDataGroup-findDataGroups}{\code{PivotDataGroup$findDataGroups()}}
+\item \href{#method-PivotDataGroup-setStyling}{\code{PivotDataGroup$setStyling()}}
+\item \href{#method-PivotDataGroup-clearSortGroups}{\code{PivotDataGroup$clearSortGroups()}}
+\item \href{#method-PivotDataGroup-addSortGroupBefore}{\code{PivotDataGroup$addSortGroupBefore()}}
+\item \href{#method-PivotDataGroup-addSortGroupAfter}{\code{PivotDataGroup$addSortGroupAfter()}}
+\item \href{#method-PivotDataGroup-asList}{\code{PivotDataGroup$asList()}}
+\item \href{#method-PivotDataGroup-asJSON}{\code{PivotDataGroup$asJSON()}}
+\item \href{#method-PivotDataGroup-clone}{\code{PivotDataGroup$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotDataGroup` object.
 \subsection{Usage}{
@@ -306,8 +306,8 @@ A new `PivotDataGroup` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getLevelNumber"></a>}}
-\if{latex}{\out{\hypertarget{method-getLevelNumber}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-getLevelNumber"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-getLevelNumber}{}}}
 \subsection{Method \code{getLevelNumber()}}{
 Retrieve the level number in the hierarchy that the current data
 group exists at.
@@ -321,8 +321,8 @@ data group exists.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getAncestorGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-getAncestorGroups}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-getAncestorGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-getAncestorGroups}{}}}
 \subsection{Method \code{getAncestorGroups()}}{
 Get all of the data groups above the current data group in the
 parent-child data group hierarchy.
@@ -348,8 +348,8 @@ current group, element 2 is the grandparent of the current group, etc.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getDescendantGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-getDescendantGroups}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-getDescendantGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-getDescendantGroups}{}}}
 \subsection{Method \code{getDescendantGroups()}}{
 Get all of the data groups below the current
 data group in the parent-child data group hierarchy.
@@ -377,8 +377,8 @@ A list of descendant data groups.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getLeafGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-getLeafGroups}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-getLeafGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-getLeafGroups}{}}}
 \subsection{Method \code{getLeafGroups()}}{
 Get all of the data groups below the current
 data group in the parent-child data group hierarchy.
@@ -399,8 +399,8 @@ A list of leaf-level data groups.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getLevelCount"></a>}}
-\if{latex}{\out{\hypertarget{method-getLevelCount}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-getLevelCount"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-getLevelCount}{}}}
 \subsection{Method \code{getLevelCount()}}{
 Count the number of levels in the data group hierarchy.
 \subsection{Usage}{
@@ -420,8 +420,8 @@ The maximum number of levels in the hierarchy.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getLevelGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-getLevelGroups}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-getLevelGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-getLevelGroups}{}}}
 \subsection{Method \code{getLevelGroups()}}{
 Retrieve all of the data groups at a specific level in the data group
 hierarchy.
@@ -445,8 +445,8 @@ A list of data groups at the specified level in the hierarchy.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getRelatedOutlineGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-getRelatedOutlineGroups}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-getRelatedOutlineGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-getRelatedOutlineGroups}{}}}
 \subsection{Method \code{getRelatedOutlineGroups()}}{
 Retrieve the a list of the typically two or three related data groups that
 were created as one outlined group.
@@ -466,8 +466,8 @@ A list of related outline data groups.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getChildIndex"></a>}}
-\if{latex}{\out{\hypertarget{method-getChildIndex}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-getChildIndex"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-getChildIndex}{}}}
 \subsection{Method \code{getChildIndex()}}{
 Get the index of a child group (or groups) in the current groups list of child groups.
 \subsection{Usage}{
@@ -487,8 +487,8 @@ An integer vector.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findChildIndex"></a>}}
-\if{latex}{\out{\hypertarget{method-findChildIndex}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-findChildIndex"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-findChildIndex}{}}}
 \subsection{Method \code{findChildIndex()}}{
 Find the index of a child group (or groups) corresponding to the specified
 instance id(s) in the current groups list of child groups.
@@ -509,8 +509,8 @@ An integer vector.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addChildGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-addChildGroup}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-addChildGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-addChildGroup}{}}}
 \subsection{Method \code{addChildGroup()}}{
 Add a new data group as a child of the current data group.
 The new group is added as the last child unless an index
@@ -642,8 +642,8 @@ The new `PivotDataGroup` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeChildGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-removeChildGroup}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-removeChildGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-removeChildGroup}{}}}
 \subsection{Method \code{removeChildGroup()}}{
 Remove a data group that is a child of the current data group.
 \subsection{Usage}{
@@ -670,8 +670,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-removeGroup}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-removeGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-removeGroup}{}}}
 \subsection{Method \code{removeGroup()}}{
 Remove the current data group.
 \subsection{Usage}{
@@ -702,8 +702,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addDataGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-addDataGroups}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-addDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-addDataGroups}{}}}
 \subsection{Method \code{addDataGroups()}}{
 Add multiple new data groups based on the distinct values in a data frame
 column or using explicitly specified data values.
@@ -853,8 +853,8 @@ A list of new `PivotDataGroup` objects that have been added.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-sortDataGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-sortDataGroups}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-sortDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-sortDataGroups}{}}}
 \subsection{Method \code{sortDataGroups()}}{
 Sort data groups either by the data group data value, caption, a custom order
 or based on calculation result values.
@@ -914,8 +914,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addCalculationGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-addCalculationGroups}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-addCalculationGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-addCalculationGroups}{}}}
 \subsection{Method \code{addCalculationGroups()}}{
 Add multiple new groups to the data group hierarchy to represent calculations.
 \subsection{Usage}{
@@ -958,8 +958,8 @@ A list of new `PivotDataGroup` objects that have been added.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-normaliseDataGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-normaliseDataGroup}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-normaliseDataGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-normaliseDataGroup}{}}}
 \subsection{Method \code{normaliseDataGroup()}}{
 Normalise the data group hierarchy so that all branches have the same number
 of levels - accomplished by adding empty child data groups where needed.
@@ -981,8 +981,8 @@ A list of new `PivotDataGroup` objects that have been added.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getNetFilters"></a>}}
-\if{latex}{\out{\hypertarget{method-getNetFilters}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-getNetFilters"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-getNetFilters}{}}}
 \subsection{Method \code{getNetFilters()}}{
 Get a `PivotFilters` object that contains the filters applied in this
 data group and all of its ancestors in the data group hierarchy.
@@ -995,8 +995,8 @@ A `PivotFilters` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getNetCalculationName"></a>}}
-\if{latex}{\out{\hypertarget{method-getNetCalculationName}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-getNetCalculationName"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-getNetCalculationName}{}}}
 \subsection{Method \code{getNetCalculationName()}}{
 Get the calculation name set in this data group or its nearest ancestor.
 \subsection{Usage}{
@@ -1008,8 +1008,8 @@ The name of a calculation.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-isFindMatch"></a>}}
-\if{latex}{\out{\hypertarget{method-isFindMatch}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-isFindMatch"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-isFindMatch}{}}}
 \subsection{Method \code{isFindMatch()}}{
 Test whether this data group matches specified criteria.
 \subsection{Usage}{
@@ -1083,8 +1083,8 @@ outline child group no longer exists.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findDataGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-findDataGroups}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-findDataGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-findDataGroups}{}}}
 \subsection{Method \code{findDataGroups()}}{
 Find data groups that match specified criteria.
 \subsection{Usage}{
@@ -1166,8 +1166,8 @@ A list of data groups matching the specified criteria.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setStyling"></a>}}
-\if{latex}{\out{\hypertarget{method-setStyling}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-setStyling"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-setStyling}{}}}
 \subsection{Method \code{setStyling()}}{
 An internal method used to set style declarations on the data group.
 Using `pt$setStyling(cells=x)` is preferred for users.
@@ -1187,8 +1187,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clearSortGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-clearSortGroups}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-clearSortGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-clearSortGroups}{}}}
 \subsection{Method \code{clearSortGroups()}}{
 An internal method that clears state data used during sorting operations.
 \subsection{Usage}{
@@ -1200,8 +1200,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addSortGroupBefore"></a>}}
-\if{latex}{\out{\hypertarget{method-addSortGroupBefore}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-addSortGroupBefore"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-addSortGroupBefore}{}}}
 \subsection{Method \code{addSortGroupBefore()}}{
 An internal method used during sorting operations.
 \subsection{Usage}{
@@ -1220,8 +1220,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addSortGroupAfter"></a>}}
-\if{latex}{\out{\hypertarget{method-addSortGroupAfter}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-addSortGroupAfter"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-addSortGroupAfter}{}}}
 \subsection{Method \code{addSortGroupAfter()}}{
 An internal method used during sorting operations.
 \subsection{Usage}{
@@ -1240,8 +1240,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -1253,8 +1253,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -1266,8 +1266,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotDataGroup-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotDataGroup-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

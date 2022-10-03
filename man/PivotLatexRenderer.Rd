@@ -17,17 +17,17 @@ The `PivotLatexRenderer` class creates a Latex representation of a pivot table.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotLatexRenderer$new()}}
-\item \href{#method-clearIsRenderedFlags}{\code{PivotLatexRenderer$clearIsRenderedFlags()}}
-\item \href{#method-resetVisibleRange}{\code{PivotLatexRenderer$resetVisibleRange()}}
-\item \href{#method-setVisibleRange}{\code{PivotLatexRenderer$setVisibleRange()}}
-\item \href{#method-getTableLatex}{\code{PivotLatexRenderer$getTableLatex()}}
-\item \href{#method-clone}{\code{PivotLatexRenderer$clone()}}
+\item \href{#method-PivotLatexRenderer-new}{\code{PivotLatexRenderer$new()}}
+\item \href{#method-PivotLatexRenderer-clearIsRenderedFlags}{\code{PivotLatexRenderer$clearIsRenderedFlags()}}
+\item \href{#method-PivotLatexRenderer-resetVisibleRange}{\code{PivotLatexRenderer$resetVisibleRange()}}
+\item \href{#method-PivotLatexRenderer-setVisibleRange}{\code{PivotLatexRenderer$setVisibleRange()}}
+\item \href{#method-PivotLatexRenderer-getTableLatex}{\code{PivotLatexRenderer$getTableLatex()}}
+\item \href{#method-PivotLatexRenderer-clone}{\code{PivotLatexRenderer$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotLatexRenderer-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotLatexRenderer-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotLatexRenderer` object.
 \subsection{Usage}{
@@ -47,8 +47,8 @@ A new `PivotLatexRenderer` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clearIsRenderedFlags"></a>}}
-\if{latex}{\out{\hypertarget{method-clearIsRenderedFlags}{}}}
+\if{html}{\out{<a id="method-PivotLatexRenderer-clearIsRenderedFlags"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotLatexRenderer-clearIsRenderedFlags}{}}}
 \subsection{Method \code{clearIsRenderedFlags()}}{
 An internal method used when rendering a pivot table to Latex
 Clear the IsRendered flags that exist on the `PivotDataGroup` class.
@@ -61,8 +61,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-resetVisibleRange"></a>}}
-\if{latex}{\out{\hypertarget{method-resetVisibleRange}{}}}
+\if{html}{\out{<a id="method-PivotLatexRenderer-resetVisibleRange"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotLatexRenderer-resetVisibleRange}{}}}
 \subsection{Method \code{resetVisibleRange()}}{
 Clears the visible range that has been set, so the next call to
 `getTableLatex()` will render the whole table.
@@ -75,8 +75,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setVisibleRange"></a>}}
-\if{latex}{\out{\hypertarget{method-setVisibleRange}{}}}
+\if{html}{\out{<a id="method-PivotLatexRenderer-setVisibleRange"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotLatexRenderer-setVisibleRange}{}}}
 \subsection{Method \code{setVisibleRange()}}{
 Specifies a subset of the pivot table to be rendered, e.g.
 for use when a pivot table will not fit into a single A4 page.
@@ -107,8 +107,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getTableLatex"></a>}}
-\if{latex}{\out{\hypertarget{method-getTableLatex}{}}}
+\if{html}{\out{<a id="method-PivotLatexRenderer-getTableLatex"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotLatexRenderer-getTableLatex}{}}}
 \subsection{Method \code{getTableLatex()}}{
 Generate a Latex representation of the pivot table.
 \subsection{Usage}{
@@ -146,8 +146,8 @@ the pivot table.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotLatexRenderer-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotLatexRenderer-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

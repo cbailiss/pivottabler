@@ -28,21 +28,21 @@ name-value pairs.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotStyle$new()}}
-\item \href{#method-setPropertyValue}{\code{PivotStyle$setPropertyValue()}}
-\item \href{#method-setPropertyValues}{\code{PivotStyle$setPropertyValues()}}
-\item \href{#method-getPropertyValue}{\code{PivotStyle$getPropertyValue()}}
-\item \href{#method-asCSSRule}{\code{PivotStyle$asCSSRule()}}
-\item \href{#method-asNamedCSSStyle}{\code{PivotStyle$asNamedCSSStyle()}}
-\item \href{#method-getCopy}{\code{PivotStyle$getCopy()}}
-\item \href{#method-asList}{\code{PivotStyle$asList()}}
-\item \href{#method-asJSON}{\code{PivotStyle$asJSON()}}
-\item \href{#method-clone}{\code{PivotStyle$clone()}}
+\item \href{#method-PivotStyle-new}{\code{PivotStyle$new()}}
+\item \href{#method-PivotStyle-setPropertyValue}{\code{PivotStyle$setPropertyValue()}}
+\item \href{#method-PivotStyle-setPropertyValues}{\code{PivotStyle$setPropertyValues()}}
+\item \href{#method-PivotStyle-getPropertyValue}{\code{PivotStyle$getPropertyValue()}}
+\item \href{#method-PivotStyle-asCSSRule}{\code{PivotStyle$asCSSRule()}}
+\item \href{#method-PivotStyle-asNamedCSSStyle}{\code{PivotStyle$asNamedCSSStyle()}}
+\item \href{#method-PivotStyle-getCopy}{\code{PivotStyle$getCopy()}}
+\item \href{#method-PivotStyle-asList}{\code{PivotStyle$asList()}}
+\item \href{#method-PivotStyle-asJSON}{\code{PivotStyle$asJSON()}}
+\item \href{#method-PivotStyle-clone}{\code{PivotStyle$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotStyle-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyle-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotStyle` object.
 \subsection{Usage}{
@@ -67,8 +67,8 @@ A new `PivotStyle` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setPropertyValue"></a>}}
-\if{latex}{\out{\hypertarget{method-setPropertyValue}{}}}
+\if{html}{\out{<a id="method-PivotStyle-setPropertyValue"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyle-setPropertyValue}{}}}
 \subsection{Method \code{setPropertyValue()}}{
 Set a single style property.
 \subsection{Usage}{
@@ -89,8 +89,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setPropertyValues"></a>}}
-\if{latex}{\out{\hypertarget{method-setPropertyValues}{}}}
+\if{html}{\out{<a id="method-PivotStyle-setPropertyValues"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyle-setPropertyValues}{}}}
 \subsection{Method \code{setPropertyValues()}}{
 Set multiple style properties.
 \subsection{Usage}{
@@ -110,8 +110,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getPropertyValue"></a>}}
-\if{latex}{\out{\hypertarget{method-getPropertyValue}{}}}
+\if{html}{\out{<a id="method-PivotStyle-getPropertyValue"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyle-getPropertyValue}{}}}
 \subsection{Method \code{getPropertyValue()}}{
 Get the value of a single style property.
 \subsection{Usage}{
@@ -130,8 +130,8 @@ The value of the style property.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asCSSRule"></a>}}
-\if{latex}{\out{\hypertarget{method-asCSSRule}{}}}
+\if{html}{\out{<a id="method-PivotStyle-asCSSRule"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyle-asCSSRule}{}}}
 \subsection{Method \code{asCSSRule()}}{
 Get the style definition in the form of a CSS rule.
 \subsection{Usage}{
@@ -153,8 +153,8 @@ e.g. div { font-weight: bold, color: #0000FF }
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asNamedCSSStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-asNamedCSSStyle}{}}}
+\if{html}{\out{<a id="method-PivotStyle-asNamedCSSStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyle-asNamedCSSStyle}{}}}
 \subsection{Method \code{asNamedCSSStyle()}}{
 Get the style definition in the form of a named CSS style.
 \subsection{Usage}{
@@ -176,8 +176,8 @@ e.g. .pvt1Cell { font-weight: bold, color: #0000FF }
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCopy"></a>}}
-\if{latex}{\out{\hypertarget{method-getCopy}{}}}
+\if{html}{\out{<a id="method-PivotStyle-getCopy"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyle-getCopy}{}}}
 \subsection{Method \code{getCopy()}}{
 Create a copy of this `PivotStyle` object.
 \subsection{Usage}{
@@ -196,8 +196,8 @@ A `PivotStyle` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotStyle-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyle-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -209,8 +209,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotStyle-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyle-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -222,8 +222,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotStyle-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotStyle-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

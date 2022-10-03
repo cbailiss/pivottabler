@@ -37,31 +37,31 @@ a `PivotCell` object.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotCells$new()}}
-\item \href{#method-reset}{\code{PivotCells$reset()}}
-\item \href{#method-getColumnGroup}{\code{PivotCells$getColumnGroup()}}
-\item \href{#method-getRowGroup}{\code{PivotCells$getRowGroup()}}
-\item \href{#method-setGroups}{\code{PivotCells$setGroups()}}
-\item \href{#method-getCell}{\code{PivotCells$getCell()}}
-\item \href{#method-setCell}{\code{PivotCells$setCell()}}
-\item \href{#method-getCells}{\code{PivotCells$getCells()}}
-\item \href{#method-findCells}{\code{PivotCells$findCells()}}
-\item \href{#method-findGroupColumnNumbers}{\code{PivotCells$findGroupColumnNumbers()}}
-\item \href{#method-findGroupRowNumbers}{\code{PivotCells$findGroupRowNumbers()}}
-\item \href{#method-getColumnWidths}{\code{PivotCells$getColumnWidths()}}
-\item \href{#method-removeColumn}{\code{PivotCells$removeColumn()}}
-\item \href{#method-removeColumns}{\code{PivotCells$removeColumns()}}
-\item \href{#method-removeRow}{\code{PivotCells$removeRow()}}
-\item \href{#method-removeRows}{\code{PivotCells$removeRows()}}
-\item \href{#method-asMatrix}{\code{PivotCells$asMatrix()}}
-\item \href{#method-asList}{\code{PivotCells$asList()}}
-\item \href{#method-asJSON}{\code{PivotCells$asJSON()}}
-\item \href{#method-clone}{\code{PivotCells$clone()}}
+\item \href{#method-PivotCells-new}{\code{PivotCells$new()}}
+\item \href{#method-PivotCells-reset}{\code{PivotCells$reset()}}
+\item \href{#method-PivotCells-getColumnGroup}{\code{PivotCells$getColumnGroup()}}
+\item \href{#method-PivotCells-getRowGroup}{\code{PivotCells$getRowGroup()}}
+\item \href{#method-PivotCells-setGroups}{\code{PivotCells$setGroups()}}
+\item \href{#method-PivotCells-getCell}{\code{PivotCells$getCell()}}
+\item \href{#method-PivotCells-setCell}{\code{PivotCells$setCell()}}
+\item \href{#method-PivotCells-getCells}{\code{PivotCells$getCells()}}
+\item \href{#method-PivotCells-findCells}{\code{PivotCells$findCells()}}
+\item \href{#method-PivotCells-findGroupColumnNumbers}{\code{PivotCells$findGroupColumnNumbers()}}
+\item \href{#method-PivotCells-findGroupRowNumbers}{\code{PivotCells$findGroupRowNumbers()}}
+\item \href{#method-PivotCells-getColumnWidths}{\code{PivotCells$getColumnWidths()}}
+\item \href{#method-PivotCells-removeColumn}{\code{PivotCells$removeColumn()}}
+\item \href{#method-PivotCells-removeColumns}{\code{PivotCells$removeColumns()}}
+\item \href{#method-PivotCells-removeRow}{\code{PivotCells$removeRow()}}
+\item \href{#method-PivotCells-removeRows}{\code{PivotCells$removeRows()}}
+\item \href{#method-PivotCells-asMatrix}{\code{PivotCells$asMatrix()}}
+\item \href{#method-PivotCells-asList}{\code{PivotCells$asList()}}
+\item \href{#method-PivotCells-asJSON}{\code{PivotCells$asJSON()}}
+\item \href{#method-PivotCells-clone}{\code{PivotCells$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotCells-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotCells` object.
 \subsection{Usage}{
@@ -81,8 +81,8 @@ A new `PivotCells` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset"></a>}}
-\if{latex}{\out{\hypertarget{method-reset}{}}}
+\if{html}{\out{<a id="method-PivotCells-reset"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-reset}{}}}
 \subsection{Method \code{reset()}}{
 Remove all cells from the pivot table and reset row and column
 counts back to zero.
@@ -95,8 +95,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getColumnGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-getColumnGroup}{}}}
+\if{html}{\out{<a id="method-PivotCells-getColumnGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-getColumnGroup}{}}}
 \subsection{Method \code{getColumnGroup()}}{
 Get the leaf-level data group that is associated with a specific column
 or columns in the pivot table.
@@ -117,8 +117,8 @@ A `PivotDataGroup` that is associated with the specified column.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getRowGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-getRowGroup}{}}}
+\if{html}{\out{<a id="method-PivotCells-getRowGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-getRowGroup}{}}}
 \subsection{Method \code{getRowGroup()}}{
 Get the leaf-level data group that is associated with a specific row
 or rows in the pivot table.
@@ -139,8 +139,8 @@ A `PivotDataGroup` that is associated with the specified row
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setGroups"></a>}}
-\if{latex}{\out{\hypertarget{method-setGroups}{}}}
+\if{html}{\out{<a id="method-PivotCells-setGroups"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-setGroups}{}}}
 \subsection{Method \code{setGroups()}}{
 An internal method used when building the cell structure
 of the pivot table.
@@ -162,8 +162,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCell"></a>}}
-\if{latex}{\out{\hypertarget{method-getCell}{}}}
+\if{html}{\out{<a id="method-PivotCells-getCell"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-getCell}{}}}
 \subsection{Method \code{getCell()}}{
 Get the cell at the specified row and column coordinates in the pivot table.
 \subsection{Usage}{
@@ -190,8 +190,8 @@ A `PivotCell` object representing the cell.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setCell"></a>}}
-\if{latex}{\out{\hypertarget{method-setCell}{}}}
+\if{html}{\out{<a id="method-PivotCells-setCell"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-setCell}{}}}
 \subsection{Method \code{setCell()}}{
 Set the cell at the specified row and column coordinates in the pivot table.
 \subsection{Usage}{
@@ -222,8 +222,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCells"></a>}}
-\if{latex}{\out{\hypertarget{method-getCells}{}}}
+\if{html}{\out{<a id="method-PivotCells-getCells"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-getCells}{}}}
 \subsection{Method \code{getCells()}}{
 Retrieve cells by a combination of row and/or column numbers.
 See the "Finding and Formatting" vignette for graphical examples.
@@ -320,8 +320,8 @@ A list of `PivotCell` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findCells"></a>}}
-\if{latex}{\out{\hypertarget{method-findCells}{}}}
+\if{html}{\out{<a id="method-PivotCells-findCells"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-findCells}{}}}
 \subsection{Method \code{findCells()}}{
 Find cells matching specified criteria.
 See the "Finding and Formatting" vignette for graphical examples.
@@ -346,7 +346,9 @@ See the "Finding and Formatting" vignette for graphical examples.
   rowGroups = NULL,
   columnGroups = NULL,
   rowColumnMatchMode = "simple",
-  cells = NULL
+  cells = NULL,
+  lowN = NULL,
+  highN = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -429,6 +431,10 @@ affected by the match mode.  All other arguments are not.}
 
 \item{\code{cells}}{A `PivotCell` object or a list of `PivotCell`
 objects to constrain the scope of the search.}
+
+\item{\code{lowN}}{Find the first N cells (ascending order, lowest values first).}
+
+\item{\code{highN}}{Find the last N cells (descending order, highest values first).}
 }
 \if{html}{\out{</div>}}
 }
@@ -437,8 +443,8 @@ A list of `PivotCell` objects.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findGroupColumnNumbers"></a>}}
-\if{latex}{\out{\hypertarget{method-findGroupColumnNumbers}{}}}
+\if{html}{\out{<a id="method-PivotCells-findGroupColumnNumbers"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-findGroupColumnNumbers}{}}}
 \subsection{Method \code{findGroupColumnNumbers()}}{
 Find the column numbers associated with a specific data group or groups.
 \subsection{Usage}{
@@ -467,8 +473,8 @@ or a list of vectors containing column numbers related to the specified groups.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findGroupRowNumbers"></a>}}
-\if{latex}{\out{\hypertarget{method-findGroupRowNumbers}{}}}
+\if{html}{\out{<a id="method-PivotCells-findGroupRowNumbers"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-findGroupRowNumbers}{}}}
 \subsection{Method \code{findGroupRowNumbers()}}{
 Find the row numbers associated with a specific data group or groups.
 \subsection{Usage}{
@@ -497,8 +503,8 @@ or a list of vectors containing row numbers related to the specified groups.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getColumnWidths"></a>}}
-\if{latex}{\out{\hypertarget{method-getColumnWidths}{}}}
+\if{html}{\out{<a id="method-PivotCells-getColumnWidths"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-getColumnWidths}{}}}
 \subsection{Method \code{getColumnWidths()}}{
 Retrieve the width (in characters) of the longest value in each column.
 \subsection{Usage}{
@@ -510,8 +516,8 @@ A vector containing the length of the longest value in each column.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeColumn"></a>}}
-\if{latex}{\out{\hypertarget{method-removeColumn}{}}}
+\if{html}{\out{<a id="method-PivotCells-removeColumn"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-removeColumn}{}}}
 \subsection{Method \code{removeColumn()}}{
 Remove a column from the pivot table.
 \subsection{Usage}{
@@ -538,8 +544,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeColumns"></a>}}
-\if{latex}{\out{\hypertarget{method-removeColumns}{}}}
+\if{html}{\out{<a id="method-PivotCells-removeColumns"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-removeColumns}{}}}
 \subsection{Method \code{removeColumns()}}{
 Remove multiple column from the pivot table.
 \subsection{Usage}{
@@ -566,8 +572,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeRow"></a>}}
-\if{latex}{\out{\hypertarget{method-removeRow}{}}}
+\if{html}{\out{<a id="method-PivotCells-removeRow"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-removeRow}{}}}
 \subsection{Method \code{removeRow()}}{
 Remove a row from the pivot table.
 \subsection{Usage}{
@@ -594,8 +600,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-removeRows"></a>}}
-\if{latex}{\out{\hypertarget{method-removeRows}{}}}
+\if{html}{\out{<a id="method-PivotCells-removeRows"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-removeRows}{}}}
 \subsection{Method \code{removeRows()}}{
 Remove multiple rows from the pivot table.
 \subsection{Usage}{
@@ -622,8 +628,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asMatrix"></a>}}
-\if{latex}{\out{\hypertarget{method-asMatrix}{}}}
+\if{html}{\out{<a id="method-PivotCells-asMatrix"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-asMatrix}{}}}
 \subsection{Method \code{asMatrix()}}{
 Get a matrix containing all of the values from the body of the pivot table.
 \subsection{Usage}{
@@ -643,8 +649,8 @@ A `matrix` containing the values from the body of the pivot table.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotCells-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -656,8 +662,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotCells-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -669,8 +675,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotCells-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCells-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

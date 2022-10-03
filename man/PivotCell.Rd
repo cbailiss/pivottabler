@@ -81,17 +81,17 @@ style declarations that override the base style.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotCell$new()}}
-\item \href{#method-setStyling}{\code{PivotCell$setStyling()}}
-\item \href{#method-getCopy}{\code{PivotCell$getCopy()}}
-\item \href{#method-asList}{\code{PivotCell$asList()}}
-\item \href{#method-asJSON}{\code{PivotCell$asJSON()}}
-\item \href{#method-clone}{\code{PivotCell$clone()}}
+\item \href{#method-PivotCell-new}{\code{PivotCell$new()}}
+\item \href{#method-PivotCell-setStyling}{\code{PivotCell$setStyling()}}
+\item \href{#method-PivotCell-getCopy}{\code{PivotCell$getCopy()}}
+\item \href{#method-PivotCell-asList}{\code{PivotCell$asList()}}
+\item \href{#method-PivotCell-asJSON}{\code{PivotCell$asJSON()}}
+\item \href{#method-PivotCell-clone}{\code{PivotCell$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotCell-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCell-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotCell` object.
 \subsection{Usage}{
@@ -151,8 +151,8 @@ A new `PivotCell` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-setStyling"></a>}}
-\if{latex}{\out{\hypertarget{method-setStyling}{}}}
+\if{html}{\out{<a id="method-PivotCell-setStyling"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCell-setStyling}{}}}
 \subsection{Method \code{setStyling()}}{
 An internal method used to set style declarations on the cell.
 Using `pt$setStyling(cells=x)` is preferred for users.
@@ -172,8 +172,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCopy"></a>}}
-\if{latex}{\out{\hypertarget{method-getCopy}{}}}
+\if{html}{\out{<a id="method-PivotCell-getCopy"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCell-getCopy}{}}}
 \subsection{Method \code{getCopy()}}{
 Non-functional legacy method soon to be removed.
 \subsection{Usage}{
@@ -185,8 +185,8 @@ Returns an empty list.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotCell-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCell-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -198,8 +198,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotCell-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCell-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -211,8 +211,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotCell-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCell-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

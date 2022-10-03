@@ -19,16 +19,16 @@ See the "Excel Export" vignette for details and examples.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotOpenXlsxRenderer$new()}}
-\item \href{#method-clearIsRenderedFlags}{\code{PivotOpenXlsxRenderer$clearIsRenderedFlags()}}
-\item \href{#method-writeToCell}{\code{PivotOpenXlsxRenderer$writeToCell()}}
-\item \href{#method-writeToWorksheet}{\code{PivotOpenXlsxRenderer$writeToWorksheet()}}
-\item \href{#method-clone}{\code{PivotOpenXlsxRenderer$clone()}}
+\item \href{#method-PivotOpenXlsxRenderer-new}{\code{PivotOpenXlsxRenderer$new()}}
+\item \href{#method-PivotOpenXlsxRenderer-clearIsRenderedFlags}{\code{PivotOpenXlsxRenderer$clearIsRenderedFlags()}}
+\item \href{#method-PivotOpenXlsxRenderer-writeToCell}{\code{PivotOpenXlsxRenderer$writeToCell()}}
+\item \href{#method-PivotOpenXlsxRenderer-writeToWorksheet}{\code{PivotOpenXlsxRenderer$writeToWorksheet()}}
+\item \href{#method-PivotOpenXlsxRenderer-clone}{\code{PivotOpenXlsxRenderer$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxRenderer-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxRenderer-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotOpenXlsxRenderer` object.
 \subsection{Usage}{
@@ -50,8 +50,8 @@ Clear the IsRendered flags that exist on the `PivotDataGroup` class.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clearIsRenderedFlags"></a>}}
-\if{latex}{\out{\hypertarget{method-clearIsRenderedFlags}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxRenderer-clearIsRenderedFlags"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxRenderer-clearIsRenderedFlags}{}}}
 \subsection{Method \code{clearIsRenderedFlags()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxRenderer$clearIsRenderedFlags()}\if{html}{\out{</div>}}
@@ -62,8 +62,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-writeToCell"></a>}}
-\if{latex}{\out{\hypertarget{method-writeToCell}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxRenderer-writeToCell"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxRenderer-writeToCell}{}}}
 \subsection{Method \code{writeToCell()}}{
 Writes a value to a cell and applies styling as needed.
 \subsection{Usage}{
@@ -123,8 +123,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-writeToWorksheet"></a>}}
-\if{latex}{\out{\hypertarget{method-writeToWorksheet}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxRenderer-writeToWorksheet"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxRenderer-writeToWorksheet}{}}}
 \subsection{Method \code{writeToWorksheet()}}{
 Write the pivot table into the specified workbook and worksheet at
 the specified row-column location.
@@ -184,8 +184,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxRenderer-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxRenderer-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

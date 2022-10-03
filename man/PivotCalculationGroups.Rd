@@ -34,20 +34,20 @@ See the "Irregular Layout" vignette for an example.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotCalculationGroups$new()}}
-\item \href{#method-isExistingCalculationGroup}{\code{PivotCalculationGroups$isExistingCalculationGroup()}}
-\item \href{#method-item}{\code{PivotCalculationGroups$item()}}
-\item \href{#method-getCalculationGroup}{\code{PivotCalculationGroups$getCalculationGroup()}}
-\item \href{#method-addCalculationGroup}{\code{PivotCalculationGroups$addCalculationGroup()}}
-\item \href{#method-asList}{\code{PivotCalculationGroups$asList()}}
-\item \href{#method-asJSON}{\code{PivotCalculationGroups$asJSON()}}
-\item \href{#method-asString}{\code{PivotCalculationGroups$asString()}}
-\item \href{#method-clone}{\code{PivotCalculationGroups$clone()}}
+\item \href{#method-PivotCalculationGroups-new}{\code{PivotCalculationGroups$new()}}
+\item \href{#method-PivotCalculationGroups-isExistingCalculationGroup}{\code{PivotCalculationGroups$isExistingCalculationGroup()}}
+\item \href{#method-PivotCalculationGroups-item}{\code{PivotCalculationGroups$item()}}
+\item \href{#method-PivotCalculationGroups-getCalculationGroup}{\code{PivotCalculationGroups$getCalculationGroup()}}
+\item \href{#method-PivotCalculationGroups-addCalculationGroup}{\code{PivotCalculationGroups$addCalculationGroup()}}
+\item \href{#method-PivotCalculationGroups-asList}{\code{PivotCalculationGroups$asList()}}
+\item \href{#method-PivotCalculationGroups-asJSON}{\code{PivotCalculationGroups$asJSON()}}
+\item \href{#method-PivotCalculationGroups-asString}{\code{PivotCalculationGroups$asString()}}
+\item \href{#method-PivotCalculationGroups-clone}{\code{PivotCalculationGroups$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotCalculationGroups-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculationGroups-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotCalculationGroups` object.
 \subsection{Usage}{
@@ -67,8 +67,8 @@ A new `PivotCalculationGroups` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-isExistingCalculationGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-isExistingCalculationGroup}{}}}
+\if{html}{\out{<a id="method-PivotCalculationGroups-isExistingCalculationGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculationGroups-isExistingCalculationGroup}{}}}
 \subsection{Method \code{isExistingCalculationGroup()}}{
 Check if a calculation group exists with the specified name.
 \subsection{Usage}{
@@ -87,8 +87,8 @@ Check if a calculation group exists with the specified name.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-item"></a>}}
-\if{latex}{\out{\hypertarget{method-item}{}}}
+\if{html}{\out{<a id="method-PivotCalculationGroups-item"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculationGroups-item}{}}}
 \subsection{Method \code{item()}}{
 Retrieve a calculation group by index.
 \subsection{Usage}{
@@ -107,8 +107,8 @@ The calculation group that exists at the specified index.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCalculationGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-getCalculationGroup}{}}}
+\if{html}{\out{<a id="method-PivotCalculationGroups-getCalculationGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculationGroups-getCalculationGroup}{}}}
 \subsection{Method \code{getCalculationGroup()}}{
 Retrieve a calculation group by name.
 \subsection{Usage}{
@@ -127,8 +127,8 @@ The calculation group with the specified name.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addCalculationGroup"></a>}}
-\if{latex}{\out{\hypertarget{method-addCalculationGroup}{}}}
+\if{html}{\out{<a id="method-PivotCalculationGroups-addCalculationGroup"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculationGroups-addCalculationGroup}{}}}
 \subsection{Method \code{addCalculationGroup()}}{
 Create a new calculation group.
 \subsection{Usage}{
@@ -147,8 +147,8 @@ The new calculation group.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotCalculationGroups-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculationGroups-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -160,8 +160,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotCalculationGroups-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculationGroups-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -173,8 +173,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asString"></a>}}
-\if{latex}{\out{\hypertarget{method-asString}{}}}
+\if{html}{\out{<a id="method-PivotCalculationGroups-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculationGroups-asString}{}}}
 \subsection{Method \code{asString()}}{
 Return a representation of this object as a character value.
 \subsection{Usage}{
@@ -194,8 +194,8 @@ A character summary of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotCalculationGroups-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotCalculationGroups-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

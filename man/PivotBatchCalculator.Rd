@@ -37,21 +37,21 @@ calculation.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotBatchCalculator$new()}}
-\item \href{#method-reset}{\code{PivotBatchCalculator$reset()}}
-\item \href{#method-checkValidWorkingData}{\code{PivotBatchCalculator$checkValidWorkingData()}}
-\item \href{#method-isFiltersBatchCompatible}{\code{PivotBatchCalculator$isFiltersBatchCompatible()}}
-\item \href{#method-generateBatchesForNamedCalculationEvaluation1}{\code{PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1()}}
-\item \href{#method-generateBatchesForNamedCalculationEvaluation2}{\code{PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation2()}}
-\item \href{#method-generateBatchesForCellEvaluation}{\code{PivotBatchCalculator$generateBatchesForCellEvaluation()}}
-\item \href{#method-evaluateBatches}{\code{PivotBatchCalculator$evaluateBatches()}}
-\item \href{#method-getSummaryValueFromBatch}{\code{PivotBatchCalculator$getSummaryValueFromBatch()}}
-\item \href{#method-clone}{\code{PivotBatchCalculator$clone()}}
+\item \href{#method-PivotBatchCalculator-new}{\code{PivotBatchCalculator$new()}}
+\item \href{#method-PivotBatchCalculator-reset}{\code{PivotBatchCalculator$reset()}}
+\item \href{#method-PivotBatchCalculator-checkValidWorkingData}{\code{PivotBatchCalculator$checkValidWorkingData()}}
+\item \href{#method-PivotBatchCalculator-isFiltersBatchCompatible}{\code{PivotBatchCalculator$isFiltersBatchCompatible()}}
+\item \href{#method-PivotBatchCalculator-generateBatchesForNamedCalculationEvaluation1}{\code{PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation1()}}
+\item \href{#method-PivotBatchCalculator-generateBatchesForNamedCalculationEvaluation2}{\code{PivotBatchCalculator$generateBatchesForNamedCalculationEvaluation2()}}
+\item \href{#method-PivotBatchCalculator-generateBatchesForCellEvaluation}{\code{PivotBatchCalculator$generateBatchesForCellEvaluation()}}
+\item \href{#method-PivotBatchCalculator-evaluateBatches}{\code{PivotBatchCalculator$evaluateBatches()}}
+\item \href{#method-PivotBatchCalculator-getSummaryValueFromBatch}{\code{PivotBatchCalculator$getSummaryValueFromBatch()}}
+\item \href{#method-PivotBatchCalculator-clone}{\code{PivotBatchCalculator$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotBatchCalculator-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchCalculator-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotBatchCalculator` object.
 \subsection{Usage}{
@@ -71,8 +71,8 @@ A new `PivotBatchCalculator` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset"></a>}}
-\if{latex}{\out{\hypertarget{method-reset}{}}}
+\if{html}{\out{<a id="method-PivotBatchCalculator-reset"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchCalculator-reset}{}}}
 \subsection{Method \code{reset()}}{
 Reset the batch calculator, clearing all existing batches.
 \subsection{Usage}{
@@ -84,8 +84,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-checkValidWorkingData"></a>}}
-\if{latex}{\out{\hypertarget{method-checkValidWorkingData}{}}}
+\if{html}{\out{<a id="method-PivotBatchCalculator-checkValidWorkingData"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchCalculator-checkValidWorkingData}{}}}
 \subsection{Method \code{checkValidWorkingData()}}{
 Run some additional checks to see whether the working data is valid.
 Typically only used in development builds of the package.
@@ -105,8 +105,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-isFiltersBatchCompatible"></a>}}
-\if{latex}{\out{\hypertarget{method-isFiltersBatchCompatible}{}}}
+\if{html}{\out{<a id="method-PivotBatchCalculator-isFiltersBatchCompatible"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchCalculator-isFiltersBatchCompatible}{}}}
 \subsection{Method \code{isFiltersBatchCompatible()}}{
 Examines a set of filters to see whether they are compatible with batch
 evaluation mode. Only filters that specify zero or one value for each
@@ -139,8 +139,8 @@ but stricter.  Batch mode works for regular pivot tables (i.e. most cases).
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-generateBatchesForNamedCalculationEvaluation1"></a>}}
-\if{latex}{\out{\hypertarget{method-generateBatchesForNamedCalculationEvaluation1}{}}}
+\if{html}{\out{<a id="method-PivotBatchCalculator-generateBatchesForNamedCalculationEvaluation1"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchCalculator-generateBatchesForNamedCalculationEvaluation1}{}}}
 \subsection{Method \code{generateBatchesForNamedCalculationEvaluation1()}}{
 Generates a new batch or finds a relevant existing batch for
 a named calculation and single working filters object.
@@ -175,8 +175,8 @@ relevant existing batch.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-generateBatchesForNamedCalculationEvaluation2"></a>}}
-\if{latex}{\out{\hypertarget{method-generateBatchesForNamedCalculationEvaluation2}{}}}
+\if{html}{\out{<a id="method-PivotBatchCalculator-generateBatchesForNamedCalculationEvaluation2"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchCalculator-generateBatchesForNamedCalculationEvaluation2}{}}}
 \subsection{Method \code{generateBatchesForNamedCalculationEvaluation2()}}{
 Generates one or more batches for the named calculations and set of
 working working data associated with a cell.
@@ -212,8 +212,8 @@ the relevant existing batches.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-generateBatchesForCellEvaluation"></a>}}
-\if{latex}{\out{\hypertarget{method-generateBatchesForCellEvaluation}{}}}
+\if{html}{\out{<a id="method-PivotBatchCalculator-generateBatchesForCellEvaluation"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchCalculator-generateBatchesForCellEvaluation}{}}}
 \subsection{Method \code{generateBatchesForCellEvaluation()}}{
 Generates the batches for batch evaluation mode.
 \subsection{Usage}{
@@ -226,8 +226,8 @@ the relevant existing batches.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluateBatches"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluateBatches}{}}}
+\if{html}{\out{<a id="method-PivotBatchCalculator-evaluateBatches"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchCalculator-evaluateBatches}{}}}
 \subsection{Method \code{evaluateBatches()}}{
 Evaluate each of the batches defined in the batch calculator.
 \subsection{Usage}{
@@ -239,8 +239,8 @@ The number of batches that were evaluated.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getSummaryValueFromBatch"></a>}}
-\if{latex}{\out{\hypertarget{method-getSummaryValueFromBatch}{}}}
+\if{html}{\out{<a id="method-PivotBatchCalculator-getSummaryValueFromBatch"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchCalculator-getSummaryValueFromBatch}{}}}
 \subsection{Method \code{getSummaryValueFromBatch()}}{
 Retrieve one calculation value from one batch, typically for the value
  of one cell in a pivot table.
@@ -273,8 +273,8 @@ A single calculation value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotBatchCalculator-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatchCalculator-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

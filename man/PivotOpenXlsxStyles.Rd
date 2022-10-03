@@ -30,20 +30,20 @@ style objects.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotOpenXlsxStyles$new()}}
-\item \href{#method-clearStyles}{\code{PivotOpenXlsxStyles$clearStyles()}}
-\item \href{#method-findNamedStyle}{\code{PivotOpenXlsxStyles$findNamedStyle()}}
-\item \href{#method-findOrAddStyle}{\code{PivotOpenXlsxStyles$findOrAddStyle()}}
-\item \href{#method-addNamedStyles}{\code{PivotOpenXlsxStyles$addNamedStyles()}}
-\item \href{#method-asList}{\code{PivotOpenXlsxStyles$asList()}}
-\item \href{#method-asJSON}{\code{PivotOpenXlsxStyles$asJSON()}}
-\item \href{#method-asString}{\code{PivotOpenXlsxStyles$asString()}}
-\item \href{#method-clone}{\code{PivotOpenXlsxStyles$clone()}}
+\item \href{#method-PivotOpenXlsxStyles-new}{\code{PivotOpenXlsxStyles$new()}}
+\item \href{#method-PivotOpenXlsxStyles-clearStyles}{\code{PivotOpenXlsxStyles$clearStyles()}}
+\item \href{#method-PivotOpenXlsxStyles-findNamedStyle}{\code{PivotOpenXlsxStyles$findNamedStyle()}}
+\item \href{#method-PivotOpenXlsxStyles-findOrAddStyle}{\code{PivotOpenXlsxStyles$findOrAddStyle()}}
+\item \href{#method-PivotOpenXlsxStyles-addNamedStyles}{\code{PivotOpenXlsxStyles$addNamedStyles()}}
+\item \href{#method-PivotOpenXlsxStyles-asList}{\code{PivotOpenXlsxStyles$asList()}}
+\item \href{#method-PivotOpenXlsxStyles-asJSON}{\code{PivotOpenXlsxStyles$asJSON()}}
+\item \href{#method-PivotOpenXlsxStyles-asString}{\code{PivotOpenXlsxStyles$asString()}}
+\item \href{#method-PivotOpenXlsxStyles-clone}{\code{PivotOpenXlsxStyles$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyles-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyles-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotOpenXlsxStyles` object.
 \subsection{Usage}{
@@ -63,8 +63,8 @@ A new `PivotOpenXlsxStyles` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clearStyles"></a>}}
-\if{latex}{\out{\hypertarget{method-clearStyles}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyles-clearStyles"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyles-clearStyles}{}}}
 \subsection{Method \code{clearStyles()}}{
 Clear the internal list of styles.
 \subsection{Usage}{
@@ -76,8 +76,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findNamedStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-findNamedStyle}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyles-findNamedStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyles-findNamedStyle}{}}}
 \subsection{Method \code{findNamedStyle()}}{
 Find an existing openxlsx style matching the name of a base style.
 \subsection{Usage}{
@@ -96,8 +96,8 @@ A `PivotOpenXlsxStyle` object with the specified name.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-findOrAddStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-findOrAddStyle}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyles-findOrAddStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyles-findOrAddStyle}{}}}
 \subsection{Method \code{findOrAddStyle()}}{
 Find an existing openxlsx style, add a new openxlsx style matching a base
 style and/or existing `PivotStyle` object.
@@ -147,8 +147,8 @@ A `PivotOpenXlsxStyle` object that has been found or added.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addNamedStyles"></a>}}
-\if{latex}{\out{\hypertarget{method-addNamedStyles}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyles-addNamedStyles"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyles-addNamedStyles}{}}}
 \subsection{Method \code{addNamedStyles()}}{
 Populate the OpenXlsx styles based on the styles defined in the pivot table.
 \subsection{Usage}{
@@ -168,8 +168,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asList"></a>}}
-\if{latex}{\out{\hypertarget{method-asList}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyles-asList"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyles-asList}{}}}
 \subsection{Method \code{asList()}}{
 Return the contents of this object as a list for debugging.
 \subsection{Usage}{
@@ -181,8 +181,8 @@ A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asJSON"></a>}}
-\if{latex}{\out{\hypertarget{method-asJSON}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyles-asJSON"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyles-asJSON}{}}}
 \subsection{Method \code{asJSON()}}{
 Return the contents of this object as JSON for debugging.
 \subsection{Usage}{
@@ -194,8 +194,8 @@ A JSON representation of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-asString"></a>}}
-\if{latex}{\out{\hypertarget{method-asString}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyles-asString"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyles-asString}{}}}
 \subsection{Method \code{asString()}}{
 Return a representation of this object as a character value.
 \subsection{Usage}{
@@ -215,8 +215,8 @@ A character summary of various object properties.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyles-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyles-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

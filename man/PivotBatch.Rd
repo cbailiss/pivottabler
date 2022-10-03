@@ -42,18 +42,18 @@ from the batch.  See the "Performance" vignette for details.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PivotBatch$new()}}
-\item \href{#method-isCompatible}{\code{PivotBatch$isCompatible()}}
-\item \href{#method-addCompatible}{\code{PivotBatch$addCompatible()}}
-\item \href{#method-getCalculationInternalName}{\code{PivotBatch$getCalculationInternalName()}}
-\item \href{#method-evaluateBatch}{\code{PivotBatch$evaluateBatch()}}
-\item \href{#method-getSummaryValueFromBatch}{\code{PivotBatch$getSummaryValueFromBatch()}}
-\item \href{#method-clone}{\code{PivotBatch$clone()}}
+\item \href{#method-PivotBatch-new}{\code{PivotBatch$new()}}
+\item \href{#method-PivotBatch-isCompatible}{\code{PivotBatch$isCompatible()}}
+\item \href{#method-PivotBatch-addCompatible}{\code{PivotBatch$addCompatible()}}
+\item \href{#method-PivotBatch-getCalculationInternalName}{\code{PivotBatch$getCalculationInternalName()}}
+\item \href{#method-PivotBatch-evaluateBatch}{\code{PivotBatch$evaluateBatch()}}
+\item \href{#method-PivotBatch-getSummaryValueFromBatch}{\code{PivotBatch$getSummaryValueFromBatch()}}
+\item \href{#method-PivotBatch-clone}{\code{PivotBatch$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PivotBatch-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatch-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new `PivotBatch` object.
 \subsection{Usage}{
@@ -101,8 +101,8 @@ A new `PivotBatch` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-isCompatible"></a>}}
-\if{latex}{\out{\hypertarget{method-isCompatible}{}}}
+\if{html}{\out{<a id="method-PivotBatch-isCompatible"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatch-isCompatible}{}}}
 \subsection{Method \code{isCompatible()}}{
 Determine whether a combination of data and variables is compatible
 with this batch.
@@ -126,8 +126,8 @@ with this batch.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addCompatible"></a>}}
-\if{latex}{\out{\hypertarget{method-addCompatible}{}}}
+\if{html}{\out{<a id="method-PivotBatch-addCompatible"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatch-addCompatible}{}}}
 \subsection{Method \code{addCompatible()}}{
 Add a new set of values or a new calculation to the batch.
 with this batch.
@@ -161,8 +161,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCalculationInternalName"></a>}}
-\if{latex}{\out{\hypertarget{method-getCalculationInternalName}{}}}
+\if{html}{\out{<a id="method-PivotBatch-getCalculationInternalName"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatch-getCalculationInternalName}{}}}
 \subsection{Method \code{getCalculationInternalName()}}{
 Find the internal name of a calculation in the batch.
 \subsection{Usage}{
@@ -187,8 +187,8 @@ The internal name of the calculation in the batch.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluateBatch"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluateBatch}{}}}
+\if{html}{\out{<a id="method-PivotBatch-evaluateBatch"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatch-evaluateBatch}{}}}
 \subsection{Method \code{evaluateBatch()}}{
 Carry out grouping and calculations to evaluate the batch.
 \subsection{Usage}{
@@ -200,8 +200,8 @@ No return value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getSummaryValueFromBatch"></a>}}
-\if{latex}{\out{\hypertarget{method-getSummaryValueFromBatch}{}}}
+\if{html}{\out{<a id="method-PivotBatch-getSummaryValueFromBatch"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatch-getSummaryValueFromBatch}{}}}
 \subsection{Method \code{getSummaryValueFromBatch()}}{
 Retrieve one calculation value from the batch, typically for the value
  of one cell in a pivot table.
@@ -232,8 +232,8 @@ A single calculation value.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PivotBatch-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotBatch-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
