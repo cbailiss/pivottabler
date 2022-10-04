@@ -246,6 +246,8 @@ for(i in 1:nrow(scenarios)) {
 
   test_that(description, {
 
+    skip_on_cran()
+
     library(dplyr)
     library(lubridate)
     library(pivottabler)

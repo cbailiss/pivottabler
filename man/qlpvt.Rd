@@ -33,6 +33,6 @@ one line of R.
 }
 \examples{
 qlpvt(bhmtrains, "TOC", "TrainCategory", "n()")
-qlpvt(bhmtrains, "TOC", "TrainCategory", "n()",
-      caption="my caption", label="mylabel")
+\donttest{qlpvt(bhmtrains, "TOC", "TrainCategory", "n()",
+      caption="my caption", label="mylabel")}
 }

@@ -218,6 +218,8 @@ for(i in 1:nrow(scenarios)) {
 
   test_that(description, {
 
+    skip_on_cran()
+
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
                          compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
@@ -274,6 +276,8 @@ for(i in 1:nrow(scenarios)) {
   countFunction <- scenarios$countFunction[i]
 
   test_that(description, {
+
+    skip_on_cran()
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
@@ -515,7 +519,6 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("latex tests:  multiple levels on rows (but no columns)")
 for(i in 1:nrow(scenarios)) {
-  if(!isDevelopmentVersion) break
   if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]

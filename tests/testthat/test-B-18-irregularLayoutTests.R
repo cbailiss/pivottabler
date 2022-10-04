@@ -73,6 +73,8 @@ for(i in 1:nrow(scenarios)) {
 
   test_that(description, {
 
+    skip_on_cran()
+
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode,
                          compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
@@ -274,6 +276,8 @@ for(i in 1:nrow(scenarios)) {
   countFunction <- scenarios$countFunction[i]
 
   test_that(description, {
+
+    skip_on_cran()
 
     library(pivottabler)
     pt <- PivotTable$new(processingLibrary=processingLibrary, evaluationMode=evaluationMode, compatibility=list(noDataGroupNBSP=TRUE))

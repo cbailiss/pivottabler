@@ -66,6 +66,8 @@ context("QUICK-PIVOT TESTS")
 
 test_that("quick-pivot tests:  qpvt pivot 1", {
 
+  skip_on_cran()
+
   library(pivottabler)
   pt <- qpvt(bhmtrains, "TOC", "TrainCategory", "n()", compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
   # pt$renderPivot()
@@ -166,16 +168,18 @@ if(isDevelopmentVersion) {
 }
 
 
-test_that("quick-pivot tests:  qlpvt pivot 1", {
+if(isDevelopmentVersion) {
+  test_that("quick-pivot tests:  qlpvt pivot 1", {
 
-  library(pivottabler)
-  lchr <- qlpvt(bhmtrains, "TOC", "TrainCategory", "n()", caption="my caption", label="mylabel",
-                compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
-  # prepStr(lchr)
-  latex <- "\\begin{table}[h!]\n  \\centering\n  \\caption{my caption}\n  \\label{tab:mylabel}\n  \\begin{tabular}{|l|rrr|}\n    \\hline\n    & Express Passenger & Ordinary Passenger & Total\\\\\n    \\hline\n    Arriva Trains Wales  & 3079 & 830 & 3909\\\\\n    CrossCountry  & 22865 & 63 & 22928\\\\\n    London Midland  & 14487 & 33792 & 48279\\\\\n    Virgin Trains  & 8594 &  & 8594\\\\\n    Total  & 49025 & 34685 & 83710\\\\\n    \\hline\n  \\end{tabular}\n\\end{table}"
+    library(pivottabler)
+    lchr <- qlpvt(bhmtrains, "TOC", "TrainCategory", "n()", caption="my caption", label="mylabel",
+                  compatibility=list(totalStyleIsCellStyle=TRUE, explicitHeaderSpansOfOne=TRUE))
+    # prepStr(lchr)
+    latex <- "\\begin{table}[h!]\n  \\centering\n  \\caption{my caption}\n  \\label{tab:mylabel}\n  \\begin{tabular}{|l|rrr|}\n    \\hline\n    & Express Passenger & Ordinary Passenger & Total\\\\\n    \\hline\n    Arriva Trains Wales  & 3079 & 830 & 3909\\\\\n    CrossCountry  & 22865 & 63 & 22928\\\\\n    London Midland  & 14487 & 33792 & 48279\\\\\n    Virgin Trains  & 8594 &  & 8594\\\\\n    Total  & 49025 & 34685 & 83710\\\\\n    \\hline\n  \\end{tabular}\n\\end{table}"
 
-  expect_identical(lchr, latex)
-})
+    expect_identical(lchr, latex)
+  })
+}
 
 
 if(isDevelopmentVersion) {

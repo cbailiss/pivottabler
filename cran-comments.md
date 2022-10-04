@@ -1,9 +1,13 @@
+## Resubmission
+
+The number of automated tests that run on CRAN has been significantly reduced - run-time is now 20% of previous run-time. 
+
 ## Background
 
 This package is written entirely in R with no external dependencies/components other than the packages listed in the DESCRIPTION file.
 This update has not made any significant changes to the structure of the package or dependencies.
 Development approach is aligned with practices described in:
-http://r-pkgs.had.co.nz/
+https://r-pkgs.org/
 
 ## Test environments
 

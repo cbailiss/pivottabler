@@ -121,6 +121,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (no format): numeric")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -150,6 +151,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (no format): logical")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -179,6 +181,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (no format): date")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -275,6 +278,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (sprintf): numeric")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -334,6 +338,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (format): date")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -397,6 +402,7 @@ context("DATA GROUP DATA TYPE FORMAT TESTS:  FORMAT()")
 
 scenarios <- testScenarios("row/column data type tests (format): numeric")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -456,6 +462,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("row/column data type tests (format): date")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -551,6 +558,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("measure data type tests (no format): numeric")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -751,6 +759,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("measure data type tests (sprintf): numeric")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]
@@ -889,6 +898,7 @@ for(i in 1:nrow(scenarios)) {
 
 scenarios <- testScenarios("measure data type tests (format): date")
 for(i in 1:nrow(scenarios)) {
+  if(!isDevelopmentVersion) break
   evaluationMode <- scenarios$evaluationMode[i]
   processingLibrary <- scenarios$processingLibrary[i]
   description <- scenarios$description[i]

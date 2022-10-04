@@ -172,6 +172,8 @@ if (requireNamespace("lubridate", quietly = TRUE)) {
 
     test_that(description, {
 
+      skip_on_cran()
+
       library(pivottabler)
       library(dplyr)
       library(lubridate)
