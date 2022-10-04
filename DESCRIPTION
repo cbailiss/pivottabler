@@ -1,7 +1,7 @@
 Package: pivottabler
 Type: Package
 Title: Create Pivot Tables
-Version: 1.5.4
+Version: 1.5.3.9999
 Authors@R: person("Christopher", "Bailiss", email = "cbailiss@gmail.com",
   role = c("aut", "cre"))
 Description: Create regular pivot tables with just a few lines of R.  
