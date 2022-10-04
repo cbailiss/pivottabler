@@ -6,7 +6,16 @@ This release includes one improvement and one change in anticipation of R 4.3.0.
 Improvements
 ----------------
 
-`pt$findCells()` gains additional arguments `lowN` and `highN`.  These arguments allow the cell with the min/max value or the cells with the lowest N/highest N values to be easily found.  When either of these arguments is specified, the cells returned from `pt$findCells()` are sorted into the corresponding order by cell value, e.g. specifying `lowN=1` will find the cell with the lowest value.  Similarly, specifying `highN=5` will find the five cells containing the highest values, sorted into descending order by cell value.
+`pt$findCells()` gains additional arguments `lowN` and `highN`.  These arguments allow the cell with the min/max value or the N cells with the lowest/highest values to be easily found.  
+
+When either of these arguments is specified, the list of cells returned from `pt$findCells()` is sorted into the corresponding order by cell value.
+
+Examples:
+
+- Specifying `lowN=1` will find the cell with the lowest value.
+- Specifying `highN=1` will find the cell with the highest value.
+- Specifying `lowN=5` will find the five cells containing the lowest values, sorted into ascending order by cell value.
+- Specifying `highN=5` will find the five cells containing the highest values, sorted into descending order by cell value.
 
 R 4.3.0 Change
 ----------------
@@ -402,8 +411,3 @@ pivottabler 0.1.0
 ================
 
 Initial version.
-
-Earlier versions
-================
-
-No versions prior to 0.1.0 were released.

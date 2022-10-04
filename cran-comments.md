@@ -7,8 +7,8 @@ http://r-pkgs.had.co.nz/
 
 ## Test environments
 
-* local OS (windows/Ubuntu 20.04), R 4.1.0.
-* Windows latest, macOS-latest, Ubuntu 20.04 release+devel (via github actions), R 4.1.0.
+* local OS (windows/Ubuntu 20.04), R 4.2.1.
+* Windows latest, macOS-latest, Ubuntu 20.04 release+devel (via github actions), R 4.2.1.
 * win-builder, R-devel
 
 ## R CMD check results
@@ -17,7 +17,7 @@ http://r-pkgs.had.co.nz/
 
 0 errors | 0 warnings | 0 notes
 
-### Travis-CI R CMD check results
+### GitHub Actions R CMD check results
 
 0 errors | 0 warnings | 0 notes
 

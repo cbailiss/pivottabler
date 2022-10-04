@@ -811,7 +811,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
        if(onlyCombinationsThatExist==FALSE) stop("PivotDataGroup$addDataGroups():  onlyAddGroupIf cannot be used when onlyCombinationsThatExist=FALSE.", call. = FALSE)
      }
      # if onlyAddOutlineChildGroupIf is specified and it is a character, then preGroupData cannot be used
-     if((!is.null(onlyAddOutlineChildGroupIf))&&(class(onlyAddOutlineChildGroupIf)=="character")) {
+     if((!is.null(onlyAddOutlineChildGroupIf))&&("character" %in% class(onlyAddOutlineChildGroupIf))) {
        preGroupData <- FALSE
        if(fromData==FALSE) stop("PivotDataGroup$addDataGroups():  onlyAddOutlineChildGroupIf cannot be used when fromData=FALSE.", call. = FALSE)
        if(onlyCombinationsThatExist==FALSE) stop("PivotDataGroup$addDataGroups():  onlyAddOutlineChildGroupIf cannot be used when onlyCombinationsThatExist=FALSE.", call. = FALSE)
@@ -1035,7 +1035,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
            # if this is an outline group, do we add the child group?
            addChildGroup <- TRUE
            if(outlineBefore$outline||outlineAfter$outline) {
-             if(class(onlyAddOutlineChildGroupIf)=="logical") {
+             if("logical" %in% class(onlyAddOutlineChildGroupIf)) {
                addChildGroup <- onlyAddOutlineChildGroupIf
              }
              else if(!is.null(onlyAddOutlineChildGroupIf)) {

@@ -120,7 +120,7 @@ Please see the [Excel Export](v13-excelexport.html) vignette.
 
 ## Results as FlexTable
 
-Converting a table from the `flextabler` package is possible:
+Converting a pivot table to a table from the `flextabler` package is possible:
 
 ```{r, message=FALSE, warning=FALSE, eval=TRUE, comment=""}
 # construct the table
@@ -144,7 +144,7 @@ ft
 
 ## Results in Word
 
-Converting a table to a Word document is possible using the `flextabler` package:
+Converting a pivot table to a Word document is possible using the `flextabler` package:
 
 ```{r, eval=FALSE}
 # construct the table
@@ -174,7 +174,7 @@ print(docx, target = "example_table_word.docx")
 
 ## Results in PowerPoint
 
-Converting a table to a PowerPoint document is possible using the `flextabler` package:
+Converting a pivot table to a PowerPoint document is possible using the `flextabler` package:
 
 ```{r, eval=FALSE}
 # construct the table

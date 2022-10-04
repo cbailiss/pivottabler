@@ -30,9 +30,9 @@
 #' @return A pivot table.
 #' @examples
 #' qpvt(bhmtrains, "TOC", "TrainCategory", "n()")
-#' qpvt(bhmtrains, c("=", "TOC"), c("TrainCategory", "PowerType"),
+#' \donttest{qpvt(bhmtrains, c("=", "TOC"), c("TrainCategory", "PowerType"),
 #'      c("Number of Trains"="n()",
-#'        "Maximum Speed"="max(SchedSpeedMPH, na.rm=TRUE)"))
+#'        "Maximum Speed"="max(SchedSpeedMPH, na.rm=TRUE)"))}
 
 qpvt <- function(dataFrame, rows=NULL, columns=NULL, calculations=NULL,
                  theme=NULL, replaceExistingStyles=FALSE,

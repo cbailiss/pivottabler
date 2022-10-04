@@ -61,7 +61,7 @@ The \code{qpvt} function builds a basic pivot table with one line of R.
 }
 \examples{
 qpvt(bhmtrains, "TOC", "TrainCategory", "n()")
-qpvt(bhmtrains, c("=", "TOC"), c("TrainCategory", "PowerType"),
+\donttest{qpvt(bhmtrains, c("=", "TOC"), c("TrainCategory", "PowerType"),
      c("Number of Trains"="n()",
-       "Maximum Speed"="max(SchedSpeedMPH, na.rm=TRUE)"))
+       "Maximum Speed"="max(SchedSpeedMPH, na.rm=TRUE)"))}
 }
