@@ -69,7 +69,7 @@ checkArgument <- function(argumentCheckMode, checkDataTypes, className, methodNa
                 if(length(intersect(allowedListElementClasses, elementTypes)) == 0) { invalidTypes[[length(invalidTypes)+1]] <- elementTypes }
               }
               if(listElementsMustBeAtomic==TRUE) {
-                if(!is.atomic(argumentValue[[i]])) nonAtomicTypes[[length(nonAtomicTypes)+1]] <- class(argumentValue[[i]])
+                if((!is.null(argumentValue[[i]]))&&(!is.atomic(argumentValue[[i]]))) nonAtomicTypes[[length(nonAtomicTypes)+1]] <- class(argumentValue[[i]])
               }
             }
             if(length(invalidTypes)>0)
@@ -83,7 +83,7 @@ checkArgument <- function(argumentCheckMode, checkDataTypes, className, methodNa
         }
       }
     }
-    if((mustBeAtomic==TRUE)&&!(is.atomic(argumentValue))) {
+    if((mustBeAtomic==TRUE)&&(!is.null(argumentValue))&&(!is.atomic(argumentValue))) {
       stop(paste0(classPrefix, methodName, "():  ", argumentName, " must be one of the atomic data types"), call. = FALSE)
     }
   }

@@ -1,7 +1,3 @@
-## Resubmission
-
-The number of automated tests that run on CRAN has been significantly reduced - run-time is now 20% of previous run-time. 
-
 ## Background
 
 This package is written entirely in R with no external dependencies/components other than the packages listed in the DESCRIPTION file.
@@ -11,8 +7,8 @@ https://r-pkgs.org/
 
 ## Test environments
 
-* local OS (windows/Ubuntu 20.04), R 4.2.1.
-* Windows latest, macOS-latest, Ubuntu 20.04 release+devel (via github actions), R 4.2.1.
+* local OS (windows/Ubuntu 20.04), R 4.3.1.
+* Windows latest, macOS-latest, Ubuntu 20.04 release+devel (via github actions), R 4.3.1.
 * win-builder, R-devel
 
 ## R CMD check results

@@ -1,3 +1,11 @@
+pivottabler 1.5.5
+=================
+
+A minor maintenance release in anticipation of R 4.4.0:
+
+R 4.4.0 changes the behaviour of the base function `is.atomic()` so that `is.atomic(NULL)` now returns FALSE.  A couple of minor code changes were needed in the pivottabler package source code as a result of this change.  Users of the pivottabler package should not need to make any changes to their code/scripts.
+
+
 pivottabler 1.5.4
 =================
 
