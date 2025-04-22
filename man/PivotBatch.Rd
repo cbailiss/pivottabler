@@ -5,7 +5,7 @@
 \alias{PivotBatch}
 \title{R6 class the represents a Calculation Batch}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotBatch` class represents one combination of data, variables and

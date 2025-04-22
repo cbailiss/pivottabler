@@ -5,7 +5,7 @@
 \alias{PivotFilterOverrides}
 \title{R6 class that defines a set of filter overrides.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotFilterOverrides` class contains multiple  \code{\link{PivotFilter}}

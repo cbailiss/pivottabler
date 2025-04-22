@@ -9,7 +9,7 @@
 #' @docType class
 #' @importFrom R6 R6Class
 #' @export
-#' @format \code{\link{R6Class}} object.
+#' @format \code{\link[R6]{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
@@ -108,9 +108,9 @@ PivotStyle <- R6::R6Class("PivotStyle",
    #' Get the style definition in the form of a CSS rule.
    #' @param selector A CSS selector, used to select the element(s) to be styled.
    #' @return The style declarations in the form of a CSS rule,
-   #' i.e. selector { property-name1: property-value1,
-   #' property-name2: property-value2, ... }
-   #' e.g. div { font-weight: bold, color: #0000FF }
+   #' i.e. selector \{ property-name1: property-value1,
+   #' property-name2: property-value2, ... \}
+   #' e.g. div \{ font-weight: bold, color: #0000FF \}
    asCSSRule = function(selector=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "asCSSRule", selector, missing(selector), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -134,9 +134,9 @@ PivotStyle <- R6::R6Class("PivotStyle",
    #' Get the style definition in the form of a named CSS style.
    #' @param styleNamePrefix A prefix to prepend to the style name.
    #' @return The style declarations in the form of named CSS style,
-   #' i.e. .prefix-stylename { property-name1: property-value1,
-   #' property-name2: property-value2, ... }
-   #' e.g. .pvt1Cell { font-weight: bold, color: #0000FF }
+   #' i.e. .prefix-stylename \{ property-name1: property-value1,
+   #' property-name2: property-value2, ... \}
+   #' e.g. .pvt1Cell \{ font-weight: bold, color: #0000FF \}
    asNamedCSSStyle = function(styleNamePrefix=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotStyle", "asNamedCSSStyle", styleNamePrefix, missing(styleNamePrefix), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")

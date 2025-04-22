@@ -5,7 +5,7 @@
 \alias{PivotLatexRenderer}
 \title{R6 class that renders a pivot table in Latex.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotLatexRenderer` class creates a Latex representation of a pivot table.

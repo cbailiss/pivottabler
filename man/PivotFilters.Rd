@@ -5,7 +5,7 @@
 \alias{PivotFilters}
 \title{R6 class that defines a set of filter conditions.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotFilters` class allows multiple filter conditions relating to

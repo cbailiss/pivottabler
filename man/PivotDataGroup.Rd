@@ -5,7 +5,7 @@
 \alias{PivotDataGroup}
 \title{R6 class that defines a row or column data group.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotDataGroup` class represents one row or column heading in a pivot
@@ -75,7 +75,7 @@ to this group, if this group is an outline group.}
 `outlineLinkedGroupId` still exists.}
 
 \item{\code{captionTemplate}}{A character value that specifies the template
-for the data group caption, default "{values}".}
+for the data group caption, default "\{values\}".}
 
 \item{\code{caption}}{The data group caption.
 Assigning a caption effectively overrides the
@@ -241,7 +241,7 @@ this data group as an outline group.  Only applicable when
 `isOutline` is `TRUE`.}
 
 \item{\code{captionTemplate}}{A character value that specifies the template
-for the data group caption, default "{values}".}
+for the data group caption, default "\{values\}".}
 
 \item{\code{caption}}{Effectively a hard-coded caption that overrides the
 built-in logic for generating a caption.}
@@ -578,7 +578,7 @@ this data group as an outline group.  Only applicable when
 `isOutline` is `TRUE`.}
 
 \item{\code{captionTemplate}}{A character value that specifies the template
-for the data group caption, default "{values}".}
+for the data group caption, default "\{values\}".}
 
 \item{\code{caption}}{Effectively a hard-coded caption that overrides the
 built-in logic for generating a caption.}
@@ -761,7 +761,7 @@ If `FALSE`, then `explicitListOfValues` must be specified.}
 \item{\code{customSortOrder}}{A vector values sorted into the desired order.}
 
 \item{\code{caption}}{The template of data group captions to generate,
-default "{value}".}
+default "\{value\}".}
 
 \item{\code{dataFormat}}{A character, list or custom function to format the
 data value.}

@@ -5,7 +5,7 @@
 \alias{PivotTable}
 \title{R6 class that represents a pivot table.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotTable` class is the primary class for
@@ -208,7 +208,6 @@ of significant pivot table operations (i.e. where elapsed>0.1).}
 \item \href{#method-PivotTable-asList}{\code{PivotTable$asList()}}
 \item \href{#method-PivotTable-asJSON}{\code{PivotTable$asJSON()}}
 \item \href{#method-PivotTable-viewJSON}{\code{PivotTable$viewJSON()}}
-\item \href{#method-PivotTable-finalize}{\code{PivotTable$finalize()}}
 \item \href{#method-PivotTable-clone}{\code{PivotTable$clone()}}
 }
 }
@@ -632,7 +631,7 @@ this data group as an outline group.  Only applicable when
 `isOutline` is `TRUE`.}
 
 \item{\code{captionTemplate}}{A character value that specifies the template
-for the data group caption, default "{values}".}
+for the data group caption, default "\{values\}".}
 
 \item{\code{caption}}{Effectively a hard-coded caption that overrides the
 built-in logic for generating a caption.}
@@ -753,7 +752,7 @@ If `FALSE`, then `explicitListOfValues` must be specified.}
 \item{\code{customSortOrder}}{A vector values sorted into the desired order.}
 
 \item{\code{caption}}{The template of data group captions to generate,
-default "{value}".}
+default "\{value\}".}
 
 \item{\code{dataFormat}}{A character, list or custom function to format the
 data value.}
@@ -1057,7 +1056,7 @@ this data group as an outline group.  Only applicable when
 `isOutline` is `TRUE`.}
 
 \item{\code{captionTemplate}}{A character value that specifies the template
-for the data group caption, default "{values}".}
+for the data group caption, default "\{values\}".}
 
 \item{\code{caption}}{Effectively a hard-coded caption that overrides the
 built-in logic for generating a caption.}
@@ -1186,7 +1185,7 @@ If `FALSE`, then `explicitListOfValues` must be specified.}
 \item{\code{customSortOrder}}{A vector values sorted into the desired order.}
 
 \item{\code{caption}}{The template of data group captions to generate,
-default "{value}".}
+default "\{value\}".}
 
 \item{\code{dataFormat}}{A character, list or custom function to format the
 data value.}
@@ -1805,7 +1804,7 @@ three forms:\cr
 (2) a list containing "from" and "to" vectors/lists, e.g.
 `list(from=c(0, 0.4, 0.8), to=c("red", "yellow", "green"))`.\cr
 (3) a custom mapping function that will be invoked once per cell, e.g.
-`function(v, cell) { if(isTRUE(v>0.8)) return("green") }`.\cr
+`function(v, cell) \{ if(isTRUE(v>0.8)) return("green") \}`.\cr
 Mappings must be specified in ascending order when valueType="range" or
 valueType="continuous".\cr
 If a custom mapping function is specified, then the valueType and mapType
@@ -3330,19 +3329,6 @@ A JSON representation of various object properties.
 Use the `listviewer` package to view the pivot table as JSON for debugging.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotTable$viewJSON()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-No return value.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PivotTable-finalize"></a>}}
-\if{latex}{\out{\hypertarget{method-PivotTable-finalize}{}}}
-\subsection{Method \code{finalize()}}{
-Clean-up the pivot table.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PivotTable$finalize()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{

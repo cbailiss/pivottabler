@@ -5,7 +5,7 @@
 \alias{PivotBatchStatistics}
 \title{R6 class that provides summary statistics for batch calculations.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotBatchStatistics` class contains a set of summary statistics that

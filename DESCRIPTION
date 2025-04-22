@@ -1,7 +1,7 @@
 Package: pivottabler
 Type: Package
 Title: Create Pivot Tables
-Version: 1.5.5
+Version: 1.5.6
 Authors@R: person("Christopher", "Bailiss", email = "cbailiss@gmail.com",
   role = c("aut", "cre"))
 Description: Create regular pivot tables with just a few lines of R.  
@@ -35,4 +35,4 @@ LazyData: true
 URL: http://www.pivottabler.org.uk/, https://github.com/cbailiss/pivottabler
 BugReports: https://github.com/cbailiss/pivottabler/issues
 VignetteBuilder: knitr
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2

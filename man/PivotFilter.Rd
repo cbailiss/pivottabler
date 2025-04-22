@@ -5,7 +5,7 @@
 \alias{PivotFilter}
 \title{R6 class that defines a filter condition.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotFilter` class represents a single filter condition.

@@ -4,9 +4,9 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @return Object of \code{\link{R6Class}} with properties and methods that help
+#' @return Object of \code{\link[R6]{R6Class}} with properties and methods that help
 #'   to (do xyz).
-#' @format \code{\link{R6Class}} object.
+#' @format \code{\link[R6]{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.

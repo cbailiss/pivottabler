@@ -5,7 +5,7 @@
 \alias{PivotOpenXlsxRenderer}
 \title{R6 class that renders a pivot table into an Excel worksheet.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotOpenXlsxRenderer` class creates a representation of a

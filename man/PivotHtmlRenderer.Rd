@@ -5,7 +5,7 @@
 \alias{PivotHtmlRenderer}
 \title{R6 class that renders a pivot table in HTML.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotHtmlRenderer` class creates a HTML representation of a pivot table.

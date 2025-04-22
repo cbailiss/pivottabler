@@ -38,7 +38,7 @@
 #' @importFrom R6 R6Class
 #' @importFrom data.table data.table is.data.table
 #' @export
-#' @format \code{\link{R6Class}} object.
+#' @format \code{\link[R6]{R6Class}} object.
 #' @examples
 #' pt <- PivotTable$new()
 #' # ...

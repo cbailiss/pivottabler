@@ -5,7 +5,7 @@
 \alias{PivotData}
 \title{R6 class that contains named data frames and associated totals.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The PivotData class stores all of the data frames associated with a pivot

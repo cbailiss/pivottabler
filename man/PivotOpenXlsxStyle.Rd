@@ -5,7 +5,7 @@
 \alias{PivotOpenXlsxStyle}
 \title{R6 class that specifies Excel styling as used by the openxlsx package.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotOpenXlsxStyle` class specifies the styling for cells in an

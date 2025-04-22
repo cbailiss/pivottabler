@@ -10,7 +10,7 @@
 #' @importFrom R6 R6Class
 #' @importFrom data.table data.table is.data.table
 #' @import dplyr
-#' @format \code{\link{R6Class}} object.
+#' @format \code{\link[R6]{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
 #' # It is not intended to be created outside of the pivot table.
@@ -38,7 +38,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    #' this data group as an outline group.  Only applicable when
    #' `isOutline` is `TRUE`.
    #' @param captionTemplate A character value that specifies the template
-   #' for the data group caption, default "{values}".
+   #' for the data group caption, default "\{values\}".
    #' @param caption Effectively a hard-coded caption that overrides the
    #' built-in logic for generating a caption.
    #' @param isTotal Default `FALSE` - specify `TRUE` to mark that this
@@ -462,7 +462,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    #' this data group as an outline group.  Only applicable when
    #' `isOutline` is `TRUE`.
    #' @param captionTemplate A character value that specifies the template
-   #' for the data group caption, default "{values}".
+   #' for the data group caption, default "\{values\}".
    #' @param caption Effectively a hard-coded caption that overrides the
    #' built-in logic for generating a caption.
    #' @param isTotal Default `FALSE` - specify `TRUE` to mark that this
@@ -695,7 +695,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    #' @param dataSortOrder Must be one of "asc", "desc", "custom" or "none".
    #' @param customSortOrder A vector values sorted into the desired order.
    #' @param caption The template of data group captions to generate,
-   #' default "{value}".
+   #' default "\{value\}".
    #' @param dataFormat A character, list or custom function to format the
    #' data value.
    #' @param dataFmtFuncArgs A list that specifies any additional arguments to
@@ -2017,7 +2017,7 @@ PivotDataGroup <- R6::R6Class("PivotDataGroup",
    },
 
    #' @field captionTemplate A character value that specifies the template
-   #' for the data group caption, default "{values}".
+   #' for the data group caption, default "\{values\}".
    captionTemplate = function(value) {
      if(missing(value)) {
        return(invisible(private$p_captionTemplate))

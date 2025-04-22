@@ -5,7 +5,7 @@
 \alias{PivotCalculationGroup}
 \title{R6 class that defines a group of calculations.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotCalculationGroup` class is a container for multiple

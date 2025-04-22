@@ -15,7 +15,7 @@
 #' @docType class
 #' @importFrom R6 R6Class
 #' @export
-#' @format \code{\link{R6Class}} object.
+#' @format \code{\link[R6]{R6Class}} object.
 #' @examples
 #' pt <- PivotTable$new()
 #' # ...

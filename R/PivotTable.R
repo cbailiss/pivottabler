@@ -11,7 +11,7 @@
 #' @import htmlwidgets
 #' @import htmltools
 #' @export
-#' @format \code{\link{R6Class}} object.
+#' @format \code{\link[R6]{R6Class}} object.
 #' @examples
 #' # The package vignettes include extensive examples of working with the
 #' # PivotTable class.
@@ -518,7 +518,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' this data group as an outline group.  Only applicable when
     #' `isOutline` is `TRUE`.
     #' @param captionTemplate A character value that specifies the template
-    #' for the data group caption, default "{values}".
+    #' for the data group caption, default "\{values\}".
     #' @param caption Effectively a hard-coded caption that overrides the
     #' built-in logic for generating a caption.
     #' @param isTotal Default `FALSE` - specify `TRUE` to mark that this
@@ -648,7 +648,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param dataSortOrder Must be one of "asc", "desc", "custom" or "none".
     #' @param customSortOrder A vector values sorted into the desired order.
     #' @param caption The template of data group captions to generate,
-    #' default "{value}".
+    #' default "\{value\}".
     #' @param dataFormat A character, list or custom function to format the
     #' data value.
     #' @param dataFmtFuncArgs A list that specifies any additional arguments to
@@ -927,7 +927,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' this data group as an outline group.  Only applicable when
     #' `isOutline` is `TRUE`.
     #' @param captionTemplate A character value that specifies the template
-    #' for the data group caption, default "{values}".
+    #' for the data group caption, default "\{values\}".
     #' @param caption Effectively a hard-coded caption that overrides the
     #' built-in logic for generating a caption.
     #' @param isTotal Default `FALSE` - specify `TRUE` to mark that this
@@ -1059,7 +1059,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @param dataSortOrder Must be one of "asc", "desc", "custom" or "none".
     #' @param customSortOrder A vector values sorted into the desired order.
     #' @param caption The template of data group captions to generate,
-    #' default "{value}".
+    #' default "\{value\}".
     #' @param dataFormat A character, list or custom function to format the
     #' data value.
     #' @param dataFmtFuncArgs A list that specifies any additional arguments to
@@ -1792,7 +1792,7 @@ PivotTable <- R6::R6Class("PivotTable",
     #' (2) a list containing "from" and "to" vectors/lists, e.g.
     #' `list(from=c(0, 0.4, 0.8), to=c("red", "yellow", "green"))`.\cr
     #' (3) a custom mapping function that will be invoked once per cell, e.g.
-    #' `function(v, cell) { if(isTRUE(v>0.8)) return("green") }`.\cr
+    #' `function(v, cell) \{ if(isTRUE(v>0.8)) return("green") \}`.\cr
     #' Mappings must be specified in ascending order when valueType="range" or
     #' valueType="continuous".\cr
     #' If a custom mapping function is specified, then the valueType and mapType
@@ -4320,13 +4320,6 @@ PivotTable <- R6::R6Class("PivotTable",
         stop("PivotTable$asJSON():  The listviewer package is needed to view the internal structure of the PivotTable as JSON.  Please install it.", call. = FALSE)
       }
       listviewer::jsonedit(self$asList(), mode="code")
-    },
-
-    #' @description
-    #' Clean-up the pivot table.
-    #' @return No return value.
-    finalize = function() {
-      if(!is.null(private$p_traceFile)) close(private$p_traceFile)
     }
   ),
   active = list(
@@ -4682,6 +4675,9 @@ PivotTable <- R6::R6Class("PivotTable",
         if (!is.null(xlBorder)) { self$setStyling(cells=cl, declarations=list("xl-border-right"=xlBorder)) }
         if (!is.null(xlBorderLeft)) { self$setStyling(cells=cl, declarations=list("xl-border-right"=xlBorderLeft)) }
       }
+    },
+    finalize = function() {
+      if(!is.null(private$p_traceFile)) close(private$p_traceFile)
     }
   )
 )

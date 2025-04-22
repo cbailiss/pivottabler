@@ -1,3 +1,12 @@
+pivottabler 1.5.6
+================
+
+Bug Fixes
+----------------
+
+Various small changes in response to CRAN notes.
+
+
 pivottabler 1.5.5
 =================
 

@@ -5,7 +5,7 @@
 \alias{PivotStyle}
 \title{R6 class that specifies styling.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotStyle` class specifies the styling for headers and cells in a pivot
@@ -147,9 +147,9 @@ Get the style definition in the form of a CSS rule.
 }
 \subsection{Returns}{
 The style declarations in the form of a CSS rule,
-i.e. selector { property-name1: property-value1,
-property-name2: property-value2, ... }
-e.g. div { font-weight: bold, color: #0000FF }
+i.e. selector \{ property-name1: property-value1,
+property-name2: property-value2, ... \}
+e.g. div \{ font-weight: bold, color: #0000FF \}
 }
 }
 \if{html}{\out{<hr>}}
@@ -170,9 +170,9 @@ Get the style definition in the form of a named CSS style.
 }
 \subsection{Returns}{
 The style declarations in the form of named CSS style,
-i.e. .prefix-stylename { property-name1: property-value1,
-property-name2: property-value2, ... }
-e.g. .pvt1Cell { font-weight: bold, color: #0000FF }
+i.e. .prefix-stylename \{ property-name1: property-value1,
+property-name2: property-value2, ... \}
+e.g. .pvt1Cell \{ font-weight: bold, color: #0000FF \}
 }
 }
 \if{html}{\out{<hr>}}

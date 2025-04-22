@@ -23,9 +23,9 @@ Shiny is an R package that makes it easy to build interactive web applications (
 
 Good starting points for using Shiny are:
 
-* [Overview](https://shiny.rstudio.com/)
-* [Video Tutorial](https://shiny.rstudio.com/tutorial/)
-* [Detailed Written Articles](https://shiny.rstudio.com/articles/)
+* [Overview](https://shiny.posit.co/)
+* [Video Tutorial](https://shiny.posit.co/tutorial/)
+* [Detailed Written Articles](https://shiny.posit.co/articles/)
 
 ## Examples
 

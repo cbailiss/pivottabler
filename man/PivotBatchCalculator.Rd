@@ -5,7 +5,7 @@
 \alias{PivotBatchCalculator}
 \title{R6 class that calculates the values for multiple cells in batches.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotBatchCalculator` class calculates the values for multiple cells in

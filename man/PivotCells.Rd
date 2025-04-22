@@ -5,7 +5,7 @@
 \alias{PivotCells}
 \title{R6 class that contains the cells in a pivot table.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotCells` class contains all of the `PivotCell` instances that

@@ -5,7 +5,7 @@
 \alias{PivotCell}
 \title{R6 class that represents a cell in a pivot table.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotCell` class represents a cell in the body of a pivot table (i.e. not

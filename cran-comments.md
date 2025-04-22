@@ -1,5 +1,7 @@
 ## Background
 
+This release addresses the NOTES currently listed against the package on CRAN.
+
 This package is written entirely in R with no external dependencies/components other than the packages listed in the DESCRIPTION file.
 This update has not made any significant changes to the structure of the package or dependencies.
 Development approach is aligned with practices described in:
@@ -7,9 +9,9 @@ https://r-pkgs.org/
 
 ## Test environments
 
-* local OS (windows/Ubuntu 20.04), R 4.3.1.
-* Windows latest, macOS-latest, Ubuntu 20.04 release+devel (via github actions), R 4.3.1.
-* win-builder, R-devel
+* local OS (windows), R 4.5.0.
+* Windows-latest, macOS-latest, Ubuntu-latest release+devel (via github actions), R-latest and R-devel.
+* win-builder, R-latest and R-devel
 
 ## R CMD check results
 

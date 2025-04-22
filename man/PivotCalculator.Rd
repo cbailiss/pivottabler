@@ -5,7 +5,7 @@
 \alias{PivotCalculator}
 \title{R6 class that computes the value of a cell or cells.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotCalculator` class has various functions and methods that assist with

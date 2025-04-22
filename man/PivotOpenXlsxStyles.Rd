@@ -6,7 +6,7 @@
 \title{R6 class that defines a collection of Excel styles as used by the openxlsx
 package.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotOpenXlsxStyles` class stores a collection of `PivotOpenXlsxStyle`

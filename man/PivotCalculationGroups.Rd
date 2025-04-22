@@ -5,7 +5,7 @@
 \alias{PivotCalculationGroups}
 \title{R6 class that contains multiple calculation groups.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotCalculationGroups` class stores all of the

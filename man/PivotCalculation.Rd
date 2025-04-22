@@ -5,7 +5,7 @@
 \alias{PivotCalculation}
 \title{R6 class that defines a calculation.}
 \format{
-\code{\link{R6Class}} object.
+\code{\link[R6]{R6Class}} object.
 }
 \description{
 The `PivotCalculation` class defines one calculation in a pivot table.
