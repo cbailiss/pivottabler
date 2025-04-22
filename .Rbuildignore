@@ -26,3 +26,4 @@
 ^vignettes/vA2-appendix\.Rmd$
 ^vignettes/vA3-appendix\.Rmd$
 ^\.github$
+^CRAN-SUBMISSION$
