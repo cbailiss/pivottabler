@@ -45,7 +45,7 @@ PivotData <- R6::R6Class("PivotData",
    #' @return No return value.
    addData = function(dataFrame=NULL, dataName=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+       checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("data.frame", "tbl_dbi", "tbl_lazy"))
        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotData", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotData$addData", "Adding data...", list(dataName=dataName, df=private$getDfStr(dataFrame)))
@@ -54,7 +54,7 @@ PivotData <- R6::R6Class("PivotData",
        else data <- data.table::as.data.table(dataFrame)
      }
      else {
-       if(is.data.frame(dataFrame)) data <- dataFrame
+       if(is.data.frame(dataFrame) | inherits(dataFrame, "tbl_lazy") | inherits(dataFrame, "tbl_dbi")) data <- dataFrame
        else stop("PivotData$addData():  The specified data is not a data frame.", call. = FALSE)
      }
      dn <- dataName
