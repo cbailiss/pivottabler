@@ -440,13 +440,11 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       # set the minimum heights / widths
       for(r in 1:length(private$p_minimumRowHeights)) {
         if(private$p_minimumRowHeights[r] > 0) {
-          print(private$p_minimumRowHeights[c])
           wb$set_row_heights(sheet=wsName, rows=r, heights=private$p_minimumRowHeights[r])
         }
       }
       for(c in 1:length(private$p_minimumColumnWidths)) {
         if(private$p_minimumColumnWidths[c] > 0) {
-          print(private$p_minimumColumnWidths[c])
           wb$set_col_widths(sheet=wsName, cols=c, widths=private$p_minimumColumnWidths[c])
         }
       }
