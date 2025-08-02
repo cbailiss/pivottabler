@@ -93,6 +93,7 @@ a numeric format code such as 0.00, #,###.00, etc}
 \item \href{#method-PivotOpenXlsxStyle-isBasicStyleNameMatch}{\code{PivotOpenXlsxStyle$isBasicStyleNameMatch()}}
 \item \href{#method-PivotOpenXlsxStyle-isFullStyleDetailMatch}{\code{PivotOpenXlsxStyle$isFullStyleDetailMatch()}}
 \item \href{#method-PivotOpenXlsxStyle-createOpenXslxStyle}{\code{PivotOpenXlsxStyle$createOpenXslxStyle()}}
+\item \href{#method-PivotOpenXlsxStyle-apply_style}{\code{PivotOpenXlsxStyle$apply_style()}}
 \item \href{#method-PivotOpenXlsxStyle-asList}{\code{PivotOpenXlsxStyle$asList()}}
 \item \href{#method-PivotOpenXlsxStyle-asJSON}{\code{PivotOpenXlsxStyle$asJSON()}}
 \item \href{#method-PivotOpenXlsxStyle-asString}{\code{PivotOpenXlsxStyle$asString()}}
@@ -348,13 +349,37 @@ No return value.
 \if{html}{\out{<a id="method-PivotOpenXlsxStyle-createOpenXslxStyle"></a>}}
 \if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-createOpenXslxStyle}{}}}
 \subsection{Method \code{createOpenXslxStyle()}}{
-Create an `openxlsx` style from this style definition.
+Create an `openxlsx2` style from this style definition.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$createOpenXslxStyle()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
 No return value.  Retrieve the style using the `openxlsxStyle` property.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PivotOpenXlsxStyle-apply_style"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-apply_style}{}}}
+\subsection{Method \code{apply_style()}}{
+apply style to workbook
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$apply_style(wb, sheet, row, col)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{wb}}{an [openxlsx2::wb_workbook()]}
+
+\item{\code{sheet}}{a sheet in the workbook}
+
+\item{\code{row, col}}{row and column the style is applied to}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of various object properties.
 }
 }
 \if{html}{\out{<hr>}}

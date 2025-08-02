@@ -4,12 +4,12 @@ Title: Create Pivot Tables
 Version: 1.5.6
 Authors@R: person("Christopher", "Bailiss", email = "cbailiss@gmail.com",
   role = c("aut", "cre"))
-Description: Create regular pivot tables with just a few lines of R.  
+Description: Create regular pivot tables with just a few lines of R.
     More complex pivot tables can also be created, e.g. pivot tables
-    with irregular layouts, multiple calculations and/or derived 
+    with irregular layouts, multiple calculations and/or derived
     calculations based on multiple data frames.  Pivot tables are
     constructed using R only and can be written to a range of
-    output formats (plain text, 'HTML', 'Latex' and 'Excel'), 
+    output formats (plain text, 'HTML', 'Latex' and 'Excel'),
     including with styling/formatting.
 Depends: R (>= 3.3.0)
 Imports:
@@ -23,7 +23,7 @@ Suggests:
     jsonlite (>= 1.1),
     lubridate (>= 1.5.0),
     listviewer (>= 1.4.0),
-    openxlsx (>= 4.0.17),
+    openxlsx2,
     basictabler (>= 1.0.2),
     shiny,
     knitr,
