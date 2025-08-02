@@ -2,6 +2,10 @@ library(openxlsx2)
 library(pivottabler)
 
 wb <- wb_workbook(creator = Sys.getenv("USERNAME"))
+wb$add_worksheet("bhmtrains", visible = "hidden")
+wb$add_data( x = bhmtrains)
+
+pvt <- wb_data(wb)
 
 # 1:  special case
 pt <- PivotTable$new()
@@ -20,6 +24,7 @@ pt$renderPivot()
 wb$add_worksheet("Sc2a")
 wb$add_data(sheet="Sc2a", x="Sc2a Only 1 Measure", col_names=FALSE, row_names=FALSE, dims = openxlsx2::wb_dims(cols=1, rows=1))
 pt$writeToExcelWorksheet(wb=wb, wsName="Sc2a", topRowNumber=3, leftMostColumnNumber=2, applyStyles=TRUE, mapStylesFromCSS=TRUE)
+wb$add_pivot_table(x = pvt, data = "TrainCategory", fun = "count")
 pt$renderPivot()
 
 # 2b:  three measures on columns
@@ -43,6 +48,7 @@ pt$renderPivot()
 wb$add_worksheet("Sc2c")
 wb$add_data(sheet="Sc2c", x="Sc2c Measure plus Rows", col_names=FALSE, row_names=FALSE, dims = openxlsx2::wb_dims(cols=1, rows=1))
 pt$writeToExcelWorksheet(wb=wb, wsName="Sc2c", topRowNumber=3, leftMostColumnNumber=2, applyStyles=TRUE, mapStylesFromCSS=TRUE)
+wb$add_pivot_table(x = pvt, rows = "TOC", data = "TrainCategory", fun = "count")
 pt$renderPivot()
 
 # 2d:  single measure plus rows and columns
@@ -55,6 +61,7 @@ pt$renderPivot()
 wb$add_worksheet("Sc2d")
 wb$add_data(sheet="Sc2d", x="Sc2d Measure plus RowsXCols", col_names=FALSE, row_names=FALSE, dims = openxlsx2::wb_dims(cols=1, rows=1))
 pt$writeToExcelWorksheet(wb=wb, wsName="Sc2d", topRowNumber=3, leftMostColumnNumber=2, applyStyles=TRUE, mapStylesFromCSS=TRUE)
+wb$add_pivot_table(x = pvt, rows = "TOC", cols = "TrainCategory", data = "TrainCategory", fun = "count")
 pt$renderPivot()
 
 # 2e:  single measure plus rows and 2 sets of columns
@@ -68,6 +75,7 @@ pt$renderPivot()
 wb$add_worksheet("Sc2e")
 wb$add_data(sheet="Sc2e", x="Sc2e Measure plus RowsX2Cols", col_names=FALSE, row_names=FALSE, dims = openxlsx2::wb_dims(cols=1, rows=1))
 pt$writeToExcelWorksheet(wb=wb, wsName="Sc2e", topRowNumber=3, leftMostColumnNumber=2, applyStyles=TRUE, mapStylesFromCSS=TRUE)
+wb$add_pivot_table(x = pvt, rows = "TOC", cols = c("TrainCategory", "PowerType"), data = "TrainCategory", fun = "count")
 pt$renderPivot()
 
 # 2f:  three measures plus rows and 2 sets of columns
@@ -119,6 +127,7 @@ pt$renderPivot()
 wb$add_worksheet("Sc3c")
 wb$add_data(sheet="Sc3c", x="Sc3c Measure plus Rows", col_names=FALSE, row_names=FALSE, dims = openxlsx2::wb_dims(cols=1, rows=1))
 pt$writeToExcelWorksheet(wb=wb, wsName="Sc3c", topRowNumber=3, leftMostColumnNumber=2, applyStyles=TRUE, mapStylesFromCSS=TRUE)
+wb$add_pivot_table(x = pvt, cols = c("TrainCategory"), data = "TrainCategory", fun = "count")
 pt$renderPivot()
 
 # 3d:  single measure plus rows and columns (produces identical output to 2d)
@@ -132,6 +141,7 @@ pt$renderPivot()
 wb$add_worksheet("Sc3d")
 wb$add_data(sheet="Sc3d", x="Sc3d Measure plus RowsXCols (same output as Sc2d)", col_names=FALSE, row_names=FALSE, dims = openxlsx2::wb_dims(cols=1, rows=1))
 pt$writeToExcelWorksheet(wb=wb, wsName="Sc3d", topRowNumber=3, leftMostColumnNumber=2, applyStyles=TRUE, mapStylesFromCSS=TRUE)
+wb$add_pivot_table(x = pvt, rows = "TOC", cols = c("TrainCategory"), data = "TrainCategory", fun = "count")
 pt$renderPivot()
 
 # 3e:  single measure plus rows and 2 sets of columns (produces identical output to 2e)
@@ -146,6 +156,7 @@ pt$renderPivot()
 wb$add_worksheet("Sc3e")
 wb$add_data(sheet="Sc3e", x="Sc3e Measure plus RowsX2Cols (same output as Sc2e)", col_names=FALSE, row_names=FALSE, dims = openxlsx2::wb_dims(cols=1, rows=1))
 pt$writeToExcelWorksheet(wb=wb, wsName="Sc3e", topRowNumber=3, leftMostColumnNumber=2, applyStyles=TRUE, mapStylesFromCSS=TRUE)
+wb$add_pivot_table(x = pvt, rows = "TOC", cols = c("TrainCategory", "PowerType"), data = "TrainCategory", fun = "count")
 pt$renderPivot()
 
 # 3f:  three measures plus rows and 2 sets of columns
