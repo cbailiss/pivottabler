@@ -445,6 +445,19 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
    #' @return A list of various object properties.
     apply_style = function(wb, sheet, row, col) {
 
+      # print(self$openxlsxStyle)
+
+      bold <- ""
+      underline <- ""
+      strikethrough <- ""
+      italic <- ""
+      if (!is.null(self$openxlsxStyle$textDecoration)) {
+        if ("bold" %in% self$openxlsxStyle$textDecoration) bold <- TRUE
+        if ("underline" %in% self$openxlsxStyle$textDecoration) underline <- TRUE
+        if ("strikeout" %in% self$openxlsxStyle$textDecoration) strikethrough <- TRUE
+        if ("italic" %in% self$openxlsxStyle$textDecoration) italic <- TRUE
+      }
+
       dims <- openxlsx2::wb_dims(rows = row, cols = col)
       wb$add_font(
         sheet = sheet,
@@ -452,7 +465,10 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
         name = self$openxlsxStyle$fontName,
         size = self$openxlsxStyle$fontSize,
         colour = if(is.null(self$openxlsxStyle$fontColour)) openxlsx2::wb_colour(theme = 1) else openxlsx2::wb_colour(self$openxlsxStyle$fontColour),
-        bold = if (!is.null(self$openxlsxStyle$textDecoration) && self$openxlsxStyle$textDecoration == "bold") TRUE else ""
+        bold = bold,
+        underline = underline,
+        strike = strikethrough,
+        italic = italic
       )
       if (!is.null(self$openxlsxStyle$fgFill)) {
         wb$add_fill(
@@ -475,9 +491,17 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
           bottom_color = openxlsx2::wb_colour(self$openxlsxStyle$borderColour[4])
         )
       }
+      if (self$openxlsxStyle$numFmt != "GENERAL") {
+        wb$add_numfmt(
+          sheet = sheet,
+          dims = dims,
+          numfmt = self$openxlsxStyle$numFmt
+        )
+      }
       wb$add_cell_style(
         sheet = sheet,
         dims = dims,
+        text_rotation = if (!is.null(self$openxlsxStyle$textRotation)) self$openxlsxStyle$textRotation else NULL,
         horizontal = if (!is.null(self$openxlsxStyle$halign)) self$openxlsxStyle$halign else NULL,
         vertical = if (!is.null(self$openxlsxStyle$valign)) self$openxlsxStyle$valign else NULL,
         wrap_text = if (!is.null(self$openxlsxStyle$wrapText)) self$openxlsxStyle$wrapText else NULL
