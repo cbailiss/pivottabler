@@ -1,4 +1,18 @@
 
+# helper to expand hex if required
+expand_hex <- function(hex) {
+  if (!is.character(hex) || length(hex) != 1) stop("invalid length")
+  hex <- toupper(gsub("^#", "", hex))
+  if (grepl("^[0-9A-F]{3}$", hex)) {
+    # Expand 3-digit to 6-digit
+    hex <- paste0(rep(strsplit(hex, "")[[1]], each = 2), collapse = "")
+  } else if (!grepl("^[0-9A-F]{6}$", hex)) {
+    # Invalid hex format
+    stop("invalid hex format detected")
+  }
+  paste0("#", hex)
+}
+
 #' R6 class that specifies Excel styling as used by the openxlsx package.
 #'
 #' @description
@@ -101,10 +115,12 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyle$new", "Creating new Pivot Style...", list())
 
      if(!is.null(fillColor)) {
+       fillColor <- expand_hex(fillColor)
        check <- grep("#[0-9A-F]{6}", fillColor)
        if((length(check)==0)||(check==FALSE)) stop("PivotOpenXlsxStyle$initialize():  fillColor must be in the format #NNNNNN.", call. = FALSE)
      }
      if(!is.null(textColor)) {
+       textColor <- expand_hex(textColor)
        check <- grep("#[0-9A-F]{6}", textColor)
        if((length(check)==0)||(check==FALSE)) stop("PivotOpenXlsxStyle$initialize():  textColor must be in the format #NNNNNN.", call. = FALSE)
      }
