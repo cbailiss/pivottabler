@@ -379,7 +379,7 @@ apply style to workbook
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A list of various object properties.
+The workbook
 }
 }
 \if{html}{\out{<hr>}}

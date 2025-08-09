@@ -442,7 +442,7 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
    #' @param wb an [openxlsx2::wb_workbook()]
    #' @param sheet a sheet in the workbook
    #' @param row,col row and column the style is applied to
-   #' @return A list of various object properties.
+   #' @return The workbook
     apply_style = function(wb, sheet, row, col) {
 
       # print(self$openxlsxStyle)
@@ -453,7 +453,7 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
       italic <- ""
       if (!is.null(self$openxlsxStyle$textDecoration)) {
         if ("bold" %in% self$openxlsxStyle$textDecoration) bold <- TRUE
-        if ("underline" %in% self$openxlsxStyle$textDecoration) underline <- TRUE
+        if ("underline" %in% self$openxlsxStyle$textDecoration) underline <- "single"
         if ("strikeout" %in% self$openxlsxStyle$textDecoration) strikethrough <- TRUE
         if ("italic" %in% self$openxlsxStyle$textDecoration) italic <- TRUE
       }
