@@ -58,7 +58,7 @@ A simple example of creating a pivot table - summarising the types of trains run
 ```{r, message=FALSE, warning=FALSE, comment=""}
 library(pivottabler)
 # arguments:  qpvt(dataFrame, rows, columns, calculations, ...)
-qpvt(bhmtrains, "TOC", "TrainCategory", "n()") # TOC = Train Operating Company 
+qpvt(bhmtrains, "TOC", "TrainCategory", "n()") # TOC = Train Operating Company
 ```
 
 `pivottabler` also offers a more verbose syntax that is more self-describing and offers additional options that aren't available with the quick-pivot functions.  The equivalent verbose commands to output the same pivot table as above are:
@@ -99,13 +99,13 @@ The HTML rendering of the same two pivot tables shown above (each constructed us
 
 ```{r, eval=FALSE}
 library(pivottabler)
-qhpvt(bhmtrains, "TOC", "TrainCategory", "n()") 
+qhpvt(bhmtrains, "TOC", "TrainCategory", "n()")
 ```
 
 ```{r eval=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
-pt$addData(bhmtrains) 
+pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
@@ -116,7 +116,7 @@ pt$renderPivot()
 
 ```{r, eval=FALSE}
 library(pivottabler)
-qhpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()")  
+qhpvt(bhmtrains, c("TOC", "PowerType"), "TrainCategory", "n()")
 ```
 
 ```{r eval=FALSE}
@@ -137,12 +137,12 @@ Outline layout is an alternative way of rendering the row groups, e.g. for the s
 ```{r eval=FALSE}
 library(pivottabler)
 pt <- PivotTable$new()
-pt$addData(bhmtrains) 
-pt$addColumnDataGroups("TrainCategory") 
-pt$addRowDataGroups("TOC", 
-                    outlineBefore=list(isEmpty=FALSE, groupStyleDeclarations=list(color="blue")), 
-                    outlineTotal=list(isEmpty=FALSE, groupStyleDeclarations=list(color="blue"))) 
-pt$addRowDataGroups("PowerType", addTotal=FALSE) 
+pt$addData(bhmtrains)
+pt$addColumnDataGroups("TrainCategory")
+pt$addRowDataGroups("TOC",
+                    outlineBefore=list(isEmpty=FALSE, groupStyleDeclarations=list(color="blue")),
+                    outlineTotal=list(isEmpty=FALSE, groupStyleDeclarations=list(color="blue")))
+pt$addRowDataGroups("PowerType", addTotal=FALSE)
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
 ```
@@ -159,7 +159,7 @@ The R for generating the above pivot table can be found in the Regular Layout vi
 
 Multiple calculations are supported.  Calculations can be based on other calculations in the pivot table.  Calculations can be hidden - e.g. to hide calculations that only exist to provide values to other calculations.
 
-For example, looking at the total number of trains and the percentage of trains that arrive more than five minutes late for combinations of train operating company (TOC) and train category: 
+For example, looking at the total number of trains and the percentage of trains that arrive more than five minutes late for combinations of train operating company (TOC) and train category:
 
 ```{r, eval=FALSE}
 library(pivottabler)
@@ -177,13 +177,13 @@ pt <- PivotTable$new()
 pt$addData(trains)
 pt$addRowDataGroups("TOC", totalCaption="All TOCs")
 pt$addColumnDataGroups("TrainCategory", totalCaption="All Trains")
-pt$defineCalculation(calculationName="TotalTrains", caption="Train Count", 
+pt$defineCalculation(calculationName="TotalTrains", caption="Train Count",
                      summariseExpression="n()")
-pt$defineCalculation(calculationName="DelayedTrains", caption="Trains Arr. 5+ Mins Late", 
+pt$defineCalculation(calculationName="DelayedTrains", caption="Trains Arr. 5+ Mins Late",
                      summariseExpression="sum(DelayedByMoreThan5Minutes, na.rm=TRUE)",
                      visible=FALSE)
-pt$defineCalculation(calculationName="DelayedPercent", caption="% Late Trains", 
-                     type="calculation", basedOn=c("DelayedTrains", "TotalTrains"), 
+pt$defineCalculation(calculationName="DelayedPercent", caption="% Late Trains",
+                     type="calculation", basedOn=c("DelayedTrains", "TotalTrains"),
                      format="%.1f %%",
                      calculationExpression="values$DelayedTrains/values$TotalTrains*100")
 pt$renderPivot()
@@ -201,24 +201,24 @@ Styling can be specified when creating the pivot table.  The example below shows
 
 ```{r, eval=FALSE}
 library(pivottabler)
-qhpvt(bhmtrains, "TOC", "TrainCategory", "n()", 
+qhpvt(bhmtrains, "TOC", "TrainCategory", "n()",
       tableStyle=list("border-color"="maroon"),
-      headingStyle=list("color"="cornsilk", "background-color"="maroon", 
-                        "font-style"="italic", "border-color"="maroon"), 
-      cellStyle=list("color"="maroon", "background-color"="cornsilk", 
+      headingStyle=list("color"="cornsilk", "background-color"="maroon",
+                        "font-style"="italic", "border-color"="maroon"),
+      cellStyle=list("color"="maroon", "background-color"="cornsilk",
                      "border-color"="maroon"),
-      totalStyle=list("color"="maroon", "background-color"="cornsilk", 
-                      "border-color"="maroon", "font-weight"="bold")) 
+      totalStyle=list("color"="maroon", "background-color"="cornsilk",
+                      "border-color"="maroon", "font-weight"="bold"))
 ```
 
 ```{r eval=FALSE}
 library(pivottabler)
 pt <- PivotTable$new(tableStyle=list("border-color"="maroon"),
-                     headingStyle=list("color"="cornsilk", "background-color"="maroon", 
-                                       "font-style"="italic", "border-color"="maroon"), 
-                     cellStyle=list("color"="maroon", "background-color"="cornsilk", 
+                     headingStyle=list("color"="cornsilk", "background-color"="maroon",
+                                       "font-style"="italic", "border-color"="maroon"),
+                     cellStyle=list("color"="maroon", "background-color"="cornsilk",
                                     "border-color"="maroon"),
-                     totalStyle=list("color"="maroon", "background-color"="cornsilk", 
+                     totalStyle=list("color"="maroon", "background-color"="cornsilk",
                                      "border-color"="maroon", "font-weight"="bold"))
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
@@ -245,12 +245,11 @@ pt$addRowDataGroups("PowerType") # D/EMU = Diesel/Electric Multiple Unit, HST=Hi
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$evaluatePivot()
 
-library(openxlsx)
-wb <- createWorkbook(creator = Sys.getenv("USERNAME"))
-addWorksheet(wb, "Data")
-pt$writeToExcelWorksheet(wb=wb, wsName="Data", 
+library(openxlsx2)
+wb <- wb_workbook(creator = Sys.getenv("USERNAME"))$add_worksheet("Data")
+pt$writeToExcelWorksheet(wb=wb, wsName="Data",
                          topRowNumber=2, leftMostColumnNumber=2, applyStyles=TRUE)
-saveWorkbook(wb, file="C:\\test.xlsx", overwrite = TRUE)
+wb$save(file="C:\\test.xlsx")
 ```
 
 ![http://cbailiss.me.uk/pivottablerreadmeimgs/example4.png](http://cbailiss.me.uk/pivottablerreadmeimgs/example4.png)
@@ -259,9 +258,9 @@ In the screenshot above, Gridlines have been made invisible to make the styling 
 
 ### More Information
 
-More complex pivot tables can also be created, e.g. with irregular layouts, using multiple data frames, using multiple calculations and/or custom R calculation functions.  
+More complex pivot tables can also be created, e.g. with irregular layouts, using multiple data frames, using multiple calculations and/or custom R calculation functions.
 
-See http://www.pivottabler.org.uk/articles for more detailed information. 
+See http://www.pivottabler.org.uk/articles for more detailed information.
 
 ### More Examples
 
