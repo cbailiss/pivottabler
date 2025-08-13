@@ -1,3 +1,17 @@
+pivottabler 1.5.7 (work in progress, unreleased)
+=================
+
+This release includes one improvement.
+
+Improvements
+----------------
+pivottabler now supports both the openxlsx and openxlsx2 packages for exporting to Excel.  
+openxlsx remains the default.  To use openxlsx2, specify this explicitly when creating the pivot table.
+For now, only the README has been updated to show an example of how to specify openxlsx2.
+Work is in progress to update vignettes and other documentation.
+It is expected that openxlsx2 will become the default in a future version of the package.
+
+
 pivottabler 1.5.6
 ================
 

@@ -23,6 +23,7 @@ Suggests:
     jsonlite (>= 1.1),
     lubridate (>= 1.5.0),
     listviewer (>= 1.4.0),
+    openxlsx (>= 4.0.17),
     openxlsx2,
     basictabler (>= 1.0.2),
     shiny,

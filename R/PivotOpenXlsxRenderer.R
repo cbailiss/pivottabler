@@ -3,7 +3,7 @@
 #'
 #' @description
 #' The `PivotOpenXlsxRenderer` class creates a representation of a
-#' pivot table in an Excel file using the `openxlsx2` package.
+#' pivot table in an Excel file using the `openxlsx` or `openxlsx2` packages.
 #' See the "Excel Export" vignette for details and examples.
 #'
 #' @docType class
@@ -76,7 +76,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
     #' @return No return value.
     writeToCell = function(wb=NULL, wsName=NULL, rowNumber=NULL, columnNumber=NULL, value=NULL, applyStyles=TRUE, baseStyleName=NULL, style=NULL, mapFromCss=TRUE, mergeRows=NULL, mergeColumns=NULL) { #, debugMsg=NULL) {
        if(private$p_parentPivot$argumentCheckMode > 0) {
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="wbWorkbook")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("Workbook", "wbWorkbook"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", rowNumber, missing(rowNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", columnNumber, missing(columnNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -94,27 +94,47 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       #                  ", mc=", suppressWarnings(min(mergeColumns)), " to ", suppressWarnings(max(mergeColumns))))
       # }
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$writeToWorksheet", "Writing to cell...")
+      excelRenderer <- private$p_parentPivot$excelRenderer
       # write the value
       if (!is.null(value) && (length(value) > 0)) {
-        wb$add_data(sheet=wsName, x=value, col_names=FALSE, row_names=FALSE, dims = openxlsx2::wb_dims(rowNumber, columnNumber))
+        if(excelRenderer=="openxlsx") {
+          openxlsx::writeData(wb, sheet=wsName, x=value, colNames=FALSE, rowNames=FALSE, startCol=columnNumber, startRow=rowNumber)
+        }
+        else if(excelRenderer=="openxlsx2") {
+          wb$add_data(sheet=wsName, x=value, col_names=FALSE, row_names=FALSE, dims=openxlsx2::wb_dims(rowNumber, columnNumber))
+        }
       }
       # merge cells
       isMergedCells <- isNumericValue(mergeRows)&&isNumericValue(mergeColumns)&&((length(mergeRows)>1)||(length(mergeColumns)>1))
-      if(isMergedCells) wb$merge_cells(sheet=wsName, dims = openxlsx2::wb_dims(rows=mergeRows, cols=mergeColumns))
+      if(isMergedCells) {
+        if(excelRenderer=="openxlsx") {
+          openxlsx::mergeCells(wb, sheet=wsName, cols=mergeColumns, rows=mergeRows)
+        }
+        else if(excelRenderer=="openxlsx2") {
+          wb$merge_cells(sheet=wsName, dims = openxlsx2::wb_dims(rows=mergeRows, cols=mergeColumns))
+        }
+      }
       # styling
       if(applyStyles) {
         openxlsxStyle <- NULL
         # just a base style (these were all already added to the OpenXlsxStyles collection, so can just do a find based on the name only)
         if(isTextValue(baseStyleName)&&is.null(style)) {
           openxlsxStyle <- private$p_styles$findNamedStyle(baseStyleName)
-          ## TODO it should be possible to apply the styling to all cells of baseStyleName at once
-          # message(baseStyleName)
-          # print(openxlsxStyle$openxlsxStyle)
           if(is.null(openxlsxStyle)) stop(paste0("PivotOpenXlsxRenderer$writeToWorksheet(): Unable to find named style '", baseStyleName, "'."), call. = FALSE)
           if(isMergedCells) {
-            wb <- openxlsxStyle$apply_style(wb = wb, sheet = wsName, row = mergeRows, col = mergeColumns)
+            if (excelRenderer=="openxlsx") {
+              openxlsx::addStyle(wb, sheet=wsName, style=openxlsxStyle$openxlsxStyle, rows=mergeRows, cols=mergeColumns, gridExpand=TRUE)
+            }
+            else if(excelRenderer=="openxlsx2") {
+              wb <- openxlsxStyle$applyStyle(wb=wb, sheet=wsName, row=mergeRows, col=mergeColumns)
+            }
           } else {
-            wb <- openxlsxStyle$apply_style(wb = wb, sheet = wsName, row = rowNumber, col = columnNumber)
+            if (excelRenderer=="openxlsx") {
+              openxlsx::addStyle(wb, sheet=wsName, style=openxlsxStyle$openxlsxStyle, rows=rowNumber, cols=columnNumber, gridExpand=TRUE)
+            }
+            else if(excelRenderer=="openxlsx2") {
+              wb <- openxlsxStyle$applyStyle(wb=wb, sheet=wsName, row=rowNumber, col=columnNumber)
+            }
           }
         }
         # base style and overlaid style, or just an overlaid style
@@ -129,9 +149,19 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
           openxlsxStyle <- private$p_styles$findOrAddStyle(action="findOrAdd", baseStyleName=baseStyleName, isBaseStyle=FALSE, style=fullStyle, mapFromCss=mapFromCss)
           if(is.null(openxlsxStyle)) stop("PivotOpenXlsxRenderer$writeToWorksheet(): Failed to find or add style.", call. = FALSE)
           if(isMergedCells) {
-            wb <- openxlsxStyle$apply_style(wb = wb, sheet = wsName, row = mergeRows, col = mergeColumns)
+            if(excelRenderer=="openxlsx") {
+              openxlsx::addStyle(wb, sheet=wsName, style=openxlsxStyle$openxlsxStyle, rows=mergeRows, cols=mergeColumns, gridExpand=TRUE)
+            }
+            else if(excelRenderer=="openxlsx2") {
+              wb <- openxlsxStyle$applyStyle(wb=wb, sheet=wsName, row=mergeRows, col=mergeColumns)
+            }
           } else {
-            wb <- openxlsxStyle$apply_style(wb = wb, sheet = wsName, row = rowNumber, col = columnNumber)
+            if(excelRenderer=="openxlsx") {
+              openxlsx::addStyle(wb, sheet=wsName, style=openxlsxStyle$openxlsxStyle, rows=rowNumber, cols=columnNumber, gridExpand=TRUE)
+            }
+            else if(excelRenderer=="openxlsx2") {
+              wb <- openxlsxStyle$applyStyle(wb=wb, sheet=wsName, row=rowNumber, col=columnNumber)
+            }
           }
         }
         # min heights/widths
@@ -173,7 +203,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
     writeToWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, outputHeadingsAs="formattedValueAsText",
                                 outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE, exportOptions=NULL, showRowGroupHeaders=FALSE) {
       if(private$p_parentPivot$argumentCheckMode > 0) {
-        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="wbWorkbook")
+        checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("Workbook", "wbWorkbook"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", topRowNumber, missing(topRowNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToWorksheet", leftMostColumnNumber, missing(leftMostColumnNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -440,12 +470,22 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       # set the minimum heights / widths
       for(r in 1:length(private$p_minimumRowHeights)) {
         if(private$p_minimumRowHeights[r] > 0) {
-          wb$set_row_heights(sheet=wsName, rows=r, heights=private$p_minimumRowHeights[r])
+          if(excelRenderer=="openxlsx") {
+            openxlsx::setRowHeights(wb, sheet=wsName, rows=r, heights=private$p_minimumRowHeights[r])
+          }
+          else if(excelRenderer=="openxlsx2") {
+            wb$set_row_heights(sheet=wsName, rows=r, heights=private$p_minimumRowHeights[r])
+          }
         }
       }
       for(c in 1:length(private$p_minimumColumnWidths)) {
         if(private$p_minimumColumnWidths[c] > 0) {
-          wb$set_col_widths(sheet=wsName, cols=c, widths=private$p_minimumColumnWidths[c])
+          if(excelRenderer=="openxlsx") {
+            openxlsx::setColWidths(wb, sheet=wsName, cols=c, widths=private$p_minimumColumnWidths[c])
+          }
+          else if(excelRenderer=="openxlsx2") {
+            wb$set_col_widths(sheet=wsName, cols=c, widths=private$p_minimumColumnWidths[c])
+          }
         }
       }
 

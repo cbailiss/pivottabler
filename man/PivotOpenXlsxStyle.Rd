@@ -93,7 +93,7 @@ a numeric format code such as 0.00, #,###.00, etc}
 \item \href{#method-PivotOpenXlsxStyle-isBasicStyleNameMatch}{\code{PivotOpenXlsxStyle$isBasicStyleNameMatch()}}
 \item \href{#method-PivotOpenXlsxStyle-isFullStyleDetailMatch}{\code{PivotOpenXlsxStyle$isFullStyleDetailMatch()}}
 \item \href{#method-PivotOpenXlsxStyle-createOpenXslxStyle}{\code{PivotOpenXlsxStyle$createOpenXslxStyle()}}
-\item \href{#method-PivotOpenXlsxStyle-apply_style}{\code{PivotOpenXlsxStyle$apply_style()}}
+\item \href{#method-PivotOpenXlsxStyle-applyStyle}{\code{PivotOpenXlsxStyle$applyStyle()}}
 \item \href{#method-PivotOpenXlsxStyle-asList}{\code{PivotOpenXlsxStyle$asList()}}
 \item \href{#method-PivotOpenXlsxStyle-asJSON}{\code{PivotOpenXlsxStyle$asJSON()}}
 \item \href{#method-PivotOpenXlsxStyle-asString}{\code{PivotOpenXlsxStyle$asString()}}
@@ -349,7 +349,8 @@ No return value.
 \if{html}{\out{<a id="method-PivotOpenXlsxStyle-createOpenXslxStyle"></a>}}
 \if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-createOpenXslxStyle}{}}}
 \subsection{Method \code{createOpenXslxStyle()}}{
-Create an `openxlsx2` style from this style definition.
+Create an `openxlsx` style from this style definition, if using the openxlsx package.
+Create a list of style properties, if using the openxlsx2 package.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$createOpenXslxStyle()}\if{html}{\out{</div>}}
 }
@@ -359,12 +360,12 @@ No return value.  Retrieve the style using the `openxlsxStyle` property.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PivotOpenXlsxStyle-apply_style"></a>}}
-\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-apply_style}{}}}
-\subsection{Method \code{apply_style()}}{
-apply style to workbook
+\if{html}{\out{<a id="method-PivotOpenXlsxStyle-applyStyle"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-applyStyle}{}}}
+\subsection{Method \code{applyStyle()}}{
+Apply style to workbook
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$apply_style(wb, sheet, row, col)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$applyStyle(wb, sheet, row, col)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

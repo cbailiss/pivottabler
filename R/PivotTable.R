@@ -56,6 +56,8 @@ PivotTable <- R6::R6Class("PivotTable",
     #' See the `tableStyle` argument for details.
     #' @param compatibility A list containing compatibility options to force
     #' legacy behaviours.  See the NEWS file for details.
+    #' @param excelRenderer Specify the package used to render Excel files -
+    #' either openxlsx or openxlxs2.
     #' @param traceEnabled Default `FALSE`.  Specify `TRUE` to generate a trace
     #' for debugging purposes.
     #' @param traceFile If tracing is enabled, the location to generate the trace file.
@@ -63,7 +65,7 @@ PivotTable <- R6::R6Class("PivotTable",
     initialize = function(processingLibrary="auto", evaluationMode="batch", argumentCheckMode="auto",
                           theme=NULL, replaceExistingStyles=FALSE,
                           tableStyle=NULL, headingStyle=NULL, cellStyle=NULL, totalStyle=NULL,
-                          compatibility=NULL, traceEnabled=FALSE, traceFile=NULL) {
+                          excelRenderer="openxlsx", compatibility=NULL, traceEnabled=FALSE, traceFile=NULL) {
       checkArgument(4, TRUE, "PivotTable", "initialize", processingLibrary, missing(processingLibrary), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("auto", "dplyr", "data.table"))
       checkArgument(4, TRUE, "PivotTable", "initialize", evaluationMode, missing(evaluationMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("batch", "sequential"))
       checkArgument(4, TRUE, "PivotTable", "initialize", argumentCheckMode, missing(argumentCheckMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("auto", "none", "minimal", "basic", "balanced", "full"))
@@ -73,6 +75,7 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument(4, TRUE, "PivotTable", "initialize", headingStyle, missing(headingStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "PivotStyle"))
       checkArgument(4, TRUE, "PivotTable", "initialize", cellStyle, missing(cellStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "PivotStyle"))
       checkArgument(4, TRUE, "PivotTable", "initialize", totalStyle, missing(totalStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "PivotStyle"))
+      checkArgument(4, TRUE, "PivotTable", "initialize", excelRenderer, missing(excelRenderer), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("openxlsx", "openxlsx2"))
       checkArgument(4, TRUE, "PivotTable", "initialize", compatibility, missing(compatibility), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric", "logical"))
       checkArgument(4, TRUE, "PivotTable", "initialize", traceEnabled, missing(traceEnabled), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument(4, TRUE, "PivotTable", "initialize", traceFile, missing(traceFile), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -126,6 +129,7 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_cells <- PivotCells$new(self)
       private$p_htmlRenderer <- PivotHtmlRenderer$new(parentPivot=self)
       private$p_latexRenderer <- PivotLatexRenderer$new(parentPivot=self)
+      private$p_excelRenderer <- excelRenderer
       private$p_openxlsxRenderer <- PivotOpenXlsxRenderer$new(parentPivot=self)
       private$p_timings <- list()
       # apply theming and styles
@@ -4217,7 +4221,7 @@ PivotTable <- R6::R6Class("PivotTable",
     writeToExcelWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, outputHeadingsAs="formattedValueAsText",
                                      outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE, exportOptions=NULL, showRowGroupHeaders=FALSE) {
       if(private$p_argumentCheckMode > 0) {
-        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses="wbWorkbook")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("Workbook", "wbWorkbook"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", topRowNumber, missing(topRowNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", leftMostColumnNumber, missing(leftMostColumnNumber), allowMissing=TRUE, allowNull=FALSE, allowedClasses=c("integer", "numeric"))
@@ -4473,6 +4477,18 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @field asCharacter A plain text representation of the pivot table.
     asCharacter = function() { return(self$print(asCharacter=TRUE)) },
 
+    #' @field excelRenderer Value indicating the openxlsx package version to use
+    #' for rendering to Excel - must be either openxlsx or openxlsx2.
+    excelRenderer = function(value) {
+      if(missing(value)) return(invisible(private$p_excelRenderer))
+      else {
+        if(!(value %in% c("openxlsx", "openxlsx2")))
+          stop("PivotTable$excelRenderer: value must be either openxlsx or openxlsx2.", call. = FALSE)
+        private$p_excelRenderer <- value
+        return(invisible())
+      }
+    },
+
     #' @field theme The name of the theme used to style the pivot table.
     #' If setting this property, either a theme name can be used, or
     #' a list can be used (which specifies a simple theme) or a
@@ -4610,6 +4626,7 @@ PivotTable <- R6::R6Class("PivotTable",
     p_mergeEmptySpaceDirection = "row",
     p_htmlRenderer = NULL,
     p_latexRenderer = NULL,
+    p_excelRenderer = "openxlsx",
     p_openxlsxRenderer = NULL,
     p_compatibility = NULL,
     p_traceFile = NULL,

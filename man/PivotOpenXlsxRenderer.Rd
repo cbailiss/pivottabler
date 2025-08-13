@@ -9,7 +9,7 @@
 }
 \description{
 The `PivotOpenXlsxRenderer` class creates a representation of a
-pivot table in an Excel file using the `openxlsx2` package.
+pivot table in an Excel file using the `openxlsx` or `openxlsx2` packages.
 See the "Excel Export" vignette for details and examples.
 }
 \examples{

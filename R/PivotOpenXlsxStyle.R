@@ -1,18 +1,3 @@
-
-# helper to expand hex if required
-expand_hex <- function(hex) {
-  if (!is.character(hex) || length(hex) != 1) stop("invalid length")
-  hex <- toupper(gsub("^#", "", hex))
-  if (grepl("^[0-9A-F]{3}$", hex)) {
-    # Expand 3-digit to 6-digit
-    hex <- paste0(rep(strsplit(hex, "")[[1]], each = 2), collapse = "")
-  } else if (!grepl("^[0-9A-F]{6}$", hex)) {
-    # Invalid hex format
-    stop("invalid hex format detected")
-  }
-  paste0("#", hex)
-}
-
 #' R6 class that specifies Excel styling as used by the openxlsx package.
 #'
 #' @description
@@ -115,12 +100,12 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxStyle$new", "Creating new Pivot Style...", list())
 
      if(!is.null(fillColor)) {
-       fillColor <- expand_hex(fillColor)
+       fillColor <- expandHex(fillColor)
        check <- grep("#[0-9A-F]{6}", fillColor)
        if((length(check)==0)||(check==FALSE)) stop("PivotOpenXlsxStyle$initialize():  fillColor must be in the format #NNNNNN.", call. = FALSE)
      }
      if(!is.null(textColor)) {
-       textColor <- expand_hex(textColor)
+       textColor <- expandHex(textColor)
        check <- grep("#[0-9A-F]{6}", textColor)
        if((length(check)==0)||(check==FALSE)) stop("PivotOpenXlsxStyle$initialize():  textColor must be in the format #NNNNNN.", call. = FALSE)
      }
@@ -339,7 +324,8 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
     },
 
    #' @description
-   #' Create an `openxlsx2` style from this style definition.
+   #' Create an `openxlsx` style from this style definition, if using the openxlsx package.
+   #' Create a list of style properties, if using the openxlsx2 package.
    #' @return No return value.  Retrieve the style using the `openxlsxStyle` property.
     createOpenXslxStyle = function() {
       # consolidate the borders
@@ -428,22 +414,34 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
       # message(paste0("borderStyles= ", paste(borderStyles, collapse=",")))
 
       # create the style
-      private$p_openxlsxStyle <- list(
-        fontName=private$p_fontName, fontSize=private$p_fontSize,
-        fontColour=private$p_textColor, numFmt=valueFormat,
-        border=borderSides, borderColour=borderColors, borderStyle=borderStyles,
-        fgFill=private$p_fillColor, halign=private$p_hAlign, valign=vAlign,
-        textDecoration=textDecoration, wrapText=private$p_wrapText,
-        textRotation=private$p_textRotation, indent=private$p_indent)
+      excelRenderer <- private$p_parentPivot$excelRenderer
+      if(excelRenderer=="openxlsx") {
+        private$p_openxlsxStyle <- openxlsx::createStyle(
+          fontName=private$p_fontName, fontSize=private$p_fontSize,
+          fontColour=private$p_textColor, numFmt=valueFormat,
+          border=borderSides, borderColour=borderColors, borderStyle=borderStyles,
+          fgFill=private$p_fillColor, halign=private$p_hAlign, valign=vAlign,
+          textDecoration=textDecoration, wrapText=private$p_wrapText,
+          textRotation=private$p_textRotation, indent=private$p_indent)
+      }
+      else if(excelRenderer=="openxlsx2") {
+        private$p_openxlsxStyle <- list(
+          fontName=private$p_fontName, fontSize=private$p_fontSize,
+          fontColour=private$p_textColor, numFmt=valueFormat,
+          border=borderSides, borderColour=borderColors, borderStyle=borderStyles,
+          fgFill=private$p_fillColor, halign=private$p_hAlign, valign=vAlign,
+          textDecoration=textDecoration, wrapText=private$p_wrapText,
+          textRotation=private$p_textRotation, indent=private$p_indent)
+      }
     },
 
    #' @description
-   #' apply style to workbook
+   #' Apply style to workbook
    #' @param wb an [openxlsx2::wb_workbook()]
    #' @param sheet a sheet in the workbook
    #' @param row,col row and column the style is applied to
    #' @return The workbook
-    apply_style = function(wb, sheet, row, col) {
+    applyStyle = function(wb, sheet, row, col) {
 
       # print(self$openxlsxStyle)
 

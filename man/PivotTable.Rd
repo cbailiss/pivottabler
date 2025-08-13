@@ -100,6 +100,9 @@ the pivot table were to be rendered as plain text, e.g. to the console.}
 
 \item{\code{asCharacter}}{A plain text representation of the pivot table.}
 
+\item{\code{excelRenderer}}{Value indicating the openxlsx package version to use
+for rendering to Excel - must be either openxlsx or openxlsx2.}
+
 \item{\code{theme}}{The name of the theme used to style the pivot table.
 If setting this property, either a theme name can be used, or
 a list can be used (which specifies a simple theme) or a
@@ -227,6 +230,7 @@ Create a new `PivotTable` object.
   headingStyle = NULL,
   cellStyle = NULL,
   totalStyle = NULL,
+  excelRenderer = "openxlsx",
   compatibility = NULL,
   traceEnabled = FALSE,
   traceFile = NULL
@@ -269,6 +273,9 @@ See the `tableStyle` argument for details.}
 
 \item{\code{totalStyle}}{Styling to apply to the total cells.
 See the `tableStyle` argument for details.}
+
+\item{\code{excelRenderer}}{Specify the package used to render Excel files -
+either openxlsx or openxlxs2.}
 
 \item{\code{compatibility}}{A list containing compatibility options to force
 legacy behaviours.  See the NEWS file for details.}

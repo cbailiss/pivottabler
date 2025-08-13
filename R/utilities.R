@@ -74,6 +74,25 @@ containsText <- function(textToSearch, textToFind) {
   return((length(r[r!=-1]))>0)
 }
 
+#' Expand hex.
+#'
+#' \code{expandHex} is a utility function that expands 3-digit hex to 6-digit.
+#'
+#' @param hex The hex value to be expanded.
+#' @return The expanded hex value.
+expandHex <- function(hex) {
+  if (!is.character(hex) || length(hex) != 1) stop("invalid length")
+  hex <- toupper(gsub("^#", "", hex))
+  if (grepl("^[0-9A-F]{3}$", hex)) {
+    # Expand 3-digit to 6-digit
+    hex <- paste0(rep(strsplit(hex, "")[[1]], each = 2), collapse = "")
+  } else if (!grepl("^[0-9A-F]{6}$", hex)) {
+    # Invalid hex format
+    stop("invalid hex format detected")
+  }
+  paste0("#", hex)
+}
+
 #' Handle an identifier that may be illegal (e.g. containing spaces).
 #'
 #' \code{processIdentifier} is a utility function that wraps an illegal
