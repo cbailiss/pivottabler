@@ -192,6 +192,8 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         if(isTextValue(baseStyleName)&&is.null(style)) {
           openxlsxStyle <- private$p_styles$findNamedStyle(baseStyleName)
 
+          if(is.null(openxlsxStyle)) stop(paste0("PivotOpenXlsxRenderer$writeToWorksheet(): Unable to find named style '", baseStyleName, "'."), call. = FALSE)
+
           if (is.null(self$lst)) self$lst <- list(openxlsxStyle$openxlsxStyle)
           else self$lst <- unique(c(self$lst, list(openxlsxStyle$openxlsxStyle)))
 
@@ -208,11 +210,6 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
             style = match(list(openxlsxStyle$openxlsxStyle), self$lst)
           )
           self$sty <- rbind(self$sty, sty)
-
-          ## TODO it should be possible to apply the styling to all cells of baseStyleName at once
-          # message(baseStyleName)
-          # print(openxlsxStyle$openxlsxStyle)
-          if(is.null(openxlsxStyle)) stop(paste0("PivotOpenXlsxRenderer$writeToWorksheet(): Unable to find named style '", baseStyleName, "'."), call. = FALSE)
         }
         # base style and overlaid style, or just an overlaid style
         else if(!is.null(style)) {
