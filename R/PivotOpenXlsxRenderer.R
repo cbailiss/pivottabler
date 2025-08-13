@@ -16,6 +16,12 @@
 PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
   public = list(
 
+    #' @description lst a list of styles
+    lst = NULL,
+
+    #' @description sty a style
+    sty = NULL,
+
     #' @description
     #' Create a new `PivotOpenXlsxRenderer` object.
     #' @param parentPivot The pivot table that this `PivotOpenXlsxRenderer`
@@ -49,6 +55,82 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       lapply(columnGroups, clearFlags)
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$clearIsRenderedFlags", "Cleared isRendered flags...")
       return(invisible())
+    },
+
+   #' @description
+   #' apply style to workbook
+   #' @param wb an [openxlsx2::wb_workbook()]
+   #' @param sheet a sheet in the workbook
+   #' @param row,col row and column the style is applied to
+   #' @param style style
+   #' @return The workbook
+    apply_style = function(wb, sheet, row, col, style) {
+
+      # print(self$openxlsxStyle)
+
+      bold <- ""
+      underline <- ""
+      strikethrough <- ""
+      italic <- ""
+      if (!is.null(style$textDecoration)) {
+        if ("bold" %in% style$textDecoration) bold <- TRUE
+        if ("underline" %in% style$textDecoration) underline <- "single"
+        if ("strikeout" %in% style$textDecoration) strikethrough <- TRUE
+        if ("italic" %in% style$textDecoration) italic <- TRUE
+      }
+
+      dims <- paste0(mapply(rowcol_to_dims, row, col, single = TRUE), collapse = ",")
+      if (dims == "") return(invisible(wb))
+
+      wb$add_font(
+        sheet = sheet,
+        dims = dims,
+        name = style$fontName,
+        size = style$fontSize,
+        colour = if(is.null(style$fontColour)) openxlsx2::wb_colour(theme = 1) else openxlsx2::wb_colour(style$fontColour),
+        bold = bold,
+        underline = underline,
+        strike = strikethrough,
+        italic = italic
+      )
+      if (!is.null(style$fgFill)) {
+        wb$add_fill(
+          sheet = sheet,
+          dims = dims,
+          colour = openxlsx2::wb_colour(style$fgFill)
+        )
+      }
+      if (!is.null(style$border)) {
+        wb$add_border(
+          sheet = sheet,
+          dims = dims,
+          left_border = style$borderStyle[1],
+          right_border = style$borderStyle[2],
+          top_border = style$borderStyle[3],
+          bottom_border = style$borderStyle[4],
+          left_color = openxlsx2::wb_colour(style$borderColour[1]),
+          right_color = openxlsx2::wb_colour(style$borderColour[2]),
+          top_color = openxlsx2::wb_colour(style$borderColour[3]),
+          bottom_color = openxlsx2::wb_colour(style$borderColour[4])
+        )
+      }
+      if (style$numFmt != "GENERAL") {
+        wb$add_numfmt(
+          sheet = sheet,
+          dims = dims,
+          numfmt = style$numFmt
+        )
+      }
+      wb$add_cell_style(
+        sheet = sheet,
+        dims = dims,
+        text_rotation = if (!is.null(style$textRotation)) style$textRotation else NULL,
+        horizontal = if (!is.null(style$halign)) style$halign else NULL,
+        vertical = if (!is.null(style$valign)) style$valign else NULL,
+        wrap_text = if (!is.null(style$wrapText)) style$wrapText else NULL
+      )
+
+      invisible(wb)
     },
 
     #' @description
@@ -88,6 +170,8 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", mergeRows, missing(mergeRows), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
         checkArgument(private$p_parentPivot$argumentCheckMode, FALSE, "PivotOpenXlsxRenderer", "writeToCell", mergeColumns, missing(mergeColumns), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
       }
+
+
       # if(!is.null(debugMsg)) {
       #   message(paste0("writeToCell: ", debugMsg, ": ", as.character(value), ", rn=", rowNumber, " cn=", columnNumber,
       #                  ", mr=", suppressWarnings(min(mergeRows)), " to ", suppressWarnings(max(mergeRows)),
@@ -96,7 +180,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotOpenXlsxRenderer$writeToWorksheet", "Writing to cell...")
       # write the value
       if (!is.null(value) && (length(value) > 0)) {
-        wb$add_data(sheet=wsName, x=value, col_names=FALSE, row_names=FALSE, dims = openxlsx2::wb_dims(rowNumber, columnNumber))
+        wb$add_data(sheet=wsName, x=value, col_names=FALSE, row_names=FALSE, dims = openxlsx2::wb_dims(rowNumber, columnNumber), apply_cell_style = FALSE)
       }
       # merge cells
       isMergedCells <- isNumericValue(mergeRows)&&isNumericValue(mergeColumns)&&((length(mergeRows)>1)||(length(mergeColumns)>1))
@@ -107,15 +191,28 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         # just a base style (these were all already added to the OpenXlsxStyles collection, so can just do a find based on the name only)
         if(isTextValue(baseStyleName)&&is.null(style)) {
           openxlsxStyle <- private$p_styles$findNamedStyle(baseStyleName)
+
+          if (is.null(self$lst)) self$lst <- list(openxlsxStyle$openxlsxStyle)
+          else self$lst <- unique(c(self$lst, list(openxlsxStyle$openxlsxStyle)))
+
+          if (isMergedCells) {
+            eg <- expand.grid(row = mergeRows, col = mergeColumns)
+            rowNumber <- eg[["row"]]
+            columnNumber <- eg[["col"]]
+          }
+
+          sty <- data.frame(
+            row = rowNumber,
+            col = columnNumber,
+            apply = applyStyles,
+            style = match(list(openxlsxStyle$openxlsxStyle), self$lst)
+          )
+          self$sty <- rbind(self$sty, sty)
+
           ## TODO it should be possible to apply the styling to all cells of baseStyleName at once
           # message(baseStyleName)
           # print(openxlsxStyle$openxlsxStyle)
           if(is.null(openxlsxStyle)) stop(paste0("PivotOpenXlsxRenderer$writeToWorksheet(): Unable to find named style '", baseStyleName, "'."), call. = FALSE)
-          if(isMergedCells) {
-            wb <- openxlsxStyle$apply_style(wb = wb, sheet = wsName, row = mergeRows, col = mergeColumns)
-          } else {
-            wb <- openxlsxStyle$apply_style(wb = wb, sheet = wsName, row = rowNumber, col = columnNumber)
-          }
         }
         # base style and overlaid style, or just an overlaid style
         else if(!is.null(style)) {
@@ -128,11 +225,25 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
           else fullStyle <- style
           openxlsxStyle <- private$p_styles$findOrAddStyle(action="findOrAdd", baseStyleName=baseStyleName, isBaseStyle=FALSE, style=fullStyle, mapFromCss=mapFromCss)
           if(is.null(openxlsxStyle)) stop("PivotOpenXlsxRenderer$writeToWorksheet(): Failed to find or add style.", call. = FALSE)
-          if(isMergedCells) {
-            wb <- openxlsxStyle$apply_style(wb = wb, sheet = wsName, row = mergeRows, col = mergeColumns)
-          } else {
-            wb <- openxlsxStyle$apply_style(wb = wb, sheet = wsName, row = rowNumber, col = columnNumber)
+
+          # is this correct? is a style applied?
+          if (is.null(self$lst)) self$lst <- list(openxlsxStyle$openxlsxStyle)
+          else self$lst <- unique(c(self$lst, list(openxlsxStyle$openxlsxStyle)))
+
+          if (isMergedCells) {
+            eg <- expand.grid(row = mergeRows, col = mergeColumns)
+            rowNumber <- eg[["row"]]
+            columnNumber <- eg[["col"]]
           }
+
+          sty <- data.frame(
+            row = rowNumber,
+            col = columnNumber,
+            apply = applyStyles,
+            style = match(list(openxlsxStyle$openxlsxStyle), self$lst)
+          )
+          self$sty <- rbind(self$sty, sty)
+
         }
         # min heights/widths
         if(!is.null(openxlsxStyle)) {
@@ -437,6 +548,13 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         }
       }
 
+
+      styles <- as.data.frame(self$sty)
+
+      # as requested: set the column width of every column with a style
+      # to the default column width of openxlsx
+      wb$set_col_widths(cols = unique(styles$col), width = 10)
+
       # set the minimum heights / widths
       for(r in 1:length(private$p_minimumRowHeights)) {
         if(private$p_minimumRowHeights[r] > 0) {
@@ -447,6 +565,12 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         if(private$p_minimumColumnWidths[c] > 0) {
           wb$set_col_widths(sheet=wsName, cols=c, widths=private$p_minimumColumnWidths[c])
         }
+      }
+
+      # apply the cell styles
+      for (i in unique(styles$sty)) {
+        sty <- styles[styles$style == i & styles$apply == 1, ]
+        self$apply_style(wb, wsName, row = sty$row, col = sty$col, style = self$lst[[i]])
       }
 
       # TRELLO NOTES

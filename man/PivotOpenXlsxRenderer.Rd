@@ -21,6 +21,7 @@ See the "Excel Export" vignette for details and examples.
 \itemize{
 \item \href{#method-PivotOpenXlsxRenderer-new}{\code{PivotOpenXlsxRenderer$new()}}
 \item \href{#method-PivotOpenXlsxRenderer-clearIsRenderedFlags}{\code{PivotOpenXlsxRenderer$clearIsRenderedFlags()}}
+\item \href{#method-PivotOpenXlsxRenderer-apply_style}{\code{PivotOpenXlsxRenderer$apply_style()}}
 \item \href{#method-PivotOpenXlsxRenderer-writeToCell}{\code{PivotOpenXlsxRenderer$writeToCell()}}
 \item \href{#method-PivotOpenXlsxRenderer-writeToWorksheet}{\code{PivotOpenXlsxRenderer$writeToWorksheet()}}
 \item \href{#method-PivotOpenXlsxRenderer-clone}{\code{PivotOpenXlsxRenderer$clone()}}
@@ -30,6 +31,12 @@ See the "Excel Export" vignette for details and examples.
 \if{html}{\out{<a id="method-PivotOpenXlsxRenderer-new"></a>}}
 \if{latex}{\out{\hypertarget{method-PivotOpenXlsxRenderer-new}{}}}
 \subsection{Method \code{new()}}{
+lst a list of styles
+
+
+sty a style
+
+
 Create a new `PivotOpenXlsxRenderer` object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxRenderer$new(parentPivot)}\if{html}{\out{</div>}}
@@ -59,6 +66,32 @@ Clear the IsRendered flags that exist on the `PivotDataGroup` class.
 
 \subsection{Returns}{
 No return value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PivotOpenXlsxRenderer-apply_style"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxRenderer-apply_style}{}}}
+\subsection{Method \code{apply_style()}}{
+apply style to workbook
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxRenderer$apply_style(wb, sheet, row, col, style)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{wb}}{an [openxlsx2::wb_workbook()]}
+
+\item{\code{sheet}}{a sheet in the workbook}
+
+\item{\code{row, col}}{row and column the style is applied to}
+
+\item{\code{style}}{style}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The workbook
 }
 }
 \if{html}{\out{<hr>}}
