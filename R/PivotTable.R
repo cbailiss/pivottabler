@@ -56,8 +56,6 @@ PivotTable <- R6::R6Class("PivotTable",
     #' See the `tableStyle` argument for details.
     #' @param compatibility A list containing compatibility options to force
     #' legacy behaviours.  See the NEWS file for details.
-    #' @param excelRenderer Specify the package used to render Excel files -
-    #' either openxlsx or openxlxs2.
     #' @param traceEnabled Default `FALSE`.  Specify `TRUE` to generate a trace
     #' for debugging purposes.
     #' @param traceFile If tracing is enabled, the location to generate the trace file.
@@ -65,7 +63,7 @@ PivotTable <- R6::R6Class("PivotTable",
     initialize = function(processingLibrary="auto", evaluationMode="batch", argumentCheckMode="auto",
                           theme=NULL, replaceExistingStyles=FALSE,
                           tableStyle=NULL, headingStyle=NULL, cellStyle=NULL, totalStyle=NULL,
-                          excelRenderer="openxlsx", compatibility=NULL, traceEnabled=FALSE, traceFile=NULL) {
+                          compatibility=NULL, traceEnabled=FALSE, traceFile=NULL) {
       checkArgument(4, TRUE, "PivotTable", "initialize", processingLibrary, missing(processingLibrary), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("auto", "dplyr", "data.table"))
       checkArgument(4, TRUE, "PivotTable", "initialize", evaluationMode, missing(evaluationMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("batch", "sequential"))
       checkArgument(4, TRUE, "PivotTable", "initialize", argumentCheckMode, missing(argumentCheckMode), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character", allowedValues=c("auto", "none", "minimal", "basic", "balanced", "full"))
@@ -75,7 +73,6 @@ PivotTable <- R6::R6Class("PivotTable",
       checkArgument(4, TRUE, "PivotTable", "initialize", headingStyle, missing(headingStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "PivotStyle"))
       checkArgument(4, TRUE, "PivotTable", "initialize", cellStyle, missing(cellStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "PivotStyle"))
       checkArgument(4, TRUE, "PivotTable", "initialize", totalStyle, missing(totalStyle), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("character", "list", "PivotStyle"))
-      checkArgument(4, TRUE, "PivotTable", "initialize", excelRenderer, missing(excelRenderer), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character", allowedValues=c("openxlsx", "openxlsx2"))
       checkArgument(4, TRUE, "PivotTable", "initialize", compatibility, missing(compatibility), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list", allowedListElementClasses=c("character", "integer", "numeric", "logical"))
       checkArgument(4, TRUE, "PivotTable", "initialize", traceEnabled, missing(traceEnabled), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
       checkArgument(4, TRUE, "PivotTable", "initialize", traceFile, missing(traceFile), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
@@ -129,8 +126,9 @@ PivotTable <- R6::R6Class("PivotTable",
       private$p_cells <- PivotCells$new(self)
       private$p_htmlRenderer <- PivotHtmlRenderer$new(parentPivot=self)
       private$p_latexRenderer <- PivotLatexRenderer$new(parentPivot=self)
-      private$p_excelRenderer <- excelRenderer
+      private$p_openxlsxVersion <- "openxlsx"
       private$p_openxlsxRenderer <- PivotOpenXlsxRenderer$new(parentPivot=self)
+      private$p_openxlsxMinimumColumnWidth <- 10.71
       private$p_timings <- list()
       # apply theming and styles
       if(is.null(theme)) {
@@ -4217,9 +4215,14 @@ PivotTable <- R6::R6Class("PivotTable",
     #' "A1. Appendix" for details.
     #' @param showRowGroupHeaders Default `FALSE`, specify `TRUE` to write row
     #' group headers.
+    #' @param openxlsxMinimumColumnWidth Minimum column width in Excel character units.
+    #' openxlsx used a default minimum width of 10.71, openxlsx2 uses a default of 8.43.
+    #' This parameter provides consistent rendering between the two versions.  If
+    #' no value is specified, a value of 10.71 is used.
     #' @return No return value.
     writeToExcelWorksheet = function(wb=NULL, wsName=NULL, topRowNumber=NULL, leftMostColumnNumber=NULL, outputHeadingsAs="formattedValueAsText",
-                                     outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE, exportOptions=NULL, showRowGroupHeaders=FALSE) {
+                                     outputValuesAs="rawValue", applyStyles=TRUE, mapStylesFromCSS=TRUE, exportOptions=NULL, showRowGroupHeaders=FALSE,
+                                     openxlsxMinimumColumnWidth=NULL) {
       if(private$p_argumentCheckMode > 0) {
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", wb, missing(wb), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("Workbook", "wbWorkbook"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", wsName, missing(wsName), allowMissing=TRUE, allowNull=FALSE, allowedClasses="character")
@@ -4231,11 +4234,26 @@ PivotTable <- R6::R6Class("PivotTable",
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", mapStylesFromCSS, missing(mapStylesFromCSS), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", exportOptions, missing(exportOptions), allowMissing=TRUE, allowNull=TRUE, allowedClasses="list")
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", showRowGroupHeaders, missing(showRowGroupHeaders), allowMissing=TRUE, allowNull=FALSE, allowedClasses="logical")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "writeToExcelWorksheet", openxlsxMinimumColumnWidth, missing(openxlsxMinimumColumnWidth), allowMissing=TRUE, allowNull=TRUE, allowedClasses=c("integer", "numeric"))
       }
       if (!requireNamespace("openxlsx", quietly = TRUE)) {
         stop("PivotTable$writeToExcelWorksheet():  The openxlsx package is needed to write the pivot table to an Excel file.  Please install it.", call. = FALSE)
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$writeToExcelWorksheet", "Writing to worksheet...")
+      cls <- class(wb)
+      if(length(intersect("Workbook", cls)) > 0) {
+        private$p_openxlsxVersion <- "openxlsx"
+      }
+      else if(length(intersect("wbWorkbook", cls)) > 0) {
+        private$p_openxlsxVersion <- "openxlsx2"
+      }
+      else {
+        stop("Workbook must be either an openxlsx Workbook or an openxlsx2 workbook.")
+      }
+      # override default width of 80 if a value has been specified
+      if(!is.null(openxlsxMinimumColumnWidth)) {
+        private$p_openxlsxMinimumColumnWidth <- openxlsxMinimumColumnWidth
+      }
       private$p_openxlsxRenderer$writeToWorksheet(wb=wb, wsName=wsName, topRowNumber=topRowNumber,
                                                   leftMostColumnNumber=leftMostColumnNumber,
                                                   outputHeadingsAs=outputHeadingsAs, outputValuesAs=outputValuesAs,
@@ -4477,14 +4495,32 @@ PivotTable <- R6::R6Class("PivotTable",
     #' @field asCharacter A plain text representation of the pivot table.
     asCharacter = function() { return(self$print(asCharacter=TRUE)) },
 
-    #' @field excelRenderer Value indicating the openxlsx package version to use
-    #' for rendering to Excel - must be either openxlsx or openxlsx2.
-    excelRenderer = function(value) {
-      if(missing(value)) return(invisible(private$p_excelRenderer))
+    #' @field openxlsxVersion Value indicating the openxlsx package version to use
+    #' for rendering to Excel - value will be either openxlsx or openxlsx2.
+    openxlsxVersion = function(value) {
+      if(missing(value)) return(invisible(private$p_openxlsxVersion))
       else {
         if(!(value %in% c("openxlsx", "openxlsx2")))
-          stop("PivotTable$excelRenderer: value must be either openxlsx or openxlsx2.", call. = FALSE)
-        private$p_excelRenderer <- value
+          stop("PivotTable$openxlsxVersion: value must be either openxlsx or openxlsx2.", call. = FALSE)
+        private$p_openxlsxVersion <- value
+        return(invisible())
+      }
+    },
+
+    #' @field openxlsxMinimumColumnWidth Minimum column width in Excel character units.
+    #' openxlsx used a default minimum width of 10.71, openxlsx2 uses a default of 8.43.
+    #' This parameter provides consistent rendering between the two versions.
+    openxlsxMinimumColumnWidth = function(value) {
+      if(missing(value)) return(invisible(private$p_openxlsxMinimumColumnWidth))
+      else {
+        cls <- class(wb)
+        if(length(intersect(c("integer", "numeric"), cls)) == 0) {
+          stop("PivotTable$openxlsxMinimumColumnWidth: value must be an integer.", call. = FALSE)
+        }
+        if(value <= 0) {
+          stop("PivotTable$openxlsxMinimumColumnWidth: value must be greater than zero.", call. = FALSE)
+        }
+        private$p_openxlsxMinimumColumnWidth <- value
         return(invisible())
       }
     },
@@ -4626,8 +4662,9 @@ PivotTable <- R6::R6Class("PivotTable",
     p_mergeEmptySpaceDirection = "row",
     p_htmlRenderer = NULL,
     p_latexRenderer = NULL,
-    p_excelRenderer = "openxlsx",
+    p_openxlsxVersion = "openxlsx",
     p_openxlsxRenderer = NULL,
+    p_openxlsxMinimumColumnWidth = 10.71,
     p_compatibility = NULL,
     p_traceFile = NULL,
     p_timings = NULL,

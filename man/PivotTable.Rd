@@ -100,8 +100,12 @@ the pivot table were to be rendered as plain text, e.g. to the console.}
 
 \item{\code{asCharacter}}{A plain text representation of the pivot table.}
 
-\item{\code{excelRenderer}}{Value indicating the openxlsx package version to use
-for rendering to Excel - must be either openxlsx or openxlsx2.}
+\item{\code{openxlsxVersion}}{Value indicating the openxlsx package version to use
+for rendering to Excel - value will be either openxlsx or openxlsx2.}
+
+\item{\code{openxlsxMinimumColumnWidth}}{Minimum column width in Excel character units.
+openxlsx used a default minimum width of 10.71, openxlsx2 uses a default of 8.43.
+This parameter provides consistent rendering between the two versions.}
 
 \item{\code{theme}}{The name of the theme used to style the pivot table.
 If setting this property, either a theme name can be used, or
@@ -230,7 +234,6 @@ Create a new `PivotTable` object.
   headingStyle = NULL,
   cellStyle = NULL,
   totalStyle = NULL,
-  excelRenderer = "openxlsx",
   compatibility = NULL,
   traceEnabled = FALSE,
   traceFile = NULL
@@ -273,9 +276,6 @@ See the `tableStyle` argument for details.}
 
 \item{\code{totalStyle}}{Styling to apply to the total cells.
 See the `tableStyle` argument for details.}
-
-\item{\code{excelRenderer}}{Specify the package used to render Excel files -
-either openxlsx or openxlxs2.}
 
 \item{\code{compatibility}}{A list containing compatibility options to force
 legacy behaviours.  See the NEWS file for details.}
@@ -3221,7 +3221,8 @@ the specified row-column location.
   applyStyles = TRUE,
   mapStylesFromCSS = TRUE,
   exportOptions = NULL,
-  showRowGroupHeaders = FALSE
+  showRowGroupHeaders = FALSE,
+  openxlsxMinimumColumnWidth = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -3258,6 +3259,11 @@ declarations to their Excel equivalents.}
 
 \item{\code{showRowGroupHeaders}}{Default `FALSE`, specify `TRUE` to write row
 group headers.}
+
+\item{\code{openxlsxMinimumColumnWidth}}{Minimum column width in Excel character units.
+openxlsx used a default minimum width of 10.71, openxlsx2 uses a default of 8.43.
+This parameter provides consistent rendering between the two versions.  If
+no value is specified, a value of 10.71 is used.}
 }
 \if{html}{\out{</div>}}
 }

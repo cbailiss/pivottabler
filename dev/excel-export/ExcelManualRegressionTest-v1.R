@@ -4,7 +4,7 @@ library(pivottabler)
 wb <- createWorkbook(creator = Sys.getenv("USERNAME"))
 
 # 1:  special case
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$renderPivot()
 addWorksheet(wb, "Sc1")
@@ -13,7 +13,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc1", topRowNumber=3, leftMostColumnNumb
 pt$renderPivot()
 
 # 2a:  single measure on columns
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$renderPivot()
@@ -23,7 +23,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc2a", topRowNumber=3, leftMostColumnNum
 pt$renderPivot()
 
 # 2b:  three measures on columns
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$defineCalculation(calculationName="TotalTrains1", summariseExpression="n()")
 pt$defineCalculation(calculationName="TotalTrains2", summariseExpression="n()")
@@ -35,7 +35,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc2b", topRowNumber=3, leftMostColumnNum
 pt$renderPivot()
 
 # 2c:  single measure plus rows
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addRowDataGroups("TOC")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
@@ -46,7 +46,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc2c", topRowNumber=3, leftMostColumnNum
 pt$renderPivot()
 
 # 2d:  single measure plus rows and columns
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
@@ -58,7 +58,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc2d", topRowNumber=3, leftMostColumnNum
 pt$renderPivot()
 
 # 2e:  single measure plus rows and 2 sets of columns
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addColumnDataGroups("PowerType")
@@ -71,7 +71,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc2e", topRowNumber=3, leftMostColumnNum
 pt$renderPivot()
 
 # 2f:  three measures plus rows and 2 sets of columns
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addColumnDataGroups("PowerType")
@@ -86,7 +86,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc2f", topRowNumber=3, leftMostColumnNum
 pt$renderPivot()
 
 # 3a:  single measure on rows
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
 pt$addRowCalculationGroups()
@@ -97,7 +97,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc3a", topRowNumber=3, leftMostColumnNum
 pt$renderPivot()
 
 # 3b:  three measures on rows
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$defineCalculation(calculationName="TotalTrains1", summariseExpression="n()")
 pt$defineCalculation(calculationName="TotalTrains2", summariseExpression="n()")
@@ -110,7 +110,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc3b", topRowNumber=3, leftMostColumnNum
 pt$renderPivot()
 
 # 3c:  single measure plus columns
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
@@ -122,7 +122,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc3c", topRowNumber=3, leftMostColumnNum
 pt$renderPivot()
 
 # 3d:  single measure plus rows and columns (produces identical output to 2d)
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addRowDataGroups("TOC")
@@ -135,7 +135,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc3d", topRowNumber=3, leftMostColumnNum
 pt$renderPivot()
 
 # 3e:  single measure plus rows and 2 sets of columns (produces identical output to 2e)
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addColumnDataGroups("PowerType")
@@ -149,7 +149,7 @@ pt$writeToExcelWorksheet(wb=wb, wsName="Sc3e", topRowNumber=3, leftMostColumnNum
 pt$renderPivot()
 
 # 3f:  three measures plus rows and 2 sets of columns
-pt <- PivotTable$new(excelRenderer="openxlsx")
+pt <- PivotTable$new()
 pt$addData(bhmtrains)
 pt$addColumnDataGroups("TrainCategory")
 pt$addColumnDataGroups("PowerType")

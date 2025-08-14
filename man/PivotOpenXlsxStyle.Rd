@@ -93,7 +93,7 @@ a numeric format code such as 0.00, #,###.00, etc}
 \item \href{#method-PivotOpenXlsxStyle-isBasicStyleNameMatch}{\code{PivotOpenXlsxStyle$isBasicStyleNameMatch()}}
 \item \href{#method-PivotOpenXlsxStyle-isFullStyleDetailMatch}{\code{PivotOpenXlsxStyle$isFullStyleDetailMatch()}}
 \item \href{#method-PivotOpenXlsxStyle-createOpenXslxStyle}{\code{PivotOpenXlsxStyle$createOpenXslxStyle()}}
-\item \href{#method-PivotOpenXlsxStyle-applyStyle}{\code{PivotOpenXlsxStyle$applyStyle()}}
+\item \href{#method-PivotOpenXlsxStyle-applyOpenXlsx2Style}{\code{PivotOpenXlsxStyle$applyOpenXlsx2Style()}}
 \item \href{#method-PivotOpenXlsxStyle-asList}{\code{PivotOpenXlsxStyle$asList()}}
 \item \href{#method-PivotOpenXlsxStyle-asJSON}{\code{PivotOpenXlsxStyle$asJSON()}}
 \item \href{#method-PivotOpenXlsxStyle-asString}{\code{PivotOpenXlsxStyle$asString()}}
@@ -360,12 +360,12 @@ No return value.  Retrieve the style using the `openxlsxStyle` property.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PivotOpenXlsxStyle-applyStyle"></a>}}
-\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-applyStyle}{}}}
-\subsection{Method \code{applyStyle()}}{
+\if{html}{\out{<a id="method-PivotOpenXlsxStyle-applyOpenXlsx2Style"></a>}}
+\if{latex}{\out{\hypertarget{method-PivotOpenXlsxStyle-applyOpenXlsx2Style}{}}}
+\subsection{Method \code{applyOpenXlsx2Style()}}{
 Apply style to workbook
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$applyStyle(wb, sheet, row, col)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxStyle$applyOpenXlsx2Style(wb, sheet, row, col)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

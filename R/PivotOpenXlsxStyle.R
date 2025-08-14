@@ -414,8 +414,8 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
       # message(paste0("borderStyles= ", paste(borderStyles, collapse=",")))
 
       # create the style
-      excelRenderer <- private$p_parentPivot$excelRenderer
-      if(excelRenderer=="openxlsx") {
+      openxlsxVersion <- private$p_parentPivot$openxlsxVersion
+      if(openxlsxVersion=="openxlsx") {
         private$p_openxlsxStyle <- openxlsx::createStyle(
           fontName=private$p_fontName, fontSize=private$p_fontSize,
           fontColour=private$p_textColor, numFmt=valueFormat,
@@ -424,7 +424,7 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
           textDecoration=textDecoration, wrapText=private$p_wrapText,
           textRotation=private$p_textRotation, indent=private$p_indent)
       }
-      else if(excelRenderer=="openxlsx2") {
+      else if(openxlsxVersion=="openxlsx2") {
         private$p_openxlsxStyle <- list(
           fontName=private$p_fontName, fontSize=private$p_fontSize,
           fontColour=private$p_textColor, numFmt=valueFormat,
@@ -441,7 +441,7 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
    #' @param sheet a sheet in the workbook
    #' @param row,col row and column the style is applied to
    #' @return The workbook
-    applyStyle = function(wb, sheet, row, col) {
+    applyOpenXlsx2Style = function(wb, sheet, row, col) {
 
       # print(self$openxlsxStyle)
 

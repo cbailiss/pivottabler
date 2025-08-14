@@ -327,7 +327,7 @@ outputting to Excel - greatly reducing the amount of script that needs
 to be written to create Excel output. Either the openxlsx or openxlsx2
 packages can be used.
 
-Example using openxlsx (the default):
+Example using openxlsx:
 
 ``` r
 library(pivottabler)
@@ -342,18 +342,16 @@ pt$evaluatePivot()
 library(openxlsx)
 wb <- createWorkbook(creator = Sys.getenv("USERNAME"))
 addWorksheet(wb, "Data")
-pt$excelRenderer <- "openxlsx"
 pt$writeToExcelWorksheet(wb=wb, wsName="Data", 
                          topRowNumber=2, leftMostColumnNumber=2, applyStyles=TRUE)
 saveWorkbook(wb, file="C:\\test.xlsx", overwrite = TRUE)
 ```
 
-Example using openxlsx2 (note the renderer specified on the second line
-when creating the pivot table):
+Example using openxlsx2:
 
 ``` r
 library(pivottabler)
-pt <- PivotTable$new(excelRenderer="openxlsx2")
+pt <- PivotTable$new()
 pt$addData(bhmtrains) # bhmtrains is a data frame with columns TrainCategory, TOC, etc.
 pt$addColumnDataGroups("TrainCategory") # e.g. Express Passenger
 pt$addRowDataGroups("TOC") # TOC = Train Operating Company e.g. Arriva Trains Wales
