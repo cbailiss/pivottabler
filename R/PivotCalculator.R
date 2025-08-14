@@ -274,11 +274,11 @@ PivotCalculator <- R6::R6Class("PivotCalculator",
    #' @return A filtered data frame.
    getFilteredDataFrame = function(dataFrame=NULL, filters=NULL) {
      if(private$p_parentPivot$argumentCheckMode > 0) {
-       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "getFilteredDataFrame", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+       checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "getFilteredDataFrame", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("data.frame", "tbl_dbi", "tbl_lazy"))
        checkArgument(private$p_parentPivot$argumentCheckMode, TRUE, "PivotCalculator", "getFilteredDataFrame", filters, missing(filters), allowMissing=FALSE, allowNull=FALSE, allowedClasses="PivotFilters")
      }
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getFilteredDataFrame", "Getting filtered data frame...")
-     data <- filters$getFilteredDataFrame(dataFrame)
+     data <- filters$getFilteredDataFrame(dplyr::collect(dataFrame))
      if(private$p_parentPivot$traceEnabled==TRUE) private$p_parentPivot$trace("PivotCalculator$getFilteredDataFrame", "Got filtered data frame.")
      return(invisible(data))
    },

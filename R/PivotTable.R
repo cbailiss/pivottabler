@@ -367,7 +367,7 @@ PivotTable <- R6::R6Class("PivotTable",
     addData = function(dataFrame=NULL, dataName=NULL) {
       timeStart <- proc.time()
       if(private$p_argumentCheckMode > 0) {
-        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addData", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses="data.frame")
+        checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addData", dataFrame, missing(dataFrame), allowMissing=FALSE, allowNull=FALSE, allowedClasses=c("data.frame", "tbl_dbi", "tbl_lazy"))
         checkArgument(private$p_argumentCheckMode, TRUE, "PivotTable", "addData", dataName, missing(dataName), allowMissing=TRUE, allowNull=TRUE, allowedClasses="character")
       }
       if(private$p_traceEnabled==TRUE) self$trace("PivotTable$addData", "Adding data to Pivot Table...")
