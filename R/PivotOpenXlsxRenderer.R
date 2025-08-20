@@ -8,6 +8,7 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
+#' @importFrom digest sha1
 #' @format \code{\link[R6]{R6Class}} object.
 #' @examples
 #' # This class should only be created by the pivot table.
@@ -16,10 +17,10 @@
 PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
   public = list(
 
-    #' @description lst a list of styles
+    #' @field lst a list of styles
     lst = NULL,
 
-    #' @description sty a style
+    #' @field sty a style
     sty = NULL,
 
     #' @description
@@ -194,8 +195,15 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
 
           if(is.null(openxlsxStyle)) stop(paste0("PivotOpenXlsxRenderer$writeToWorksheet(): Unable to find named style '", baseStyleName, "'."), call. = FALSE)
 
-          if (is.null(self$lst)) self$lst <- list(openxlsxStyle$openxlsxStyle)
-          else self$lst <- unique(c(self$lst, list(openxlsxStyle$openxlsxStyle)))
+          clst <- list(openxlsxStyle$openxlsxStyle)
+          nlst <- digest::sha1(clst)
+          names(clst) <- nlst
+
+          if (is.null(self$lst)) {
+            self$lst <- clst
+          } else if (!nlst %in% names(self$lst)) {
+            self$lst <- c(self$lst, clst)
+          }
 
           if (isMergedCells) {
             eg <- expand.grid(row = mergeRows, col = mergeColumns)
@@ -207,7 +215,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
             row = rowNumber,
             col = columnNumber,
             apply = applyStyles,
-            style = match(list(openxlsxStyle$openxlsxStyle), self$lst)
+            style = match(nlst, names(self$lst))
           )
           self$sty <- rbind(self$sty, sty)
         }
@@ -224,8 +232,15 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
           if(is.null(openxlsxStyle)) stop("PivotOpenXlsxRenderer$writeToWorksheet(): Failed to find or add style.", call. = FALSE)
 
           # is this correct? is a style applied?
-          if (is.null(self$lst)) self$lst <- list(openxlsxStyle$openxlsxStyle)
-          else self$lst <- unique(c(self$lst, list(openxlsxStyle$openxlsxStyle)))
+          clst <- list(openxlsxStyle$openxlsxStyle)
+          nlst <- digest::sha1(clst)
+          names(clst) <- nlst
+
+          if (is.null(self$lst)) {
+            self$lst <- clst
+          } else if (!nlst %in% names(self$lst)) {
+            self$lst <- c(self$lst, clst)
+          }
 
           if (isMergedCells) {
             eg <- expand.grid(row = mergeRows, col = mergeColumns)
@@ -237,7 +252,7 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
             row = rowNumber,
             col = columnNumber,
             apply = applyStyles,
-            style = match(list(openxlsxStyle$openxlsxStyle), self$lst)
+            style = match(nlst, names(self$lst))
           )
           self$sty <- rbind(self$sty, sty)
 

@@ -16,6 +16,15 @@ See the "Excel Export" vignette for details and examples.
 # This class should only be created by the pivot table.
 # It is not intended to be created outside of the pivot table.
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{lst}}{a list of styles}
+
+\item{\code{sty}}{a style}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -31,12 +40,6 @@ See the "Excel Export" vignette for details and examples.
 \if{html}{\out{<a id="method-PivotOpenXlsxRenderer-new"></a>}}
 \if{latex}{\out{\hypertarget{method-PivotOpenXlsxRenderer-new}{}}}
 \subsection{Method \code{new()}}{
-lst a list of styles
-
-
-sty a style
-
-
 Create a new `PivotOpenXlsxRenderer` object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PivotOpenXlsxRenderer$new(parentPivot)}\if{html}{\out{</div>}}
