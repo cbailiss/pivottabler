@@ -68,6 +68,10 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
     apply_style = function(wb, sheet, row, col, style) {
 
       # print(self$openxlsxStyle)
+      ox2font <- NULL
+      ox2fill <- NULL
+      ox2border <- NULL
+      ox2numfmt <- NULL
 
       bold <- ""
       underline <- ""
@@ -80,56 +84,60 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
         if ("italic" %in% style$textDecoration) italic <- TRUE
       }
 
-      dims <- paste0(mapply(rowcol_to_dims, row, col, single = TRUE), collapse = ",")
+      dims <- paste0(mapply(openxlsx2::rowcol_to_dims, row, col, single = TRUE), collapse = ",")
       if (dims == "") return(invisible(wb))
 
-      wb$add_font(
-        sheet = sheet,
-        dims = dims,
+      ox2font <- openxlsx2::create_font(
         name = style$fontName,
-        size = style$fontSize,
+        sz = style$fontSize,
         colour = if(is.null(style$fontColour)) openxlsx2::wb_colour(theme = 1) else openxlsx2::wb_colour(style$fontColour),
-        bold = bold,
-        underline = underline,
+        b = bold,
+        u = underline,
         strike = strikethrough,
-        italic = italic
+        i = italic
       )
+      wb$styles_mgr$add(ox2font, ox2font)
+
       if (!is.null(style$fgFill)) {
-        wb$add_fill(
-          sheet = sheet,
-          dims = dims,
-          colour = openxlsx2::wb_colour(style$fgFill)
+        ox2fill <- openxlsx2::create_fill(
+          pattern_type = "solid",
+          fg_colour = openxlsx2::wb_colour(style$fgFill)
         )
+        wb$styles_mgr$add(ox2fill, ox2fill)
       }
       if (!is.null(style$border)) {
-        wb$add_border(
-          sheet = sheet,
-          dims = dims,
-          left_border = style$borderStyle[1],
-          right_border = style$borderStyle[2],
-          top_border = style$borderStyle[3],
-          bottom_border = style$borderStyle[4],
+        ox2border <- openxlsx2::create_border(
+          left = style$borderStyle[1],
+          right = style$borderStyle[2],
+          top = style$borderStyle[3],
+          bottom = style$borderStyle[4],
           left_color = openxlsx2::wb_colour(style$borderColour[1]),
           right_color = openxlsx2::wb_colour(style$borderColour[2]),
           top_color = openxlsx2::wb_colour(style$borderColour[3]),
           bottom_color = openxlsx2::wb_colour(style$borderColour[4])
         )
+        wb$styles_mgr$add(ox2border, ox2border)
       }
       if (style$numFmt != "GENERAL") {
-        wb$add_numfmt(
-          sheet = sheet,
-          dims = dims,
+        ox2numfmt <- openxlsx2::create_numfmt(
           numfmt = style$numFmt
         )
+        wb$styles_mgr$add(ox2numfmt, ox2numfmt)
       }
-      wb$add_cell_style(
-        sheet = sheet,
-        dims = dims,
-        text_rotation = if (!is.null(style$textRotation)) style$textRotation else NULL,
-        horizontal = if (!is.null(style$halign)) style$halign else NULL,
-        vertical = if (!is.null(style$valign)) style$valign else NULL,
-        wrap_text = if (!is.null(style$wrapText)) style$wrapText else NULL
+
+      ox2cell <- openxlsx2::create_cell_style(
+        text_rotation = if (!is.null(self$openxlsxStyle$textRotation)) self$openxlsxStyle$textRotation else "",
+        horizontal = if (!is.null(self$openxlsxStyle$halign)) self$openxlsxStyle$halign else "",
+        vertical = if (!is.null(self$openxlsxStyle$valign)) self$openxlsxStyle$valign else "",
+        wrap_text = if (!is.null(self$openxlsxStyle$wrapText)) self$openxlsxStyle$wrapText else "",
+        font_id = if (!is.null(wb$styles_mgr$get_font_id(ox2font))) wb$styles_mgr$get_font_id(ox2font) else "",
+        fill_id = if (!is.null(wb$styles_mgr$get_fill_id(ox2fill))) wb$styles_mgr$get_fill_id(ox2fill) else "",
+        num_fmt_id = if (!is.null(wb$styles_mgr$get_numfmt_id(ox2numfmt))) wb$styles_mgr$get_numfmt_id(ox2numfmt) else "",
+        border_id = if (!is.null(wb$styles_mgr$get_border_id(ox2border))) wb$styles_mgr$get_border_id(ox2border) else ""
       )
+      wb$styles_mgr$add(ox2cell, ox2cell)
+
+      wb$set_cell_style(dims = dims, style = wb$styles_mgr$get_xf_id(ox2cell))
 
       invisible(wb)
     },
