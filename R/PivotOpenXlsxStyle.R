@@ -470,7 +470,8 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
         b = bold,
         u = underline,
         strike = strikethrough,
-        i = italic
+        i = italic,
+        scheme = ""
       )
       wb$styles_mgr$add(ox2font, ox2font)
 
@@ -496,7 +497,7 @@ PivotOpenXlsxStyle <- R6::R6Class("PivotOpenXlsxStyle",
       }
       if (self$openxlsxStyle$numFmt != "GENERAL") {
         ox2numfmt <- openxlsx2::create_numfmt(
-          numfmt = self$openxlsxStyle$numFmt
+          formatCode = self$openxlsxStyle$numFmt
         )
         wb$styles_mgr$add(ox2numfmt, ox2numfmt)
       }
