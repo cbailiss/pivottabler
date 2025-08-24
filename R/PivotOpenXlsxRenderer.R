@@ -479,28 +479,27 @@ PivotOpenXlsxRenderer <- R6::R6Class("PivotOpenXlsxRenderer",
       }
 
       # set the minimum row heights
-      for(r in 1:length(private$p_minimumRowHeights)) {
-        if(private$p_minimumRowHeights[r] > 0) {
-          if(openxlsxVersion=="openxlsx") {
-            openxlsx::setRowHeights(wb, sheet=wsName, rows=r, heights=private$p_minimumRowHeights[r])
-          }
-          else if(openxlsxVersion=="openxlsx2") {
-            wb$set_row_heights(sheet=wsName, rows=r, heights=private$p_minimumRowHeights[r])
-          }
+      rows <- which(private$p_minimumRowHeights > 0)
+      if (length(rows)) {
+        offsetRows <- topRowNumber + columnGroupLevelCount + rows - 1 + rowOffsetDueToDummyColumn
+        if(openxlsxVersion=="openxlsx") {
+          openxlsx::setRowHeights(wb, sheet=wsName, rows=offsetRows, heights=private$p_minimumRowHeights[rows])
+        }
+        else if(openxlsxVersion=="openxlsx2") {
+          wb$set_row_heights(sheet=wsName, rows=offsetRows, heights=private$p_minimumRowHeights[rows])
         }
       }
 
       # set the minimum column widths
-      for(c in 1:private$p_maxColumnNumber) {
-        minColumnWidth <- private$p_minimumColumnWidths[c]
-        if (!is.null(openxlsxMinimumColumnWidth)) minColumnWidth <- max(minColumnWidth, openxlsxMinimumColumnWidth)
-        if(minColumnWidth > 0) {
-          if(openxlsxVersion=="openxlsx") {
-            openxlsx::setColWidths(wb, sheet=wsName, cols=c, widths=minColumnWidth)
-          }
-          else if(openxlsxVersion=="openxlsx2") {
-            wb$set_col_widths(sheet=wsName, cols=c, widths=minColumnWidth)
-          }
+      minColumnWidth <- max(private$p_minimumColumnWidths, openxlsxMinimumColumnWidth)
+      cols <- which(minColumnWidth > 0)
+      if (length(cols)) {
+        offsetCols <- cols + leftMostColumnNumber - 1L
+        if(openxlsxVersion=="openxlsx") {
+          openxlsx::setColWidths(wb, sheet=wsName, cols=offsetCols, widths=minColumnWidth[cols])
+        }
+        else if(openxlsxVersion=="openxlsx2") {
+          wb$set_col_widths(sheet=wsName, cols=offsetCols, widths=minColumnWidth[cols])
         }
       }
 
